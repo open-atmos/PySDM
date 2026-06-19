@@ -213,7 +213,8 @@ jobs:
         test-suite:
           - "isotopes_chemistry_extraterrestrial"
           - "homogeneous_freezing"
-          - "coagulation_immersion_freezing"
+          - "coagulation"
+          - "immersion_freezing"
           - "condensation_a"
           - "condensation_b"
           - "condensation_c"
@@ -245,7 +246,7 @@ jobs:
             test-suite: "homogeneous_freezing"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - name: Debug contexts
         run: |
