@@ -291,7 +291,7 @@ class CollisionsMethods(BackendMethods):
                 norm_factor = (sd_num >= 2) * (
                     timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
                 )
-                prob = prob.at[i].set(norm_factor)
+                prob = prob.at[i].multiply(norm_factor)
                 return prob
 
             return jax.lax.fori_loop(0, prob.shape[0], loop_body, prob)

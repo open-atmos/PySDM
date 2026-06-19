@@ -272,6 +272,7 @@ class TestSDMSingleCell:
                 )
 
                 # Assert
+                print(f"{expected(p, r)=}")
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod

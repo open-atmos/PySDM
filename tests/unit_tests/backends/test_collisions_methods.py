@@ -339,3 +339,29 @@ class TestCollisionMethods:
             _multiplicity.data
             == (0, 1, 25, 25, 25, 25, 12, 13, 12, 13, 50, 50, 50, 50, 50, 50)
         )
+
+    @staticmethod
+    def test_normalize(backend_instance_with_jax):
+        backend = backend_instance_with_jax
+
+        cell_id = backend.Storage.from_ndarray(np.asarray([0, 0, 0]))
+        cell_start = backend.Storage.from_ndarray(np.asarray([0, 3]))
+        cell_idx = backend.Storage.from_ndarray(np.asarray([0, 1]))
+        norm_factor = backend.Storage.from_ndarray(np.asarray([np.nan]))
+        prob = backend.Storage.from_ndarray(np.asarray([0.0]))
+
+        timestep = 1
+        dv = 1
+
+        backend.normalize(
+            prob=prob,
+            cell_id=cell_id,
+            cell_idx=cell_idx,
+            cell_start=cell_start,
+            norm_factor=norm_factor,
+            timestep=timestep,
+            dv=dv,
+        )
+        # assert (prob.to_ndarray() > 0.44).all()
+        assert (prob.to_ndarray() == 0.0).all()
+        # TODO: epxand test case for concrete values

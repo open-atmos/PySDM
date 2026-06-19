@@ -5,6 +5,7 @@ CPU implementation of shuffling and sorting backend methods
 from functools import cached_property
 
 import jax
+import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
