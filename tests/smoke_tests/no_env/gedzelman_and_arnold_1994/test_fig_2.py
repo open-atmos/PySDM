@@ -87,7 +87,7 @@ def test_dR_zero_condition(notebook_variables, phase, condition, rtol, eps):
     iso_ratio_r = X[within] * cmn.params.vsmow
     expected_y = cmn.f.isotope_ratio_evolution.saturation_for_zero_dR_condition(
         iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
-        diff_rat_light_to_heavy=(cmn.params.f_ratio / cmn.params.D_ratio),
+        diff_rat_light_to_heavy=1 / cmn.params.D_ratio_heavy_to_light,
         b=cmn.params.b,
         alpha_w=cmn.params.alpha_w,
         iso_ratio_r=iso_ratio_r,
