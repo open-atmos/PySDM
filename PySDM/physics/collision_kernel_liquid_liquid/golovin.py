@@ -10,26 +10,27 @@ class Golovin:
     def __init__(self, _):
         pass
 
-    @staticmethod
-    def analytic_solution(b, x, t, x_0, N_0):
 
-        def analytic_solution_helper(x, tau, x_0):
-            sqrt_tau = np.sqrt(tau)
-            result = float(
-                (1 - tau)
-                * 1
-                / (x * np.sqrt(tau))
-                * special.ive(1, 2 * x / x_0 * sqrt_tau)  # pylint: disable=no-member
-                * np.exp(-(1 + tau - 2 * sqrt_tau) * x / x_0)
-            )
-            return result
+@staticmethod
+def analytic_solution(b, x, t, x_0, N_0):
 
-        tau = 1 - np.exp(-N_0 * b * x_0 * t)
-
-        if isinstance(x, np.ndarray):
-            func = np.vectorize(lambda i: analytic_solution_helper(x[int(i)], tau, x_0))
-            result = np.fromfunction(func, x.shape, dtype=float)
-        else:
-            result = analytic_solution_helper(x, tau, x_0)
-
+    def analytic_solution_helper(x, tau, x_0):
+        sqrt_tau = np.sqrt(tau)
+        result = float(
+            (1 - tau)
+            * 1
+            / (x * np.sqrt(tau))
+            * special.ive(1, 2 * x / x_0 * sqrt_tau)  # pylint: disable=no-member
+            * np.exp(-(1 + tau - 2 * sqrt_tau) * x / x_0)
+        )
         return result
+
+    tau = 1 - np.exp(-N_0 * b * x_0 * t)
+
+    if isinstance(x, np.ndarray):
+        func = np.vectorize(lambda i: analytic_solution_helper(x[int(i)], tau, x_0))
+        result = np.fromfunction(func, x.shape, dtype=float)
+    else:
+        result = analytic_solution_helper(x, tau, x_0)
+
+    return result
