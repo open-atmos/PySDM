@@ -8,7 +8,6 @@ from matplotlib import pyplot
 
 from PySDM import Formulae
 from PySDM.physics import si, constants_defaults
-from PySDM.physics.isotope_ratio_evolution import GedzelmanAndArnold1994, ZabaEtAl
 from PySDM.physics.constants import PER_MILLE
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
