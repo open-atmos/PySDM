@@ -244,9 +244,11 @@ jobs:
             test-suite: "homogeneous_freezing"
           - platform: "windows-latest"
             test-suite: "homogeneous_freezing"
+          - platform: "windows-latest"
+            test-suite: "coagulation"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - name: Debug contexts
         run: |
