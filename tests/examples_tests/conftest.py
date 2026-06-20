@@ -132,16 +132,18 @@ TEST_SUITES = {
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
     ],
-    "coagulation_immersion_freezing": [
+    "coagulation": [
         "Berry_1967",
         "Shima_et_al_2009",
+        "Ware_et_al_2025",
+        "Matsushima_et_al_2023",
+        "Long_1974",
+    ],
+    "immersion_freezing": [
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
         "Spichtinger_et_al_2023",
-        "Ware_et_al_2025",
-        "Matsushima_et_al_2023",
-        "Long_1974",
     ],
     "multi-process_a": [
         "Arabas_et_al_2015",
