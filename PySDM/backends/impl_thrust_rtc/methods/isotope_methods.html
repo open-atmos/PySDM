@@ -168,7 +168,7 @@
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="s2">            moles_heavy_molecule[i] += dn_heavy;</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume[cid];</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume;</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="s2">            atomicAdd((real_type*) &amp;molality_in_dry_air[cid], -dn_heavy * multiplicity[i] / mass_of_dry_air);</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
@@ -192,7 +192,7 @@
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">),</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>            <span class="n">args</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>                <span class="n">cell_volume</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">cell_volume</span><span class="p">),</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>                <span class="n">dm_total</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>                <span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -270,7 +270,7 @@
 </span><span id="IsotopeMethods-64"><a href="#IsotopeMethods-64"><span class="linenos"> 64</span></a>
 </span><span id="IsotopeMethods-65"><a href="#IsotopeMethods-65"><span class="linenos"> 65</span></a><span class="s2">            moles_heavy_molecule[i] += dn_heavy;</span>
 </span><span id="IsotopeMethods-66"><a href="#IsotopeMethods-66"><span class="linenos"> 66</span></a>
-</span><span id="IsotopeMethods-67"><a href="#IsotopeMethods-67"><span class="linenos"> 67</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume[cid];</span>
+</span><span id="IsotopeMethods-67"><a href="#IsotopeMethods-67"><span class="linenos"> 67</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume;</span>
 </span><span id="IsotopeMethods-68"><a href="#IsotopeMethods-68"><span class="linenos"> 68</span></a>
 </span><span id="IsotopeMethods-69"><a href="#IsotopeMethods-69"><span class="linenos"> 69</span></a><span class="s2">            atomicAdd((real_type*) &amp;molality_in_dry_air[cid], -dn_heavy * multiplicity[i] / mass_of_dry_air);</span>
 </span><span id="IsotopeMethods-70"><a href="#IsotopeMethods-70"><span class="linenos"> 70</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
@@ -294,7 +294,7 @@
 </span><span id="IsotopeMethods-88"><a href="#IsotopeMethods-88"><span class="linenos"> 88</span></a>            <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">),</span>
 </span><span id="IsotopeMethods-89"><a href="#IsotopeMethods-89"><span class="linenos"> 89</span></a>            <span class="n">args</span><span class="o">=</span><span class="p">(</span>
 </span><span id="IsotopeMethods-90"><a href="#IsotopeMethods-90"><span class="linenos"> 90</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="IsotopeMethods-91"><a href="#IsotopeMethods-91"><span class="linenos"> 91</span></a>                <span class="n">cell_volume</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="IsotopeMethods-91"><a href="#IsotopeMethods-91"><span class="linenos"> 91</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">cell_volume</span><span class="p">),</span>
 </span><span id="IsotopeMethods-92"><a href="#IsotopeMethods-92"><span class="linenos"> 92</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="IsotopeMethods-93"><a href="#IsotopeMethods-93"><span class="linenos"> 93</span></a>                <span class="n">dm_total</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="IsotopeMethods-94"><a href="#IsotopeMethods-94"><span class="linenos"> 94</span></a>                <span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
