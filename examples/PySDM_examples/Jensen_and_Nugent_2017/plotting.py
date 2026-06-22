@@ -63,7 +63,7 @@ def figure(
 
     for label, mask in masks.items():
         axs["S"].plot(
-            in_unit(np.asarray(output["products"]["S_max"]), PER_CENT)[mask],
+            in_unit(np.asarray(output["products"]["S_max"]) - 1, PER_CENT)[mask],
             y_axis[mask],
             label=label,
             color=colors[label],
