@@ -456,7 +456,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 multiplicity=self.attributes["multiplicity"],
                 dm_total=self.attributes["diffusional growth mass change"],
                 signed_water_mass=self.attributes["signed water mass"],
-                dry_air_density=self.environment["dry_air_density"],
+                dry_air_density=self.environment["rhod"],
                 molar_mass_heavy_molecule=getattr(
                     self.formulae.constants,
                     {
