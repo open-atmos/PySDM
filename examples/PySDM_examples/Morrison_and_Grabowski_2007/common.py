@@ -29,7 +29,6 @@ class Common:
 
         self.coalescence_adaptive = True
         self.coalescence_dt_coal_range = collisions.collision.DEFAULTS.dt_coal_range
-        self.coalescence_optimized_random = True
         self.coalescence_substeps = 1
         self.kernel = Geometric(collection_efficiency=1)
         self.coalescence_efficiency = ConstEc(Ec=1.0)
