@@ -2,7 +2,7 @@ import numpy as np
 
 from PySDM_examples.utils import BasicSimulation
 
-from PySDM import Builder
+from PySDM.particulator import Particulator
 from PySDM.dynamics import (
     Condensation,
     AmbientThermodynamics,
@@ -40,7 +40,7 @@ class Simulation(BasicSimulation):
         if settings.enable_vapour_deposition_on_ice:
             dynamics.append(VapourDepositionOnIce(adaptive=True))
 
-        builder = Builder(
+        particulator = Particulator(
             backend=settings.backend,
             n_sd=settings.n_sd,
             environment=Parcel(
@@ -58,21 +58,21 @@ class Simulation(BasicSimulation):
         r_dry, n_in_dv = ConstantMultiplicity(
             settings.soluble_aerosol
         ).sample_deterministic(n_sd=settings.n_sd)
-        attributes = builder.particulator.environment.init_attributes(
+        attributes = particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )
         attributes["signed water mass"] = (
-            builder.particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.formulae.particle_shape_and_density.volume_to_mass(
                 attributes["volume"]
             )
         )
         del attributes["volume"]
 
         if settings.enable_immersion_freezing:
-            trivia = builder.particulator.formulae.trivia
+            trivia = particulator.formulae.trivia
             n_inp = int(settings.n_sd * settings.freezing_inp_frac)
 
-            rng = np.random.default_rng(seed=builder.particulator.formulae.seed)
+            rng = np.random.default_rng(seed=particulator.formulae.seed)
             insoluble_surface_area = trivia.sphere_surface(
                 diameter=2 * settings.freezing_inp_dry_radius
             )
@@ -81,7 +81,7 @@ class Simulation(BasicSimulation):
             ] = rng.permutation(
                 np.pad(
                     (
-                        builder.particulator.formulae.freezing_temperature_spectrum.invcdf(
+                        particulator.formulae.freezing_temperature_spectrum.invcdf(
                             cdf=rng.uniform(low=0, high=1, size=n_inp),
                             A_insol=insoluble_surface_area,
                         )
@@ -91,7 +91,7 @@ class Simulation(BasicSimulation):
                     (0, settings.n_sd - n_inp),
                     mode="constant",
                     constant_values=(
-                        builder.particulator.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
+                        particulator.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
                         if settings.singular
                         else 0
                     ),
@@ -107,9 +107,8 @@ class Simulation(BasicSimulation):
                 name="vapour", var="water_vapour_mixing_ratio"
             ),
         )
-        super().__init__(
-            particulator=builder.build(attributes=attributes, products=self.products)
-        )
+        particulator.build(attributes=attributes, products=self.products)
+        super().__init__(particulator=particulator)
 
     def run(self, *, nt, steps_per_output_interval):
         return self._run(nt=nt, steps_per_output_interval=steps_per_output_interval)

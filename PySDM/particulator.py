@@ -2,6 +2,8 @@
 The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
 
+import inspect
+
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -15,22 +17,48 @@ from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
+from PySDM.attributes.impl.attribute_registry import get_attribute_class
+from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
+from PySDM.impl.wall_timer import WallTimer
+from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
+    discretise_multiplicities,
+)
+from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
 class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
-    def __init__(self, n_sd, backend):
+    def __init__(
+        self,
+        n_sd,
+        backend,
+        *,
+        environment,
+        attributes: dict | None = None,
+        products: tuple = (),
+        dynamics=None,
+        requested_attributes: tuple = (),
+        int_caster=discretise_multiplicities,
+    ):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
 
         self.backend = backend
         self.formulae = backend.formulae
-        self.environment = None
+        self.req_attr_names = [
+            "multiplicity",
+            "water mass",
+            "cell id",
+            *requested_attributes,
+        ]
+        self.req_attr = None
         self.attributes: (ParticleAttributes, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
         self.initialisers = []
+
+        self.environment = environment.instantiate(self) if environment else None
 
         self.n_steps = 0
 
@@ -48,6 +76,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         self.timers = {}
         self.null = self.Storage.empty(0, dtype=float)
+
+        self.aerosol_radius_threshold = 0
+        self.condensation_params = None
+
+        if dynamics is not None:
+            for dynamic in dynamics:
+                self._register_dynamic(dynamic)
+        if attributes is not None:
+            self._build(attributes, products, int_caster)
 
     def run(self, steps):
         if len(self.initialisers) > 0:
@@ -595,6 +632,123 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
         )
         self.attributes.mark_updated("signed water mass")
+
+    # Methods copied from builder.py for move of builder.build()
+    def _set_condensation_parameters(self, **kwargs):
+        self.condensation_params = kwargs
+
+    def _register_dynamic(self, dynamic):
+        assert self.environment is not None
+        key = inspect.getmro(type(dynamic))[-2].__name__
+        assert key not in self.dynamics
+        self.dynamics[key] = dynamic
+
+    def _register_product(self, product, buffer):
+        if product.name in self.products:
+            raise ValueError(f'product name "{product.name}" already registered')
+        self.products[product.name] = product.instantiate(
+            particulator=self, buffer=buffer
+        )
+
+    def _request_attribute(self, attribute_name):
+        if self.req_attr_names is not None:
+            self.req_attr_names.append(attribute_name)
+        else:
+            self._resolve_attribute(attribute_name)
+
+    def get_attribute(self, attribute_name):
+        """intended for obtaining attribute instances during build() logic,
+        from within register() methods"""
+        self._resolve_attribute(attribute_name)
+        return self.req_attr[attribute_name]
+
+    def request_attribute(self, attribute_name):
+        self._request_attribute(attribute_name)
+
+    def _resolve_attribute(self, attr_name):
+        assert self.req_attr is not None
+        if attr_name not in self.req_attr:
+            self.req_attr[attr_name] = get_attribute_class(
+                attr_name,
+                self.dynamics.keys(),
+                self.formulae,
+            )(self)
+
+    def build(
+        self,
+        attributes: dict,
+        products: tuple = (),
+        int_caster=discretise_multiplicities,
+    ):
+        self._build(attributes, products, int_caster)
+
+    def _build(
+        self,
+        attributes: dict,
+        products: tuple = (),
+        int_caster=discretise_multiplicities,
+    ):
+        assert self.environment is not None
+
+        if "volume" in attributes and "water mass" not in attributes:
+            assert self.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), "implied volume-to-mass conversion is only supported for spherical particles"
+            attributes["water mass"] = (
+                self.formulae.particle_shape_and_density.volume_to_mass(
+                    attributes.pop("volume")
+                )
+            )
+            self._request_attribute("volume")
+
+        if (
+            "water mass" in attributes
+            and "signed water mass" not in attributes
+            and not self.formulae.particle_shape_and_density.supports_mixed_phase()
+        ):
+            attributes["signed water mass"] = attributes.pop("water mass")
+            self._request_attribute("water mass")
+
+        self.req_attr = {}
+        for attr_name in self.req_attr_names:
+            self._resolve_attribute(attr_name)
+        self.req_attr_names = None
+
+        for key, dynamic in self.dynamics.items():
+            self.dynamics[key] = dynamic.instantiate(self)
+
+        single_buffer_for_all_products = np.empty(self.mesh.grid)
+        for product in products:
+            self._register_product(product, single_buffer_for_all_products)
+
+        for attribute in attributes:
+            self._request_attribute(attribute)
+        if "Condensation" in self.dynamics:
+            self.condensation_solver = self.backend.make_condensation_solver(
+                self.dt,
+                self.mesh.n_cell,
+                **self.condensation_params,
+            )
+        attributes["multiplicity"] = int_caster(attributes["multiplicity"])
+        if self.mesh.dimension == 0:
+            attributes["cell id"] = np.zeros_like(
+                attributes["multiplicity"], dtype=np.int64
+            )
+        self.attributes = ParticleAttributesFactory.attributes(
+            self, self.req_attr, attributes
+        )
+        self.recalculate_cell_id()
+
+        for key in self.dynamics:
+            self.timers[key] = WallTimer()
+
+        if (attributes["multiplicity"] == 0).any():
+            self.attributes.healthy = False
+            self.attributes.sanitize()
+
+        self.request_attribute = None
+        self.build = None
 
     def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
         if stochastic_sedimentation_removal:

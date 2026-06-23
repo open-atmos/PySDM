@@ -53,8 +53,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rhod_mean, self.mass_of_dry_air
         )
 
-    def register(self, builder):
-        formulae = builder.particulator.formulae
+    def register(self, particulator):
+        formulae = particulator.formulae
 
         if self.initial_relative_humidity is not None:
             self.initial_water_vapour_mixing_ratio = (
@@ -71,7 +71,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rhod0, self.mass_of_dry_air
         )
 
-        Moist.register(self, builder)
+        Moist.register(self, particulator)
 
         self["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
         self["thd"][:] = formulae.trivia.th_std(pd0, self.T0)

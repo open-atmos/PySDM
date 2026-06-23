@@ -23,8 +23,8 @@ class Moist:
         self._tmp = None
         self._nan_field = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         self.particulator.observers.append(self)
 
         if self.particulator.formulae.ventilation.__name__ != "Neglect":
