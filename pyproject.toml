@@ -65,7 +65,7 @@ nonunit-tests = [
 CI_version_pins = [
   "PyPartMC==2.1.0",
   "numba==0.60.0",
-  "numpy==1.26.4",
+  "numpy==2.0.2",
   "scipy==1.15.0",
   "ThrustRTC==0.3.20",
   "CURandRTC==0.1.7",
