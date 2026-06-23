@@ -18,6 +18,7 @@ from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
+from PySDM.dynamics.collisions import collision_kernels
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
     RandomGeneratorOptimizerNoPair,
@@ -42,7 +43,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
-        collision_kernel,
         coalescence_efficiency,
         breakup_efficiency,
         fragmentation_function,
@@ -63,7 +63,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.warn_overflows = warn_overflows
         self.max_multiplicity = DEFAULTS.max_multiplicity
 
-        self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
@@ -136,6 +135,10 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_dt_min[:] = np.nan
 
         self.rnd_opt_coll.register(builder)
+        self.collision_kernel = getattr(
+            collision_kernels,
+            self.particulator.formulae.collision_kernel_liquid_liquid.__name__,
+        )()
         self.collision_kernel.register(builder)
 
         if self.croupier is None:
@@ -295,7 +298,6 @@ class Coalescence(Collision):
     def __init__(
         self,
         *,
-        collision_kernel,
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
         optimized_random=False,
@@ -306,7 +308,6 @@ class Coalescence(Collision):
         breakup_efficiency = ConstEb(Eb=0)
         fragmentation_function = AlwaysN(n=1)
         super().__init__(
-            collision_kernel=collision_kernel,
             coalescence_efficiency=coalescence_efficiency,
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
@@ -324,7 +325,6 @@ class Breakup(Collision):
     def __init__(
         self,
         *,
-        collision_kernel,
         fragmentation_function,
         croupier=None,
         optimized_random=False,
@@ -336,7 +336,6 @@ class Breakup(Collision):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
         super().__init__(
-            collision_kernel=collision_kernel,
             coalescence_efficiency=coalescence_efficiency,
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
