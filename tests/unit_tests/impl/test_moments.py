@@ -14,11 +14,11 @@ class TestMaths:
     def test_moment_0d(backend_class):
         # Arrange
         n_part = 100000
-        v_mean = 2e-6
+        v_median = 2e-6
         d = 1.2
         n_sd = 32
 
-        spectrum = Lognormal(n_part, v_mean, d)
+        spectrum = Lognormal(norm_factor=n_part, median=v_median, s_geom=d)
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
@@ -75,11 +75,11 @@ class TestMaths:
     def test_spectrum_moment_0d(backend_class):
         # Arrange
         n_part = 100000
-        v_mean = 2e-6
+        v_median = 2e-6
         d = 1.2
         n_sd = 32
 
-        spectrum = Lognormal(n_part, v_mean, d)
+        spectrum = Lognormal(norm_factor=n_part, median=v_median, s_geom=d)
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
