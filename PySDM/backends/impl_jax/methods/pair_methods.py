@@ -2,7 +2,7 @@
 CPU implementation of pairwise operations backend methods
 """
 
-from functools import cached_property
+from functools import cached_property, partial
 
 import jax
 import jax.numpy as jnp
@@ -13,35 +13,46 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class PairMethods(BackendMethods):
 
     @cached_property
-    def _find_pairs_body(self):  # TODO: check this for performance?
-        @jax.jit
-        def body(cell_start, cell_id, cell_idx, idx, i):
+    def _find_pairs_body(self):  
+        @partial(jax.jit, static_argnames=['size'])
+        def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx, size):
 
-            is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
-            is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-            # is_first_in_pair = is_in_same_cell & is_even_index
+            indices = jnp.arange(size)
+            idx_roll = jnp.roll(idx, 1)
+            is_in_same_cell = cell_id[idx] == cell_id[idx_roll]
+            is_first_in_pair = (indices - cell_start[cell_idx[cell_id[idx]]]) % 2 == 0
 
-            # return jnp.array([True])
-            return jnp.logical_and(is_in_same_cell, is_even_index)
+            is_first_in_pair = (is_in_same_cell & is_first_in_pair).at[-1].set(False)
+            return is_first_in_pair
 
-        return jax.vmap(body, (None, None, None, None, 0))
+        return body
+    
+    # @cached_property
+    # def _find_pairs_body(self):
+    #     @jax.jit
+    #     def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx):
+    #         def loop_body(i, is_first_in_pair):
+    #             is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
+    #             is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
+    #             is_first_in_pair = is_first_in_pair.at[i].set(is_in_same_cell & is_even_index)
+    #             return is_first_in_pair
+    #         is_first_in_pair = jax.lax.fori_loop(0, len(idx - 1), loop_body, is_first_in_pair).at[-1].set(False)
+    #         return is_first_in_pair
+    #     return body
 
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
 
         # print(f"{cell_start.data=}, {cell_id.data=}, {cell_idx.data=}, {idx.data=}")
-        indices = jnp.arange(len(idx) - 1)
 
-        is_first_in_pair.indicator.data = jnp.append(
-            self._find_pairs_body(
+        is_first_in_pair.indicator.data = self._find_pairs_body(
+                is_first_in_pair.indicator.data,
                 cell_start.data,
                 cell_id.data,
                 cell_idx.data,
                 idx.data,
-                indices,
-            ).block_until_ready(),
-            jnp.array([False]),
-        )
+                len(idx.data),
+            ).block_until_ready()
         # assert is_first_in_pair.indicator.data[0]
 
     @cached_property

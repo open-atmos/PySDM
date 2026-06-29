@@ -17,6 +17,7 @@ jax.config.update("jax_enable_x64", True)
 
 def test_run_sim():
     with jax.default_device(jax.devices("cpu")[0]):
+    # with jax.default_device(jax.devices("gpu")[0]):
         with jax.log_compiles():
             n_sd = 2**15
             initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
@@ -47,7 +48,7 @@ def test_run_sim():
             particulator = builder.build(attributes, products)
 
             # for step in [0]: #, 1200, 2400, 3600]:
-            for step in [i for i in range(1, 10)]:  # , 2400, 3600]:
+            for step in [1, 10, 2400, 3600]:  # , 2400, 3600]:
                 t0 = time.time()
                 particulator.run(step - particulator.n_steps)
                 print(time.time() - t0)
