@@ -21,7 +21,7 @@ jobs:
   precommit:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.6
+      - uses: actions/checkout@v7.0.0
       - uses: actions/setup-python@v6.3.0
         with:
           python-version: "3.10"
@@ -34,7 +34,7 @@ jobs:
   devops:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.1.6
+      - uses: actions/checkout@v7.0.0
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
