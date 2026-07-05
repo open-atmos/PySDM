@@ -1,9 +1,9 @@
 import numpy as np
 
 
-def update_thermo(particulator, T):
-    env = particulator.environment
-    svp = particulator.formulae.saturation_vapour_pressure
+def update_thermo(environment, T):
+    env = environment
+    svp = env.backend.formulae.saturation_vapour_pressure
 
     env["T"] = T
     env["a_w_ice"] = svp.pvs_ice(T) / svp.pvs_water(T)

@@ -7,10 +7,10 @@ from PySDM.attributes.impl import CellAttribute, register_attribute
 
 @register_attribute()
 class CellOrigin(CellAttribute):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         super().__init__(
-            builder,
+            particulator,
             name="cell origin",
             dtype=int,
-            n_vector_components=builder.particulator.mesh.dim,
+            n_vector_components=particulator.mesh.dim,
         )

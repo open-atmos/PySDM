@@ -18,19 +18,28 @@ from PySDM.environments.impl import register_environment
 
 @register_environment()
 class Kinematic2D(Moist):
-    def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
-        super().__init__(dt, Mesh(grid=grid, size=size), [], mixed_phase=mixed_phase)
+    def __init__(self, *, dt, grid, size, rhod_of, backend, mixed_phase=False):
+        super().__init__(
+            dt, Mesh(grid=grid, size=size), [], mixed_phase=mixed_phase, backend=backend
+        )
         self.rhod_of = rhod_of
-        self.formulae = None
+        self.backend = backend
+        self.formulae = backend.formulae
+        self.dynamics = {}
 
-    def register(self, builder):
-        super().register(builder)
-        self.formulae = builder.particulator.formulae
-        rhod = builder.particulator.Storage.from_ndarray(
+        rhod = self.backend.Storage.from_ndarray(
             arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel()
         )
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
+
+    def register_dynamics(self, dynamics):
+        self.dynamics = {}
+        for dynamic in dynamics:
+            self.dynamics[type(dynamic).__name__] = dynamic
+
+    def register(self, particulator):
+        super().register(particulator)
 
     @property
     def dv(self):
@@ -48,11 +57,11 @@ class Kinematic2D(Moist):
     ):
         super().sync()
         self.notify()
-        n_sd = n_sd or self.particulator.n_sd
         attributes = {}
+
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+                backend=self.backend, grid=self.mesh.grid, n_sd=n_sd
             )
             (
                 attributes["cell id"],
@@ -62,10 +71,11 @@ class Kinematic2D(Moist):
 
             r_dry, n_per_kg = spectral_sampling(
                 spectrum=dry_radius_spectrum
-            ).sample_deterministic(n_sd=n_sd, backend=self.particulator.backend)
+            ).sample_deterministic(n_sd=n_sd, backend=self.backend)
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
+
             if kappa == 0:
                 r_wet = r_dry
             else:
@@ -76,6 +86,7 @@ class Kinematic2D(Moist):
                     rtol=rtol,
                     cell_id=attributes["cell id"],
                 )
+
             rhod = self["rhod"].to_ndarray()
             cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
@@ -87,14 +98,15 @@ class Kinematic2D(Moist):
 
         return attributes
 
+    def _eulerian_advection(self):
+        return self.dynamics["EulerianAdvection"]
+
     def get_thd(self):
-        return self.particulator.dynamics["EulerianAdvection"].solvers["th"]
+        return self._eulerian_advection().solvers["th"]
 
     def get_water_vapour_mixing_ratio(self):
-        return self.particulator.dynamics["EulerianAdvection"].solvers[
-            "water_vapour_mixing_ratio"
-        ]
+        return self._eulerian_advection().solvers["water_vapour_mixing_ratio"]
 
     def sync(self):
-        self.particulator.dynamics["EulerianAdvection"].solvers.wait()
+        self._eulerian_advection().solvers.wait()
         super().sync()
