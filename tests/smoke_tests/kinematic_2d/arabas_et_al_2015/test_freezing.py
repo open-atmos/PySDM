@@ -4,7 +4,6 @@ from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM import Formulae
-from PySDM.backends import CPU
 from PySDM.physics import si
 
 from .dummy_storage import DummyStorage
@@ -46,7 +45,7 @@ def test_freezing(freezing_immersion):
     settings.initial_water_vapour_mixing_ratio -= 7.15 * si.g / si.kg
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend_class=CPU)
+    simulation = Simulation(settings, storage, SpinUp=SpinUp)
     simulation.reinit()
 
     # Act

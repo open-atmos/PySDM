@@ -63,7 +63,7 @@ class IsotopeMethods(ThrustRTCBackendMethods):
 
             moles_heavy_molecule[i] += dn_heavy;
 
-            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume[cid];
+            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume;
 
             atomicAdd((real_type*) &molality_in_dry_air[cid], -dn_heavy * multiplicity[i] / mass_of_dry_air);
             """.replace("real_type", self._get_c_type()),
@@ -87,7 +87,7 @@ class IsotopeMethods(ThrustRTCBackendMethods):
             n=len(multiplicity),
             args=(
                 cell_id.data,
-                cell_volume.data,
+                self._get_floating_point(cell_volume),
                 multiplicity.data,
                 dm_total.data,
                 signed_water_mass.data,
