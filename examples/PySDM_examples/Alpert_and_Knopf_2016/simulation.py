@@ -52,7 +52,7 @@ class Simulation:
             else:
                 total_time = (
                     np.diff(np.asarray(self.temperature_range)) / case["cooling_rate"]
-                )
+                ).item()
 
             constants = None
             if "J_het" not in case:
@@ -233,22 +233,20 @@ def simulation(
         IceWaterContent(name="qi"),
         TotalUnfrozenImmersedSurfaceArea(name="A_tot"),
     )
+    env = Box(dt=time_step, dv=volume, backend=CPU(formulae=formulae))
+    env["T"] = initial_temperature
+    env["a_w_ice"] = np.nan
+    env["RH"] = 1 + np.finfo(float).eps
 
     particulator = Particulator(
         n_sd=n_sd,
-        backend=CPU(formulae=formulae),
-        environment=Box(dt=time_step, dv=volume),
+        environment=env,
         attributes=attributes,
         products=products,
         dynamics=[Freezing(immersion_freezing="time-dependent")],
         requested_attributes=("volume",),
     )
 
-    env = particulator.environment
-
-    env["T"] = initial_temperature
-    env["a_w_ice"] = np.nan
-    env["RH"] = 1 + np.finfo(float).eps
     svp = particulator.formulae.saturation_vapour_pressure
 
     cell_id = 0
