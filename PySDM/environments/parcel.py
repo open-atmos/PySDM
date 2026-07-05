@@ -5,6 +5,7 @@ Zero-dimensional adiabatic parcel framework
 from typing import List, Optional, Union
 
 import numpy as np
+from zmq import backend
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
@@ -21,6 +22,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self,
         *,
         dt,
+        backend,
         mass_of_dry_air: float,
         p0: float,
         T0: float,
@@ -35,7 +37,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             initial_relative_humidity is not None
         )
         variables = (variables or []) + ["rhod", "z"]
-        super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
+        super().__init__(
+            dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase, backend=backend
+        )
 
         self.p0 = p0
         self.initial_relative_humidity = initial_relative_humidity
@@ -49,32 +53,33 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     @property
     def dv(self):
         rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
-        return self.particulator.formulae.trivia.volume_of_density_mass(
+        return self.backend.formulae.trivia.volume_of_density_mass(
             rhod_mean, self.mass_of_dry_air
         )
 
     def register(self, particulator):
-        formulae = particulator.formulae
 
         if self.initial_relative_humidity is not None:
             self.initial_water_vapour_mixing_ratio = (
-                formulae.trivia.water_vapour_mixing_ratio(
+                self.backend.formulae.trivia.water_vapour_mixing_ratio(
                     self.p0,
                     self.initial_relative_humidity,
-                    formulae.saturation_vapour_pressure.pvs_water(self.T0),
+                    self.backend.formulae.saturation_vapour_pressure.pvs_water(self.T0),
                 )
             )
 
-        pd0 = formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
-        rhod0 = formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.mesh.dv = formulae.trivia.volume_of_density_mass(
+        pd0 = self.backend.formulae.trivia.p_d(
+            self.p0, self.initial_water_vapour_mixing_ratio
+        )
+        rhod0 = self.backend.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
+        self.mesh.dv = self.backend.formulae.trivia.volume_of_density_mass(
             rhod0, self.mass_of_dry_air
         )
 
         Moist.register(self, particulator)
 
         self["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
-        self["thd"][:] = formulae.trivia.th_std(pd0, self.T0)
+        self["thd"][:] = self.backend.formulae.trivia.th_std(pd0, self.T0)
         self["rhod"][:] = rhod0
         self["z"][:] = self.z0
 
@@ -100,7 +105,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        dry_volume = self.particulator.formulae.trivia.volume(radius=r_dry)
+        dry_volume = self.backend.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = dry_volume * kappa
         attributes["multiplicity"] = n_in_dv
         r_wet = equilibrate_wet_radii(
@@ -109,7 +114,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             kappa_times_dry_volume=attributes["kappa times dry volume"],
             rtol=rtol,
         )
-        attributes["volume"] = self.particulator.formulae.trivia.volume(radius=r_wet)
+        attributes["volume"] = self.backend.formulae.trivia.volume(radius=r_wet)
         if include_dry_volume_in_attribute:
             attributes["dry volume"] = dry_volume
         return attributes

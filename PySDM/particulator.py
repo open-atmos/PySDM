@@ -31,7 +31,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def __init__(
         self,
         n_sd,
-        backend,
         *,
         environment,
         attributes: dict | None = None,
@@ -40,11 +39,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         requested_attributes: tuple = (),
         int_caster=discretise_multiplicities,
     ):
-        assert isinstance(backend, BackendMethods)
+        assert isinstance(environment.backend, BackendMethods)
         self.__n_sd = n_sd
 
-        self.backend = backend
-        self.formulae = backend.formulae
+        self.backend = environment.backend
+        self.formulae = environment.backend.formulae
         self.req_attr_names = [
             "multiplicity",
             "water mass",
@@ -65,13 +64,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.sorting_scheme = "default"
         self.condensation_solver = None
 
-        self.Index = make_Index(backend)  # pylint: disable=invalid-name
-        self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
+        self.Index = make_Index(environment.backend)  # pylint: disable=invalid-name
+        self.PairIndicator = make_PairIndicator(
+            environment.backend
+        )  # pylint: disable=invalid-name
         self.PairwiseStorage = make_PairwiseStorage(  # pylint: disable=invalid-name
-            backend
+            environment.backend
         )
         self.IndexedStorage = make_IndexedStorage(  # pylint: disable=invalid-name
-            backend
+            environment.backend
         )
 
         self.timers = {}
@@ -83,8 +84,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         if dynamics is not None:
             for dynamic in dynamics:
                 self._register_dynamic(dynamic)
-        if attributes is not None:
-            self._build(attributes, products, int_caster)
+
+        self._build(attributes, products, int_caster)
 
     def run(self, steps):
         if len(self.initialisers) > 0:
@@ -674,13 +675,13 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 self.formulae,
             )(self)
 
-    def build(
-        self,
-        attributes: dict,
-        products: tuple = (),
-        int_caster=discretise_multiplicities,
-    ):
-        self._build(attributes, products, int_caster)
+    # def build(
+    #     self,
+    #     attributes: dict,
+    #     products: tuple = (),
+    #     int_caster=discretise_multiplicities,
+    # ):
+    #     self._build(attributes, products, int_caster)
 
     def _build(
         self,
@@ -748,7 +749,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes.sanitize()
 
         self.request_attribute = None
-        self.build = None
+        # self.build = None
 
     def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
         if stochastic_sedimentation_removal:

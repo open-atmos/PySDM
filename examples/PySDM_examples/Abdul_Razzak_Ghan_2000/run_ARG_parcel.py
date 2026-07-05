@@ -11,6 +11,7 @@ from PySDM.environments import Parcel
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
+from attributes.impl import attribute_registry
 
 
 def run_parcel(
@@ -45,20 +46,13 @@ def run_parcel(
         initial_water_vapour_mixing_ratio=const.eps * pv0 / (p0 - pv0),
         w=w,
         T0=T0,
+        backend=CPU(formulae),
     )
 
     aerosol = AerosolARG(
         M2_sol=sol2, M2_N=N2, M2_rad=rad2, water_molar_volume=const.Mv / const.rho_w
     )
     n_sd = n_sd_per_mode * len(aerosol.modes)
-
-    particulator = Particulator(
-        backend=CPU(formulae),
-        n_sd=n_sd,
-        environment=env,
-        dynamics=[AmbientThermodynamics(), Condensation()],
-    )
-    particulator.request_attribute("critical saturation")
 
     attributes = {
         k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "multiplicity")
@@ -68,11 +62,11 @@ def run_parcel(
         r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(
             n_sd_per_mode
         )
-        v_dry = particulator.formulae.trivia.volume(radius=r_dry)
-        specific_concentration = concentration / particulator.formulae.constants.rho_STP
+        v_dry = formulae.trivia.volume(radius=r_dry)
+        specific_concentration = concentration / env.backend.formulae.constants.rho_STP
         attributes["multiplicity"] = np.append(
             attributes["multiplicity"],
-            specific_concentration * particulator.environment.mass_of_dry_air,
+            specific_concentration * env.mass_of_dry_air,
         )
         attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
         attributes["kappa times dry volume"] = np.append(
@@ -81,12 +75,19 @@ def run_parcel(
 
     r_wet = equilibrate_wet_radii(
         r_dry=formulae.trivia.radius(volume=attributes["dry volume"]),
-        environment=particulator.environment,
+        environment=env,
         kappa_times_dry_volume=attributes["kappa times dry volume"],
     )
-    attributes["volume"] = particulator.formulae.trivia.volume(radius=r_wet)
+    attributes["volume"] = env.backend.formulae.trivia.volume(radius=r_wet)
 
-    particulator.build(attributes, products=products)
+    particulator = Particulator(
+        n_sd=n_sd,
+        environment=env,
+        dynamics=[AmbientThermodynamics(), Condensation()],
+        requested_attributes=("critical saturation",),
+        attributes=attributes,
+        products=products,
+    )
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
