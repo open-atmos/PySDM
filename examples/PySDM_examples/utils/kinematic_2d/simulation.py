@@ -116,7 +116,6 @@ class Simulation:
                     adaptive=self.settings.coalescence_adaptive,
                     dt_coal_range=self.settings.coalescence_dt_coal_range,
                     substeps=self.settings.coalescence_substeps,
-                    optimized_random=self.settings.coalescence_optimized_random,
                 )
             )
         elif (
@@ -129,7 +128,6 @@ class Simulation:
                     adaptive=self.settings.coalescence_adaptive,
                     dt_coal_range=self.settings.coalescence_dt_coal_range,
                     substeps=self.settings.coalescence_substeps,
-                    optimized_random=self.settings.coalescence_optimized_random,
                 )
             )
         assert not (

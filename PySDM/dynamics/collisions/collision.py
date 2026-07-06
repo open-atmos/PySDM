@@ -18,10 +18,6 @@ from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
-from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
-    RandomGeneratorOptimizerNoPair,
-)
 from PySDM.physics import si
 from PySDM.dynamics.impl import register_dynamic
 
@@ -47,7 +43,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         breakup_efficiency,
         fragmentation_function,
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -68,14 +63,15 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
 
-        self.rnd_opt_frag = None
-        self.rnd_opt_coll = None
-        self.rnd_opt_proc = None
-        self.optimised_random = None
+        self.rnd = None
+        self.rand = None
+        self.rand_frag = None
+        self.rand_coll = None
+        self.rand_proc = None
+        self.rand_pairs = None
 
         assert dt_coal_range[0] > 0
         self.croupier = croupier
-        self.optimized_random = optimized_random
         self.__substeps = substeps
         self.adaptive = adaptive
         self.stats_n_substep = None
@@ -100,15 +96,19 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
     def register(self, builder):
         self.particulator = builder.particulator
-        rnd_args = {
-            "optimized_random": self.optimized_random,
-            "dt_min": self.dt_coal_range[0],
-            "seed": builder.formulae.seed,
-        }
-        self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
+
+        empty_args_dropwise = {"shape": self.particulator.n_sd, "dtype": float}
+        empty_args_pairwise = {"shape": self.particulator.n_sd // 2, "dtype": float}
+        empty_args_cellwise = {"shape": self.particulator.mesh.n_cell, "dtype": float}
+
+        self.rnd = self.particulator.Random(
+            self.particulator.n_sd, builder.formulae.seed
+        )
+        self.rand = self.particulator.Storage.empty(**empty_args_pairwise)
+        self.rand_pairs = self.particulator.Storage.empty(**empty_args_dropwise)
         if self.enable_breakup:
-            self.rnd_opt_proc = RandomGeneratorOptimizerNoPair(**rnd_args)
-            self.rnd_opt_frag = RandomGeneratorOptimizerNoPair(**rnd_args)
+            self.rand_proc = self.particulator.Storage.empty(**empty_args_pairwise)
+            self.rand_frag = self.particulator.Storage.empty(**empty_args_pairwise)
 
         if self.particulator.n_sd < 2:
             raise ValueError("No one to collide with!")
@@ -116,8 +116,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.dt_coal_range = (self.dt_coal_range[0], self.particulator.dt)
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
-        empty_args_pairwise = {"shape": self.particulator.n_sd // 2, "dtype": float}
-        empty_args_cellwise = {"shape": self.particulator.mesh.n_cell, "dtype": float}
         self.kernel_temp = self.particulator.PairwiseStorage.empty(
             **empty_args_pairwise
         )
@@ -135,7 +133,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_dt_min = self.particulator.Storage.empty(**empty_args_cellwise)
         self.stats_dt_min[:] = np.nan
 
-        self.rnd_opt_coll.register(builder)
         self.collision_kernel.register(builder)
 
         if self.croupier is None:
@@ -161,8 +158,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.Eb_temp = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
-            self.rnd_opt_proc.register(builder)
-            self.rnd_opt_frag.register(builder)
             self.compute_coalescence_efficiency.register(builder)
             self.compute_breakup_efficiency.register(builder)
             self.compute_number_of_fragments.register(builder)
@@ -188,40 +183,41 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
                 self.particulator.attributes.reset_working_length()
                 self.particulator.attributes.reset_cell_idx()
-            self.rnd_opt_coll.reset()
-            if self.enable_breakup:
-                self.rnd_opt_proc.reset()
-                self.rnd_opt_frag.reset()
 
     def step(self):
-        pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
+        self.rand_pairs.urand(self.rnd)
+        self.rand.urand(self.rnd)
 
         self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
-            self.is_first_in_pair, pairs_rand
+            self.is_first_in_pair, self.rand_pairs
         )
 
         prob = self.gamma
         self.compute_probabilities_of_collision(self.is_first_in_pair, out=prob)
 
         if self.enable_breakup:
-            proc_rand = self.rnd_opt_proc.get_random_arrays()
-            rand_frag = self.rnd_opt_frag.get_random_arrays()
+            self.rand_proc.urand(self.rnd)
+            self.rand_frag.urand(self.rnd)
             self.compute_coalescence_efficiency(self.Ec_temp, self.is_first_in_pair)
             self.compute_breakup_efficiency(self.Eb_temp, self.is_first_in_pair)
             self.compute_number_of_fragments(
-                self.n_fragment, self.fragment_mass, rand_frag, self.is_first_in_pair
+                self.n_fragment,
+                self.fragment_mass,
+                self.rand_frag,
+                self.is_first_in_pair,
             )
-        else:
-            proc_rand = None
 
         self.compute_gamma(
-            prob=prob, rand=rand, is_first_in_pair=self.is_first_in_pair, out=self.gamma
+            prob=prob,
+            rand=self.rand,
+            is_first_in_pair=self.is_first_in_pair,
+            out=self.gamma,
         )
 
         self.particulator.collision_coalescence_breakup(
             enable_breakup=self.enable_breakup,
             gamma=self.gamma,
-            rand=proc_rand,
+            rand=self.rand_proc,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
             fragment_mass=self.fragment_mass,
@@ -298,7 +294,6 @@ class Coalescence(Collision):
         collision_kernel,
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -311,7 +306,6 @@ class Coalescence(Collision):
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
             croupier=croupier,
-            optimized_random=optimized_random,
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
@@ -327,7 +321,6 @@ class Breakup(Collision):
         collision_kernel,
         fragmentation_function,
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -341,7 +334,6 @@ class Breakup(Collision):
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
             croupier=croupier,
-            optimized_random=optimized_random,
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
