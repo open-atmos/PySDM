@@ -23,7 +23,7 @@ jobs:
         with:
           submodules: recursive
           persist-credentials: false
-      - uses: actions/setup-python@v6.2.0
+      - uses: actions/setup-python@v6.3.0
         with:
           python-version: "3.12"
 
@@ -31,8 +31,8 @@ jobs:
         run: grep -rl '^#!/usr/bin/env pvpython' examples/PySDM_examples | xargs rm -f
 
       - run: pip install pdoc nbformat gitpython
-      - run: pip install -e .
-      - run: pip install -e examples
+      - run: pip install -e .[CI_version_pins]
+      - run: pip install -e examples[CI_version_pins]
       - run: python -We docs/generate_html.py . .
 
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}

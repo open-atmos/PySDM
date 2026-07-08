@@ -2,6 +2,7 @@
 
 import pytest
 
-from ..unit_tests.conftest import backend_class
+from ..unit_tests.conftest import backend_class, backend_instance
 
 pytest.fixture(backend_class.__wrapped__)
+pytest.fixture(backend_instance.__wrapped__)
