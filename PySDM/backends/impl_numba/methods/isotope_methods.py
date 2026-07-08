@@ -102,7 +102,8 @@ class IsotopeMethods(BackendMethods):
                         molality_in_dry_air[cell_id] + delta_molality < 0
                         or delta_molality / molality_in_dry_air[cell_id] < rtol
                     ):
-                        temp = 1 - h / ()
+                        h = 0
+                        temp = 1 - h / (2)  # TODO
                     else:
                         converged = True
 
@@ -160,7 +161,6 @@ class IsotopeMethods(BackendMethods):
             D_ratio,
             relative_humidity,
             temperature,
-            density_dry_air,
             water_vapour_mixing_ratio,
             moles_light_molecule,
             moles_heavy,
@@ -172,12 +172,12 @@ class IsotopeMethods(BackendMethods):
                 moles_heavy_atom = moles_heavy[i]
                 moles_light_isotope = moles_light_molecule[i]  # TODO #1787
 
-                conc_vap_total = water_vapour_mixing_ratio * rhod / const.Mv
-                isotopic_fraction = ff.trivia__isotopic_fraction(
-                    molality_in_dry_air=molality_in_dry_air[cell_id[i]],
-                    density_dry_air=density_dry_air[cell_id[i]],
-                    total_vap_concentration=conc_vap_total,
+                isotopic_fraction = (
+                    molality_in_dry_air[cell_id[i]]
+                    / water_vapour_mixing_ratio[cell_id[i]]
+                    * ff.constants.Mv
                 )
+
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio(T),
                     alpha=alpha(T),
@@ -220,10 +220,10 @@ class IsotopeMethods(BackendMethods):
         isotope,
         relative_humidity,
         temperature,
-        density_dry_air,
         moles_light_molecule,
         moles_heavy,
         molality_in_dry_air,
+        water_vapour_mixing_ratio,
     ):
         """Bolin number per droplet"""
         self._bolin_number_body(
@@ -233,8 +233,8 @@ class IsotopeMethods(BackendMethods):
             alpha=self.alpha_l(isotope),
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
-            density_dry_air=density_dry_air.data,
             moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
             molality_in_dry_air=molality_in_dry_air.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
         )
