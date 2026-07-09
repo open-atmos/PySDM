@@ -93,9 +93,6 @@ class Storage(StorageBase):
         result = Storage(Storage._get_data_from_ndarray(array))
         return result
 
-    def urand(self, generator):
-        generator(self)
-
     def upload(self, data):
         self.fill(data)
 
