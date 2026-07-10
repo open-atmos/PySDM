@@ -13,8 +13,8 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class PairMethods(BackendMethods):
 
     @cached_property
-    def _find_pairs_body(self):  
-        @partial(jax.jit, static_argnames=['size'])
+    def _find_pairs_body(self):
+        @partial(jax.jit, static_argnames=["size"])
         def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx, size):
 
             indices = jnp.arange(size)
@@ -26,7 +26,7 @@ class PairMethods(BackendMethods):
             return is_first_in_pair
 
         return body
-    
+
     # @cached_property
     # def _find_pairs_body(self):
     #     @jax.jit
@@ -46,13 +46,13 @@ class PairMethods(BackendMethods):
         # print(f"{cell_start.data=}, {cell_id.data=}, {cell_idx.data=}, {idx.data=}")
 
         is_first_in_pair.indicator.data = self._find_pairs_body(
-                is_first_in_pair.indicator.data,
-                cell_start.data,
-                cell_id.data,
-                cell_idx.data,
-                idx.data,
-                len(idx.data),
-            ).block_until_ready()
+            is_first_in_pair.indicator.data,
+            cell_start.data,
+            cell_id.data,
+            cell_idx.data,
+            idx.data,
+            len(idx.data),
+        ).block_until_ready()
         # assert is_first_in_pair.indicator.data[0]
 
     @cached_property

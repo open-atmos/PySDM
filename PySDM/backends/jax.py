@@ -40,7 +40,6 @@ class Jax(
         # }
         self.default_jit_flags = {"parallel": False}
 
-
         methods.CollisionsMethods.__init__(self)
         methods.PairMethods.__init__(self)
         methods.IndexMethods.__init__(self)

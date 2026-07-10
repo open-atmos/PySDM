@@ -230,4 +230,3 @@ class MomentsMethods(BackendMethods):
             moments.data = jnp.where(
                 moment_0.data != 0, moments.data / moment_0.data, 0.0
             )
-
