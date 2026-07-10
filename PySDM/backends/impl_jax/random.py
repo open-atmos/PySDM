@@ -21,7 +21,7 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         self.key = random.key(seed)
 
     @cached_property
-    def _call_body(self):
+    def _u01_body(self):
         @partial(jax.jit, static_argnames=["shape", "dtype"])
         def body(data, subkey, shape, dtype):
             data = data.at[:].set(random.uniform(subkey, shape, dtype, 0, 1))
@@ -32,7 +32,7 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     def u01(self, storage):
         new_key, subkey = random.split(self.key)
 
-        storage.data = self._call_body(
+        storage.data = self._u01_body(
             storage.data,
             subkey,
             storage.shape,
@@ -55,5 +55,5 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         storage.data = self._permute_body(
             storage.data,
             subkey,
-        )
+        ).block_until_ready()
         self.key = new_key
