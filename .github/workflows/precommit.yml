@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
       - run: |
           pip install -r tests/devops_tests/requirements.txt
-          pip install "ghapi<2.0.0"
+          pip install "ghapi<2.0.0" "fastcore<2"
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
