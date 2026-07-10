@@ -21,11 +21,11 @@ from PySDM.initialisation.sampling import spatial_sampling
 
 
 class Simulation:
-    def __init__(self, settings, storage, SpinUp, backend_class=CPU):
+    def __init__(self, settings, storage, SpinUp, backend=None):
         self.settings = settings
         self.storage = storage
         self.particulator = None
-        self.backend_class = backend_class
+        self.backend = backend or CPU(settings.formulae)
         self.SpinUp = SpinUp
 
     @property
@@ -34,7 +34,7 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = self.backend_class(formulae=formulae)
+        backend = self.backend
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
@@ -42,9 +42,8 @@ class Simulation:
             rhod_of=self.settings.rhod_of_zZ,
             mixed_phase=self.settings.processes["freezing"],
         )
-        builder = Builder(
-            n_sd=self.settings.n_sd, backend=backend, environment=environment
-        )
+
+        dynamics = []
 
         if products is not None:
             products = list(products)
@@ -52,7 +51,7 @@ class Simulation:
             products = make_default_product_collection(self.settings)
 
         if self.settings.processes["fluid advection"]:
-            builder.add_dynamic(AmbientThermodynamics())
+            dynamics.append(AmbientThermodynamics())
         if self.settings.processes["condensation"]:
             kwargs = {}
             if not self.settings.condensation_adaptive:
@@ -65,7 +64,7 @@ class Simulation:
                 schedule=self.settings.condensation_schedule,
                 **kwargs,
             )
-            builder.add_dynamic(condensation)
+            dynamics.append(condensation)
         if self.settings.processes["fluid advection"]:
             initial_profiles = {
                 "th": self.settings.initial_dry_potential_temperature_profile,
@@ -76,7 +75,7 @@ class Simulation:
                     key,
                     np.repeat(
                         profile.reshape(1, -1),
-                        builder.particulator.environment.mesh.grid[0],
+                        self.settings.grid[0],
                         axis=0,
                     ),
                 )
@@ -94,9 +93,9 @@ class Simulation:
                 nonoscillatory=self.settings.mpdata_fct,
                 third_order_terms=self.settings.mpdata_tot,
             )
-            builder.add_dynamic(EulerianAdvection(solver))
+            dynamics.append(EulerianAdvection(solver))
         if self.settings.processes["particle advection"]:
-            builder.add_dynamic(
+            dynamics.append(
                 Displacement(
                     enable_sedimentation=self.settings.processes["sedimentation"],
                     adaptive=self.settings.displacement_adaptive,
@@ -107,7 +106,7 @@ class Simulation:
             self.settings.processes["coalescence"]
             and self.settings.processes["breakup"]
         ):
-            builder.add_dynamic(
+            dynamics.append(
                 Collision(
                     collision_kernel=self.settings.kernel,
                     enable_breakup=self.settings.processes["breakup"],
@@ -124,7 +123,7 @@ class Simulation:
             self.settings.processes["coalescence"]
             and not self.settings.processes["breakup"]
         ):
-            builder.add_dynamic(
+            dynamics.append(
                 Coalescence(
                     collision_kernel=self.settings.kernel,
                     adaptive=self.settings.coalescence_adaptive,
@@ -138,12 +137,19 @@ class Simulation:
             and not self.settings.processes["coalescence"]
         )
         if self.settings.processes["freezing"]:
-            builder.add_dynamic(
+            dynamics.append(
                 Freezing(
                     immersion_freezing=self.settings.freezing_immersion,
                     thaw=self.settings.freezing_thaw,
                 )
             )
+
+        builder = Builder(
+            n_sd=self.settings.n_sd,
+            backend=backend,
+            environment=environment,
+            dynamics=dynamics,
+        )
 
         attributes = builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),

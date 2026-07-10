@@ -155,8 +155,7 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
-builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s), adaptive=false))
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
 particulator = builder.build(attributes, products)
 ```
@@ -175,8 +174,7 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
-builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s), 'adaptive', false)));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env, 'dynamics', py.tuple({Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s)))})));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
@@ -199,8 +197,7 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
-builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s), adaptive=False))
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
@@ -302,12 +299,11 @@ The resultant plot (generated with the Python code) looks as follows:
 The component submodules used to create this simulation are visualized below:
 ```mermaid
  graph
-    COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    COAL[":Coalescence"] --->|passed as arg to| BUILDER_INIT(["Builder.__init__()"])
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
     N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
     BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
-    BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
     DT[dt :float] -->|passed as arg to| ENV_INIT
     DV[dv :float] -->|passed as arg to| ENV_INIT
@@ -340,7 +336,6 @@ The component submodules used to create this simulation are visualized below:
     click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence"
     click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click ENV "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels.html"
@@ -410,9 +405,10 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env, dynamics=(
+    AmbientThermodynamics(),
+    Condensation(),
+))
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
@@ -491,9 +487,12 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
-builder.add_dynamic(AmbientThermodynamics());
-builder.add_dynamic(Condensation());
+builder = Builder(pyargs( ...
+    'backend', CPU(formulae), ...
+     'n_sd', int32(n_sd), ...
+      'environment', env, ...
+      'dynamics', py.tuple({AmbientThermodynamics(), Condensation()}) ...
+));
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample_deterministic(int32(n_sd));
 r_dry = tmp{1};
@@ -592,9 +591,10 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env, dynamics=(
+    AmbientThermodynamics(),
+    Condensation(),
+))
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
@@ -743,6 +743,8 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
   https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 - Particula (Python)
   https://github.com/uncscode/particula/blob/main/particula/dynamics/coagulation/particle_resolved_step/super_droplet_method.py
+- CM1-SDM (FORTRAN)
+  https://zenodo.org/records/18896134
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -759,3 +761,4 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 
 - DustPy: https://stammler.github.io/dustpy
 - Cloudy.jl: https://github.com/CliMA/Cloudy.jl
+- BinMod1D-PARS: https://github.com/NOAA-National-Severe-Storms-Laboratory/BinMod1D-PARS
