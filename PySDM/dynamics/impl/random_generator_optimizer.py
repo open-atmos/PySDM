@@ -47,7 +47,7 @@ class RandomGeneratorOptimizer:  # pylint: disable=too-many-instance-attributes
             shift = 0
             if not hasattr(self.rnd, "JAX"):
                 self.rnd.u01(self.pairs_rand)
-            else:  # TODO: TEMPORARY
+            else:  # TODO #1913: TEMPORARY, undo this (or keep if staying with jax.random.permute)
                 self.pairs_rand = Data(data=self.rnd)
             self.rnd.u01(self.rand)
         self.substep += 1

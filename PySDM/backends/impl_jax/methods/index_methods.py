@@ -38,5 +38,8 @@ class IndexMethods(BackendMethods):
         # ).block_until_ready()
 
     def shuffle_local(self, idx, u01, cell_start):
-        # TODO: implement shuffle_local
-        self.shuffle_global(idx, u01).block_until_ready()
+        # TODO #1913: implement shuffle_local
+
+        job = self.shuffle_global(idx, u01)
+        if self.block_until_ready:
+            job.block_until_ready()

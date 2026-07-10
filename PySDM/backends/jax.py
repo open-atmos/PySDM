@@ -23,12 +23,18 @@ class Jax(
     default_croupier = "local"
 
     def __init__(
-        self, formulae=None, *, double_precision=True, override_jit_flags=None
+        self,
+        formulae=None,
+        *,
+        double_precision=True,
+        override_jit_flags=None,
+        block_until_ready=False,
     ):
         jax.config.update("jax_enable_x64", True)
         if not double_precision:
             raise NotImplementedError()
 
+        self.block_until_ready = block_until_ready
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 

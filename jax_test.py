@@ -3,7 +3,7 @@ from PySDM.physics import si
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra.exponential import Exponential
 import numpy as np
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Golovin
@@ -31,13 +31,17 @@ def test_run_sim():
             )
 
             env = Box(dt=1 * si.s, dv=1e6 * si.m**3)
-            builder = Builder(n_sd=n_sd, backend=JAX(), environment=env)
-            builder.add_dynamic(
-                Coalescence(
-                    collision_kernel=Golovin(b=1.5e3 / si.s),
-                    adaptive=False,
-                    croupier="global",
-                )
+            builder = Builder(
+                n_sd=n_sd,
+                backend=JAX(Formulae(seed=42)),
+                environment=env,
+                dynamics=(
+                    Coalescence(
+                        collision_kernel=Golovin(b=1.5e3 / si.s),
+                        adaptive=False,
+                        croupier="global",
+                    ),
+                ),
             )
             products = [
                 ParticleVolumeVersusRadiusLogarithmSpectrum(

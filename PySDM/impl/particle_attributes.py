@@ -25,8 +25,6 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         self.__healthy_memory = particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
 
-        # TODO: investigate creation of extensive_attribute_storage
-        # is attributes a jax array??
         self.__extensive_attribute_storage = extensive_attribute_storage
 
         self.__extensive_keys = extensive_keys

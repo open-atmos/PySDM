@@ -57,7 +57,7 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _max_pair_body(self):
-        @jax.jit  # TODO: test with jit
+        @jax.jit  # TODO #1913: rewrite for parallel computation
         def body(data_out, data_in, is_first_in_pair, idx):
             def loop_body(i, data_out):
                 def max_pair(i, data_out):
@@ -95,7 +95,7 @@ class PairMethods(BackendMethods):
     @cached_property
     def _sort_within_pair_by_attr_body(self):
 
-        @jax.jit
+        @jax.jit  # TODO #1913: rewrite for parallel computation
         def body(is_first_in_pair, attr, idx):
             should_swap = is_first_in_pair & (attr[idx] < jnp.roll(attr[idx], -1))
             second_to_swap = jnp.roll(should_swap, 1)
@@ -117,7 +117,7 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _sum_pair_body(self):
-        @jax.jit
+        @jax.jit  # TODO #1913: rewrite for parallel computation
         def body(data_out, data_in, is_first_in_pair, idx):
             data_out = data_out.at[:].set(0)  # ?? might slow it down
 

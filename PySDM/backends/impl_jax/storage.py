@@ -111,8 +111,6 @@ class Storage(StorageBase):
         return np.array(self.data)
 
     def ratio(self, dividend, divisor):
-        # assert False
-        # TODO: does this work?
         self.data = impl.divide_out_of_place(
             self.data, dividend.data, divisor.data
         ).block_until_ready()
