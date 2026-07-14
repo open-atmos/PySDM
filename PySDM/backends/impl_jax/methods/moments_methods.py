@@ -83,7 +83,6 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-        # assert False
         idx_i = jnp.arange(length)
         count_cells_func = jax.vmap(moments_helper, (None, None, None, None, 0))
         idx_to_count = count_cells_func(min_x, max_x, x_attr.data, idx.data, idx_i)
