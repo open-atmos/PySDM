@@ -151,3 +151,6 @@ dmypy.json
 tmp/
 __ptx_cache__.db
 .venv-ubuntu/
+prof/
+jax_test.ipynb
+jax_test.py
