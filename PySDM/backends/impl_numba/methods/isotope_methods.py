@@ -4,6 +4,7 @@ CPU implementation of isotope-relates backend methods
 
 from functools import cached_property, lru_cache
 
+import math
 import numba
 import numpy as np
 
@@ -67,45 +68,94 @@ class IsotopeMethods(BackendMethods):
             molality_in_dry_air,
         ):  # pylint: disable=too-many-locals
             n_substeps = 1
+            max_n_substeps = 256
             converged = False
-
-            while True:
-                delta_molality = 0
-                rtol = 1e-6  # TODO
+            print("Start")
+            while n_substeps <= max_n_substeps:
+                print("n_substeps=", n_substeps)
+                print("molality_in_dry_air=", molality_in_dry_air[0])
+                delta_n_heavy_total = 0
+                rtol = 1e-3  # TODO
 
                 for sd_id in range(multiplicity.shape[0]):
                     Bo = bolin_number[sd_id]
-                    mass_ratio_heavy_to_total = (
-                        moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
-                    ) / signed_water_mass[sd_id]
-                    if abs(Bo) < 1e-5:  # TODO
-                        dm_heavy = 0
-                    else:
-                        dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
+
+                    ####################
+                    # Previous attempt #
+                    ####################
+                    # mass_ratio_heavy_to_total = (
+                    #     moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
+                    # ) / signed_water_mass[sd_id]
+                    # if abs(Bo) < 1e-5:  # TODO
+                    #     dm_heavy = 0
+                    # else:
+                    #     dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
 
                     # Explicit Euler applied to logarithm of mass to ensure positive mole number in droplet
-                    dn_heavy_molecule = moles_heavy_molecule[sd_id] * (
-                        np.exp(dm_heavy / moles_heavy_molecule[sd_id]) - 1
-                    )
-                    mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
-                    delta_molality_sd = (
-                        -dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
-                    )
-                    if converged:
-                        moles_heavy_molecule[sd_id] += dn_heavy_molecule
-                        molality_in_dry_air[cell_id[sd_id]] += delta_molality_sd
-                    else:
-                        delta_molality += delta_molality_sd
+                    # dn_heavy_molecule = moles_heavy_molecule[sd_id] * (
+                    #     np.exp(dm_heavy / moles_heavy_molecule[sd_id]) - 1
+                    # )
 
+                    # delta_molality_sd = (
+                    #     -dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
+                    # )
+
+                    # new
+                    Mv = 0.018015270337240392
+                    molar_mass_light_molecule = 0.01801056468405
+
+                    old_n_molecules = (signed_water_mass[sd_id] - dm_total[sd_id]) / Mv
+                    new_n_molecules = old_n_molecules + (
+                        dm_total[sd_id] / n_substeps / Mv
+                    )
+                    old_n_heavy_molecules = moles_heavy_molecule[sd_id]
+                    print(
+                        "old_n_heavy_molecules=",
+                        old_n_heavy_molecules,
+                        "dm = ",
+                        dm_total[sd_id],
+                    )
+                    B = math.sqrt(
+                        1 + 4 * abs(Bo) * old_n_molecules / old_n_heavy_molecules
+                    )
+                    A = new_n_molecules * old_n_heavy_molecules / 2 / old_n_molecules
+                    new_n_heavy_molecules = A * (1 + B)
+
+                    if new_n_heavy_molecules < 0:
+                        print("    first sol:", new_n_heavy_molecules, "Bo=", Bo)
+                        new_n_heavy_molecules = A * (1 - B)
+                        if new_n_heavy_molecules < 0:
+                            print("No positive solution")
+                            new_n_heavy_molecules = 0
+                    delta_n_heavy_per_drop = (
+                        new_n_heavy_molecules - old_n_heavy_molecules
+                    )
+                    delta_n_heavy_total += delta_n_heavy_per_drop * multiplicity[sd_id]
+
+                    if converged:
+                        moles_heavy_molecule[sd_id] = new_n_heavy_molecules
+
+                mass_of_dry_air = dry_air_density[cell_id[0]] * cell_volume
+                delta_molality = -delta_n_heavy_total / mass_of_dry_air
+                new_molality = molality_in_dry_air[cell_id[0]] + delta_molality
                 if not converged:
+                    print(abs(delta_molality) / new_molality)
                     if (
-                        molality_in_dry_air[cell_id] + delta_molality < 0
-                        or delta_molality / molality_in_dry_air[cell_id] < rtol
-                    ):
-                        h = 0
-                        temp = 1 - h / (2)  # TODO
+                        new_molality < 0 or abs(delta_molality) / new_molality > rtol
+                    ):  # check < or >
+                        print(
+                            "    new molality=",
+                            new_molality,
+                            ", ",
+                            abs(delta_molality) / new_molality,
+                        )
+                        n_substeps *= 2  # repeat substeps
                     else:
                         converged = True
+                else:
+                    molality_in_dry_air[cell_id[0]] = new_molality
+                    break
+            print(converged)
 
         return body
 
