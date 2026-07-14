@@ -75,7 +75,7 @@ else:
             super().__init__(size, seed)
             self.generator = np.random.default_rng(seed)
 
-        def __call__(self, storage):
+        def u01(self, storage):
             # pylint: disable=unsupported-assignment-operation
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
