@@ -97,6 +97,8 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.breakup_rate = None
         self.breakup_rate_deficit = None
 
+        self.collision_kernel = None
+
     def register(self, builder):
         self.particulator = builder.particulator
         rnd_args = {

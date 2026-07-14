@@ -4,7 +4,7 @@ local_scheme = "no-local-version"
 version_scheme = "post-release"
 
 [build-system]
-requires = ['setuptools==82.0.1', 'setuptools-scm==9.2.2']
+requires = ['setuptools==82.0.1', 'setuptools-scm==10.2.0']
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
