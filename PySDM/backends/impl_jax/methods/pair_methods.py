@@ -27,23 +27,8 @@ class PairMethods(BackendMethods):
 
         return body
 
-    # @cached_property
-    # def _find_pairs_body(self):
-    #     @jax.jit
-    #     def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx):
-    #         def loop_body(i, is_first_in_pair):
-    #             is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
-    #             is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-    #             is_first_in_pair = is_first_in_pair.at[i].set(is_in_same_cell & is_even_index)
-    #             return is_first_in_pair
-    #         is_first_in_pair = jax.lax.fori_loop(0, len(idx - 1), loop_body, is_first_in_pair).at[-1].set(False)
-    #         return is_first_in_pair
-    #     return body
-
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-
-        # print(f"{cell_start.data=}, {cell_id.data=}, {cell_idx.data=}, {idx.data=}")
 
         is_first_in_pair.indicator.data = self._find_pairs_body(
             is_first_in_pair.indicator.data,
@@ -53,7 +38,6 @@ class PairMethods(BackendMethods):
             idx.data,
             len(idx.data),
         ).block_until_ready()
-        # assert is_first_in_pair.indicator.data[0]
 
     @cached_property
     def _max_pair_body(self):
@@ -61,11 +45,6 @@ class PairMethods(BackendMethods):
         def body(data_out, data_in, is_first_in_pair, idx):
             def loop_body(i, data_out):
                 def max_pair(i, data_out):
-                    # data_out = data_out.at[i//2].set(
-                    #     ((data_in[idx[i]] + data_in[idx[i + 1]]) +
-                    #      jnp.abs(data_in[idx[i]] - data_in[idx[i + 1]]))/2
-                    #     )
-                    # data_out = data_out.at[i//2].set(data_in[idx[i]] + data_in[idx[i + 1]])
                     data_out = data_out.at[i // 2].set(
                         jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]])
                     )
@@ -94,7 +73,6 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _sort_within_pair_by_attr_body(self):
-
         @jax.jit  # TODO #1913: rewrite for parallel computation
         def body(is_first_in_pair, attr, idx):
             should_swap = is_first_in_pair & (attr[idx] < jnp.roll(attr[idx], -1))
@@ -110,7 +88,6 @@ class PairMethods(BackendMethods):
         return body
 
     def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
-
         idx.data = self._sort_within_pair_by_attr_body(
             is_first_in_pair.indicator.data, attr.data, idx.data
         ).block_until_ready()

@@ -74,14 +74,8 @@ class CollisionsMethods(BackendMethods):
 
             multiplicity = multiplicity.at[k].set(mult_k)
 
-            # return mult_j, mult_k
-
-            # update attr for new_n > 0
             attributes = attributes.at[:, k].add(attr_pos_delta)
-            # attributes = attributes.at[0, k].add(attr_pos_delta)
-            # attributes = attributes.at[1, k].add(attr_pos_delta)
 
-            # update attr for new_n == 0
             attributes = attributes.at[:, j].set(
                 jnp.where(zero_mask, new_attr, attributes[:, j])
             )
@@ -89,82 +83,7 @@ class CollisionsMethods(BackendMethods):
                 jnp.where(zero_mask, new_attr, attributes[:, k])
             )
 
-            # attributes = attributes.at[0, j].set(
-            #     jnp.where(zero_mask, new_attr, attributes[0, j])
-            # )
-            # attributes = attributes.at[0, k].set(
-            #     jnp.where(zero_mask, new_attr, attributes[0, k])
-            # )
-            # attributes = attributes.at[1, j].set(
-            #     jnp.where(zero_mask, new_attr, attributes[1, j])
-            # )
-            # attributes = attributes.at[1, k].set(
-            #     jnp.where(zero_mask, new_attr, attributes[1, k])
-            # )
-            # # return multiplicity
-
-            # if new_n > 0:
-            #     multiplicity[j] = new_n
-            #     for a in range(len(attributes)):
-            #         attributes[a, k] += gamma[i] * attributes[a, j]
-            # else:  # new_n == 0
-            #     multiplicity[j] = multiplicity[k] // 2
-            #     multiplicity[k] = multiplicity[k] - multiplicity[j]
-            #     for a in range(len(attributes)):
-            #         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-            #         attributes[a, k] = attributes[a, j]
-
-            # offset = 0
-            # j = idx[2 * 0 + offset]
-            # k = idx[2 * 0 + 1 + offset]
-            # print(f"{j=}, {k=}")
-            # print(f"{idx=}")
-            # print(f"{multiplicity=}")
-            # print(f"{is_first_in_pair=}")
-
-            # def loop_body(i, multiplicity_attributes):
-            #     mult, attr = multiplicity_attributes
-
-            #     # offset = 1 - is_first_in_pair[2 * i]
-            #     offset = 0
-            #     # j = idx[2 * i + offset]
-            #     # k = idx[2 * i + 1 + offset]
-            #     j = 0
-            #     k = 1
-            #     new_n = mult[j] - jnp.int64(gamma[i]) * mult[k]
-            #     a = jnp.arange(len(attr))
-            #     def n_above_0(i, _multiplicity_attributes):
-            #         _mult, _attr = _multiplicity_attributes
-            #         _mult = _mult.at[j].set(new_n)
-            #         _attr = _attr.at[a, k].add(gamma[i] * _attr[a, j])
-
-            #         return (_mult, _attr)
-
-            #     def n_equal_0(i, _multiplicity_attributes):
-            #         _mult, _attr = _multiplicity_attributes
-            #         temp = _mult[k] // 2
-            #         _mult = _mult.at[j].set(temp).at[k].set(_mult[k] - temp)
-            #         # _mult = _mult.at[j].set(1).at[k].set(2)
-
-            #         # _mult = _mult.at[0].set(1).at[1].set(1)
-            #         # _mult = _mult.at[k].set(_mult[k] - _mult[j])
-            #         _attr = _attr.at[a, j].set(gamma[i] * _attr[a, j] + _attr[a, k])
-            #         _attr = _attr.at[a, k].set(_attr[a, j])
-
-            #         return (_mult, _attr)
-
-            #     return jax.lax.cond(
-            #         new_n > 0,
-            #         n_above_0,
-            #         n_equal_0,
-            #         i, multiplicity_attributes
-            #     )
-
-            # return jax.lax.fori_loop(0, len(multiplicity // 2), loop_body, (multiplicity, attributes))
-
             return multiplicity, attributes
-
-            # return multiplicity, attributes
 
         return body
 
@@ -180,23 +99,6 @@ class CollisionsMethods(BackendMethods):
         coalescence_rate,
         is_first_in_pair,
     ):
-        # pass
-        # indices = jnp.arange(len(multiplicity) // 2)
-        # mapped_collision_coalescence = jax.vmap(
-        #     self._collision_coalescence_body, (None, None, None, None, None, 0)
-        # )
-        # multiplicity.data, attributes.data = mapped_collision_coalescence(
-        #     multiplicity.data,
-        #     idx.data,
-        #     attributes.data,
-        #     gamma.data,
-        #     is_first_in_pair.indicator.data,
-        #     indices,
-        # )
-
-        # print(f"pre-coalescence: {multiplicity.data=}")
-        # print(f"pre-coalescence pairs: {is_first_in_pair.indicator.data}")
-        # breakpoint()
         multiplicity.data, attributes.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
@@ -205,13 +107,9 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair.indicator.data,
         )
         multiplicity.data.block_until_ready()
-        # print(f"post-coalescence: {multiplicity.data=}")
-
-        # print(f"{mult_pos_updates=} \n {mult_j_zero=} \n {mult_k_zero=} \n {mult_k=} \n {pos_mask=}")
 
     @cached_property
     def _compute_gamma_body(self):
-        # pylint: disable=too-many-arguments,too-many-locals
         def body(prob, rand, idx, multiplicity, is_first_in_pair, i):
             out = jnp.ceil(prob[i] - rand[i])
             offset = 1 - is_first_in_pair[2 * i]
@@ -266,20 +164,6 @@ class CollisionsMethods(BackendMethods):
                 )
 
         return CellCaretaker(idx_shape, idx_dtype, scheme)
-
-    # @cached_property
-    # def _normalize_body(self):
-    #     # pylint: disable=too-many-arguments
-    #     def body(prob, cell_start, timestep, dv, i):
-    #         sd_num = cell_start[1] - cell_start[0]
-    #         # Fixed this with (sd_num >= 2), need to add the n_cell loop, and then the normalization pass
-    #         norm_factor = (sd_num >= 2) * (
-    #             timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-    #         )
-    #         prob = prob.at[i].set(norm_factor)
-    #         return prob
-
-    #     return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
 
     @cached_property
     def _normalize_body(self):

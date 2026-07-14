@@ -16,7 +16,7 @@ from PySDM.backends.impl_jax import storage_impl as impl
 
 
 class Storage(StorageBase):
-    # Changed things with types here so that Storage dtypes identify as numpy dtypes
+    # JAX and Numpy types here so that Storage dtypes identify as numpy dtypes
     FLOAT = np.float64
     JAX_FLOAT = jnp.float64
 
@@ -116,9 +116,13 @@ class Storage(StorageBase):
         ).block_until_ready()
 
 
-class RowStorage(
-    Storage
-):  # ??? (doing this since we can't just pass a reference to a row in row_view)
+class RowStorage(Storage):
+    """RowStorage is a Storage class that keeps its data attribute as a reference to another storage,
+    # as well as a stored index to identify which row it is pointing to.
+
+    This was done because JAX does not allow a compatible API for having a reference to a part of a storage.
+    """
+
     def __init__(self, signature, row, parent):
         self.parent = parent
         self.row = row
@@ -130,7 +134,4 @@ class RowStorage(
 
     @data.setter
     def data(self, value):
-        # print(f"{value=}")
         self.parent.data = self.parent.data.at[self.row].set(value)
-        # print(f"{self._data=}")
-        # raise AttributeError("read-only view")

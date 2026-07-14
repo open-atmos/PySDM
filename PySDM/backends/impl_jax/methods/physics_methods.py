@@ -16,20 +16,15 @@ class PhysicsMethods(BackendMethods):
 
     @cached_property
     def _volume_of_mass_body(self):
-        # particle_shape_and_density__mass_to_volume = jax.jit(
-        #     self.formulae_flattened.particle_shape_and_density__mass_to_volume.py_func)
         ff = self.formulae_flattened
 
         # @jax.jit
+        # TODO #1913: fix test fails for this method
         def body(mass):
-            # volume = particle_shape_and_density__mass_to_volume(mass)
             return ff.particle_shape_and_density__mass_to_volume.py_func(mass)
-
-            # return volume
 
         return body
 
     def volume_of_water_mass(self, volume, mass):
         mapped_func = jax.vmap(self._volume_of_mass_body, (0))
         volume.data = mapped_func(mass.data).block_until_ready()
-        # volume.data = self._volume_of_mass_body(mass.data).block_until_ready()

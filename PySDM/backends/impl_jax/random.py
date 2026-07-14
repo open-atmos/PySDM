@@ -9,9 +9,6 @@ import jax
 
 from ..impl_common.random_common import RandomCommon
 
-#  TIP: can be called asynchronously
-#  TIP: sometimes only half array is needed
-
 
 class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     JAX = "TEMPORARY FLAG"

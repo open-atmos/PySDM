@@ -170,19 +170,6 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-        # print(f"{moment_0.data=}")
-        # print(f"{moments.data=}")
-        # print(f"{multiplicity.data=}")
-        # print(f"{attr_data.data=}")
-        # print(f"{cell_id.data=}")
-        # print(f"{idx.data=}")
-        # print(f"{length=}")
-        # print(f"{rank=}")
-        # print(f"{x_bins.data=}")
-        # print(f"{x_attr.data=}")
-        # print(f"{weighting_attribute.data=}")
-        # print(f"{weighting_rank=}")
-        # print(f"{skip_division_by_m0=}")
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         self._spectrum_moments_body(

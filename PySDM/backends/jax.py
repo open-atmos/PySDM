@@ -38,12 +38,6 @@ class Jax(
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
-        # assert "fastmath" not in (override_jit_flags or {})
-        # self.default_jit_flags = {
-        #     **JIT_FLAGS,  # here parallel=False (for out-of-backend code)
-        #     **{"fastmath": self.formulae.fastmath, "parallel": parallel_default},
-        #     **(override_jit_flags or {}),
-        # }
         self.default_jit_flags = {"parallel": False}
 
         methods.CollisionsMethods.__init__(self)
