@@ -23,7 +23,7 @@ class IndexMethods(BackendMethods):
 
     def shuffle_global(self, idx, u01):
         # TODO #1913: decide whether to use u01 argsort or random.permute
-        u01.permute(idx)
+        return u01.permute(idx)
 
     def shuffle_local(self, idx, u01, cell_start):
         # TODO #1913: implement shuffle_local

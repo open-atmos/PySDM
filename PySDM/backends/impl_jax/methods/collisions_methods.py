@@ -1,25 +1,14 @@
 """
-CPU implementation of backend methods for particle collisions
+JAX implementation of backend methods for particle collisions
 """
 
 from functools import cached_property
-import numpy as np
 
 import jax
 import jax.numpy as jnp
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_jax.storage import Storage
-
-
-def pair_indices(i, idx, is_first_in_pair, prob_like):
-    assert False
-    offset = 1 - is_first_in_pair[2 * i]
-    j = idx[2 * i + offset]
-    k = idx[2 * i + 1 + offset]
-
-    return j, k, False
 
 
 def flag_zero_multiplicity(j, k, multiplicity, healthy):
@@ -57,18 +46,20 @@ class CollisionsMethods(BackendMethods):
             attr_pos_delta = attr_pos_delta * pos_mask
 
             # CASE new_n <= 0
-            mj_new = mk // 2
-            mk_new = mk - mj_new
-
-            mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
-            mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
-
             new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
 
             new_attr = new_attr * zero_mask
 
-            mult_j = jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
-            mult_k = jnp.where(zero_mask, mult_k_zero, multiplicity[k])
+            mult_j = jnp.where(
+                pos_mask,
+                mult_pos_updates,
+                jnp.where(zero_mask, mk // 2, multiplicity[j]),
+            )
+            mult_k = jnp.where(
+                zero_mask,
+                jnp.where(zero_mask, mk - (mk // 2), multiplicity[k]),
+                multiplicity[k],
+            )
 
             multiplicity = multiplicity.at[j].set(mult_j)
 
@@ -94,10 +85,11 @@ class CollisionsMethods(BackendMethods):
         idx,
         attributes,
         gamma,
-        healthy,
-        cell_id,
-        coalescence_rate,
+        healthy,  # pylint: disable=unused-argument
+        cell_id,  # pylint: disable=unused-argument
+        coalescence_rate,  # pylint: disable=unused-argument
         is_first_in_pair,
+        # TODO #1913: implement rates, multi-cell collisions and healthy
     ):
         multiplicity.data, attributes.data = self._collision_coalescence_body(
             multiplicity.data,
@@ -127,11 +119,12 @@ class CollisionsMethods(BackendMethods):
         prob,
         rand,
         multiplicity,
-        cell_id,
-        collision_rate_deficit,
-        collision_rate,
+        cell_id,  # pylint: disable=unused-argument
+        collision_rate_deficit,  # pylint: disable=unused-argument
+        collision_rate,  # pylint: disable=unused-argument
         is_first_in_pair,
         out,
+        # TODO #1913: implement rates, multi-cell collisions and healthy
     ):
         indices = jnp.arange(len(multiplicity) // 2)
         out.data = self._compute_gamma_body(

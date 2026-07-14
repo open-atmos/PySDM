@@ -579,7 +579,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             return result
 
         def urand(self, generator):
-            generator(self)
+            generator.u01(self)
 
         def upload(self, data):
             trtc.Copy(

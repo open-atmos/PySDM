@@ -200,7 +200,7 @@ class Storage(StorageBase):
             self.data[:] = other.ravel()
 
     def urand(self, generator):
-        generator(self)
+        generator.u01(self)
 
     def to_ndarray(self):
         return self.data.copy()
