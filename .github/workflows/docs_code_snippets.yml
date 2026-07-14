@@ -45,7 +45,6 @@ jobs:
             readme.png
       - name: run-with-jax-backend
         run: |
-          rm readme.png
           sed -i -e 's/GPU/JAX/g' readme.py
           python -We readme.py
       - name: jax-artefacts
