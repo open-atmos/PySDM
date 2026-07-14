@@ -70,7 +70,7 @@ CI_version_pins = [
   "scipy==1.15.3",
   "ThrustRTC==0.3.20",
   "CURandRTC==0.1.7",
-  "jax==0.8.0",
+  "jax==0.6.2",
   "Pint==0.24.4",
   "chempy==0.10.1",
   "pyevtk==1.7.0",
