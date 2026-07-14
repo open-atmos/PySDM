@@ -70,7 +70,7 @@ class IsotopeMethods(BackendMethods):
             n_substeps = 1
             max_n_substeps = 256
             converged = False
-            print("Start")
+            substep = 1
             while n_substeps <= max_n_substeps:
                 print("n_substeps=", n_substeps)
                 print("molality_in_dry_air=", molality_in_dry_air[0])
@@ -122,7 +122,6 @@ class IsotopeMethods(BackendMethods):
                     new_n_heavy_molecules = A * (1 + B)
 
                     if new_n_heavy_molecules < 0:
-                        print("    first sol:", new_n_heavy_molecules, "Bo=", Bo)
                         new_n_heavy_molecules = A * (1 - B)
                         if new_n_heavy_molecules < 0:
                             print("No positive solution")
@@ -139,23 +138,12 @@ class IsotopeMethods(BackendMethods):
                 delta_molality = -delta_n_heavy_total / mass_of_dry_air
                 new_molality = molality_in_dry_air[cell_id[0]] + delta_molality
                 if not converged:
-                    print(abs(delta_molality) / new_molality)
-                    if (
-                        new_molality < 0 or abs(delta_molality) / new_molality > rtol
-                    ):  # check < or >
-                        print(
-                            "    new molality=",
-                            new_molality,
-                            ", ",
-                            abs(delta_molality) / new_molality,
-                        )
+                    if new_molality < 0:  # check long vs shor step
                         n_substeps *= 2  # repeat substeps
                     else:
                         converged = True
                 else:
                     molality_in_dry_air[cell_id[0]] = new_molality
-                    break
-            print(converged)
 
         return body
 
