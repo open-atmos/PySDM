@@ -471,6 +471,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                     f"molality {isotope} in dry air"
                 ),
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
+                water_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             )
             self.attributes.mark_updated(f"moles_{isotope}")
 

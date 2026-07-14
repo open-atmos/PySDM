@@ -21,7 +21,7 @@ BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
     "dry volume": np.array(1),
     "kappa times dry volume": np.array(np.nan),
-    "signed water mass": np.array(np.nan),
+    "signed water mass": np.array(1),
     **{f"moles_{isotope}": np.zeros(1) * si.mole for isotope in HEAVY_ISOTOPES},
 }
 
@@ -48,9 +48,11 @@ def make_particulator(
             attributes[f"moles_{iso}"] = np.array(0)
         builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
         builder.request_attribute(f"delta_{iso}")
+    builder.request_attribute("diffusional growth mass change")
     builder.particulator.environment["RH"] = np.array(rh)
     builder.particulator.environment["T"] = np.array(t)
     builder.particulator.environment["rhod"] = np.array(1)
+    builder.particulator.environment["water_vapour_mixing_ratio"] = np.array(1)
 
     return builder.build(attributes)
 
@@ -160,8 +162,9 @@ class TestIsotopicFractionation:
                     "multiplicity"
                 ].timestamp
             )
-
         # act
+        particulator.run(steps=0)
+        # particulator.attributes["diffusional growth mass change"][:] = 0
         particulator.dynamics["IsotopicFractionation"]()
 
         # assert
@@ -199,6 +202,7 @@ class TestIsotopicFractionation:
         )
 
         # act
+        particulator.run(steps=0)
         particulator.attributes["diffusional growth mass change"][:] = 0
         particulator.dynamics["IsotopicFractionation"]()
 
@@ -294,7 +298,9 @@ class TestIsotopicFractionation:
                 T0=300 * si.K,
                 initial_relative_humidity=0.99,
                 w=1 * si.m / si.s,
-                variables=(ambient_var,),
+                variables=[
+                    ambient_var,
+                ],
             ),
             dynamics=[
                 AmbientThermodynamics(),
@@ -324,6 +330,7 @@ class TestIsotopicFractionation:
             },
             products=(),
         )
+        print("1")
         initial_v_wet = particulator.attributes["volume"].to_ndarray()[0]
         particulator.environment[ambient_var][:] = initial_molality_in_dry_air
 

@@ -53,6 +53,8 @@ class IsotopeMethods(BackendMethods):
         - molality of heavy isotope in dry air.
         """
 
+        Mv = self.formulae.constants.Mv
+
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(
             *,
@@ -66,11 +68,13 @@ class IsotopeMethods(BackendMethods):
             moles_heavy_molecule,
             bolin_number,
             molality_in_dry_air,
+            water_vapour_mixing_ratio,
         ):  # pylint: disable=too-many-locals
             n_substeps = 1
             max_n_substeps = 256
             converged = False
-            substep = 1
+            substep = 0
+            new_molality = new_n_heavy_molecules = new_n_molecules = 1
             while n_substeps <= max_n_substeps:
                 print("n_substeps=", n_substeps)
                 print("molality_in_dry_air=", molality_in_dry_air[0])
@@ -78,7 +82,6 @@ class IsotopeMethods(BackendMethods):
                 rtol = 1e-3  # TODO
 
                 for sd_id in range(multiplicity.shape[0]):
-                    Bo = bolin_number[sd_id]
 
                     ####################
                     # Previous attempt #
@@ -101,20 +104,30 @@ class IsotopeMethods(BackendMethods):
                     # )
 
                     # new
-                    Mv = 0.018015270337240392
+                    # Mv = 0.018015270337240392
                     molar_mass_light_molecule = 0.01801056468405
 
-                    old_n_molecules = (signed_water_mass[sd_id] - dm_total[sd_id]) / Mv
+                    if not converged:
+                        old_n_molecules = (
+                            signed_water_mass[sd_id] - dm_total[sd_id]
+                        ) / Mv
+                        Bo = bolin_number[sd_id]
+                    else:
+                        print("inside: ", converged)
+                        a = 1.1869545106743005
+                        Rv = new_molality / water_vapour_mixing_ratio[0]
+                        Rl = new_n_heavy_molecules / new_n_molecules
+
+                        print("Old Bolin number=", Bo)
+                        bolin_number[sd_id] *= 1 - (1 + a * Rv / Rl) / (a + 1)
+                        Bo = bolin_number[sd_id]
+                        print("New Bolin number=", Bo)
+
                     new_n_molecules = old_n_molecules + (
                         dm_total[sd_id] / n_substeps / Mv
                     )
                     old_n_heavy_molecules = moles_heavy_molecule[sd_id]
-                    print(
-                        "old_n_heavy_molecules=",
-                        old_n_heavy_molecules,
-                        "dm = ",
-                        dm_total[sd_id],
-                    )
+
                     B = math.sqrt(
                         1 + 4 * abs(Bo) * old_n_molecules / old_n_heavy_molecules
                     )
@@ -133,17 +146,24 @@ class IsotopeMethods(BackendMethods):
 
                     if converged:
                         moles_heavy_molecule[sd_id] = new_n_heavy_molecules
+                        old_n_molecules = new_n_molecules
 
                 mass_of_dry_air = dry_air_density[cell_id[0]] * cell_volume
                 delta_molality = -delta_n_heavy_total / mass_of_dry_air
                 new_molality = molality_in_dry_air[cell_id[0]] + delta_molality
                 if not converged:
-                    if new_molality < 0:  # check long vs shor step
+                    if new_molality < 0:  # check long vs short step
+                        print("negative molality: ", new_molality, ", step=", substep)
                         n_substeps *= 2  # repeat substeps
                     else:
                         converged = True
+
                 else:
                     molality_in_dry_air[cell_id[0]] = new_molality
+                    print("  molality=", new_molality, ", step=", substep)
+                    substep += 1
+                if substep == n_substeps:
+                    break
 
         return body
 
@@ -160,6 +180,7 @@ class IsotopeMethods(BackendMethods):
         moles_heavy_molecule,
         bolin_number,
         molality_in_dry_air,
+        water_vapour_mixing_ratio,
     ):  # pylint: disable=too-many-positional-arguments
         """Update heavy-isotope composition during droplet growth/evaporation."""
         self._isotopic_fractionation_body(
@@ -173,6 +194,7 @@ class IsotopeMethods(BackendMethods):
             moles_heavy_molecule=moles_heavy_molecule.data,
             bolin_number=bolin_number.data,
             molality_in_dry_air=molality_in_dry_air.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
         )
 
     @cached_property
@@ -215,18 +237,18 @@ class IsotopeMethods(BackendMethods):
                     / water_vapour_mixing_ratio[cell_id[i]]
                     * ff.constants.Mv
                 )
-
+                Fk = ff.drop_growth__Fk(T=T, K=ff.constants.K0, lv=ff.constants.l_tri)
+                Fd = ff.drop_growth__Fd(
+                    T=T,
+                    D=ff.constants.D0,
+                    pvs=pvs_water,
+                )
+                print("Fk/Fd * RH=", Fk / Fd * relative_humidity[cell_id[i]])
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio(T),
                     alpha=alpha(T),
-                    Fk=ff.drop_growth__Fk(
-                        T=T, K=ff.constants.K0, lv=ff.constants.l_tri
-                    ),
-                    Fd=ff.drop_growth__Fd(
-                        T=T,
-                        D=ff.constants.D0,
-                        pvs=pvs_water,
-                    ),
+                    Fk=Fk,
+                    Fd=Fd,
                     R_vap=ff.trivia__isotopic_ratio_assuming_single_heavy_isotope(
                         isotopic_fraction
                     ),
