@@ -47,7 +47,8 @@ class MomentsMethods(BackendMethods):
             assert len(ranks) == 1
             k = 0
             i = idx[idx_i]
-
+            moment_0 = moment_0.at[:].set(0)
+            moments = moments.at[:, :].set(0)
             moment_0 = moment_0.at[cell_id[i]].add(
                 count_element_flags[i]
                 * multiplicity[i]
@@ -82,14 +83,11 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-        # TODO #1913: verify moments working
-        assert False
-        moment_0.data = moment_0.data.at[:].set(0)
-        moments.data = moments.data.at[:, :].set(0)
-        idx_idxs = jnp.arange(length)
-        count_bins_func = jax.vmap(moments_helper, (None, None, None, None, 0))
-        idx_to_count = count_bins_func(min_x, max_x, x_attr.data, idx.data, idx_idxs)
-        mapped_spectrum = jax.vmap(
+        # assert False
+        idx_i = jnp.arange(length)
+        count_cells_func = jax.vmap(moments_helper, (None, None, None, None, 0))
+        idx_to_count = count_cells_func(min_x, max_x, x_attr.data, idx.data, idx_i)
+        mapped_moments = jax.vmap(
             self._moments_body,
             (
                 None,
@@ -106,7 +104,7 @@ class MomentsMethods(BackendMethods):
             ),
         )
 
-        moment_0.data, moments.data = mapped_spectrum(
+        moment_0.data, moments.data = mapped_moments(
             moment_0.data,
             moments.data,
             multiplicity.data,
@@ -117,12 +115,12 @@ class MomentsMethods(BackendMethods):
             weighting_attribute.data,
             weighting_rank,
             idx_to_count,
-            idx_idxs,
+            idx_i,
         )
         moment_0.data.block_until_ready()
 
-        moments.data = moments.data.sum(0)
-        moment_0.data = moment_0.data.sum(0)
+        moment_0.data = jnp.sum(moment_0.data, axis=0)
+        moments.data = jnp.sum(moments.data, axis=0)
 
         if not skip_division_by_m0:
             moments.data = jnp.where(
@@ -180,22 +178,18 @@ class MomentsMethods(BackendMethods):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         new_moment_0 = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
-        # moment_0.data = moment_0.data.at[:].set(0)
-        # moments.data = moments.data.at[:].set(0)
         new_moments = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
         idx_idxs = jnp.arange(length)
 
         count_bins_func = jax.vmap(spectrum_moments_helper, (None, None, None, 0))
         bins_to_count = count_bins_func(x_bins.data, x_attr.data, idx.data, idx_idxs)
         assert all(bins_to_count < new_moments.shape[0])
-        mapped_spectrum = jax.vmap(
+        mapped_spectrum_moments = jax.vmap(
             self._spectrum_moments_body,
             (None, None, None, None, None, None, None, None, None, 0, 0),
         )
 
-        new_moment_0, new_moments = mapped_spectrum(
-            # moment_0.data,
-            # moments.data,
+        new_moment_0, new_moments = mapped_spectrum_moments(
             new_moment_0,
             new_moments,
             multiplicity.data,

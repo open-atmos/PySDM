@@ -12,7 +12,7 @@ from ..dummy_particulator import DummyParticulator
 class TestMoments:
     @staticmethod
     # pylint: disable=too-many-locals
-    def test_moment_0d(backend_class):
+    def test_moment_0d(backend_class_with_jax):
         # Arrange
         n_part = 100000
         v_mean = 2e-6
@@ -23,7 +23,7 @@ class TestMoments:
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class, n_sd)
+        particulator = DummyParticulator(backend_class_with_jax, n_sd)
         attribute = {"multiplicity": n, "volume": v, "heat": T * v}
         particulator.request_attribute("temperature")
         particulator.build(attribute)
@@ -36,28 +36,28 @@ class TestMoments:
 
         # Act
         particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (0,)})
-        discr_zero = moments[0, slice(0, 1)].to_ndarray()
+        discr_zero = moments.to_ndarray()[0, slice(0, 1)]
 
         particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (1,)})
-        discr_mean = moments[0, slice(0, 1)].to_ndarray()
+        discr_mean = moments.to_ndarray()[0, slice(0, 1)]
 
         particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (2,)})
-        discr_mean_radius_squared = moments[0, slice(0, 1)].to_ndarray()
+        discr_mean_radius_squared = moments.to_ndarray()[0, slice(0, 1)]
 
         particulator.moments(
             moment_0=moment_0, moments=moments, specs={"temperature": (0,)}
         )
-        discr_zero_T = moments[0, slice(0, 1)].to_ndarray()
+        discr_zero_T = moments.to_ndarray()[0, slice(0, 1)]
 
         particulator.moments(
             moment_0=moment_0, moments=moments, specs={"temperature": (1,)}
         )
-        discr_mean_T = moments[0, slice(0, 1)].to_ndarray()
+        discr_mean_T = moments.to_ndarray()[0, slice(0, 1)]
 
         particulator.moments(
             moment_0=moment_0, moments=moments, specs={"temperature": (2,)}
         )
-        (discr_mean_T_squared,) = moments[0, slice(0, 1)].to_ndarray()
+        (discr_mean_T_squared,) = moments.to_ndarray()[0, slice(0, 1)]
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3
@@ -130,13 +130,14 @@ class TestMoments:
         # Assert
         assert any(expected > 0)
         np.testing.assert_array_almost_equal(actual, expected)
+
         np.testing.assert_approx_equal(
             desired=np.dot(v, n),
             actual=sum(
                 actual
                 if skip_division_by_m0
                 else actual * spectrum_moment_0.to_ndarray()
-            ),
+            )[0],
             significant=4,
         )
 
