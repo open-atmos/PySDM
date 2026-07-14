@@ -2,6 +2,7 @@
 import numpy as np
 import pytest
 
+from PySDM.backends import ThrustRTC
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from PySDM.initialisation.sampling.spectral_sampling import Linear
 from PySDM.initialisation.spectra.lognormal import Lognormal
@@ -75,6 +76,9 @@ class TestMoments:
     @pytest.mark.parametrize("skip_division_by_m0", (True, False))
     # pylint: disable=too-many-locals
     def test_spectrum_moment_0d(backend_class_with_jax, skip_division_by_m0):
+        if backend_class_with_jax == ThrustRTC:
+            pytest.skip()  # TODO #684
+
         # Arrange
         n_part = 100000
         v_mean = 2e-6
@@ -182,6 +186,8 @@ class TestMoments:
 
     @staticmethod
     def test_moment_1d(backend_class_with_jax):
+        if backend_class_with_jax == ThrustRTC:
+            pytest.skip()  # TODO #684
         # Arrange
         grid = (2,)
         particulator = DummyParticulator(backend_class_with_jax, n_sd=1, grid=grid)

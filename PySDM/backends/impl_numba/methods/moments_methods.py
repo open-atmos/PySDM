@@ -141,7 +141,7 @@ class MomentsMethods(BackendMethods):
                             ),
                         )
                         break
-            # return
+
             if not skip_division_by_m0:
                 for c_id in range(moment_0.shape[1]):
                     for k in range(x_bins.shape[0] - 1):
