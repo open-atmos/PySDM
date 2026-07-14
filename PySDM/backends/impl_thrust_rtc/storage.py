@@ -613,8 +613,13 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             return self
 
         def row_view(self, i):
-            return self.data.view(self.shape[1] * i, self.shape[1] * (i + 1))
-            # raise NotImplementedError()
+            return Storage(
+                StorageSignature(
+                    self.data.range(self.shape[1] * i, self.shape[1] * (i + 1)),
+                    (*self.shape[1:],),
+                    self.dtype,
+                )
+            )
 
         def exp(self):
             Impl.exp(self)
@@ -623,5 +628,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(self):
             Impl.abs(self)
             return self
+
+        def at(self, index):
+            assert self.shape == (
+                1,
+            ), "Cannot call at() on Storage of shape other than (1,)"
+            return self.data[index]
 
     return Storage
