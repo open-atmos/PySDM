@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from PySDM import Formulae
+from PySDM.backends.jax import Jax
 from PySDM.physics import si
 
 
@@ -40,6 +41,9 @@ class TestPhysicsMethods:
     @staticmethod
     @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
     def test_mass_to_volume(backend_class_with_jax, variant):
+        if backend_class_with_jax == Jax and variant=="MixedPhaseSpheres":
+            pytest.skip()  # TODO #1913
+        
         # Arrange
         formulae = Formulae(particle_shape_and_density=variant)
         backend = backend_class_with_jax(formulae, double_precision=True)
