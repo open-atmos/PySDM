@@ -5,7 +5,6 @@ CPU implementation of moment calculation backend methods
 from functools import cached_property
 
 import numba
-import time
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
