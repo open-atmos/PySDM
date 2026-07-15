@@ -271,12 +271,14 @@ def _formula(func, constants, dimensional_analysis, **kw):
         },
     )
 
+
 def _jax(fun, constants):
     return jax.jit(partial(fun, constants))
 
+
 def _boost(obj, fastmath, constants, dimensional_analysis):
     """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached
-       additionally, adds `jax` attribute for jax.jit compiling of formulae
+    additionally, adds `jax` attribute for jax.jit compiling of formulae
     """
     formulae = {"__name__": obj.__name__}
     for item in dir(obj):
@@ -293,9 +295,7 @@ def _boost(obj, fastmath, constants, dimensional_analysis):
             setattr(
                 formula, "c_inline", partial(_c_inline, constants=constants, fun=attr)
             )
-            setattr(
-                formula, "jax", _jax(fun=attr, constants=constants)
-            )
+            setattr(formula, "jax", _jax(fun=attr, constants=constants))
             formulae[attr.__name__] = formula
     return SimpleNamespace(**formulae)
 
