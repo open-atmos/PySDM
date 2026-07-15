@@ -7,9 +7,6 @@ from PySDM.physics import constants as const
 
 
 class Geometric(Gravitational):
-    def __init__(self):
-        super().__init__()
-
     def __call__(self, output, is_first_in_pair):
         output.sum(self.particulator.attributes["radius"], is_first_in_pair)
         output **= 2

@@ -2,8 +2,6 @@
 basic geometric kernel (not taking fall velocity into account)
 """
 
-from PySDM.physics import constants as const
-
 
 class SimpleGeometric:
     def __init__(self):

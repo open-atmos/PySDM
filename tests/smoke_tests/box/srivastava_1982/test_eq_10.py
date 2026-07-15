@@ -13,7 +13,6 @@ from PySDM_examples.Srivastava_1982.settings import Settings, SimProducts
 from PySDM_examples.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.physics import si
 
 ASSERT_PROD = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
