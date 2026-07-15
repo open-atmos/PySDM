@@ -275,7 +275,9 @@ def _jax(fun, constants):
     return jax.jit(partial(fun, constants))
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
-    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
+    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached
+       additionally, adds `jax` attribute for jax.jit compiling of formulae
+    """
     formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
