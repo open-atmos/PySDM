@@ -155,7 +155,7 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
-formulae = Formulae(collision_kernel_liquid_liquid="Golovin", constants={"GOLOVIN_b": 1.5e3 / si.s})
+formulae = Formulae(collision_kernel_liquid_liquid="Golovin", constants=Dict("GOLOVIN_b" => 1.5e3 / si.s))
 builder = Builder(n_sd=n_sd, backend=CPU(formulae), environment=env, dynamics=(Coalescence(),))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
 particulator = builder.build(attributes, products)
@@ -199,7 +199,7 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
-formulae = Formulae(Formulae(collision_kernel_liquid_liquid='Golovin', constants={'GOLOVIN_b', 1.5e3 / si.s}))
+formulae = Formulae(Formulae(collision_kernel_liquid_liquid='Golovin', constants={'GOLOVIN_b': 1.5e3 / si.s}))
 builder = Builder(n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Coalescence(),))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
