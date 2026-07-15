@@ -27,14 +27,15 @@ class Jax(
         formulae=None,
         *,
         double_precision=True,
-        override_jit_flags=None,
+        override_jit_flags=None, # pylint: disable=unused-argument
+        # TODO #1913: investigate if there are any jit/jax flags we can add configuration for
         block_until_ready=False,
     ):
         jax.config.update("jax_enable_x64", True)
         if not double_precision:
             raise NotImplementedError()
 
-        self.block_until_ready = block_until_ready
+        self.block_until_ready = block_until_ready # TODO #1913: implement block_until_ready switch in jit code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 

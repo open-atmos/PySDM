@@ -137,8 +137,9 @@ class CollisionsMethods(BackendMethods):
         ).block_until_ready()
 
     @staticmethod
-    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):
-        class CellCaretaker:
+    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"): # pylint: disable=unused-argument
+        # cell_start_len present for API compliance
+        class CellCaretaker: # pylint: disable=too-few-public-methods
             def __init__(self, idx_shape, idx_dtype, scheme):
                 assert scheme == "default"
                 self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
@@ -184,7 +185,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     # pylint: disable=too-many-arguments
     def _counting_sort_by_cell_id_and_update_cell_start(
-        new_idx, idx, cell_id, cell_idx, length, cell_start
+        new_idx, idx, cell_id, cell_idx, length, cell_start # pylint: disable=unused-argument
     ):
         # TODO #1913:  implement sorting
         cell_start = cell_start.at[0].set(0)

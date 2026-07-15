@@ -5,7 +5,6 @@ CPU implementation of shuffling and sorting backend methods
 from functools import cached_property
 
 import jax
-import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -15,7 +14,7 @@ class IndexMethods(BackendMethods):
     @cached_property
     def _shuffle_global_body(self):
         @jax.jit
-        def body(idx, u01, length):
+        def body(idx, u01):
             idx = idx.at[:].set(jax.numpy.argsort(u01, stable=False))
             return idx
 
@@ -25,9 +24,7 @@ class IndexMethods(BackendMethods):
         # TODO #1913: decide whether to use u01 argsort or random.permute
         return u01.permute(idx)
 
-    def shuffle_local(self, idx, u01, cell_start):
+    def shuffle_local(self, idx, u01, cell_start): # pylint: disable=unused-argument
         # TODO #1913: implement shuffle_local
 
-        job = self.shuffle_global(idx, u01)
-        if self.block_until_ready:
-            job.block_until_ready()
+        self.shuffle_global(idx, u01).block_until_ready()

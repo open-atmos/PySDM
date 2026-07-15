@@ -10,7 +10,8 @@ import jax
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
-class PhysicsMethods(BackendMethods):
+class PhysicsMethods(BackendMethods): # pylint: disable=too-few-public-methods
+    # TODO #1913: implement more physics methods to alleviate this pylint error
     def __init__(self):
         BackendMethods.__init__(self)
 
