@@ -31,21 +31,11 @@ class TestSDMSingleCell:
         particulator.request_attribute("temperature")
         particulator.build(attributes)
 
-        # print("BEFORE")
-        # print(f"{particulator.attributes['temperature'].to_ndarray()=}")
-        # print(f"{particulator.attributes['volume'].to_ndarray()=}")
-
         # Act
         sut()
 
         # Assert
         particles = particulator.attributes
-        # print("AFTER")
-        # print(f"{particles['temperature'].to_ndarray()=}")
-        # print(f"{particles['volume'].to_ndarray()=}")
-        # print(f"{particles['signed water mass'].to_ndarray()=}")
-
-        # print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray())=}")
 
         assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
             n_2
