@@ -45,7 +45,7 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 def coalesce(
     i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
 ):  # pylint: disable=too-many-positional-arguments
-    # atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
+    atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
         multiplicity[j] = new_n
