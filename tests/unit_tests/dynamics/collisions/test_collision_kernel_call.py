@@ -16,7 +16,7 @@ from PySDM.products import (
 from PySDM.physics import si
 
 
-class TestCollisionKernel:
+class TestCollisionKernel:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(collision_kernel_liquid_liquid))
     def test_collision_kernel_call(backend_class, variant):
