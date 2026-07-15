@@ -24,7 +24,7 @@ class IndexMethods(BackendMethods):
         # TODO #1913: decide whether to use u01 argsort or random.permute
         return u01.permute(idx)
 
-    def shuffle_local(self, idx, u01, cell_start): # pylint: disable=unused-argument
+    def shuffle_local(self, idx, u01, cell_start):  # pylint: disable=unused-argument
         # TODO #1913: implement shuffle_local
 
         self.shuffle_global(idx, u01).block_until_ready()

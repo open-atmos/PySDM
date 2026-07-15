@@ -84,7 +84,9 @@ class Storage(StorageBase):
         return get_data_from_ndarray(
             array=array,
             storage_class=Storage,
-            copy_fun=lambda array_astype: jnp.array(array_astype), # pylint: disable=unnecessary-lambda
+            copy_fun=lambda array_astype: jnp.array(
+                array_astype
+            ),  # pylint: disable=unnecessary-lambda
         )
 
     @staticmethod
@@ -116,10 +118,10 @@ class Storage(StorageBase):
 
 
 class RowStorage(Storage):
-    """RowStorage is a Storage class that keeps its data attribute as a reference to another 
+    """RowStorage is a Storage class that keeps its data attribute as a reference to another
     storage, as well as a stored index to identify which row it is pointing to.
 
-    This was done because JAX does not allow a compatible API for having a reference to a part 
+    This was done because JAX does not allow a compatible API for having a reference to a part
     of a storage.
     """
 
