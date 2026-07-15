@@ -308,9 +308,9 @@ class TestSDMSingleCell:
         ):  # pylint: disable=too-few-public-methods
             calls = 0
 
-            def __call__(self, storage):
+            def u01(self, storage):
                 CountingRandom.calls += 1
-                super().__call__(storage)
+                super().u01(storage)
 
         sut.rnd_opt_coll.rnd = CountingRandom(n_sd, seed=44)
         sut.stats_n_substep[:] = n_substeps
