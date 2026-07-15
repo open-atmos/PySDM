@@ -633,6 +633,6 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             assert self.shape == (
                 1,
             ), "Cannot call at() on Storage of shape other than (1,)"
-            return self.data[index]
+            return self.to_ndarray()[index]
 
     return Storage
