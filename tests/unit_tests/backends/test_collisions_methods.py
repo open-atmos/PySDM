@@ -210,10 +210,13 @@ class TestCollisionMethods:
             (CPU, "counting_sort"),
             (CPU, "counting_sort_parallel"),
             (GPU, "default"),
-            # (JAX, "default"), # TODO: #1913
+            (JAX, "default"),
         ),
     )
     def test_cell_caretaker(backend_class, scheme):
+        if scheme[0] == JAX:
+            pytest.skip("TODO: #1913")
+
         # Arrange
         backend = backend_class()
         idx = [0, 3, 2, 4]

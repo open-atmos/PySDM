@@ -199,4 +199,4 @@ class CollisionsMethods(BackendMethods):
         return cell_start
 
     def remove_zero_n_or_flagged(self):
-        raise NotImplementedError()  # TODO: #1913
+        raise NotImplementedError()  # TODO #1913
