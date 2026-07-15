@@ -197,3 +197,6 @@ class CollisionsMethods(BackendMethods):
         # TODO #1913:  implement sorting
         cell_start = cell_start.at[0].set(0)
         return cell_start
+
+    def remove_zero_n_or_flagged(self):
+        raise NotImplementedError()  # TODO: #1913

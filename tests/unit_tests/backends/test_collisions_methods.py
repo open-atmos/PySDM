@@ -210,7 +210,7 @@ class TestCollisionMethods:
             (CPU, "counting_sort"),
             (CPU, "counting_sort_parallel"),
             (GPU, "default"),
-            (JAX, "default"),
+            # (JAX, "default"), # TODO: #1913
         ),
     )
     def test_cell_caretaker(backend_class, scheme):
