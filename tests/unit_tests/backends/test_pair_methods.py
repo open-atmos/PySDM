@@ -118,7 +118,14 @@ class TestPairMethods:
 
         # act
         idx.length = length
+        # print(f"{cell_start.data=}")
+        # print(f"{is_first_in_pair.indicator.data=}")
+        # print(f"{cell_id.data=}")
+        # print(f"{cell_idx.data=}")
+        # print(f"{idx.data=}")
+        print(f"{idx.length=}")
         backend.find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx)
+        print(f"{is_first_in_pair.indicator.data=}")
         expected = ([True, False] * (length // 2))[: length - 1] + [False]
 
         # assert

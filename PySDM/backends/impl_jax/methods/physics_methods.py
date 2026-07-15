@@ -1,5 +1,5 @@
 """
-CPU implementation of backend methods wrapping basic physics formulae
+JAX implementation of backend methods wrapping basic physics formulae
 """
 
 from functools import cached_property

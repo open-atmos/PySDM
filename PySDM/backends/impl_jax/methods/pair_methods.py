@@ -1,5 +1,5 @@
 """
-CPU implementation of pairwise operations backend methods
+JAX implementation of pairwise operations backend methods
 """
 
 from functools import cached_property, partial
@@ -18,11 +18,11 @@ class PairMethods(BackendMethods):
         def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx, size):
 
             indices = jnp.arange(size)
-            idx_roll = jnp.roll(idx, 1)
-            is_in_same_cell = cell_id[idx] == cell_id[idx_roll]
-            is_first_in_pair = (indices - cell_start[cell_idx[cell_id[idx]]]) % 2 == 0
+            idx_roll = jnp.roll(idx[:size-1], 1)
+            is_in_same_cell = cell_id[idx[:size-1]] == cell_id[idx_roll]
+            is_first_in_pair = is_first_in_pair.at[:size-1].set((indices - cell_start[cell_idx[cell_id[idx[:size-1]]]]) % 2 == 0)
 
-            is_first_in_pair = (is_in_same_cell & is_first_in_pair).at[-1].set(False)
+            is_first_in_pair = (is_in_same_cell & is_first_in_pair).at[size-1].set(False)
             return is_first_in_pair
 
         return body
@@ -36,7 +36,7 @@ class PairMethods(BackendMethods):
             cell_id.data,
             cell_idx.data,
             idx.data,
-            len(idx.data),
+            idx.length,
         ).block_until_ready()
 
     @cached_property
