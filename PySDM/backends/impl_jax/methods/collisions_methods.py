@@ -187,11 +187,11 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     # pylint: disable=too-many-arguments
     def _counting_sort_by_cell_id_and_update_cell_start(
-        new_idx, # pylint: disable=unused-argument
-        idx, # pylint: disable=unused-argument
-        cell_id, # pylint: disable=unused-argument
-        cell_idx, # pylint: disable=unused-argument
-        length, # pylint: disable=unused-argument
+        new_idx,  # pylint: disable=unused-argument
+        idx,  # pylint: disable=unused-argument
+        cell_id,  # pylint: disable=unused-argument
+        cell_idx,  # pylint: disable=unused-argument
+        length,  # pylint: disable=unused-argument
         cell_start,  # pylint: disable=unused-argument
     ):
         # TODO #1913:  implement sorting

@@ -20,9 +20,13 @@ class PairMethods(BackendMethods):
             indices = jnp.arange(size)
             idx_roll = jnp.roll(idx[:size], 1)
             is_in_same_cell = cell_id[idx[:size]] == cell_id[idx_roll]
-            is_first_in_pair = is_first_in_pair.at[:size].set((indices - cell_start[cell_idx[cell_id[idx[:size]]]]) % 2 == 0)
+            is_first_in_pair = is_first_in_pair.at[:size].set(
+                (indices - cell_start[cell_idx[cell_id[idx[:size]]]]) % 2 == 0
+            )
 
-            is_first_in_pair = (is_in_same_cell & is_first_in_pair[:size]).at[size-1].set(False)
+            is_first_in_pair = (
+                (is_in_same_cell & is_first_in_pair[:size]).at[size - 1].set(False)
+            )
             return is_first_in_pair
 
         return body

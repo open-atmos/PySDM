@@ -41,9 +41,9 @@ class TestPhysicsMethods:
     @staticmethod
     @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
     def test_mass_to_volume(backend_class_with_jax, variant):
-        if backend_class_with_jax == Jax and variant=="MixedPhaseSpheres":
+        if backend_class_with_jax == Jax and variant == "MixedPhaseSpheres":
             pytest.skip()  # TODO #1913
-        
+
         # Arrange
         formulae = Formulae(particle_shape_and_density=variant)
         backend = backend_class_with_jax(formulae, double_precision=True)

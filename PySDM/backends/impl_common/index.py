@@ -35,8 +35,6 @@ def make_Index(backend):
             result = Index(data, array.shape[0])
             return result
 
-        
-
         def sort_by_key(self, keys):
             backend.sort_by_key(self, keys)
 

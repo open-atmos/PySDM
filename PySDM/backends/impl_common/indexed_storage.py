@@ -40,7 +40,7 @@ def make_IndexedStorage(backend):
             storage = backend.Storage.from_ndarray(array)
             result = IndexedStorage.indexed(idx, storage)
             return result
-        
+
         def row_view(self, i):
             # TODO #1913: Implement proper IndexedStorage row_view for Jax (and check on Numba/ThrustRTC)
             if type(backend) == Jax:
