@@ -8,26 +8,20 @@ from PySDM_examples.Berry_1967.settings import Settings
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import (
-    Electric,
-    Geometric,
-    Golovin,
-    Hydrodynamic,
-)
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 
 @pytest.mark.parametrize("croupier", ("local", "global"))
 @pytest.mark.parametrize("adaptive", (True, False))
-@pytest.mark.parametrize("kernel", (Geometric(), Electric(), Hydrodynamic()))
+@pytest.mark.parametrize("kernel", ("Geometric", "Electric", "Hydrodynamic"))
 def test_coalescence(backend_class, kernel, croupier, adaptive):
     if backend_class == ThrustRTC and croupier == "local":
         pytest.skip("TODO #358")
     if backend_class == ThrustRTC and adaptive and croupier == "global":
         pytest.skip("TODO #329")
     # Arrange
-    s = Settings()
+    s = Settings(kernel=kernel)
     s.formulae.seed = 0
     steps = [0, 800]
 
@@ -36,9 +30,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
         n_sd=s.n_sd,
         backend=backend_class(formulae=s.formulae),
         environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
-        ),
+        dynamics=(Coalescence(croupier=croupier, adaptive=adaptive),),
     )
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
@@ -63,8 +55,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
 @pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=False)
 def test_coalescence_2_sd(backend_class):
     # Arrange
-    s = Settings()
-    s.kernel = Golovin(b=1.5e12)
+    s = Settings(kernel="Golovin", constants={"GOLOVIN_b": 1.5e12})
     s.formulae.seed = 0
     steps = [0, 200]
     s.n_sd = 2
@@ -74,7 +65,7 @@ def test_coalescence_2_sd(backend_class):
         n_sd=s.n_sd,
         backend=backend_class(formulae=s.formulae),
         environment=env,
-        dynamics=(Coalescence(collision_kernel=s.kernel, adaptive=False),),
+        dynamics=(Coalescence(adaptive=False),),
     )
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
