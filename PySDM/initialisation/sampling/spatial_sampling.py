@@ -14,7 +14,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
         affine_factors = []
 
         storage = backend.Storage.empty(n_dims * n_sd, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=n_dims * n_sd)(storage)
+        backend.Random(seed=backend.formulae.seed, size=n_dims * n_sd).u01(storage)
         positions = storage.to_ndarray().reshape(n_dims, n_sd)
 
         if z_part is None:
