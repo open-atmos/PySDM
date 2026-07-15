@@ -18,17 +18,18 @@ class PairMethods(BackendMethods):
         def body(is_first_in_pair, cell_start, cell_id, cell_idx, idx, size):
 
             indices = jnp.arange(size)
-            idx_roll = jnp.roll(idx[:size-1], 1)
-            is_in_same_cell = cell_id[idx[:size-1]] == cell_id[idx_roll]
-            is_first_in_pair = is_first_in_pair.at[:size-1].set((indices - cell_start[cell_idx[cell_id[idx[:size-1]]]]) % 2 == 0)
+            idx_roll = jnp.roll(idx[:size], 1)
+            is_in_same_cell = cell_id[idx[:size]] == cell_id[idx_roll]
+            is_first_in_pair = is_first_in_pair.at[:size].set((indices - cell_start[cell_idx[cell_id[idx[:size]]]]) % 2 == 0)
 
-            is_first_in_pair = (is_in_same_cell & is_first_in_pair).at[size-1].set(False)
+            is_first_in_pair = (is_in_same_cell & is_first_in_pair[:size]).at[size-1].set(False)
             return is_first_in_pair
 
         return body
 
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+        print(f"{idx.length=}")
 
         is_first_in_pair.indicator.data = self._find_pairs_body(
             is_first_in_pair.indicator.data,
