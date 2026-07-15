@@ -35,7 +35,7 @@ class Jax(
         if not double_precision:
             raise NotImplementedError()
 
-        self.block_until_ready = block_until_ready  # TODO #1913: implement block_until_ready switch in jit code
+        self.block_until_ready = block_until_ready  # TODO #1913: implement switch in jit code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 

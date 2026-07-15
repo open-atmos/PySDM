@@ -42,7 +42,7 @@ def make_IndexedStorage(backend):
             return result
 
         def row_view(self, i):
-            # TODO #1913: Implement proper IndexedStorage row_view for Jax (and check on Numba/ThrustRTC)
+            # TODO #1913: Implement IndexedStorage row_view for Jax (check on Numba/ThrustRTC)
             if type(backend) == Jax:
                 return super().row_view(i)
 

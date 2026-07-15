@@ -178,7 +178,7 @@ class CollisionsMethods(BackendMethods):
 
         return body
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,disable=unused-argument
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         prob.data = self._normalize_body(
             prob.data, cell_start.data, timestep, dv
