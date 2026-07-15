@@ -45,8 +45,8 @@ jobs:
             readme.png
       - name: run-with-jax-backend
         run: |
-          sed -i -e 's/GPU/JAX/g' readme.py
-          python -We readme.py
+          sed -i -e 's/GPU/JAX/g' tutorial_code.py
+          python -We tutorial_code.py
       - name: jax-artefacts
         uses: actions/upload-artifact@v4
         with:
