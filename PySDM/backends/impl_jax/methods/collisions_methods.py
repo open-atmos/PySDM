@@ -19,7 +19,7 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _collision_coalescence_body(self):
         @jax.jit
-        def body( # pylint: disable=too-many-locals
+        def body(  # pylint: disable=too-many-locals
             multiplicity,
             idx,
             attributes,
