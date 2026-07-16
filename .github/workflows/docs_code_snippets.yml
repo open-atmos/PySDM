@@ -16,20 +16,23 @@ jobs:
   python:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-15-intel, macos-14, windows-latest]
+        platform: [ubuntu-latest, macos-14, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v6.3.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - run: python -m pip install $PIP_INSTALL_ARGS -e .[CI_version_pins]
       - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
       - run: |
           python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: cat -n tutorial_code.py
-      - run: |
+      - name: run-on-cpu-backend
+        run: |
           python -We tutorial_code.py
+      - name: run-on-gpu-backend
+        run: |
           sed -i -e 's/CPU/GPU/g' tutorial_code.py
           python -We tutorial_code.py
       
@@ -40,6 +43,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             readme.png
+      - name: run-with-jax-backend
+        run: |
+          sed -i -e 's/GPU/JAX/g' tutorial_code.py
+          python -We tutorial_code.py
+      - name: jax-artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jax
+          if-no-files-found: error
+          path: readme.png
 
   julia:
     runs-on: macos-latest
@@ -47,7 +60,7 @@ jobs:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v6.3.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - run: pip install -e .[CI_version_pins]
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"

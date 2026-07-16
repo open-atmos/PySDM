@@ -14,11 +14,11 @@ from .conftest import backend_fill, get_dummy_particulator_and_coalescence
 
 class TestSDMSingleCell:
     @staticmethod
-    def test_single_collision(backend_class, v_2, T_2, n_2):
+    def test_single_collision(backend_class_with_jax, v_2, T_2, n_2):
         # Arrange
         const = 1.0
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n_2)
+            backend_class_with_jax, len(n_2)
         )
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
@@ -36,6 +36,11 @@ class TestSDMSingleCell:
 
         # Assert
         particles = particulator.attributes
+
+        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
+            n_2
+        ) - np.amin(n_2)
+
         np.testing.assert_approx_equal(
             const
             * np.sum(
@@ -59,9 +64,7 @@ class TestSDMSingleCell:
             ),
             np.sum(n_2 * v_2),
         )
-        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
-            n_2
-        ) - np.amin(n_2)
+
         if np.amin(n_2) > 0:
             np.testing.assert_approx_equal(
                 np.amax(particulator.attributes["volume"].to_ndarray()), np.sum(v_2)
@@ -79,9 +82,11 @@ class TestSDMSingleCell:
             pytest.param(3, np.array([2, 1])),
         ],
     )
-    def test_single_collision_same_n(backend_class, n_in, n_out):
+    def test_single_collision_same_n(backend_class_with_jax, n_in, n_out):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_class_with_jax, 2
+        )
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
         )
@@ -107,10 +112,10 @@ class TestSDMSingleCell:
             pytest.param(7),
         ],
     )
-    def test_multi_collision(backend_class, v_2, n_2, p):
+    def test_multi_collision(backend_class_with_jax, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n_2)
+            backend_class_with_jax, len(n_2)
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -128,7 +133,7 @@ class TestSDMSingleCell:
         # Assert
         state = particulator.attributes
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
-        assert np.amin(state["multiplicity"]) >= 0
+        assert np.amin(state["multiplicity"].to_ndarray()) >= 0
         np.testing.assert_approx_equal(
             np.sum(
                 state["multiplicity"].to_ndarray() * state["water mass"].to_ndarray()
@@ -159,10 +164,10 @@ class TestSDMSingleCell:
             pytest.param(np.array([1.0, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
         ],
     )
-    def test_multi_droplet(backend_class, v, n, p):
+    def test_multi_droplet(backend_class_with_jax, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n)
+            backend_class_with_jax, len(n)
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -184,13 +189,15 @@ class TestSDMSingleCell:
         ) == np.sum(n * v)
 
     @staticmethod
-    def test_multi_step(backend_class):
+    def test_multi_step(backend_class_with_jax):
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, n_sd)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_class_with_jax, n_sd
+        )
 
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, rand.to_ndarray() > 0.5, odd_zeros=True
@@ -213,9 +220,9 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    def test_compute_gamma(backend_instance):
+    def test_compute_gamma(backend_instance_with_jax):
         # Arrange
-        backend = backend_instance
+        backend = backend_instance_with_jax
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
@@ -239,7 +246,7 @@ class TestSDMSingleCell:
                 )
 
                 indicator = make_PairIndicator(backend)(n_sd)
-                indicator.indicator[:] = backend.Storage.from_ndarray(
+                indicator.indicator = backend.Storage.from_ndarray(
                     np.asarray((True, False))
                 )
 
@@ -255,6 +262,7 @@ class TestSDMSingleCell:
                 )
 
                 # Assert
+                print(f"{expected(p, r)=}")
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod
@@ -290,9 +298,9 @@ class TestSDMSingleCell:
         ):  # pylint: disable=too-few-public-methods
             calls = 0
 
-            def __call__(self, storage):
+            def u01(self, storage):
                 CountingRandom.calls += 1
-                super().__call__(storage)
+                super().u01(storage)
 
         sut.rnd_opt_coll.rnd = CountingRandom(n_sd, seed=44)
         sut.stats_n_substep[:] = n_substeps

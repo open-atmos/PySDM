@@ -26,6 +26,7 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         self.__idx = idx
 
         self.__extensive_attribute_storage = extensive_attribute_storage
+
         self.__extensive_keys = extensive_keys
 
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
@@ -41,7 +42,7 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
 
     @property
     def healthy(self) -> bool:
-        return bool(self.__healthy_memory[0])
+        return bool(self.__healthy_memory.at(0))
 
     @healthy.setter
     def healthy(self, value: bool):

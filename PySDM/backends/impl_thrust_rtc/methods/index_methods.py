@@ -26,7 +26,7 @@ class IndexMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_global(idx, length, u01):
+    def shuffle_global(idx, u01):
         # WARNING: ineffective implementation
 
         # TODO #328 : Thrust modifies key array, conflicts with rand_reuse logic
@@ -34,7 +34,7 @@ class IndexMethods(ThrustRTCBackendMethods):
         # trtc.Copy(u01, tmpu01)
         # trtc.Sort_By_Key(tmpu01.range(0, length), idx.range(0, length))
 
-        trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
+        trtc.Sort_By_Key(u01.range(0, idx.length), idx.data.range(0, idx.length))
 
     @cached_property
     def __shuffle_local_body(self):

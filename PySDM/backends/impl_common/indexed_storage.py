@@ -2,6 +2,8 @@
 attribute storage class featuring particle permutation logic
 """
 
+from PySDM.backends.jax import Jax
+
 from .storage_utils import StorageSignature
 
 
@@ -38,6 +40,15 @@ def make_IndexedStorage(backend):
             storage = backend.Storage.from_ndarray(array)
             result = IndexedStorage.indexed(idx, storage)
             return result
+
+        def row_view(self, i):
+            # TODO #1913: Implement IndexedStorage row_view for Jax (check on Numba/ThrustRTC)
+            if isinstance(backend, Jax):
+                return super().row_view(i)
+
+            if len(self.idx.shape) == 1:
+                return IndexedStorage.indexed(self.idx, super().row_view(i))
+            return IndexedStorage.indexed(self.idx[i], super().row_view(i))
 
         def to_ndarray(self, *, raw=False):
             result = backend.Storage.to_ndarray(self)
