@@ -355,3 +355,8 @@ class TestIsotopicFractionation:
             math.copysign(1, new_molality_in_dry_air - initial_molality_in_dry_air)
             == expected_sign_of_ambient_molality_change
         ), "unexpected sign of ambient molality change"
+
+    @staticmethod
+    def test_dm_heavy_smaller_than_dm_light():
+        # TODO
+        pass
