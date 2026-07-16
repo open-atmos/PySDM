@@ -1,5 +1,5 @@
 """
-Multi-threaded CPU backend using LLVM-powered just-in-time compilation
+CPU/GPU Backend using the JAX library
 """
 
 import jax

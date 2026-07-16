@@ -1,5 +1,5 @@
 """
-CPU implementation of moment calculation backend methods
+JAX implementation of moment calculation backend methods
 """
 
 from functools import cached_property

@@ -1,5 +1,5 @@
 """
-CPU implementation of shuffling and sorting backend methods
+JAX implementation of shuffling and sorting backend methods
 """
 
 from functools import cached_property

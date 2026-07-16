@@ -373,7 +373,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(output):
             Impl.__abs_body.launch_n(output.shape[0], Impl.thrust((output,)))
 
-    class Storage(StorageBase):
+    class Storage(StorageBase):  # pylint: disable=too-many-public-methods
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
         BOOL = np.bool_
