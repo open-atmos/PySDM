@@ -177,7 +177,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 for _ in range(self.__substeps):
                     self.step()
             else:
-                self.dt_left[:] = self.particulator.dt
+                self.dt_left.fill(self.particulator.dt)
 
                 while self.particulator.attributes.get_working_length() != 0:
                     self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
