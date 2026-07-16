@@ -106,7 +106,7 @@ class PairMethods(BackendMethods):
             def loop_body(i, data_out):
                 def sum_pair(i, data_out):
                     data_out = data_out.at[i // 2].set(
-                        data_in[idx[i]] + data_in[idx[i + 1]]
+                        jnp.int64(data_in[idx[i]] + data_in[idx[i + 1]])
                     )
                     return data_out
 

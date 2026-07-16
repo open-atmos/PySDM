@@ -84,9 +84,7 @@ class Storage(StorageBase):
         return get_data_from_ndarray(
             array=array,
             storage_class=Storage,
-            copy_fun=lambda array_astype: jnp.array(
-                array_astype
-            ),  # pylint: disable=unnecessary-lambda
+            copy_fun=jnp.array,
         )
 
     @staticmethod

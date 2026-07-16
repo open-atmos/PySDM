@@ -214,7 +214,7 @@ class TestCollisionMethods:
         ),
     )
     def test_cell_caretaker(backend_class, scheme):
-        if scheme[0] == JAX:
+        if backend_class == JAX:
             pytest.skip("TODO #1913")
 
         # Arrange

@@ -31,7 +31,7 @@ class MomentsMethods(BackendMethods):
     @cached_property
     def _moments_body(self):
         @jax.jit
-        def body(
+        def body( # pylint: disable=too-many-positional-arguments
             moment_0,
             moments,
             multiplicity,
@@ -65,7 +65,7 @@ class MomentsMethods(BackendMethods):
 
         return body
 
-    def moments(
+    def moments( # pylint: disable=too-many-locals
         self,
         *,
         moment_0,
@@ -129,7 +129,7 @@ class MomentsMethods(BackendMethods):
     @cached_property
     def _spectrum_moments_body(self):
         @jax.jit
-        def body(
+        def body( # pylint: disable=too-many-positional-arguments
             moment_0,
             moments,
             multiplicity,
@@ -157,7 +157,7 @@ class MomentsMethods(BackendMethods):
 
         return body
 
-    def spectrum_moments(
+    def spectrum_moments( # pylint: disable=too-many-locals
         self,
         *,
         moment_0,
