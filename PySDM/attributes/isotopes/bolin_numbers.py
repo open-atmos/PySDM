@@ -45,7 +45,9 @@ class BolinNumberImpl(DerivedAttribute):
             isotope=self.isotope,
             relative_humidity=self.particulator.environment["RH"],
             temperature=self.particulator.environment["T"],
-            density_dry_air=self.particulator.environment["rhod"],
+            water_vapour_mixing_ratio=self.particulator.environment[
+                "water_vapour_mixing_ratio"
+            ],
             moles_light_molecule=self.moles_light.data,
             moles_heavy=self.moles_heavy.data,
             molality_in_dry_air=self.molality_in_dry_air,
