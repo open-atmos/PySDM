@@ -74,89 +74,67 @@ class IsotopeMethods(BackendMethods):
             max_n_substeps = 256
             converged = False
             substep = 0
-            new_molality = new_n_heavy_molecules = new_n_molecules = 0
+            new_molality = new_n_heavy_molecules = old_n_molecules = 0
+            eps_1 = old_n_heavy_molecules = over_Bo = 1
             while n_substeps <= max_n_substeps:
                 print("n_substeps=", n_substeps)
-                print("molality_in_dry_air=", molality_in_dry_air[0])
                 delta_n_heavy_total = 0
-                rtol = 1e-3  # TODO
 
                 for sd_id in range(multiplicity.shape[0]):
-                    Bo = bolin_number[sd_id]
-                    ####################
-                    # Previous attempt #
-                    ####################
-
-                    # if abs(Bo) < 1e-5:  # TODO
-                    #     dm_heavy = 0
-                    # else:
-                    #     dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
-
-                    # Explicit Euler applied to logarithm of mass to ensure positive mole number in droplet
-                    # dn_heavy_molecule = moles_heavy_molecule[sd_id] * (
-                    #     np.exp(dm_heavy / moles_heavy_molecule[sd_id]) - 1
-                    # )
-
-                    # delta_molality_sd = (
-                    #     -dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
-                    # )
-
-                    # new
-
                     if not converged:
+                        print("   substep: ", substep)
                         old_n_molecules = (
                             signed_water_mass[sd_id] - dm_total[sd_id]
                         ) / Mv
+                        old_n_heavy_molecules = moles_heavy_molecule[sd_id]
+                        over_Bo = (
+                            1 / bolin_number[sd_id]
+                        )  # TODO check if updates Bo works and maybe it can be outside
+                        eps_1 = (
+                            molality_in_dry_air[cell_id[sd_id]]
+                            / water_vapour_mixing_ratio[cell_id[sd_id]]
+                        ) / (old_n_heavy_molecules / old_n_molecules)
 
-                    else:
-                        print("inside: ", converged)
-                        a = 1.1869545106743005
-                        # Rv = new_molality / water_vapour_mixing_ratio[0]
-                        # Rl = new_n_heavy_molecules / new_n_molecules
+                    dn_substep = dm_total[sd_id] / n_substeps / Mv
+                    new_n_molecules = old_n_molecules + dn_substep
 
-                        # bolin_number[sd_id] = 1 - (1 + a * Rv / Rl) / (a + 1)
-                        # Bo = bolin_number[sd_id]
-
-                    old_n_heavy_molecules = moles_heavy_molecule[sd_id]
-
-                    dm_substep = dm_total[sd_id] / n_substeps
-                    mass_ratio_heavy_to_total = (
-                        old_n_heavy_molecules * molar_mass_heavy_molecule
-                    ) / (signed_water_mass[sd_id])
-
-                    new_n_molecules = old_n_molecules + (dm_substep / Mv)
-                    print("        ", n_substeps)
-                    print("dn=", dm_substep / Mv)
-                    print(
-                        "Bo=",
-                        bolin_number[sd_id],
-                        "mass_ratio_heavy_to_total=",
-                        mass_ratio_heavy_to_total,
-                        "dm_substep=",
-                        dm_substep,
-                    )
                     delta_n_heavy_per_drop = (
-                        abs(Bo) * mass_ratio_heavy_to_total * dm_substep
+                        old_n_heavy_molecules / old_n_molecules * over_Bo * dn_substep
                     )
-                    print("delta_n_heavy_per_drop=", delta_n_heavy_per_drop)
                     delta_n_heavy_total += delta_n_heavy_per_drop * multiplicity[sd_id]
 
+                    eps_2 = (
+                        new_molality / water_vapour_mixing_ratio[cell_id[sd_id]]
+                    ) / (new_n_heavy_molecules / new_n_molecules)
+
                     if converged:
+                        print(" converged: ", converged, "Bo=", over_Bo)
+                        D_ratio = 1.01  # TODO TEMP!
+                        rh = 0.9  # TODO TEMP!
+                        Fk_over_Fd = 1  # TODO TEMP!
+                        over_Bo += (
+                            (eps_2 - eps_1)
+                            * (D_ratio * rh * (1 + Fk_over_Fd))
+                            / (rh - 1)
+                        )
+                        eps_1 = eps_2
                         moles_heavy_molecule[sd_id] += delta_n_heavy_per_drop
                         old_n_molecules = new_n_molecules
 
                 mass_of_dry_air = dry_air_density[cell_id[0]] * cell_volume
-                print("delta_n_heavy_total=", delta_n_heavy_total)
-                delta_molality = -delta_n_heavy_total / mass_of_dry_air
-                print("delta_molality=", delta_molality)
-                new_molality = max(
-                    0, molality_in_dry_air[cell_id[0]] + delta_molality
-                )  # TODO
+                print(" molality=", molality_in_dry_air[cell_id[0]])
+                new_molality = (
+                    molality_in_dry_air[cell_id[0]]
+                    - delta_n_heavy_total / mass_of_dry_air
+                )
+                print("  old_molality=", molality_in_dry_air[cell_id[0]])
+                print("  new_molality=", new_molality, ", step=", substep)
                 if not converged:
                     if new_molality < 0:  # check long vs short step
                         print("negative molality: ", new_molality, ", step=", substep)
                         n_substeps *= 2  # repeat substeps
                         if n_substeps > max_n_substeps:
+                            break
                             assert (
                                 False
                             ), "Exceeded maximum number of substeps, solution not found!"
@@ -248,9 +226,6 @@ class IsotopeMethods(BackendMethods):
                     D=ff.constants.D0,
                     pvs=pvs_water,
                 )
-                print("   moles_heavy_atom=", moles_heavy_atom)
-                print("   moles_light_isotope=", moles_light_isotope)
-                print("   isotopic_fraction=", isotopic_fraction)
 
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio(T),
