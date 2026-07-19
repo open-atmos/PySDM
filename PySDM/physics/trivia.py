@@ -178,8 +178,9 @@ class Trivia:  # pylint: disable=too-many-public-methods
     def tau(Bo, dm_dt_over_m):
         """
         see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
+        here, Bo = c1
         """
-        return 1 / Bo / dm_dt_over_m
+        return Bo / dm_dt_over_m
 
     @staticmethod
     def moles_heavy_atom(
