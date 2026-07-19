@@ -78,10 +78,6 @@ class Simulation:
             "kappa times dry volume": kappa * v_dry,
             "signed water mass": self.initial_mass,
         }
-        builder.request_attribute("temperature of last freezing")
-        builder.request_attribute("supersaturation of last freezing")
-        builder.request_attribute("radius")
-        builder.request_attribute("wet to critical volume ratio")
 
         products = [
             PySDM_products.ParcelDisplacement(name="z"),
@@ -120,7 +116,16 @@ class Simulation:
             "ri",
         ]
 
-        self.particulator = builder.build(attributes, products)
+        self.particulator = builder.build(
+            attributes,
+            products,
+            req_attr_names=(
+                "temperature of last freezing",
+                "supersaturation of last freezing",
+                "radius",
+                "wet to critical volume ratio",
+            ),
+        )
 
         self.n_output = settings.n_output
         if settings.n_output == 1:

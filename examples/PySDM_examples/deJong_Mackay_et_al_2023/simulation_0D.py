@@ -3,7 +3,7 @@ from collections import namedtuple
 import numpy as np
 
 from PySDM.backends import CPU
-from PySDM.builder import Builder
+from PySDM.particulator import Particulator
 from PySDM.dynamics import Coalescence, Collision
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
@@ -27,22 +27,10 @@ from PySDM.products.size_spectral import (
 def run_box_breakup(
     settings, steps=None, backend_class=CPU, sample_in_radius=False, return_nv=False
 ):
-    builder = Builder(
-        n_sd=settings.n_sd,
-        backend=backend_class(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt),
-        dynamics=(
-            Collision(
-                collision_kernel=settings.kernel,
-                coalescence_efficiency=settings.coal_eff,
-                breakup_efficiency=settings.break_eff,
-                fragmentation_function=settings.fragmentation,
-                adaptive=settings.adaptive,
-                warn_overflows=settings.warn_overflows,
-            ),
-        ),
+    environment = Box(
+        dv=settings.dv, dt=settings.dt, backend=backend_class(settings.formulae)
     )
-    builder.particulator.environment["rhod"] = 1.0
+    environment["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
         diams, attributes["multiplicity"] = Logarithmic(
@@ -64,7 +52,22 @@ def run_box_breakup(
         CoalescenceRatePerGridbox(name="cor"),
         BreakupRatePerGridbox(name="br"),
     )
-    core = builder.build(attributes, products)
+    core = Particulator(
+        n_sd=settings.n_sd,
+        environment=environment,
+        dynamics=(
+            Collision(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                breakup_efficiency=settings.break_eff,
+                fragmentation_function=settings.fragmentation,
+                adaptive=settings.adaptive,
+                warn_overflows=settings.warn_overflows,
+            ),
+        ),
+        attributes=attributes,
+        products=products,
+    )
 
     if steps is None:
         steps = settings.output_steps
@@ -92,19 +95,10 @@ def run_box_breakup(
 
 
 def run_box_NObreakup(settings, steps=None, backend_class=CPU):
-    builder = Builder(
-        n_sd=settings.n_sd,
-        backend=backend_class(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt),
-        dynamics=(
-            Coalescence(
-                collision_kernel=settings.kernel,
-                coalescence_efficiency=settings.coal_eff,
-                adaptive=settings.adaptive,
-            ),
-        ),
+    environment = Box(
+        dv=settings.dv, dt=settings.dt, backend=backend_class(settings.formulae)
     )
-    builder.particulator.environment["rhod"] = 1.0
+    environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
@@ -117,7 +111,19 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         CollisionRateDeficitPerGridbox(name="crd"),
         CoalescenceRatePerGridbox(name="cor"),
     )
-    core = builder.build(attributes, products)
+    core = Particulator(
+        n_sd=settings.n_sd,
+        environment=environment,
+        dynamics=(
+            Coalescence(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                adaptive=settings.adaptive,
+            ),
+        ),
+        attributes=attributes,
+        products=products,
+    )
 
     if steps is None:
         steps = settings.output_steps

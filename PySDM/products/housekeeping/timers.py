@@ -17,8 +17,8 @@ class _Timer(Product):
     def reset(self):
         self._time = self.clock()
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.shape = ()
 
     def _impl(self, **kwargs) -> float:

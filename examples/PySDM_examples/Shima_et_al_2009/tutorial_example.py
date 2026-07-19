@@ -1,5 +1,5 @@
 from PySDM.backends import CPU
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -7,13 +7,10 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
 
 def run(settings, observers=()):
-    builder = Builder(
-        n_sd=settings.n_sd,
+    environment = Box(
+        dv=settings.dv,
+        dt=settings.dt,
         backend=CPU(formulae=settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt),
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
@@ -26,7 +23,15 @@ def run(settings, observers=()):
         ),
         WallTime(),
     )
-    particulator = builder.build(attributes, products)
+    particulator = Particulator(
+        n_sd=settings.n_sd,
+        environment=environment,
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
+        attributes=attributes,
+        products=products,
+    )
     if hasattr(settings, "u_term") and "terminal velocity" in particulator.attributes:
         particulator.attributes["terminal velocity"].approximation = settings.u_term(
             particulator

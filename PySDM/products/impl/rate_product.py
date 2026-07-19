@@ -12,8 +12,8 @@ class RateProduct(Product):
         self.counter = counter
         self.dynamic = dynamic
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.counter = getattr(self.particulator.dynamics[self.dynamic], self.counter)
         self.dynamic = None
         self.particulator.observers.append(self)

@@ -39,12 +39,12 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         self.rtol = rtol
         self._n_substeps = 1
 
-    def register(self, builder):
-        builder.request_attribute("relative fall velocity")
-        self.particulator = builder.particulator
-        self.dimension = len(builder.particulator.environment.mesh.grid)
+    def register(self, particulator):
+        particulator.request_attribute("relative fall velocity")
+        self.particulator = particulator
+        self.dimension = len(particulator.environment.mesh.grid)
         self.grid = self.particulator.Storage.from_ndarray(
-            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64)
+            np.array(particulator.environment.mesh.grid, dtype=np.int64)
         )
         if self.dimension == 1:
             courant_field = (np.full(self.grid[0] + 1, np.nan),)

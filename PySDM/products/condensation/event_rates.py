@@ -17,8 +17,8 @@ class EventRate(Product):
         self.what = what
         self.event_count = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.particulator.observers.append(self)
         self.condensation = self.particulator.dynamics["Condensation"]
         self.event_count = np.zeros_like(self.buffer)

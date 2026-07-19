@@ -7,15 +7,15 @@ from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 @register_attribute()
 class EquilibriumSaturation(DerivedAttribute):
-    def __init__(self, builder):
-        self.r_wet = builder.get_attribute("radius")
-        self.v_wet = builder.get_attribute("volume")
-        self.v_dry = builder.get_attribute("dry volume")
-        self.kappa = builder.get_attribute("kappa")
-        self.f_org = builder.get_attribute("dry volume organic fraction")
+    def __init__(self, particulator):
+        self.r_wet = particulator.get_attribute("radius")
+        self.v_wet = particulator.get_attribute("volume")
+        self.v_dry = particulator.get_attribute("dry volume")
+        self.kappa = particulator.get_attribute("kappa")
+        self.f_org = particulator.get_attribute("dry volume organic fraction")
 
         super().__init__(
-            builder=builder,
+            particulator=particulator,
             name="equilibrium saturation",
             dependencies=(self.kappa, self.v_dry, self.f_org, self.r_wet),
         )

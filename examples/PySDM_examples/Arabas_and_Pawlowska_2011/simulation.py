@@ -2,7 +2,7 @@ import numpy as np
 
 from PySDM_examples.utils.basic_simulation import BasicSimulation
 
-from PySDM import Builder, products
+from PySDM import products, Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -19,28 +19,15 @@ class Simulation(BasicSimulation):
     ):
         self.settings = settings
 
-        environment = Parcel(
+        self.environment = Parcel(
             dt=settings.dt,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
             initial_relative_humidity=settings.RH0,
             T0=settings.T0,
             w=settings.w,
-        )
-
-        builder = Builder(
             backend=CPU(settings.formulae),
-            n_sd=settings.n_sd,
-            environment=environment,
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(),
-            ),
         )
-
-        builder.request_attribute("radius")
-
-        self.builder = builder
 
         attributes, self.mode_id = self._make_attributes()
 
@@ -51,9 +38,16 @@ class Simulation(BasicSimulation):
                 products.AmbientTemperature(name="T"),
             )
 
-        particulator = builder.build(
+        particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=self.environment,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+            ),
             attributes=attributes,
             products=product_list,
+            requested_attributes=("radius",),
         )
 
         super().__init__(
@@ -64,7 +58,7 @@ class Simulation(BasicSimulation):
     def _make_attributes(self):
         settings = self.settings
         formulae = settings.formulae
-        environment = self.builder.particulator.environment
+        environment = self.environment
 
         parcel_volume = environment.mass_of_dry_air / settings.initial_air_density
 

@@ -11,8 +11,8 @@ class EulerianAdvection:
         self.solvers = solvers
         self.particulator = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
     def __call__(self):
         for field in ("water_vapour_mixing_ratio", "thd"):

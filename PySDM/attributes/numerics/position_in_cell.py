@@ -7,9 +7,9 @@ from PySDM.attributes.impl import CellAttribute, register_attribute
 
 @register_attribute()
 class PositionInCell(CellAttribute):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         super().__init__(
-            builder,
+            particulator,
             name="position in cell",
-            n_vector_components=builder.particulator.mesh.dim,
+            n_vector_components=particulator.mesh.dim,
         )

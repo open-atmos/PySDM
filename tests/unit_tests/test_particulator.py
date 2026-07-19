@@ -3,7 +3,13 @@ from collections import namedtuple
 
 import pytest
 
+import numpy as np
+
+from dynamics import Condensation
 from .dummy_particulator import DummyParticulator
+from PySDM import Particulator
+from PySDM.environments import Box
+from PySDM.backends import CPU
 
 
 class TestParticulator:
@@ -129,3 +135,28 @@ class TestParticulator:
                 seeded_particle_extensive_attributes=storage,
                 number_of_super_particles_to_inject=0,
             )
+
+    @staticmethod
+    def test_request_attribute():
+        env = Box(dt=-1, dv=np.nan)
+
+        particulator = Particulator(
+            n_sd=1,
+            backend=CPU(),
+            environment=env,
+            attributes={
+                k: np.asarray([1])
+                for k in (
+                    "multiplicity",
+                    "volume",
+                    "dry volume",
+                    "kappa times dry volume",
+                )
+            },
+            products=(),
+            dynamics=(Condensation(),),
+            requested_attributes=("critical saturation",),
+        )
+
+        particulator.environment["T"] = np.nan
+        _ = particulator.attributes["critical saturation"].to_ndarray()
