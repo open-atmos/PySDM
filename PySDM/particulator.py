@@ -2,6 +2,8 @@
 The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
 
+import gettext
+
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -457,21 +459,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 dm_total=self.attributes["diffusional growth mass change"],
                 signed_water_mass=self.attributes["signed water mass"],
                 dry_air_density=self.environment["rhod"],
-                molar_mass_heavy_molecule=getattr(
-                    self.formulae.constants,
-                    {
-                        "2H": "M_2H_1H_16O",
-                        "3H": "M_3H_1H_16O",
-                        "17O": "M_1H2_17O",
-                        "18O": "M_1H2_18O",
-                    }[isotope],
-                ),
                 moles_heavy_molecule=self.attributes[f"moles_{isotope}"],  # TODO #1787
                 molality_in_dry_air=self.environment.get_predicted(
                     f"molality {isotope} in dry air"
                 ),
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
                 water_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+                isotope=isotope,
+                RH=self.environment["RH"],
+                T=self.environment["T"],
             )
             self.attributes.mark_updated(f"moles_{isotope}")
 
