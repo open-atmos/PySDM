@@ -5,7 +5,7 @@ import numpy as np
 from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
 
 import PySDM.products as PySDM_products
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -41,6 +41,7 @@ class Simulation:
             thd_of_z=settings.thd,
             rhod_of_z=settings.rhod,
             z0=-settings.particle_reservoir_depth,
+            backend=backend(formulae=settings.formulae),
         )
 
         def zZ_to_z_above_reservoir(zZ):
@@ -89,15 +90,8 @@ class Simulation:
                 ),
             )
         )
-
-        self.builder = Builder(
-            n_sd=settings.n_sd,
-            backend=backend(formulae=settings.formulae),
-            environment=env,
-            dynamics=dynamics,
-        )
-
-        self.attributes = self.builder.particulator.environment.init_attributes(
+        env.register_dynamics(dynamics)
+        self.attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air
@@ -105,6 +99,7 @@ class Simulation:
             kappa=settings.kappa,
             collisions_only=not settings.enable_condensation,
             z_part=settings.z_part,
+            n_sd=settings.n_sd,
         )
         self.products += [
             PySDM_products.WaterMixingRatio(
@@ -176,8 +171,12 @@ class Simulation:
                     PySDM_products.SurfacePrecipitation(),
                 ]
             )
-        self.particulator = self.builder.build(
-            attributes=self.attributes, products=tuple(self.products)
+        self.particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=dynamics,
+            attributes=self.attributes,
+            products=tuple(self.products),
         )
 
         self.output_attributes = {

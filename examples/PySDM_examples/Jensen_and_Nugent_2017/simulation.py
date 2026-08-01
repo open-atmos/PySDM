@@ -2,7 +2,7 @@ import numpy as np
 from PySDM_examples.utils import BasicSimulation
 from PySDM_examples.Jensen_and_Nugent_2017.settings import Settings
 from PySDM_examples.Jensen_and_Nugent_2017 import table_3
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.physics import si
 from PySDM.backends import CPU
 from PySDM.products import (
@@ -30,41 +30,23 @@ class Simulation(BasicSimulation):
     ):
 
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
-
-        builder = Builder(
-            n_sd=N_SD_NON_GCCN + n_gccn,
+        environment = Parcel(
+            dt=settings.dt,
+            mass_of_dry_air=666 * si.kg,
+            p0=settings.p0,
+            initial_relative_humidity=settings.RH0,
+            T0=settings.T0,
+            w=settings.vertical_velocity,
+            z0=settings.z0,
             backend=CPU(
                 formulae=settings.formulae,
                 override_jit_flags={"parallel": False},
             ),
-            environment=Parcel(
-                dt=settings.dt,
-                mass_of_dry_air=666 * si.kg,
-                p0=settings.p0,
-                initial_relative_humidity=settings.RH0,
-                T0=settings.T0,
-                w=settings.vertical_velocity,
-                z0=settings.z0,
-            ),
-            dynamics=[
-                # TODO #1266: order matters here, but error message is not saying it!
-                AmbientThermodynamics(),
-                Condensation(),
-            ]
-            + (
-                []
-                if not gravitational_coalsecence
-                else [Coalescence(collision_kernel=Geometric())]
-            ),
         )
-
-        additional_derived_attributes = ("radius", "equilibrium saturation")
-        for additional_derived_attribute in additional_derived_attributes:
-            builder.request_attribute(additional_derived_attribute)
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,
-        ).sample_deterministic(builder.particulator.n_sd - n_gccn)
+        ).sample_deterministic(N_SD_NON_GCCN)
 
         if gccn:
             nonzero_concentration_mask = np.nonzero(table_3.NA)
@@ -85,16 +67,26 @@ class Simulation(BasicSimulation):
         )
         rhod0 = settings.formulae.state_variable_triplet.rhod_of_pd_T(pd0, settings.T0)
 
-        attributes = builder.particulator.environment.init_attributes(
-            n_in_dv=n_in_unit_volume
-            * builder.particulator.environment.mass_of_dry_air
-            / rhod0,
+        attributes = environment.init_attributes(
+            n_in_dv=n_in_unit_volume * environment.mass_of_dry_air / rhod0,
             kappa=settings.kappa,
             r_dry=self.r_dry,
         )
 
         super().__init__(
-            builder.build(
+            Particulator(
+                n_sd=N_SD_NON_GCCN + n_gccn,
+                environment=environment,
+                dynamics=[
+                    # TODO #1266: order matters here, but error message is not saying it!
+                    AmbientThermodynamics(),
+                    Condensation(),
+                ]
+                + (
+                    []
+                    if not gravitational_coalsecence
+                    else [Coalescence(collision_kernel=Geometric())]
+                ),
                 attributes=attributes,
                 products=(
                     PeakSaturation(name="S_max"),
@@ -106,6 +98,12 @@ class Simulation(BasicSimulation):
                     RadiusStandardDeviation(
                         name="r_std_act", count_activated=True, count_unactivated=False
                     ),
+                ),
+                requested_attributes=(
+                    additional_derived_attributes := (
+                        "radius",
+                        "equilibrium saturation",
+                    )
                 ),
             )
         )

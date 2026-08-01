@@ -4,9 +4,9 @@ ensuring that their instances can be re-used with multiple builders"""
 from copy import deepcopy
 
 
-def _instantiate(self, *, builder):
+def _instantiate(self, particulator):
     copy = deepcopy(self)
-    copy.register(builder=builder)
+    copy.register(particulator=particulator)
     return copy
 
 

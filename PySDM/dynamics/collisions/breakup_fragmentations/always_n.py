@@ -13,5 +13,5 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
         frag_mass.sum(self.particulator.attributes["water mass"], is_first_in_pair)
         frag_mass /= self.N
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator

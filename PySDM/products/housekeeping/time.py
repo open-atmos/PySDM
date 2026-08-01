@@ -11,8 +11,8 @@ class Time(Product):
         super().__init__(name=name, unit=unit)
         self.t = 0
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator=particulator)
         self.particulator.observers.append(self)
 
     def _impl(self, **kwargs):

@@ -4,6 +4,7 @@ Single-column time-varying-updraft framework with moisture advection handled by
 """
 
 import numpy as np
+from zmq import backend
 
 from PySDM.environments.impl.moist import Moist
 
@@ -14,21 +15,27 @@ from PySDM.environments.impl import register_environment
 
 @register_environment()
 class Kinematic1D(Moist):
-    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
-        super().__init__(dt, mesh, [])
+    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0, backend=None):
+        super().__init__(dt, mesh, [], backend=backend)
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
-        self.formulae = None
-
-    def register(self, builder):
-        super().register(builder)
-        self.formulae = builder.particulator.formulae
-        rhod = builder.particulator.Storage.from_ndarray(self.rhod)
+        self.formulae = backend.formulae
+        self.backend = backend
+        self.dynamics = {}
+        rhod = self.backend.Storage.from_ndarray(self.rhod)
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
+    def register(self, particulator):
+        super().register(particulator)
+
+    def register_dynamics(self, dynamics):
+        self.dynamics = {}
+        for dynamic in dynamics:
+            self.dynamics[type(dynamic).__name__] = dynamic
+
     def get_water_vapour_mixing_ratio(self) -> np.ndarray:
-        return self.particulator.dynamics["EulerianAdvection"].solvers.advectee
+        return self.dynamics["EulerianAdvection"].solvers.advectee
 
     def get_thd(self) -> np.ndarray:
         return self.thd0
@@ -41,6 +48,7 @@ class Kinematic1D(Moist):
         kappa,
         z_part=None,
         collisions_only=False,
+        n_sd=None,
     ):
         super().sync()
         self.notify()
@@ -48,9 +56,9 @@ class Kinematic1D(Moist):
         attributes = {}
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                backend=self.particulator.backend,
+                backend=self.backend,
                 grid=self.mesh.grid,
-                n_sd=self.particulator.n_sd,
+                n_sd=n_sd,
                 z_part=z_part,
             )
             (
@@ -61,12 +69,12 @@ class Kinematic1D(Moist):
 
             if collisions_only:
                 v_wet, n_per_kg = spectral_discretisation.sample_deterministic(
-                    backend=self.particulator.backend, n_sd=self.particulator.n_sd
+                    backend=self.backend, n_sd=n_sd
                 )
                 attributes["volume"] = v_wet
             else:
                 r_dry, n_per_kg = spectral_discretisation.sample_deterministic(
-                    backend=self.particulator.backend, n_sd=self.particulator.n_sd
+                    backend=self.backend, n_sd=n_sd
                 )
                 attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
                 attributes["kappa times dry volume"] = attributes["dry volume"] * kappa

@@ -1,7 +1,7 @@
 import numpy as np
 from PySDM_examples.Srivastava_1982.settings import SimProducts
 
-from PySDM import Builder, Formulae
+from PySDM import Particulator, Formulae
 from PySDM.environments import Box
 from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
 
@@ -22,8 +22,9 @@ class Simulation:
         }
 
     def build(self, n_sd, seed, products):
-        env = Box(dt=self.settings.dt, dv=self.settings.dv)
-        builder = Builder(
+        env = Box(
+            dt=self.settings.dt,
+            dv=self.settings.dv,
             backend=self.settings.backend_class(
                 formulae=Formulae(
                     constants={"rho_w": self.settings.rho},
@@ -32,12 +33,12 @@ class Simulation:
                 ),
                 double_precision=self.double_precision,
             ),
+        )
+
+        particulator = Particulator(
             n_sd=n_sd,
             environment=env,
             dynamics=(self.collision_dynamic,),
-        )
-
-        particulator = builder.build(
             products=products,
             attributes={
                 "multiplicity": np.full(n_sd, self.settings.total_number_0 / n_sd),

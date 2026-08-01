@@ -10,9 +10,9 @@ class Parameterized:
         self.particulator = None
         self.params = params
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute("radius")
+    def register(self, particulator):
+        self.particulator = particulator
+        particulator.request_attribute("radius")
 
     def __call__(self, output, is_first_in_pair):
         self.particulator.backend.linear_collection_efficiency(

@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot
 from packaging import version
 
-from PySDM import Builder, Formulae
+from PySDM import Particulator, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
@@ -52,7 +52,7 @@ class Simulation:
             else:
                 total_time = (
                     np.diff(np.asarray(self.temperature_range)) / case["cooling_rate"]
-                )
+                ).item()
 
             constants = None
             if "J_het" not in case:
@@ -214,13 +214,6 @@ def simulation(
         constants=constants,
         particle_shape_and_density="MixedPhaseSpheres",
     )
-    builder = Builder(
-        n_sd=n_sd,
-        backend=CPU(formulae=formulae),
-        environment=Box(dt=time_step, dv=volume),
-        dynamics=[Freezing(immersion_freezing="time-dependent")],
-    )
-    builder.request_attribute("volume")
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
         _isa, _conc = np.full(n_sd, spectrum.m_mode), np.full(
@@ -240,12 +233,20 @@ def simulation(
         IceWaterContent(name="qi"),
         TotalUnfrozenImmersedSurfaceArea(name="A_tot"),
     )
-    particulator = builder.build(attributes=attributes, products=products)
-    env = particulator.environment
-
+    env = Box(dt=time_step, dv=volume, backend=CPU(formulae=formulae))
     env["T"] = initial_temperature
     env["a_w_ice"] = np.nan
     env["RH"] = 1 + np.finfo(float).eps
+
+    particulator = Particulator(
+        n_sd=n_sd,
+        environment=env,
+        attributes=attributes,
+        products=products,
+        dynamics=[Freezing(immersion_freezing="time-dependent")],
+        requested_attributes=("volume",),
+    )
+
     svp = particulator.formulae.saturation_vapour_pressure
 
     cell_id = 0
