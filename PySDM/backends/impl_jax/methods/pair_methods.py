@@ -33,8 +33,6 @@ class PairMethods(BackendMethods):
 
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-        print(f"{idx.length=}")
-
         is_first_in_pair.indicator.data = self._find_pairs_body(
             is_first_in_pair.indicator.data,
             cell_start.data,
