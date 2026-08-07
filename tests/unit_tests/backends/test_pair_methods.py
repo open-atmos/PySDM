@@ -72,7 +72,7 @@ class TestPairMethods:
             pytest.param(
                 [44.0, 666.0],
                 [
-                    0,
+                    0.0,
                 ],
                 [0, 1],
             ),

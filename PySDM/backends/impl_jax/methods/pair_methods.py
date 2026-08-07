@@ -99,12 +99,12 @@ class PairMethods(BackendMethods):
     def _sum_pair_body(self):
         @jax.jit  # TODO #1913: rewrite for parallel computation
         def body(data_out, data_in, is_first_in_pair, idx):
-            data_out = data_out.at[:].set(0)  # ?? might slow it down
+            data_out = data_out.at[:].set(0.0)  # ?? might slow it down
 
             def loop_body(i, data_out):
                 def sum_pair(i, data_out):
                     data_out = data_out.at[i // 2].set(
-                        jnp.int64(data_in[idx[i]] + data_in[idx[i + 1]])
+                        data_in[idx[i]] + data_in[idx[i + 1]]
                     )
                     return data_out
 
