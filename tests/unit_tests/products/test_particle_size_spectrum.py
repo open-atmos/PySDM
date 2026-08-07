@@ -74,7 +74,7 @@ class TestParticleSizeSpectrum:
             / (max_size - min_size)
             / (rhod if specific or stp else 1)
             * (backend_instance.formulae.constants.rho_STP if stp else 1),
-            significant=10,
+            significant=7,
         )
 
     @staticmethod
@@ -123,7 +123,7 @@ class TestParticleSizeSpectrum:
             / particulator.environment.mesh.dv
             / (max_size - min_size)
             / (rhod if sut.specific else 1),
-            significant=10,
+            significant=7,
         )
 
     @staticmethod

@@ -61,7 +61,7 @@ class ParticleAttributesFactory:
         def helper(req_attr, all_attr, names, data, keys):
             for i, attr in enumerate(names):
                 keys[attr] = i
-                req_attr[attr].set_data(data[i, :])
+                req_attr[attr].set_data(data.row_view(i))
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError as err:
@@ -77,6 +77,8 @@ class ParticleAttributesFactory:
             extensive_attribute_storage,
             extensive_keys,
         )
+        # print(f"{extensive_attribute_storage.data=}")
+
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
         n = req_attr["multiplicity"]

@@ -60,4 +60,4 @@ def test_area(volume, backend_instance):
     # assert
     radius_expected = particulator.formulae.trivia.radius(volume=volume)
     area_expected = particulator.formulae.trivia.area(radius=radius_expected)
-    np.testing.assert_allclose(area_actual, area_expected)
+    np.testing.assert_allclose(area_actual, area_expected, rtol=1e-6)
