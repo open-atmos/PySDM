@@ -10,6 +10,7 @@ formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
 
 ax_title_size = 18
 ax_lab_fsize = 15
+ax_lab_fsize2 = 19
 tick_fsize = 15
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 T_frz_bins_kelvin = np.linspace(230, 240, num=100, endpoint=True)
@@ -92,8 +93,9 @@ def plot_thermodynamics_and_bulk(
     ax = axs[iax]
     ax.plot(time, RH, color="red", linestyle="dashdot", label=r"$S_\text{w}$")
     ax.plot(time, RHi, color="blue", linestyle="--", label=r"$S_\text{i}$")
-    ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize)
-    ax.legend(loc="center left", fontsize=ax_lab_fsize)
+    ax.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
+    ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize2)
+    ax.legend(loc="center left", fontsize=ax_lab_fsize2)
     ax.set_xlim(time[0], t_lim)
     ax.tick_params(labelsize=tick_fsize)
     ax.set_title(title_add[iax] + r"ambient thermodynamics", fontsize=ax_lab_fsize)
@@ -102,9 +104,9 @@ def plot_thermodynamics_and_bulk(
 
     twin = ax.twinx()
     twin.plot(time, T, color="black", linestyle="-", label="T")
-    twin.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-    twin.set_ylabel("temperature [K]", fontsize=ax_lab_fsize)
-    twin.legend(loc="upper left", fontsize=ax_lab_fsize)
+    twin.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
+    twin.set_ylabel("temperature [K]", fontsize=ax_lab_fsize2)
+    twin.legend(loc="upper left", fontsize=ax_lab_fsize2)
     twin.tick_params(labelsize=tick_fsize)
 
     # mixing ratio and number concentration
@@ -115,9 +117,9 @@ def plot_thermodynamics_and_bulk(
     ax.plot(time, qv, color="black", linestyle="-", label=r"$q_\text{v}$")
     ax.set_yscale("log")
     ax.set_ylim(1e-5, 1e-2)
-    ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-    ax.set_ylabel(r"mixing ratio [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
-    ax.legend(fontsize=ax_lab_fsize)
+    ax.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
+    ax.set_ylabel(r"mixing ratio [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize2)
+    ax.legend(fontsize=ax_lab_fsize2)
     ax.tick_params(labelsize=tick_fsize)
     ax.set_xlim(time[0], t_lim)
     ax.grid(visible=True)
@@ -128,9 +130,9 @@ def plot_thermodynamics_and_bulk(
         twin.plot(time, nc, color="red", linestyle="densly dashdot", label="water")
         twin.plot(time, ni, color="blue", linestyle="densly dashed", label="ice")
         twin.set_yscale("log")
-        twin.set_xlabel("time [s]", fontsize=ax_lab_fsize)
+        twin.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
         twin.set_ylabel(
-            r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize
+            r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize2
         )
         twin.tick_params(labelsize=tick_fsize)
 
@@ -147,8 +149,8 @@ def plot_thermodynamics_and_bulk(
             linewidth=1.5,
         )
         ax.set_xlim(left=234, right=239)
-        ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
-        ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
+        ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize2)
+        ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize2)
         ax.tick_params(labelsize=tick_fsize)
         ax.grid(visible=True)
         ax.axvline(x=first_T_frz, color="black", linestyle=":")
@@ -158,9 +160,9 @@ def plot_thermodynamics_and_bulk(
         ax.plot(time, ri * 1e6, color="blue", linestyle="--", label="ice")
         ax.set_yscale("log")
         ax.set_ylim(1e-2, 1e2)
-        ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-        ax.set_ylabel("mean radius [µm]", fontsize=ax_lab_fsize)
-        ax.legend(fontsize=ax_lab_fsize)
+        ax.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
+        ax.set_ylabel("mean radius [µm]", fontsize=ax_lab_fsize2)
+        ax.legend(fontsize=ax_lab_fsize2)
         ax.set_xlim(time[0], t_lim)
         ax.tick_params(labelsize=tick_fsize)
         ax.grid(visible=True)
@@ -173,7 +175,7 @@ def plot_thermodynamics_and_bulk(
     if show_jhom:
         lin_s_SP2023 = "--"
         lin_s_KM2016 = "-"
-        if simulation["settings"]["hom_freezing"] == "Spichtinger2023":
+        if simulation["settings"]["hom_freezing"] == "KoopMurray2016_DWA":
             lin_s_SP2023 = "-"
             lin_s_KM2016 = "--"
 
@@ -192,15 +194,15 @@ def plot_thermodynamics_and_bulk(
             label="JHOM-DWA",
         )
         ax.set_ylabel(
-            r"nucleation rate [$\mathrm{m^{-3} \, s^{-1}}$]", fontsize=ax_lab_fsize
+            r"nucleation rate [$\mathrm{m^{-3} \, s^{-1}}$]", fontsize=ax_lab_fsize2
         )
         ax.set_ylim(1e-30, 1e30)
         ax.set_title(title_add[iax] + r"nucleation rates", fontsize=ax_lab_fsize)
-        ax.legend(loc="upper left", fontsize=ax_lab_fsize)
+        ax.legend(loc="upper left", fontsize=ax_lab_fsize2)
         ax.set_yscale("log")
         ax.set_xlim(time[0], t_lim)
         ax.axvline(x=first_ice_time, color="black", linestyle=":")
-        ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
+        ax.set_xlabel("time [s]", fontsize=ax_lab_fsize2)
         if plot_daw:
             twin = ax.twinx()
             twin.plot(
@@ -211,9 +213,9 @@ def plot_thermodynamics_and_bulk(
                 label=r"$\Delta a_{w}$",
             )
             twin.set_ylim(0.2, 0.35)
-            twin.set_ylabel("water activity difference", fontsize=ax_lab_fsize)
+            twin.set_ylabel("water activity difference", fontsize=ax_lab_fsize2)
             twin.tick_params(labelsize=tick_fsize)
-            twin.legend(loc="lower left", fontsize=ax_lab_fsize)
+            twin.legend(loc="lower left", fontsize=ax_lab_fsize2)
         else:
             twin = ax.twinx()
             twin.plot(
@@ -224,16 +226,16 @@ def plot_thermodynamics_and_bulk(
                 linestyle="dashdot",
             )
             twin.set_ylim(-10, 10)
-            twin.set_ylabel("relative error", fontsize=ax_lab_fsize)
+            twin.set_ylabel("relative error", fontsize=ax_lab_fsize2)
             twin.tick_params(labelsize=tick_fsize)
-            twin.legend(loc="lower left", fontsize=ax_lab_fsize)
+            twin.legend(loc="lower left", fontsize=ax_lab_fsize2)
     else:
         ax.scatter(radius * 1e6, multiplicity)
         ax.set_yscale("log")
         ax.set_xscale("log")
         ax.set_xlim(1e-3, 5e-0)
-        ax.set_xlabel("initial radius [µm]", fontsize=ax_lab_fsize)
-        ax.set_ylabel("multiplicity", fontsize=ax_lab_fsize)
+        ax.set_xlabel("initial radius [µm]", fontsize=ax_lab_fsize2)
+        ax.set_ylabel("multiplicity", fontsize=ax_lab_fsize2)
         ax.set_title(title_add[iax] + r"CCN size distribution", fontsize=ax_lab_fsize)
 
     ax.tick_params(labelsize=tick_fsize)
@@ -381,7 +383,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         ens_variable_sec = ens_variable_sec * 1e3
         binwidth = 0.25
     elif ens_variable_name == "n_ccn":
-        y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
+        y_label = r"ccn concentration at STP [$\mathrm{cm^{-3}}$]"
         y_label_sec = r"radius [$\mathrm{\mu m}$]"
         ens_variable = ens_variable / 1.0e6
         ens_variable_sec = ens_variable_sec * 1.0e6
