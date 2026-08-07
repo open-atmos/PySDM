@@ -46,6 +46,7 @@ jobs:
       - name: run-with-jax-backend
         run: |
           sed -i -e 's/GPU/JAX/g' docs_code.py
+          sed -i -e 's/Coalescence(/Coalescence(adaptive=False,/g' docs_code.py
           awk "{print}; /readme.png/ {exit}" docs_code.py > docs_code_jax.py
           python -We docs_code_jax.py
       - name: jax-artefacts
