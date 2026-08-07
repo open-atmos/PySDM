@@ -31,7 +31,8 @@ class Standard:
     def K(const, K, r, lmbd, T, rho):  # pylint: disable=too-many-arguments
         return K / (
             r / (r + lmbd)
-            + K
+            + 4.0
+            * K
             / const.HAC_ice
             / np.sqrt(8.0 * const.Rd * T / const.PI)
             / const.c_pd
