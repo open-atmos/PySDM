@@ -13,13 +13,17 @@ from PySDM.products import WallTime
 
 def run(settings, backend):
     env = Box(dv=settings.dv, dt=settings.dt)
-    builder = Builder(n_sd=settings.n_sd, backend=backend, environment=env)
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend,
+        environment=env,
+        dynamics=(Coalescence(collision_kernel=settings.kernel),),
+    )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
         settings.n_sd
     )
-    builder.add_dynamic(Coalescence(collision_kernel=settings.kernel))
     particles = builder.build(attributes, products=(WallTime(),))
 
     states = {}

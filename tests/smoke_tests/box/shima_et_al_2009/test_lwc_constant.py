@@ -56,16 +56,18 @@ def test_lwc_constant(backend_class, croupier, adaptive):
 
     env = Box(dt=dt, dv=dv)
     builder = Builder(
-        n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+        n_sd=n_sd,
+        backend=backend_class(formulae=formulae),
+        environment=env,
+        dynamics=(
+            Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
+        ),
     )
 
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         spectrum
     ).sample_deterministic(n_sd)
-    builder.add_dynamic(
-        Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
-    )
     particulator = builder.build(attributes)
 
     volumes = {}

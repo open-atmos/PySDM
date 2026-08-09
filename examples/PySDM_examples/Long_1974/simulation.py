@@ -15,19 +15,20 @@ class Simulation(BasicSimulation):
             n_sd=settings.n_sd,
             backend=CPU(),
             environment=Box(dv=settings.dv, dt=settings.dt),
+            dynamics=(
+                Coalescence(
+                    collision_kernel=settings.kernel,
+                    coalescence_efficiency=settings.coal_eff,
+                    adaptive=settings.adaptive,
+                ),
+            ),
         )
         builder.particulator.environment["rhod"] = settings.rhod
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
         ).sample_deterministic(settings.n_sd)
-        builder.add_dynamic(
-            Coalescence(
-                collision_kernel=settings.kernel,
-                coalescence_efficiency=settings.coal_eff,
-                adaptive=settings.adaptive,
-            )
-        )
+
         products = (
             ParticleVolumeVersusRadiusLogarithmSpectrum(
                 radius_bins_edges=settings.radius_bins_edges, name="dv/dlnr"

@@ -456,7 +456,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 multiplicity=self.attributes["multiplicity"],
                 dm_total=self.attributes["diffusional growth mass change"],
                 signed_water_mass=self.attributes["signed water mass"],
-                dry_air_density=self.environment["dry_air_density"],
+                dry_air_density=self.environment["rhod"],
                 molar_mass_heavy_molecule=getattr(
                     self.formulae.constants,
                     {
@@ -573,6 +573,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
         )
+        self.attributes.mark_updated("signed water mass")
 
     def homogeneous_freezing_threshold(self):
         self.backend.homogeneous_freezing_threshold(
@@ -583,6 +584,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
         )
+        self.attributes.mark_updated("signed water mass")
 
     def thaw_instantaneous(self):
         self.backend.thaw_instantaneous(
@@ -592,3 +594,20 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell=self.attributes["cell id"],
             temperature=self.environment["T"],
         )
+        self.attributes.mark_updated("signed water mass")
+
+    def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
+        if stochastic_sedimentation_removal:
+            self.backend.sedimentation_removal_stochastic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )
+        else:
+            self.backend.sedimentation_removal_deterministic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )

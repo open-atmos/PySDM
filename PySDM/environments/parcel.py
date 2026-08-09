@@ -23,17 +23,22 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         dt,
         mass_of_dry_air: float,
         p0: float,
-        initial_water_vapour_mixing_ratio: float,
         T0: float,
         w: Union[float, callable],
         z0: float = 0,
         mixed_phase=False,
         variables: Optional[List[str]] = None,
+        initial_water_vapour_mixing_ratio: float = None,
+        initial_relative_humidity: float = None,
     ):
+        assert (initial_water_vapour_mixing_ratio is not None) ^ (
+            initial_relative_humidity is not None
+        )
         variables = (variables or []) + ["rhod", "z"]
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
+        self.initial_relative_humidity = initial_relative_humidity
         self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
         self.T0 = T0
         self.z0 = z0
@@ -50,6 +55,16 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
 
     def register(self, builder):
         formulae = builder.particulator.formulae
+
+        if self.initial_relative_humidity is not None:
+            self.initial_water_vapour_mixing_ratio = (
+                formulae.trivia.water_vapour_mixing_ratio(
+                    self.p0,
+                    self.initial_relative_humidity,
+                    formulae.saturation_vapour_pressure.pvs_water(self.T0),
+                )
+            )
+
         pd0 = formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
         rhod0 = formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
         self.mesh.dv = formulae.trivia.volume_of_density_mass(
@@ -66,6 +81,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self._tmp["water_vapour_mixing_ratio"][
             :
         ] = self.initial_water_vapour_mixing_ratio
+
         self.sync_parcel_vars()
         Moist.sync(self)
         self.notify()

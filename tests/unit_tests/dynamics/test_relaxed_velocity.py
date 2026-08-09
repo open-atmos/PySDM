@@ -53,9 +53,8 @@ def test_small_timescale(default_attributes, constant_timescale, backend_instanc
         n_sd=len(default_attributes["multiplicity"]),
         backend=backend_instance,
         environment=env,
+        dynamics=(RelaxedVelocity(c=1e-12, constant=constant_timescale),),
     )
-
-    builder.add_dynamic(RelaxedVelocity(c=1e-12, constant=constant_timescale))
 
     builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
@@ -85,9 +84,8 @@ def test_large_timescale(default_attributes, constant_timescale, backend_instanc
         n_sd=len(default_attributes["multiplicity"]),
         backend=backend_instance,
         environment=env,
+        dynamics=(RelaxedVelocity(c=1e15, constant=constant_timescale),),
     )
-
-    builder.add_dynamic(RelaxedVelocity(c=1e15, constant=constant_timescale))
 
     builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
@@ -116,10 +114,8 @@ def test_behavior(default_attributes, constant_timescale, backend_instance):
         n_sd=len(default_attributes["multiplicity"]),
         backend=backend_instance,
         environment=env,
+        dynamics=(RelaxedVelocity(c=100, constant=constant_timescale),),
     )
-
-    # relaxation happens too quickly unless c is high enough
-    builder.add_dynamic(RelaxedVelocity(c=100, constant=constant_timescale))
 
     builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
@@ -160,15 +156,14 @@ def test_timescale(default_attributes, c, constant_timescale, backend_instance):
 
     The constant timescale should be constant.
     """
+    dyn = RelaxedVelocity(c=c, constant=constant_timescale)
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
         backend=backend_instance,
         environment=env,
+        dynamics=(dyn,),
     )
-
-    dyn = RelaxedVelocity(c=c, constant=constant_timescale)
-    builder.add_dynamic(dyn)
 
     default_attributes["relative fall momentum"] = np.zeros_like(
         default_attributes["multiplicity"]

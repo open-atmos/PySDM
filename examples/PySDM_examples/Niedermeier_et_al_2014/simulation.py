@@ -32,11 +32,12 @@ class Simulation(BasicSimulation):
                 override_jit_flags={"parallel": False},
             ),
             environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+                Freezing(immersion_freezing="time-dependent"),
+            ),
         )
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(Freezing(immersion_freezing="time-dependent"))
 
         air_volume = settings.mass_of_dry_air / settings.rhod0
         (
