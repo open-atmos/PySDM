@@ -243,7 +243,6 @@ def plot_thermodynamics_and_bulk(
 
 
 def plot_freezing_temperatures_histogram(ax, simulation, plot_rhi=False):
-
     number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
 
     for i in range(number_of_ensemble_runs):
@@ -335,7 +334,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     height=4,
     width=5,
 ):
-
     sns.set_theme(style="ticks")
 
     second_axis = True
@@ -455,7 +453,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
 def plot_ensemble_bulk(
     ax, ensemble_simulations, var_name, title_add=""
 ):  # pylint: disable=too-many-nested-blocks
-
     colors = ["blue", "red", "cyan"]
     linestyles = ["-", "--", ":"]
     pyplot.rcParams["axes.prop_cycle"] = cycler(color=colors) + cycler(
