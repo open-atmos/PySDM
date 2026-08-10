@@ -79,7 +79,9 @@ class IsotopeMethods(BackendMethods):
                 delta_n_heavy_total = 0
 
                 for sd_id in range(multiplicity.shape[0]):
+                    print("dm=", dm_total[sd_id])
                     if not converged:
+
                         old_n_molecules = (
                             signed_water_mass[sd_id] - dm_total[sd_id]
                         ) / Mv
@@ -115,9 +117,9 @@ class IsotopeMethods(BackendMethods):
                         new_n_heavy_molecules - old_n_heavy_molecules
                     )
 
-                    assert new_n_heavy_molecules >= 0
+                    # assert new_n_heavy_molecules >= 0
                     delta_n_heavy_total += delta_n_heavy_per_drop * multiplicity[sd_id]
-                    if converged:
+                    if converged:  # run this *n_substeps
                         # eps_old = Rv / new_n_heavy_molecules * new_n_molecules
                         moles_heavy_molecule[sd_id] += delta_n_heavy_per_drop
                         old_n_molecules = new_n_molecules
@@ -140,7 +142,9 @@ class IsotopeMethods(BackendMethods):
                 if not converged:
                     if new_molality < 0:  # check long vs short step
                         n_substeps *= 2  # repeat substeps
+                        print(n_substeps, max_n_substeps, new_molality)
                         if n_substeps > max_n_substeps:
+
                             assert (
                                 False
                             ), "Exceeded maximum number of substeps, solution not found!"

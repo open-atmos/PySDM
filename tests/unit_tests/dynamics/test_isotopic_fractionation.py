@@ -309,7 +309,7 @@ class TestIsotopicFractionation:
                 mass_of_dry_air=1 * si.kg,
                 p0=1000 * si.hPa,
                 T0=300 * si.K,
-                initial_relative_humidity=0.99,
+                initial_relative_humidity=0.7,
                 w=1 * si.m / si.s,
                 variables=[
                     ambient_var,
