@@ -519,10 +519,10 @@ def plot_ensemble_bulk(
         title = r"$n_\text{i}$"
         ax.set_xlim(1e6, 1e10)
     elif var_name == "IWC":
-        ax.set_xscale("log")
+        ax.set_xscale("linear")
         x_label = r"mixing ratio [$\mathrm{kg \, kg^{-1}}$]"
         title = "ice mixing ratio"
-        ax.set_xlim(1e-4, 1e-3)
+        ax.set_xlim(3e-4, 1e-3)
     elif var_name == "freezing_fraction":
         title = r"$n_\text{frz}$"
         x_label = r"frozen fraction [$\mathrm{\%}$]"
@@ -533,7 +533,7 @@ def plot_ensemble_bulk(
         y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
         ens_label = r"$n_\text{ccn}$ ensemble"
     elif ens_var_name == "w_updraft":
-        ax.set_yscale("log")
+        ax.set_yscale("linear")
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         ens_label = "w ensemble"
     elif ens_var_name == "sigma_droplet_distribution":
@@ -543,9 +543,11 @@ def plot_ensemble_bulk(
         ax.set_yscale("log")
         y_label = "number of super-particles"
         ens_label = r"$n_\text{sd}$ ensemble"
+
     ax.set_title(title_add + " " + title + " for " + ens_label, fontsize=ax_lab_fsize)
-    ax.set_xlabel(x_label, fontsize=ax_lab_fsize)
-    ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
+    ax.set_xlabel(x_label, fontsize=ax_lab_fsize2)
+    ax.set_ylabel(y_label, fontsize=ax_lab_fsize2)
     ax.grid(visible=True)
     ax.legend(fontsize=ax_lab_fsize)
+    ax.tick_params(labelsize=tick_fsize + 2)
     return ax
