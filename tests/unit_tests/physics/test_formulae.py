@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import numpy as np
+
 import pytest
 
 from PySDM.formulae import Formulae, _choices
@@ -152,6 +154,20 @@ class TestFormulae:
 
             # Assert
             assert vpour_diffusivity.check("[area]/[time]")
+
+    @staticmethod
+    def test_diffusion_ice_kinetics_standard_4_factor():
+        """regression test for a bug reported in
+        [GMD review](https://doi.org/10.5194/egusphere-2026-2217-RC2)
+        of Lüttmer et al. 2026 paper on homogeneous freezing"""
+        # Arrange
+        formulae = Formulae(diffusion_ice_kinetics="Standard")
+
+        # Act
+        actual = formulae.diffusion_ice_kinetics.K(K=1, r=1, lmbd=1e10, T=1, rho=1)
+
+        # Assert
+        np.testing.assert_approx_equal(actual=actual, desired=6793, significant=4)
 
     @staticmethod
     def test___str__():
