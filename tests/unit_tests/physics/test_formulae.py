@@ -157,8 +157,7 @@ class TestFormulae:
 
     @staticmethod
     def test_diffusion_ice_kinetics_standard_4_factor():
-        """regression test for a bug reported in
-        [GMD review](https://doi.org/10.5194/egusphere-2026-2217-RC2)
+        """regression test for a bug reported in GMD review (DOI: 10.5194/egusphere-2026-2217-RC2)
         of Lüttmer et al. 2026 paper on homogeneous freezing"""
         # Arrange
         formulae = Formulae(diffusion_ice_kinetics="Standard")
