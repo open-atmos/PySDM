@@ -344,18 +344,21 @@ class TestCollisionMethods:
         )
 
     @staticmethod
-    def test_normalize(backend_instance_with_jax):
+    @pytest.mark.parametrize("n_sd", [2, 4, 7])
+    def test_normalize(backend_instance_with_jax, n_sd):
         backend = backend_instance_with_jax
 
-        cell_id = backend.Storage.from_ndarray(np.asarray([0, 0, 0]))
-        cell_start = backend.Storage.from_ndarray(np.asarray([0, 3]))
+        # Arrange
+        cell_id = backend.Storage.from_ndarray(np.asarray([0] * n_sd))
+        cell_start = backend.Storage.from_ndarray(np.asarray([0, n_sd]))
         cell_idx = backend.Storage.from_ndarray(np.asarray([0, 1]))
         norm_factor = backend.Storage.from_ndarray(np.asarray([np.nan]))
-        prob = backend.Storage.from_ndarray(np.asarray([0.0]))
+        prob = backend.Storage.from_ndarray(np.asarray([1.0] * (n_sd // 2)))
 
-        timestep = 1
-        dv = 1
+        timestep = 44
+        dv = 666
 
+        # Act
         backend.normalize(
             prob=prob,
             cell_id=cell_id,
@@ -365,6 +368,9 @@ class TestCollisionMethods:
             timestep=timestep,
             dv=dv,
         )
-        # assert (prob.to_ndarray() > 0.44).all()
-        assert (prob.to_ndarray() == 0.0).all()
-        # TODO #1913: epxand test case for concrete values
+
+        # Assert
+        mult = 0 if n_sd < 2 else (timestep / dv * n_sd * (n_sd - 1) / 2 / (n_sd // 2))
+        np.testing.assert_allclose(
+            actual=prob.to_ndarray(), desired=[1 * mult] * (n_sd // 2)
+        )

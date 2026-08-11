@@ -474,7 +474,7 @@ class CollisionsMethods(
                 norm_factor[i] = 0;
             }
             else {
-                auto half_sd_num = sd_num / 2;
+                auto half_sd_num = (int64_t)(sd_num / 2);
                 norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;
             }
             """,
