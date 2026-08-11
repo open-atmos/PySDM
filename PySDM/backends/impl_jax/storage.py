@@ -96,6 +96,7 @@ class Storage(StorageBase):
         self.fill(data)
 
     def fill(self, other):
+        # TODO #1913: move method impl to storage_impl (to jit assignment)
         if isinstance(other, Storage):
             self.data = self.data.at[:].set(other.data)
         else:
@@ -105,6 +106,10 @@ class Storage(StorageBase):
         return RowStorage(
             StorageSignature(self.data, (*self.shape[1:],), self.dtype), i, self
         )
+
+    def abs(self):
+        # TODO #1913: move method impl to storage_impl (to jit assignment)
+        self.data = self.data.at[:].set(jnp.abs(self.data))
 
     def to_ndarray(self):
         return np.array(self.data)

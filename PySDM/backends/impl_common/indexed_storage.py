@@ -46,9 +46,7 @@ def make_IndexedStorage(backend):
             if isinstance(backend, Jax):
                 return super().row_view(i)
 
-            if len(self.idx.shape) == 1:
-                return IndexedStorage.indexed(self.idx, super().row_view(i))
-            return IndexedStorage.indexed(self.idx[i], super().row_view(i))
+            return IndexedStorage.indexed(self.idx, super().row_view(i))
 
         def to_ndarray(self, *, raw=False):
             result = backend.Storage.to_ndarray(self)

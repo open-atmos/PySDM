@@ -11,17 +11,19 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 class IndexMethods(BackendMethods):
 
-    @cached_property
-    def _shuffle_global_body(self):
-        @jax.jit
-        def body(idx, u01):
-            idx = idx.at[:].set(jax.numpy.argsort(u01, stable=False))
-            return idx
+    # @cached_property
+    # def _shuffle_global_body(self):
+    #     @jax.jit
+    #     def body(idx, u01):
+    #         idx = idx.at[:].set(jax.numpy.argsort(u01, stable=False))
+    #         return idx
 
-        return body
+    #     return body
 
     def shuffle_global(self, idx, u01):
         # TODO #1913: decide whether to use u01 argsort or random.permute
+        # TODO #1913: https://github.com/jax-ml/jax/issues/5328
+        # idx.data = self._shuffle_global_body(idx.data, u01) (requires actual u01)
         u01.permute(idx)
 
     def shuffle_local(self, idx, u01, cell_start):  # pylint: disable=unused-argument
