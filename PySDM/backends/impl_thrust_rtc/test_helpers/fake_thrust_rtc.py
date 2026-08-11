@@ -24,6 +24,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             )
 
         def __setitem__(self, key, value):
+            if isinstance(value, FakeThrustRTC.Number):
+                value = value.ndarray
             self.ndarray[key] = value
 
         def __getitem__(self, item):
