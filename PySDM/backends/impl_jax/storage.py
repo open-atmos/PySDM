@@ -29,7 +29,7 @@ class Storage(StorageBase):
         if isinstance(other, Storage):
             self.data = other.data.ravel()
         else:
-            self.data = other.ravel()
+            self.data = jnp.array(other.ravel())
 
     def at(self, index):
         assert self.shape == (

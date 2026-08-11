@@ -190,7 +190,7 @@ class TestFormulae:
 
         form = Formulae(constants={"T0": 666})
 
-        assert type(form.trivia.C2K.jax) == jaxlib._jax.PjitFunction
+        assert isinstance(form.trivia.C2K.jax, jaxlib._jax.PjitFunction)
         assert form.trivia.C2K.jax(0) == 666
         # TODO #1913: add test cases for methods without constants,
         # TODO #1913: add test cases using numpy methods
