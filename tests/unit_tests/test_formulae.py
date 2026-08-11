@@ -3,6 +3,7 @@ from collections import namedtuple
 
 import numpy as np
 import pytest
+import jaxlib
 
 from PySDM import formulae, Formulae
 from PySDM.physics import si
@@ -183,3 +184,13 @@ class TestFormulae:
 
         # assert
         assert sut.seed == seed
+
+    @staticmethod
+    def test_jax():
+
+        form = Formulae(constants={"T0": 666})
+
+        assert type(form.trivia.C2K.jax) == jaxlib._jax.PjitFunction
+        assert form.trivia.C2K.jax(0) == 666
+        # TODO #1913: add test cases for methods without constants,
+        # TODO #1913: add test cases using numpy methods

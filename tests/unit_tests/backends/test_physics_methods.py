@@ -52,7 +52,6 @@ class TestPhysicsMethods:
         mass_in = backend.Storage.from_ndarray(mass)
         volume_out = backend.Storage.from_ndarray(np.zeros_like(mass_in.to_ndarray()))
 
-        print(f"{mass_in.data=}")
         # Act
         sut(volume=volume_out, mass=mass_in)
 

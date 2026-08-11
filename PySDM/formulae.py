@@ -273,6 +273,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 
 def _jax(fun, constants):
+    # TODO #1913: add handling of methods without the constants argument
     return jax.jit(partial(fun, constants))
 
 

@@ -19,8 +19,6 @@ class PhysicsMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def _volume_of_mass_body(self):
         ff = self.formulae
 
-        # @jax.jit
-        # TODO #1913: fix test fails for this method
         def body(mass):
             return ff.particle_shape_and_density.mass_to_volume.jax(mass)
 
