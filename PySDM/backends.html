@@ -68,8 +68,10 @@
             <h2>Submodules</h2>
             <ul>
                     <li><a href="backends/impl_common.html">impl_common</a></li>
+                    <li><a href="backends/impl_jax.html">impl_jax</a></li>
                     <li><a href="backends/impl_numba.html">impl_numba</a></li>
                     <li><a href="backends/impl_thrust_rtc.html">impl_thrust_rtc</a></li>
+                    <li><a href="backends/jax.html">jax</a></li>
                     <li><a href="backends/numba.html">numba</a></li>
                     <li><a href="backends/thrust_rtc.html">thrust_rtc</a></li>
             </ul>
@@ -81,6 +83,9 @@
             </li>
             <li>
                     <a class="variable" href="#GPU">GPU</a>
+            </li>
+            <li>
+                    <a class="variable" href="#JAX">JAX</a>
             </li>
             <li>
                     <a class="class" href="#Numba">Numba</a>
@@ -105,6 +110,36 @@
                         </li>
                         <li>
                                 <a class="variable" href="#Numba.default_jit_flags">default_jit_flags</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Jax">Jax</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Jax.__init__">Jax</a>
+                        </li>
+                        <li>
+                                <a class="class" href="#Jax.Storage">Jax.Storage</a>
+                        </li>
+                        <li>
+                                <a class="class" href="#Jax.Random">Jax.Random</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Jax.default_croupier">default_croupier</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Jax.block_until_ready">block_until_ready</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Jax.formulae">formulae</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Jax.formulae_flattened">formulae_flattened</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Jax.default_jit_flags">default_jit_flags</a>
                         </li>
                 </ul>
 
@@ -142,6 +177,9 @@
                         <li>
                                 <a class="variable" href="#Random.generator">generator</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Random.u01">u01</a>
+                        </li>
                 </ul>
 
             </li>
@@ -168,101 +206,106 @@
 
                         <label class="view-source-button" for="mod-backends-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Number-crunching backends</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">numba</span> <span class="k">as</span> <span class="n">_numba</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="c1"># for pdoc</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="n">CPU</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="n">GPU</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="n">Numba</span> <span class="o">=</span> <span class="n">_numba</span><span class="o">.</span><span class="n">Numba</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">ThrustRTC</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="c1"># https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_cuda_is_available</span><span class="p">():</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">lib_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;libcuda.so&quot;</span><span class="p">,</span> <span class="s2">&quot;libcuda.dylib&quot;</span><span class="p">,</span> <span class="s2">&quot;cuda.dll&quot;</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">for</span> <span class="n">libname</span> <span class="ow">in</span> <span class="n">lib_names</span><span class="p">:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>            <span class="n">cuda_lib</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="n">libname</span><span class="p">)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="k">continue</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="k">break</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="kc">False</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">cuda_lib</span><span class="o">.</span><span class="n">cuInit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># cuda.h: CUDA_SUCCESS = 0</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="n">error_str</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">()</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="n">cuda_lib</span><span class="o">.</span><span class="n">cuGetErrorString</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">error_str</span><span class="p">))</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="c1"># pylint: disable=no-member</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>            <span class="sa">f</span><span class="s2">&quot;CUDA library found but cuInit() failed (error code: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">;&quot;</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="sa">f</span><span class="s2">&quot; message: </span><span class="si">{</span><span class="n">error_str</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="p">)</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">if</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                <span class="s2">&quot;to use GPU on Colab set hardware accelerator to &#39;GPU&#39; before session start&quot;</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>                <span class="s1">&#39; in the &quot;Runtime :: Change runtime type :: Hardware accelerator&quot; menu&#39;</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="p">)</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="kc">False</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">return</span> <span class="kc">True</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="k">if</span> <span class="s2">&quot;CI&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_cuda_is_available</span><span class="p">()</span> <span class="ow">or</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()):</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.thrust_rtc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTC</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="k">else</span><span class="p">:</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.impl_thrust_rtc.test_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">flag</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="n">flag</span><span class="o">.</span><span class="n">fakeThrustRTC</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_common.random_common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=ungrouped-imports</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="n">RandomCommon</span><span class="p">,</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="p">)</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.thrust_rtc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTC</span>  <span class="c1"># pylint: disable=ungrouped-imports</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>    <span class="n">ThrustRTC</span><span class="o">.</span><span class="n">ENABLE</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>    <span class="n">ThrustRTC</span><span class="o">.</span><span class="n">Random</span> <span class="o">=</span> <span class="n">Random</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="n">_BACKEND_CACHE</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>
-</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_cached_backend</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="n">key</span> <span class="o">=</span> <span class="n">backend_class</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formulae</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_BACKEND_CACHE</span><span class="p">:</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>        <span class="n">_BACKEND_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend_class</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="n">formulae</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="k">return</span> <span class="n">_BACKEND_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a><span class="n">CPU</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_cached_backend</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="n">Numba</span><span class="p">)</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a><span class="sd">&quot;&quot;&quot; returns a cached instance of the Numba backend (cache key including formulae parameters) &quot;&quot;&quot;</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos">93</span></a>
-</span><span id="L-94"><a href="#L-94"><span class="linenos">94</span></a><span class="n">GPU</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_cached_backend</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="n">ThrustRTC</span><span class="p">)</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos">95</span></a><span class="sd">&quot;&quot;&quot; returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) &quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Number-crunching backends</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">cuda</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">numba</span> <span class="k">as</span> <span class="n">_numba</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">jax</span> <span class="k">as</span> <span class="n">_jax</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="c1"># for pdoc</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="n">CPU</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="n">GPU</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="n">JAX</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="n">Numba</span> <span class="o">=</span> <span class="n">_numba</span><span class="o">.</span><span class="n">Numba</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="n">Jax</span> <span class="o">=</span> <span class="n">_jax</span><span class="o">.</span><span class="n">Jax</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="n">ThrustRTC</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="c1"># https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_cuda_is_available</span><span class="p">():</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="n">lib_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;libcuda.so&quot;</span><span class="p">,</span> <span class="s2">&quot;libcuda.dylib&quot;</span><span class="p">,</span> <span class="s2">&quot;cuda.dll&quot;</span><span class="p">)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="k">for</span> <span class="n">libname</span> <span class="ow">in</span> <span class="n">lib_names</span><span class="p">:</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>            <span class="n">cuda_lib</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="n">libname</span><span class="p">)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>            <span class="k">continue</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>            <span class="k">break</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">cuda_lib</span><span class="o">.</span><span class="n">cuInit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># cuda.h: CUDA_SUCCESS = 0</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="n">error_str</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">()</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="n">cuda_lib</span><span class="o">.</span><span class="n">cuGetErrorString</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">error_str</span><span class="p">))</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="c1"># pylint: disable=no-member</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>            <span class="sa">f</span><span class="s2">&quot;CUDA library found but cuInit() failed (error code: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">;&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>            <span class="sa">f</span><span class="s2">&quot; message: </span><span class="si">{</span><span class="n">error_str</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="k">if</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>                <span class="s2">&quot;to use GPU on Colab set hardware accelerator to &#39;GPU&#39; before session start&quot;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>                <span class="s1">&#39; in the &quot;Runtime :: Change runtime type :: Hardware accelerator&quot; menu&#39;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>            <span class="p">)</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>    <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="k">if</span> <span class="s2">&quot;CI&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_cuda_is_available</span><span class="p">()</span> <span class="ow">or</span> <span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()):</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.thrust_rtc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTC</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="k">else</span><span class="p">:</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.impl_thrust_rtc.test_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">flag</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="n">flag</span><span class="o">.</span><span class="n">fakeThrustRTC</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_common.random_common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=ungrouped-imports</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="n">RandomCommon</span><span class="p">,</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>    <span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.thrust_rtc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTC</span>  <span class="c1"># pylint: disable=ungrouped-imports</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="n">ThrustRTC</span><span class="o">.</span><span class="n">ENABLE</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="n">ThrustRTC</span><span class="o">.</span><span class="n">Random</span> <span class="o">=</span> <span class="n">Random</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="n">_BACKEND_CACHE</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_cached_backend</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="n">key</span> <span class="o">=</span> <span class="n">backend_class</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formulae</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_BACKEND_CACHE</span><span class="p">:</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="n">_BACKEND_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend_class</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="n">formulae</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">return</span> <span class="n">_BACKEND_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="n">CPU</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_cached_backend</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="n">Numba</span><span class="p">)</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">&quot;&quot;&quot; returns a cached instance of the Numba backend (cache key including formulae parameters) &quot;&quot;&quot;</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="n">GPU</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_cached_backend</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="n">ThrustRTC</span><span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">&quot;&quot;&quot; returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) &quot;&quot;&quot;</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="n">JAX</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_cached_backend</span><span class="p">,</span> <span class="n">backend_class</span><span class="o">=</span><span class="n">Jax</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -294,6 +337,18 @@
             <div class="docstring"><p>returns a cached instance of the ThrustRTC backend (cache key including formulae parameters)</p>
 </div>
 
+
+                </section>
+                <section id="JAX">
+                    <div class="attr variable">
+            <span class="name">JAX</span>        =
+<span class="default_value">functools.partial(&lt;function _cached_backend&gt;, backend_class=&lt;class &#39;<a href="#Jax">Jax</a>&#39;&gt;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#JAX"></a>
+    
+    
 
                 </section>
                 <section id="Numba">
@@ -581,8 +636,8 @@
             </div>
             <div><dt><a href="backends/impl_numba/methods/index_methods.html#IndexMethods">PySDM.backends.impl_numba.methods.index_methods.IndexMethods</a></dt>
                                 <dd id="Numba.identity_index" class="variable"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.identity_index">identity_index</a></dd>
-                <dd id="Numba.shuffle_global" class="variable"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.shuffle_global">shuffle_global</a></dd>
-                <dd id="Numba.shuffle_local" class="variable"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.shuffle_local">shuffle_local</a></dd>
+                <dd id="Numba.shuffle_global" class="function"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.shuffle_global">shuffle_global</a></dd>
+                <dd id="Numba.shuffle_local" class="function"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.shuffle_local">shuffle_local</a></dd>
                 <dd id="Numba.sort_by_key" class="function"><a href="backends/impl_numba/methods/index_methods.html#IndexMethods.sort_by_key">sort_by_key</a></dd>
 
             </div>
@@ -878,7 +933,7 @@
 </span><span id="Numba.Storage-201"><a href="#Numba.Storage-201"><span class="linenos">201</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 </span><span id="Numba.Storage-202"><a href="#Numba.Storage-202"><span class="linenos">202</span></a>
 </span><span id="Numba.Storage-203"><a href="#Numba.Storage-203"><span class="linenos">203</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">urand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-</span><span id="Numba.Storage-204"><a href="#Numba.Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Numba.Storage-204"><a href="#Numba.Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="o">.</span><span class="n">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Numba.Storage-205"><a href="#Numba.Storage-205"><span class="linenos">205</span></a>
 </span><span id="Numba.Storage-206"><a href="#Numba.Storage-206"><span class="linenos">206</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Numba.Storage-207"><a href="#Numba.Storage-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -892,11 +947,20 @@
 </span><span id="Numba.Storage-215"><a href="#Numba.Storage-215"><span class="linenos">215</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Numba.Storage-216"><a href="#Numba.Storage-216"><span class="linenos">216</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span>
 </span><span id="Numba.Storage-217"><a href="#Numba.Storage-217"><span class="linenos">217</span></a>
-</span><span id="Numba.Storage-218"><a href="#Numba.Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Numba.Storage-219"><a href="#Numba.Storage-219"><span class="linenos">219</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-218"><a href="#Numba.Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="Numba.Storage-219"><a href="#Numba.Storage-219"><span class="linenos">219</span></a>        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 </span><span id="Numba.Storage-220"><a href="#Numba.Storage-220"><span class="linenos">220</span></a>
-</span><span id="Numba.Storage-221"><a href="#Numba.Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Numba.Storage-222"><a href="#Numba.Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-221"><a href="#Numba.Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Numba.Storage-222"><a href="#Numba.Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-223"><a href="#Numba.Storage-223"><span class="linenos">223</span></a>
+</span><span id="Numba.Storage-224"><a href="#Numba.Storage-224"><span class="linenos">224</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Numba.Storage-225"><a href="#Numba.Storage-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-226"><a href="#Numba.Storage-226"><span class="linenos">226</span></a>
+</span><span id="Numba.Storage-227"><a href="#Numba.Storage-227"><span class="linenos">227</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="Numba.Storage-228"><a href="#Numba.Storage-228"><span class="linenos">228</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="Numba.Storage-229"><a href="#Numba.Storage-229"><span class="linenos">229</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="Numba.Storage-230"><a href="#Numba.Storage-230"><span class="linenos">230</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="Numba.Storage-231"><a href="#Numba.Storage-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -936,8 +1000,10 @@
                 <dd id="Numba.Storage.to_ndarray" class="function"><a href="backends/impl_numba/storage.html#Storage.to_ndarray">to_ndarray</a></dd>
                 <dd id="Numba.Storage.upload" class="function"><a href="backends/impl_numba/storage.html#Storage.upload">upload</a></dd>
                 <dd id="Numba.Storage.fill" class="function"><a href="backends/impl_numba/storage.html#Storage.fill">fill</a></dd>
+                <dd id="Numba.Storage.row_view" class="function"><a href="backends/impl_numba/storage.html#Storage.row_view">row_view</a></dd>
                 <dd id="Numba.Storage.exp" class="function"><a href="backends/impl_numba/storage.html#Storage.exp">exp</a></dd>
                 <dd id="Numba.Storage.abs" class="function"><a href="backends/impl_numba/storage.html#Storage.abs">abs</a></dd>
+                <dd id="Numba.Storage.at" class="function"><a href="backends/impl_numba/storage.html#Storage.at">at</a></dd>
 
             </div>
                                 </dl>
@@ -959,7 +1025,7 @@
 </span><span id="Numba.Random-16"><a href="#Numba.Random-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
 </span><span id="Numba.Random-17"><a href="#Numba.Random-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 </span><span id="Numba.Random-18"><a href="#Numba.Random-18"><span class="linenos">18</span></a>
-</span><span id="Numba.Random-19"><a href="#Numba.Random-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Numba.Random-19"><a href="#Numba.Random-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
 </span><span id="Numba.Random-20"><a href="#Numba.Random-20"><span class="linenos">20</span></a>        <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </span></pre></div>
 
@@ -972,10 +1038,429 @@
                                     <div><dt><a href="backends/impl_numba/random.html#Random">PySDM.backends.impl_numba.random.Random</a></dt>
                                 <dd id="Numba.Random.__init__" class="function"><a href="backends/impl_numba/random.html#Random.__init__">Random</a></dd>
                 <dd id="Numba.Random.generator" class="variable"><a href="backends/impl_numba/random.html#Random.generator">generator</a></dd>
+                <dd id="Numba.Random.u01" class="function"><a href="backends/impl_numba/random.html#Random.u01">u01</a></dd>
 
             </div>
             <div><dt><a href="backends/impl_common/random_common.html#RandomCommon">PySDM.backends.impl_common.random_common.RandomCommon</a></dt>
                                 <dd id="Numba.Random.size" class="variable"><a href="backends/impl_common/random_common.html#RandomCommon.size">size</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Jax">
+                            <input id="Jax-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Jax</span><wbr>(<span class="base"><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods">PySDM.backends.impl_jax.methods.collisions_methods.CollisionsMethods</a></span>, <span class="base"><a href="backends/impl_jax/methods/pair_methods.html#PairMethods">PySDM.backends.impl_jax.methods.pair_methods.PairMethods</a></span>, <span class="base"><a href="backends/impl_jax/methods/index_methods.html#IndexMethods">PySDM.backends.impl_jax.methods.index_methods.IndexMethods</a></span>, <span class="base"><a href="backends/impl_jax/methods/physics_methods.html#PhysicsMethods">PySDM.backends.impl_jax.methods.physics_methods.PhysicsMethods</a></span>, <span class="base"><a href="backends/impl_jax/methods/moments_methods.html#MomentsMethods">PySDM.backends.impl_jax.methods.moments_methods.MomentsMethods</a></span>):
+
+                <label class="view-source-button" for="Jax-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Jax"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Jax-14"><a href="#Jax-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Jax</span><span class="p">(</span>
+</span><span id="Jax-15"><a href="#Jax-15"><span class="linenos">15</span></a>    <span class="n">methods</span><span class="o">.</span><span class="n">CollisionsMethods</span><span class="p">,</span>
+</span><span id="Jax-16"><a href="#Jax-16"><span class="linenos">16</span></a>    <span class="n">methods</span><span class="o">.</span><span class="n">PairMethods</span><span class="p">,</span>
+</span><span id="Jax-17"><a href="#Jax-17"><span class="linenos">17</span></a>    <span class="n">methods</span><span class="o">.</span><span class="n">IndexMethods</span><span class="p">,</span>
+</span><span id="Jax-18"><a href="#Jax-18"><span class="linenos">18</span></a>    <span class="n">methods</span><span class="o">.</span><span class="n">PhysicsMethods</span><span class="p">,</span>
+</span><span id="Jax-19"><a href="#Jax-19"><span class="linenos">19</span></a>    <span class="n">methods</span><span class="o">.</span><span class="n">MomentsMethods</span><span class="p">,</span>
+</span><span id="Jax-20"><a href="#Jax-20"><span class="linenos">20</span></a><span class="p">):</span>
+</span><span id="Jax-21"><a href="#Jax-21"><span class="linenos">21</span></a>    <span class="n">Storage</span> <span class="o">=</span> <span class="n">ImportedStorage</span>
+</span><span id="Jax-22"><a href="#Jax-22"><span class="linenos">22</span></a>    <span class="n">Random</span> <span class="o">=</span> <span class="n">ImportedRandom</span>
+</span><span id="Jax-23"><a href="#Jax-23"><span class="linenos">23</span></a>
+</span><span id="Jax-24"><a href="#Jax-24"><span class="linenos">24</span></a>    <span class="n">default_croupier</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+</span><span id="Jax-25"><a href="#Jax-25"><span class="linenos">25</span></a>
+</span><span id="Jax-26"><a href="#Jax-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Jax-27"><a href="#Jax-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Jax-28"><a href="#Jax-28"><span class="linenos">28</span></a>        <span class="n">formulae</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="Jax-29"><a href="#Jax-29"><span class="linenos">29</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Jax-30"><a href="#Jax-30"><span class="linenos">30</span></a>        <span class="n">double_precision</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Jax-31"><a href="#Jax-31"><span class="linenos">31</span></a>        <span class="n">override_jit_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="Jax-32"><a href="#Jax-32"><span class="linenos">32</span></a>        <span class="c1"># TODO #1913: investigate if there are any jit/jax flags we can add configuration for</span>
+</span><span id="Jax-33"><a href="#Jax-33"><span class="linenos">33</span></a>        <span class="n">block_until_ready</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Jax-34"><a href="#Jax-34"><span class="linenos">34</span></a>    <span class="p">):</span>
+</span><span id="Jax-35"><a href="#Jax-35"><span class="linenos">35</span></a>        <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;jax_enable_x64&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span id="Jax-36"><a href="#Jax-36"><span class="linenos">36</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">double_precision</span><span class="p">:</span>
+</span><span id="Jax-37"><a href="#Jax-37"><span class="linenos">37</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="Jax-38"><a href="#Jax-38"><span class="linenos">38</span></a>
+</span><span id="Jax-39"><a href="#Jax-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">block_until_ready</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="Jax-40"><a href="#Jax-40"><span class="linenos">40</span></a>            <span class="n">block_until_ready</span>  <span class="c1"># TODO #1913: implement switch in jit code</span>
+</span><span id="Jax-41"><a href="#Jax-41"><span class="linenos">41</span></a>        <span class="p">)</span>
+</span><span id="Jax-42"><a href="#Jax-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">formulae</span> <span class="ow">or</span> <span class="n">Formulae</span><span class="p">()</span>
+</span><span id="Jax-43"><a href="#Jax-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae_flattened</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">flatten</span>
+</span><span id="Jax-44"><a href="#Jax-44"><span class="linenos">44</span></a>
+</span><span id="Jax-45"><a href="#Jax-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span><span id="Jax-46"><a href="#Jax-46"><span class="linenos">46</span></a>
+</span><span id="Jax-47"><a href="#Jax-47"><span class="linenos">47</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">CollisionsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax-48"><a href="#Jax-48"><span class="linenos">48</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">PairMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax-49"><a href="#Jax-49"><span class="linenos">49</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">IndexMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax-50"><a href="#Jax-50"><span class="linenos">50</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">PhysicsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax-51"><a href="#Jax-51"><span class="linenos">51</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">MomentsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="Jax.__init__" class="classattr">
+                                        <input id="Jax.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">Jax</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">formulae</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">double_precision</span><span class="o">=</span><span class="kc">True</span>,</span><span class="param">	<span class="n">override_jit_flags</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="n">block_until_ready</span><span class="o">=</span><span class="kc">False</span></span>)</span>
+
+                <label class="view-source-button" for="Jax.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Jax.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Jax.__init__-26"><a href="#Jax.__init__-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Jax.__init__-27"><a href="#Jax.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Jax.__init__-28"><a href="#Jax.__init__-28"><span class="linenos">28</span></a>        <span class="n">formulae</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="Jax.__init__-29"><a href="#Jax.__init__-29"><span class="linenos">29</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Jax.__init__-30"><a href="#Jax.__init__-30"><span class="linenos">30</span></a>        <span class="n">double_precision</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Jax.__init__-31"><a href="#Jax.__init__-31"><span class="linenos">31</span></a>        <span class="n">override_jit_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="Jax.__init__-32"><a href="#Jax.__init__-32"><span class="linenos">32</span></a>        <span class="c1"># TODO #1913: investigate if there are any jit/jax flags we can add configuration for</span>
+</span><span id="Jax.__init__-33"><a href="#Jax.__init__-33"><span class="linenos">33</span></a>        <span class="n">block_until_ready</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Jax.__init__-34"><a href="#Jax.__init__-34"><span class="linenos">34</span></a>    <span class="p">):</span>
+</span><span id="Jax.__init__-35"><a href="#Jax.__init__-35"><span class="linenos">35</span></a>        <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;jax_enable_x64&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span id="Jax.__init__-36"><a href="#Jax.__init__-36"><span class="linenos">36</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">double_precision</span><span class="p">:</span>
+</span><span id="Jax.__init__-37"><a href="#Jax.__init__-37"><span class="linenos">37</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="Jax.__init__-38"><a href="#Jax.__init__-38"><span class="linenos">38</span></a>
+</span><span id="Jax.__init__-39"><a href="#Jax.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">block_until_ready</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="Jax.__init__-40"><a href="#Jax.__init__-40"><span class="linenos">40</span></a>            <span class="n">block_until_ready</span>  <span class="c1"># TODO #1913: implement switch in jit code</span>
+</span><span id="Jax.__init__-41"><a href="#Jax.__init__-41"><span class="linenos">41</span></a>        <span class="p">)</span>
+</span><span id="Jax.__init__-42"><a href="#Jax.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">formulae</span> <span class="ow">or</span> <span class="n">Formulae</span><span class="p">()</span>
+</span><span id="Jax.__init__-43"><a href="#Jax.__init__-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae_flattened</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">flatten</span>
+</span><span id="Jax.__init__-44"><a href="#Jax.__init__-44"><span class="linenos">44</span></a>
+</span><span id="Jax.__init__-45"><a href="#Jax.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span><span id="Jax.__init__-46"><a href="#Jax.__init__-46"><span class="linenos">46</span></a>
+</span><span id="Jax.__init__-47"><a href="#Jax.__init__-47"><span class="linenos">47</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">CollisionsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax.__init__-48"><a href="#Jax.__init__-48"><span class="linenos">48</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">PairMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax.__init__-49"><a href="#Jax.__init__-49"><span class="linenos">49</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">IndexMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax.__init__-50"><a href="#Jax.__init__-50"><span class="linenos">50</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">PhysicsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Jax.__init__-51"><a href="#Jax.__init__-51"><span class="linenos">51</span></a>        <span class="n">methods</span><span class="o">.</span><span class="n">MomentsMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Jax.default_croupier" class="classattr">
+                                <div class="attr variable">
+            <span class="name">default_croupier</span>        =
+<span class="default_value">&#39;local&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Jax.default_croupier"></a>
+    
+    
+
+                            </div>
+                            <div id="Jax.block_until_ready" class="classattr">
+                                <div class="attr variable">
+            <span class="name">block_until_ready</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Jax.block_until_ready"></a>
+    
+    
+
+                            </div>
+                            <div id="Jax.formulae" class="classattr">
+                                <div class="attr variable">
+            <span class="name">formulae</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Jax.formulae"></a>
+    
+    
+
+                            </div>
+                            <div id="Jax.formulae_flattened" class="classattr">
+                                <div class="attr variable">
+            <span class="name">formulae_flattened</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Jax.formulae_flattened"></a>
+    
+    
+
+                            </div>
+                            <div id="Jax.default_jit_flags" class="classattr">
+                                <div class="attr variable">
+            <span class="name">default_jit_flags</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Jax.default_jit_flags"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods">PySDM.backends.impl_jax.methods.collisions_methods.CollisionsMethods</a></dt>
+                                <dd id="Jax.collision_coalescence" class="function"><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods.collision_coalescence">collision_coalescence</a></dd>
+                <dd id="Jax.compute_gamma" class="function"><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods.compute_gamma">compute_gamma</a></dd>
+                <dd id="Jax.make_cell_caretaker" class="function"><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></dd>
+                <dd id="Jax.normalize" class="function"><a href="backends/impl_jax/methods/collisions_methods.html#CollisionsMethods.normalize">normalize</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_jax/methods/pair_methods.html#PairMethods">PySDM.backends.impl_jax.methods.pair_methods.PairMethods</a></dt>
+                                <dd id="Jax.find_pairs" class="function"><a href="backends/impl_jax/methods/pair_methods.html#PairMethods.find_pairs">find_pairs</a></dd>
+                <dd id="Jax.max_pair" class="function"><a href="backends/impl_jax/methods/pair_methods.html#PairMethods.max_pair">max_pair</a></dd>
+                <dd id="Jax.sort_within_pair_by_attr" class="function"><a href="backends/impl_jax/methods/pair_methods.html#PairMethods.sort_within_pair_by_attr">sort_within_pair_by_attr</a></dd>
+                <dd id="Jax.sum_pair" class="function"><a href="backends/impl_jax/methods/pair_methods.html#PairMethods.sum_pair">sum_pair</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_jax/methods/index_methods.html#IndexMethods">PySDM.backends.impl_jax.methods.index_methods.IndexMethods</a></dt>
+                                <dd id="Jax.shuffle_global" class="function"><a href="backends/impl_jax/methods/index_methods.html#IndexMethods.shuffle_global">shuffle_global</a></dd>
+                <dd id="Jax.shuffle_local" class="function"><a href="backends/impl_jax/methods/index_methods.html#IndexMethods.shuffle_local">shuffle_local</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_jax/methods/physics_methods.html#PhysicsMethods">PySDM.backends.impl_jax.methods.physics_methods.PhysicsMethods</a></dt>
+                                <dd id="Jax.volume_of_water_mass" class="function"><a href="backends/impl_jax/methods/physics_methods.html#PhysicsMethods.volume_of_water_mass">volume_of_water_mass</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_jax/methods/moments_methods.html#MomentsMethods">PySDM.backends.impl_jax.methods.moments_methods.MomentsMethods</a></dt>
+                                <dd id="Jax.moments" class="function"><a href="backends/impl_jax/methods/moments_methods.html#MomentsMethods.moments">moments</a></dd>
+                <dd id="Jax.spectrum_moments" class="function"><a href="backends/impl_jax/methods/moments_methods.html#MomentsMethods.spectrum_moments">spectrum_moments</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Jax.Storage">
+                            <input id="Jax.Storage-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Jax.Storage</span><wbr>(<span class="base"><a href="backends/impl_common/storage_utils.html#StorageBase">PySDM.backends.impl_common.storage_utils.StorageBase</a></span>):
+
+                <label class="view-source-button" for="Jax.Storage-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Jax.Storage"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Jax.Storage-18"><a href="#Jax.Storage-18"><span class="linenos"> 18</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Storage</span><span class="p">(</span><span class="n">StorageBase</span><span class="p">):</span>
+</span><span id="Jax.Storage-19"><a href="#Jax.Storage-19"><span class="linenos"> 19</span></a>    <span class="c1"># JAX and Numpy types here so that Storage dtypes identify as numpy dtypes</span>
+</span><span id="Jax.Storage-20"><a href="#Jax.Storage-20"><span class="linenos"> 20</span></a>    <span class="n">FLOAT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+</span><span id="Jax.Storage-21"><a href="#Jax.Storage-21"><span class="linenos"> 21</span></a>    <span class="n">JAX_FLOAT</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">float64</span>
+</span><span id="Jax.Storage-22"><a href="#Jax.Storage-22"><span class="linenos"> 22</span></a>
+</span><span id="Jax.Storage-23"><a href="#Jax.Storage-23"><span class="linenos"> 23</span></a>    <span class="n">INT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+</span><span id="Jax.Storage-24"><a href="#Jax.Storage-24"><span class="linenos"> 24</span></a>    <span class="n">JAX_INT</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">int64</span>
+</span><span id="Jax.Storage-25"><a href="#Jax.Storage-25"><span class="linenos"> 25</span></a>
+</span><span id="Jax.Storage-26"><a href="#Jax.Storage-26"><span class="linenos"> 26</span></a>    <span class="n">BOOL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span>
+</span><span id="Jax.Storage-27"><a href="#Jax.Storage-27"><span class="linenos"> 27</span></a>    <span class="n">JAX_BOOL</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">bool_</span>
+</span><span id="Jax.Storage-28"><a href="#Jax.Storage-28"><span class="linenos"> 28</span></a>
+</span><span id="Jax.Storage-29"><a href="#Jax.Storage-29"><span class="linenos"> 29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ravel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Jax.Storage-30"><a href="#Jax.Storage-30"><span class="linenos"> 30</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Storage</span><span class="p">):</span>
+</span><span id="Jax.Storage-31"><a href="#Jax.Storage-31"><span class="linenos"> 31</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+</span><span id="Jax.Storage-32"><a href="#Jax.Storage-32"><span class="linenos"> 32</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-33"><a href="#Jax.Storage-33"><span class="linenos"> 33</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+</span><span id="Jax.Storage-34"><a href="#Jax.Storage-34"><span class="linenos"> 34</span></a>
+</span><span id="Jax.Storage-35"><a href="#Jax.Storage-35"><span class="linenos"> 35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="Jax.Storage-36"><a href="#Jax.Storage-36"><span class="linenos"> 36</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="Jax.Storage-37"><a href="#Jax.Storage-37"><span class="linenos"> 37</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="Jax.Storage-38"><a href="#Jax.Storage-38"><span class="linenos"> 38</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="Jax.Storage-39"><a href="#Jax.Storage-39"><span class="linenos"> 39</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="Jax.Storage-40"><a href="#Jax.Storage-40"><span class="linenos"> 40</span></a>
+</span><span id="Jax.Storage-41"><a href="#Jax.Storage-41"><span class="linenos"> 41</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Jax.Storage-42"><a href="#Jax.Storage-42"><span class="linenos"> 42</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">):</span>
+</span><span id="Jax.Storage-43"><a href="#Jax.Storage-43"><span class="linenos"> 43</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">impl</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">()</span>
+</span><span id="Jax.Storage-44"><a href="#Jax.Storage-44"><span class="linenos"> 44</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-45"><a href="#Jax.Storage-45"><span class="linenos"> 45</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">impl</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">()</span>
+</span><span id="Jax.Storage-46"><a href="#Jax.Storage-46"><span class="linenos"> 46</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Jax.Storage-47"><a href="#Jax.Storage-47"><span class="linenos"> 47</span></a>
+</span><span id="Jax.Storage-48"><a href="#Jax.Storage-48"><span class="linenos"> 48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Jax.Storage-49"><a href="#Jax.Storage-49"><span class="linenos"> 49</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">):</span>
+</span><span id="Jax.Storage-50"><a href="#Jax.Storage-50"><span class="linenos"> 50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">true_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Jax.Storage-51"><a href="#Jax.Storage-51"><span class="linenos"> 51</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-52"><a href="#Jax.Storage-52"><span class="linenos"> 52</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">true_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+</span><span id="Jax.Storage-53"><a href="#Jax.Storage-53"><span class="linenos"> 53</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Jax.Storage-54"><a href="#Jax.Storage-54"><span class="linenos"> 54</span></a>
+</span><span id="Jax.Storage-55"><a href="#Jax.Storage-55"><span class="linenos"> 55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="Jax.Storage-56"><a href="#Jax.Storage-56"><span class="linenos"> 56</span></a>        <span class="k">if</span> <span class="n">reshape</span><span class="p">:</span>
+</span><span id="Jax.Storage-57"><a href="#Jax.Storage-57"><span class="linenos"> 57</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span><span id="Jax.Storage-58"><a href="#Jax.Storage-58"><span class="linenos"> 58</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-59"><a href="#Jax.Storage-59"><span class="linenos"> 59</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+</span><span id="Jax.Storage-60"><a href="#Jax.Storage-60"><span class="linenos"> 60</span></a>        <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;safe&quot;</span><span class="p">)</span>
+</span><span id="Jax.Storage-61"><a href="#Jax.Storage-61"><span class="linenos"> 61</span></a>
+</span><span id="Jax.Storage-62"><a href="#Jax.Storage-62"><span class="linenos"> 62</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Jax.Storage-63"><a href="#Jax.Storage-63"><span class="linenos"> 63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_empty_data</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+</span><span id="Jax.Storage-64"><a href="#Jax.Storage-64"><span class="linenos"> 64</span></a>        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">JAX_FLOAT</span><span class="p">):</span>
+</span><span id="Jax.Storage-65"><a href="#Jax.Storage-65"><span class="linenos"> 65</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">Storage</span><span class="o">.</span><span class="n">JAX_FLOAT</span><span class="p">)</span>
+</span><span id="Jax.Storage-66"><a href="#Jax.Storage-66"><span class="linenos"> 66</span></a>            <span class="n">dtype</span> <span class="o">=</span> <span class="n">Storage</span><span class="o">.</span><span class="n">FLOAT</span>
+</span><span id="Jax.Storage-67"><a href="#Jax.Storage-67"><span class="linenos"> 67</span></a>        <span class="k">elif</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">JAX_INT</span><span class="p">):</span>
+</span><span id="Jax.Storage-68"><a href="#Jax.Storage-68"><span class="linenos"> 68</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">Storage</span><span class="o">.</span><span class="n">JAX_INT</span><span class="p">)</span>
+</span><span id="Jax.Storage-69"><a href="#Jax.Storage-69"><span class="linenos"> 69</span></a>            <span class="n">dtype</span> <span class="o">=</span> <span class="n">Storage</span><span class="o">.</span><span class="n">INT</span>
+</span><span id="Jax.Storage-70"><a href="#Jax.Storage-70"><span class="linenos"> 70</span></a>        <span class="k">elif</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span> <span class="n">Storage</span><span class="o">.</span><span class="n">JAX_BOOL</span><span class="p">):</span>
+</span><span id="Jax.Storage-71"><a href="#Jax.Storage-71"><span class="linenos"> 71</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">Storage</span><span class="o">.</span><span class="n">JAX_BOOL</span><span class="p">)</span>
+</span><span id="Jax.Storage-72"><a href="#Jax.Storage-72"><span class="linenos"> 72</span></a>            <span class="n">dtype</span> <span class="o">=</span> <span class="n">Storage</span><span class="o">.</span><span class="n">BOOL</span>
+</span><span id="Jax.Storage-73"><a href="#Jax.Storage-73"><span class="linenos"> 73</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-74"><a href="#Jax.Storage-74"><span class="linenos"> 74</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="Jax.Storage-75"><a href="#Jax.Storage-75"><span class="linenos"> 75</span></a>
+</span><span id="Jax.Storage-76"><a href="#Jax.Storage-76"><span class="linenos"> 76</span></a>        <span class="k">return</span> <span class="n">StorageSignature</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+</span><span id="Jax.Storage-77"><a href="#Jax.Storage-77"><span class="linenos"> 77</span></a>
+</span><span id="Jax.Storage-78"><a href="#Jax.Storage-78"><span class="linenos"> 78</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Jax.Storage-79"><a href="#Jax.Storage-79"><span class="linenos"> 79</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+</span><span id="Jax.Storage-80"><a href="#Jax.Storage-80"><span class="linenos"> 80</span></a>        <span class="k">return</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">Storage</span><span class="p">)</span>
+</span><span id="Jax.Storage-81"><a href="#Jax.Storage-81"><span class="linenos"> 81</span></a>
+</span><span id="Jax.Storage-82"><a href="#Jax.Storage-82"><span class="linenos"> 82</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Jax.Storage-83"><a href="#Jax.Storage-83"><span class="linenos"> 83</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_ndarray</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span id="Jax.Storage-84"><a href="#Jax.Storage-84"><span class="linenos"> 84</span></a>
+</span><span id="Jax.Storage-85"><a href="#Jax.Storage-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="n">get_data_from_ndarray</span><span class="p">(</span>
+</span><span id="Jax.Storage-86"><a href="#Jax.Storage-86"><span class="linenos"> 86</span></a>            <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+</span><span id="Jax.Storage-87"><a href="#Jax.Storage-87"><span class="linenos"> 87</span></a>            <span class="n">storage_class</span><span class="o">=</span><span class="n">Storage</span><span class="p">,</span>
+</span><span id="Jax.Storage-88"><a href="#Jax.Storage-88"><span class="linenos"> 88</span></a>            <span class="n">copy_fun</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+</span><span id="Jax.Storage-89"><a href="#Jax.Storage-89"><span class="linenos"> 89</span></a>        <span class="p">)</span>
+</span><span id="Jax.Storage-90"><a href="#Jax.Storage-90"><span class="linenos"> 90</span></a>
+</span><span id="Jax.Storage-91"><a href="#Jax.Storage-91"><span class="linenos"> 91</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Jax.Storage-92"><a href="#Jax.Storage-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_ndarray</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span id="Jax.Storage-93"><a href="#Jax.Storage-93"><span class="linenos"> 93</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Storage</span><span class="p">(</span><span class="n">Storage</span><span class="o">.</span><span class="n">_get_data_from_ndarray</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
+</span><span id="Jax.Storage-94"><a href="#Jax.Storage-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="Jax.Storage-95"><a href="#Jax.Storage-95"><span class="linenos"> 95</span></a>
+</span><span id="Jax.Storage-96"><a href="#Jax.Storage-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="Jax.Storage-97"><a href="#Jax.Storage-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Jax.Storage-98"><a href="#Jax.Storage-98"><span class="linenos"> 98</span></a>
+</span><span id="Jax.Storage-99"><a href="#Jax.Storage-99"><span class="linenos"> 99</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Jax.Storage-100"><a href="#Jax.Storage-100"><span class="linenos">100</span></a>        <span class="c1"># TODO #1913: move method impl to storage_impl (to jit assignment)</span>
+</span><span id="Jax.Storage-101"><a href="#Jax.Storage-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Storage</span><span class="p">):</span>
+</span><span id="Jax.Storage-102"><a href="#Jax.Storage-102"><span class="linenos">102</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Jax.Storage-103"><a href="#Jax.Storage-103"><span class="linenos">103</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Jax.Storage-104"><a href="#Jax.Storage-104"><span class="linenos">104</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="Jax.Storage-105"><a href="#Jax.Storage-105"><span class="linenos">105</span></a>
+</span><span id="Jax.Storage-106"><a href="#Jax.Storage-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="Jax.Storage-107"><a href="#Jax.Storage-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="n">RowStorage</span><span class="p">(</span>
+</span><span id="Jax.Storage-108"><a href="#Jax.Storage-108"><span class="linenos">108</span></a>            <span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span>
+</span><span id="Jax.Storage-109"><a href="#Jax.Storage-109"><span class="linenos">109</span></a>        <span class="p">)</span>
+</span><span id="Jax.Storage-110"><a href="#Jax.Storage-110"><span class="linenos">110</span></a>
+</span><span id="Jax.Storage-111"><a href="#Jax.Storage-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Jax.Storage-112"><a href="#Jax.Storage-112"><span class="linenos">112</span></a>        <span class="c1"># TODO #1913: move method impl to storage_impl (to jit assignment)</span>
+</span><span id="Jax.Storage-113"><a href="#Jax.Storage-113"><span class="linenos">113</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+</span><span id="Jax.Storage-114"><a href="#Jax.Storage-114"><span class="linenos">114</span></a>
+</span><span id="Jax.Storage-115"><a href="#Jax.Storage-115"><span class="linenos">115</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Jax.Storage-116"><a href="#Jax.Storage-116"><span class="linenos">116</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Jax.Storage-117"><a href="#Jax.Storage-117"><span class="linenos">117</span></a>
+</span><span id="Jax.Storage-118"><a href="#Jax.Storage-118"><span class="linenos">118</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dividend</span><span class="p">,</span> <span class="n">divisor</span><span class="p">):</span>
+</span><span id="Jax.Storage-119"><a href="#Jax.Storage-119"><span class="linenos">119</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">impl</span><span class="o">.</span><span class="n">divide_out_of_place</span><span class="p">(</span>
+</span><span id="Jax.Storage-120"><a href="#Jax.Storage-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dividend</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">divisor</span><span class="o">.</span><span class="n">data</span>
+</span><span id="Jax.Storage-121"><a href="#Jax.Storage-121"><span class="linenos">121</span></a>        <span class="p">)</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="backends/impl_common/storage_utils.html#StorageBase">PySDM.backends.impl_common.storage_utils.StorageBase</a></dt>
+                                <dd id="Jax.Storage.__init__" class="function"><a href="backends/impl_common/storage_utils.html#StorageBase.__init__">StorageBase</a></dd>
+                <dd id="Jax.Storage.data" class="variable"><a href="backends/impl_common/storage_utils.html#StorageBase.data">data</a></dd>
+                <dd id="Jax.Storage.shape" class="variable"><a href="backends/impl_common/storage_utils.html#StorageBase.shape">shape</a></dd>
+                <dd id="Jax.Storage.dtype" class="variable"><a href="backends/impl_common/storage_utils.html#StorageBase.dtype">dtype</a></dd>
+                <dd id="Jax.Storage.backend" class="variable"><a href="backends/impl_common/storage_utils.html#StorageBase.backend">backend</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_jax/storage.html#Storage">PySDM.backends.impl_jax.storage.Storage</a></dt>
+                                <dd id="Jax.Storage.FLOAT" class="variable"><a href="backends/impl_jax/storage.html#Storage.FLOAT">FLOAT</a></dd>
+                <dd id="Jax.Storage.JAX_FLOAT" class="variable"><a href="backends/impl_jax/storage.html#Storage.JAX_FLOAT">JAX_FLOAT</a></dd>
+                <dd id="Jax.Storage.INT" class="variable"><a href="backends/impl_jax/storage.html#Storage.INT">INT</a></dd>
+                <dd id="Jax.Storage.JAX_INT" class="variable"><a href="backends/impl_jax/storage.html#Storage.JAX_INT">JAX_INT</a></dd>
+                <dd id="Jax.Storage.BOOL" class="variable"><a href="backends/impl_jax/storage.html#Storage.BOOL">BOOL</a></dd>
+                <dd id="Jax.Storage.JAX_BOOL" class="variable"><a href="backends/impl_jax/storage.html#Storage.JAX_BOOL">JAX_BOOL</a></dd>
+                <dd id="Jax.Storage.ravel" class="function"><a href="backends/impl_jax/storage.html#Storage.ravel">ravel</a></dd>
+                <dd id="Jax.Storage.at" class="function"><a href="backends/impl_jax/storage.html#Storage.at">at</a></dd>
+                <dd id="Jax.Storage.download" class="function"><a href="backends/impl_jax/storage.html#Storage.download">download</a></dd>
+                <dd id="Jax.Storage.empty" class="function"><a href="backends/impl_jax/storage.html#Storage.empty">empty</a></dd>
+                <dd id="Jax.Storage.from_ndarray" class="function"><a href="backends/impl_jax/storage.html#Storage.from_ndarray">from_ndarray</a></dd>
+                <dd id="Jax.Storage.upload" class="function"><a href="backends/impl_jax/storage.html#Storage.upload">upload</a></dd>
+                <dd id="Jax.Storage.fill" class="function"><a href="backends/impl_jax/storage.html#Storage.fill">fill</a></dd>
+                <dd id="Jax.Storage.row_view" class="function"><a href="backends/impl_jax/storage.html#Storage.row_view">row_view</a></dd>
+                <dd id="Jax.Storage.abs" class="function"><a href="backends/impl_jax/storage.html#Storage.abs">abs</a></dd>
+                <dd id="Jax.Storage.to_ndarray" class="function"><a href="backends/impl_jax/storage.html#Storage.to_ndarray">to_ndarray</a></dd>
+                <dd id="Jax.Storage.ratio" class="function"><a href="backends/impl_jax/storage.html#Storage.ratio">ratio</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Jax.Random">
+                            <input id="Jax.Random-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Jax.Random</span><wbr>(<span class="base"><a href="backends/impl_common/random_common.html#RandomCommon">PySDM.backends.impl_common.random_common.RandomCommon</a></span>):
+
+                <label class="view-source-button" for="Jax.Random-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Jax.Random"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Jax.Random-14"><a href="#Jax.Random-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="Jax.Random-15"><a href="#Jax.Random-15"><span class="linenos">15</span></a>    <span class="n">JAX</span> <span class="o">=</span> <span class="s2">&quot;TEMPORARY FLAG&quot;</span>
+</span><span id="Jax.Random-16"><a href="#Jax.Random-16"><span class="linenos">16</span></a>
+</span><span id="Jax.Random-17"><a href="#Jax.Random-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+</span><span id="Jax.Random-18"><a href="#Jax.Random-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+</span><span id="Jax.Random-19"><a href="#Jax.Random-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="Jax.Random-20"><a href="#Jax.Random-20"><span class="linenos">20</span></a>
+</span><span id="Jax.Random-21"><a href="#Jax.Random-21"><span class="linenos">21</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Jax.Random-22"><a href="#Jax.Random-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_u01_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Jax.Random-23"><a href="#Jax.Random-23"><span class="linenos">23</span></a>        <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+</span><span id="Jax.Random-24"><a href="#Jax.Random-24"><span class="linenos">24</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">subkey</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+</span><span id="Jax.Random-25"><a href="#Jax.Random-25"><span class="linenos">25</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="Jax.Random-26"><a href="#Jax.Random-26"><span class="linenos">26</span></a>            <span class="k">return</span> <span class="n">data</span>
+</span><span id="Jax.Random-27"><a href="#Jax.Random-27"><span class="linenos">27</span></a>
+</span><span id="Jax.Random-28"><a href="#Jax.Random-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">body</span>
+</span><span id="Jax.Random-29"><a href="#Jax.Random-29"><span class="linenos">29</span></a>
+</span><span id="Jax.Random-30"><a href="#Jax.Random-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Jax.Random-31"><a href="#Jax.Random-31"><span class="linenos">31</span></a>        <span class="n">new_key</span><span class="p">,</span> <span class="n">subkey</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+</span><span id="Jax.Random-32"><a href="#Jax.Random-32"><span class="linenos">32</span></a>
+</span><span id="Jax.Random-33"><a href="#Jax.Random-33"><span class="linenos">33</span></a>        <span class="n">storage</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u01_body</span><span class="p">(</span>
+</span><span id="Jax.Random-34"><a href="#Jax.Random-34"><span class="linenos">34</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Jax.Random-35"><a href="#Jax.Random-35"><span class="linenos">35</span></a>            <span class="n">subkey</span><span class="p">,</span>
+</span><span id="Jax.Random-36"><a href="#Jax.Random-36"><span class="linenos">36</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+</span><span id="Jax.Random-37"><a href="#Jax.Random-37"><span class="linenos">37</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+</span><span id="Jax.Random-38"><a href="#Jax.Random-38"><span class="linenos">38</span></a>        <span class="p">)</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">()</span>
+</span><span id="Jax.Random-39"><a href="#Jax.Random-39"><span class="linenos">39</span></a>
+</span><span id="Jax.Random-40"><a href="#Jax.Random-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">new_key</span>
+</span><span id="Jax.Random-41"><a href="#Jax.Random-41"><span class="linenos">41</span></a>
+</span><span id="Jax.Random-42"><a href="#Jax.Random-42"><span class="linenos">42</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Jax.Random-43"><a href="#Jax.Random-43"><span class="linenos">43</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_permute_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Jax.Random-44"><a href="#Jax.Random-44"><span class="linenos">44</span></a>        <span class="nd">@jax</span><span class="o">.</span><span class="n">jit</span>
+</span><span id="Jax.Random-45"><a href="#Jax.Random-45"><span class="linenos">45</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+</span><span id="Jax.Random-46"><a href="#Jax.Random-46"><span class="linenos">46</span></a>            <span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">storage</span><span class="p">))</span>
+</span><span id="Jax.Random-47"><a href="#Jax.Random-47"><span class="linenos">47</span></a>            <span class="k">return</span> <span class="n">storage</span>
+</span><span id="Jax.Random-48"><a href="#Jax.Random-48"><span class="linenos">48</span></a>
+</span><span id="Jax.Random-49"><a href="#Jax.Random-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">body</span>
+</span><span id="Jax.Random-50"><a href="#Jax.Random-50"><span class="linenos">50</span></a>
+</span><span id="Jax.Random-51"><a href="#Jax.Random-51"><span class="linenos">51</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">permute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Jax.Random-52"><a href="#Jax.Random-52"><span class="linenos">52</span></a>        <span class="n">new_key</span><span class="p">,</span> <span class="n">subkey</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+</span><span id="Jax.Random-53"><a href="#Jax.Random-53"><span class="linenos">53</span></a>        <span class="n">storage</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permute_body</span><span class="p">(</span>
+</span><span id="Jax.Random-54"><a href="#Jax.Random-54"><span class="linenos">54</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Jax.Random-55"><a href="#Jax.Random-55"><span class="linenos">55</span></a>            <span class="n">subkey</span><span class="p">,</span>
+</span><span id="Jax.Random-56"><a href="#Jax.Random-56"><span class="linenos">56</span></a>        <span class="p">)</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">()</span>
+</span><span id="Jax.Random-57"><a href="#Jax.Random-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">new_key</span>
+</span></pre></div>
+
+
+    
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="backends/impl_jax/random.html#Random">PySDM.backends.impl_jax.random.Random</a></dt>
+                                <dd id="Jax.Random.__init__" class="function"><a href="backends/impl_jax/random.html#Random.__init__">Random</a></dd>
+                <dd id="Jax.Random.JAX" class="variable"><a href="backends/impl_jax/random.html#Random.JAX">JAX</a></dd>
+                <dd id="Jax.Random.key" class="variable"><a href="backends/impl_jax/random.html#Random.key">key</a></dd>
+                <dd id="Jax.Random.u01" class="function"><a href="backends/impl_jax/random.html#Random.u01">u01</a></dd>
+                <dd id="Jax.Random.permute" class="function"><a href="backends/impl_jax/random.html#Random.permute">permute</a></dd>
+
+            </div>
+            <div><dt><a href="backends/impl_common/random_common.html#RandomCommon">PySDM.backends.impl_common.random_common.RandomCommon</a></dt>
+                                <dd id="Jax.Random.size" class="variable"><a href="backends/impl_common/random_common.html#RandomCommon.size">size</a></dd>
 
             </div>
                                 </dl>
@@ -1248,14 +1733,14 @@
 
     </div>
     <a class="headerlink" href="#ThrustRTC.Random"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ThrustRTC.Random-71"><a href="#ThrustRTC.Random-71"><span class="linenos">71</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="ThrustRTC.Random-72"><a href="#ThrustRTC.Random-72"><span class="linenos">72</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
-</span><span id="ThrustRTC.Random-73"><a href="#ThrustRTC.Random-73"><span class="linenos">73</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
-</span><span id="ThrustRTC.Random-74"><a href="#ThrustRTC.Random-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-</span><span id="ThrustRTC.Random-75"><a href="#ThrustRTC.Random-75"><span class="linenos">75</span></a>
-</span><span id="ThrustRTC.Random-76"><a href="#ThrustRTC.Random-76"><span class="linenos">76</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
-</span><span id="ThrustRTC.Random-77"><a href="#ThrustRTC.Random-77"><span class="linenos">77</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
-</span><span id="ThrustRTC.Random-78"><a href="#ThrustRTC.Random-78"><span class="linenos">78</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ThrustRTC.Random-74"><a href="#ThrustRTC.Random-74"><span class="linenos">74</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="ThrustRTC.Random-75"><a href="#ThrustRTC.Random-75"><span class="linenos">75</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+</span><span id="ThrustRTC.Random-76"><a href="#ThrustRTC.Random-76"><span class="linenos">76</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+</span><span id="ThrustRTC.Random-77"><a href="#ThrustRTC.Random-77"><span class="linenos">77</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="ThrustRTC.Random-78"><a href="#ThrustRTC.Random-78"><span class="linenos">78</span></a>
+</span><span id="ThrustRTC.Random-79"><a href="#ThrustRTC.Random-79"><span class="linenos">79</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="ThrustRTC.Random-80"><a href="#ThrustRTC.Random-80"><span class="linenos">80</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+</span><span id="ThrustRTC.Random-81"><a href="#ThrustRTC.Random-81"><span class="linenos">81</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1267,6 +1752,7 @@
                                     <div><dt><a href="#Random">Random</a></dt>
                                 <dd id="ThrustRTC.Random.__init__" class="function"><a href="#Random.__init__">Random</a></dd>
                 <dd id="ThrustRTC.Random.generator" class="variable"><a href="#Random.generator">generator</a></dd>
+                <dd id="ThrustRTC.Random.u01" class="function"><a href="#Random.u01">u01</a></dd>
 
             </div>
             <div><dt><a href="backends/impl_common/random_common.html#RandomCommon">PySDM.backends.impl_common.random_common.RandomCommon</a></dt>
@@ -1287,14 +1773,14 @@
 
     </div>
     <a class="headerlink" href="#Random"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Random-71"><a href="#Random-71"><span class="linenos">71</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="Random-72"><a href="#Random-72"><span class="linenos">72</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
-</span><span id="Random-73"><a href="#Random-73"><span class="linenos">73</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
-</span><span id="Random-74"><a href="#Random-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-</span><span id="Random-75"><a href="#Random-75"><span class="linenos">75</span></a>
-</span><span id="Random-76"><a href="#Random-76"><span class="linenos">76</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
-</span><span id="Random-77"><a href="#Random-77"><span class="linenos">77</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
-</span><span id="Random-78"><a href="#Random-78"><span class="linenos">78</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Random-74"><a href="#Random-74"><span class="linenos">74</span></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Random</span><span class="p">(</span><span class="n">RandomCommon</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="Random-75"><a href="#Random-75"><span class="linenos">75</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+</span><span id="Random-76"><a href="#Random-76"><span class="linenos">76</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+</span><span id="Random-77"><a href="#Random-77"><span class="linenos">77</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="Random-78"><a href="#Random-78"><span class="linenos">78</span></a>
+</span><span id="Random-79"><a href="#Random-79"><span class="linenos">79</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Random-80"><a href="#Random-80"><span class="linenos">80</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+</span><span id="Random-81"><a href="#Random-81"><span class="linenos">81</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1310,9 +1796,9 @@
 
     </div>
     <a class="headerlink" href="#Random.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Random.__init__-72"><a href="#Random.__init__-72"><span class="linenos">72</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
-</span><span id="Random.__init__-73"><a href="#Random.__init__-73"><span class="linenos">73</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
-</span><span id="Random.__init__-74"><a href="#Random.__init__-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Random.__init__-75"><a href="#Random.__init__-75"><span class="linenos">75</span></a>        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+</span><span id="Random.__init__-76"><a href="#Random.__init__-76"><span class="linenos">76</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+</span><span id="Random.__init__-77"><a href="#Random.__init__-77"><span class="linenos">77</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1327,6 +1813,26 @@
     </div>
     <a class="headerlink" href="#Random.generator"></a>
     
+    
+
+                            </div>
+                            <div id="Random.u01" class="classattr">
+                                        <input id="Random.u01-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">u01</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">storage</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Random.u01-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Random.u01"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Random.u01-79"><a href="#Random.u01-79"><span class="linenos">79</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Random.u01-80"><a href="#Random.u01-80"><span class="linenos">80</span></a>            <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+</span><span id="Random.u01-81"><a href="#Random.u01-81"><span class="linenos">81</span></a>            <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span></pre></div>
+
+
     
 
                             </div>

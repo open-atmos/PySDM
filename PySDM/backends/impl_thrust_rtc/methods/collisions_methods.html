@@ -618,7 +618,7 @@
 </span><span id="L-474"><a href="#L-474"><span class="linenos"> 474</span></a><span class="s2">                norm_factor[i] = 0;</span>
 </span><span id="L-475"><a href="#L-475"><span class="linenos"> 475</span></a><span class="s2">            }</span>
 </span><span id="L-476"><a href="#L-476"><span class="linenos"> 476</span></a><span class="s2">            else {</span>
-</span><span id="L-477"><a href="#L-477"><span class="linenos"> 477</span></a><span class="s2">                auto half_sd_num = sd_num / 2;</span>
+</span><span id="L-477"><a href="#L-477"><span class="linenos"> 477</span></a><span class="s2">                auto half_sd_num = (int64_t)(sd_num / 2);</span>
 </span><span id="L-478"><a href="#L-478"><span class="linenos"> 478</span></a><span class="s2">                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;</span>
 </span><span id="L-479"><a href="#L-479"><span class="linenos"> 479</span></a><span class="s2">            }</span>
 </span><span id="L-480"><a href="#L-480"><span class="linenos"> 480</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
@@ -1551,7 +1551,7 @@
 </span><span id="CollisionsMethods-475"><a href="#CollisionsMethods-475"><span class="linenos"> 475</span></a><span class="s2">                norm_factor[i] = 0;</span>
 </span><span id="CollisionsMethods-476"><a href="#CollisionsMethods-476"><span class="linenos"> 476</span></a><span class="s2">            }</span>
 </span><span id="CollisionsMethods-477"><a href="#CollisionsMethods-477"><span class="linenos"> 477</span></a><span class="s2">            else {</span>
-</span><span id="CollisionsMethods-478"><a href="#CollisionsMethods-478"><span class="linenos"> 478</span></a><span class="s2">                auto half_sd_num = sd_num / 2;</span>
+</span><span id="CollisionsMethods-478"><a href="#CollisionsMethods-478"><span class="linenos"> 478</span></a><span class="s2">                auto half_sd_num = (int64_t)(sd_num / 2);</span>
 </span><span id="CollisionsMethods-479"><a href="#CollisionsMethods-479"><span class="linenos"> 479</span></a><span class="s2">                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;</span>
 </span><span id="CollisionsMethods-480"><a href="#CollisionsMethods-480"><span class="linenos"> 480</span></a><span class="s2">            }</span>
 </span><span id="CollisionsMethods-481"><a href="#CollisionsMethods-481"><span class="linenos"> 481</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>

@@ -77,6 +77,9 @@
                         <li>
                                 <a class="variable" href="#Random.generator">generator</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Random.u01">u01</a>
+                        </li>
                 </ul>
 
             </li>
@@ -141,7 +144,7 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">Random</span><span class="o">.</span><span class="n">__urand_init_rng_state_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">[</span><span class="n">rng</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">,</span> <span class="n">dseed</span><span class="p">])</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">Random</span><span class="o">.</span><span class="n">__urand_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">),</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
 </span></pre></div>
@@ -184,7 +187,7 @@
 </span><span id="Random-37"><a href="#Random-37"><span class="linenos">37</span></a>        <span class="n">Random</span><span class="o">.</span><span class="n">__urand_init_rng_state_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">[</span><span class="n">rng</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">,</span> <span class="n">dseed</span><span class="p">])</span>
 </span><span id="Random-38"><a href="#Random-38"><span class="linenos">38</span></a>
 </span><span id="Random-39"><a href="#Random-39"><span class="linenos">39</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="Random-40"><a href="#Random-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Random-40"><a href="#Random-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
 </span><span id="Random-41"><a href="#Random-41"><span class="linenos">41</span></a>        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
 </span><span id="Random-42"><a href="#Random-42"><span class="linenos">42</span></a>        <span class="n">Random</span><span class="o">.</span><span class="n">__urand_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">),</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
 </span></pre></div>
@@ -222,6 +225,30 @@
     </div>
     <a class="headerlink" href="#Random.generator"></a>
     
+    
+
+                            </div>
+                            <div id="Random.u01" class="classattr">
+                                        <input id="Random.u01-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">u01</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Random.u01-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Random.u01"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Random.u01-11"><a href="#Random.u01-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="Random.u01-12"><a href="#Random.u01-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
+</span><span id="Random.u01-13"><a href="#Random.u01-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="Random.u01-14"><a href="#Random.u01-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Random.u01-15"><a href="#Random.u01-15"><span class="linenos">15</span></a>            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+</span><span id="Random.u01-16"><a href="#Random.u01-16"><span class="linenos">16</span></a>                <span class="n">trtc</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+</span><span id="Random.u01-17"><a href="#Random.u01-17"><span class="linenos">17</span></a>            <span class="k">return</span> <span class="n">result</span>
+</span></pre></div>
+
+
     
 
                             </div>

@@ -138,10 +138,16 @@
                                 <a class="function" href="#Storage.fill">fill</a>
                         </li>
                         <li>
+                                <a class="function" href="#Storage.row_view">row_view</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Storage.exp">exp</a>
                         </li>
                         <li>
                                 <a class="function" href="#Storage.abs">abs</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Storage.at">at</a>
                         </li>
                 </ul>
 
@@ -371,7 +377,7 @@
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">urand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>        <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>        <span class="n">generator</span><span class="o">.</span><span class="n">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -385,11 +391,20 @@
 </span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -591,7 +606,7 @@
 </span><span id="Storage-201"><a href="#Storage-201"><span class="linenos">201</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 </span><span id="Storage-202"><a href="#Storage-202"><span class="linenos">202</span></a>
 </span><span id="Storage-203"><a href="#Storage-203"><span class="linenos">203</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">urand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-</span><span id="Storage-204"><a href="#Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Storage-204"><a href="#Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="o">.</span><span class="n">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Storage-205"><a href="#Storage-205"><span class="linenos">205</span></a>
 </span><span id="Storage-206"><a href="#Storage-206"><span class="linenos">206</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Storage-207"><a href="#Storage-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -605,11 +620,20 @@
 </span><span id="Storage-215"><a href="#Storage-215"><span class="linenos">215</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Storage-216"><a href="#Storage-216"><span class="linenos">216</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span>
 </span><span id="Storage-217"><a href="#Storage-217"><span class="linenos">217</span></a>
-</span><span id="Storage-218"><a href="#Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Storage-219"><a href="#Storage-219"><span class="linenos">219</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Storage-218"><a href="#Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="Storage-219"><a href="#Storage-219"><span class="linenos">219</span></a>        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 </span><span id="Storage-220"><a href="#Storage-220"><span class="linenos">220</span></a>
-</span><span id="Storage-221"><a href="#Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Storage-222"><a href="#Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Storage-221"><a href="#Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Storage-222"><a href="#Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Storage-223"><a href="#Storage-223"><span class="linenos">223</span></a>
+</span><span id="Storage-224"><a href="#Storage-224"><span class="linenos">224</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Storage-225"><a href="#Storage-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Storage-226"><a href="#Storage-226"><span class="linenos">226</span></a>
+</span><span id="Storage-227"><a href="#Storage-227"><span class="linenos">227</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="Storage-228"><a href="#Storage-228"><span class="linenos">228</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="Storage-229"><a href="#Storage-229"><span class="linenos">229</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="Storage-230"><a href="#Storage-230"><span class="linenos">230</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="Storage-231"><a href="#Storage-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -642,7 +666,7 @@
                             <div id="Storage.BOOL" class="classattr">
                                 <div class="attr variable">
             <span class="name">BOOL</span>        =
-<span class="default_value">&lt;class &#39;numpy.bool_&#39;&gt;</span>
+<span class="default_value">&lt;class &#39;numpy.bool&#39;&gt;</span>
 
         
     </div>
@@ -973,7 +997,7 @@
     </div>
     <a class="headerlink" href="#Storage.urand"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.urand-203"><a href="#Storage.urand-203"><span class="linenos">203</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">urand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-</span><span id="Storage.urand-204"><a href="#Storage.urand-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Storage.urand-204"><a href="#Storage.urand-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="o">.</span><span class="n">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1040,6 +1064,25 @@
     
 
                             </div>
+                            <div id="Storage.row_view" class="classattr">
+                                        <input id="Storage.row_view-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">row_view</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">i</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Storage.row_view-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Storage.row_view"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.row_view-218"><a href="#Storage.row_view-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="Storage.row_view-219"><a href="#Storage.row_view-219"><span class="linenos">219</span></a>        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                             <div id="Storage.exp" class="classattr">
                                         <input id="Storage.exp-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -1051,8 +1094,8 @@
 
     </div>
     <a class="headerlink" href="#Storage.exp"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.exp-218"><a href="#Storage.exp-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Storage.exp-219"><a href="#Storage.exp-219"><span class="linenos">219</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.exp-221"><a href="#Storage.exp-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Storage.exp-222"><a href="#Storage.exp-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1070,8 +1113,30 @@
 
     </div>
     <a class="headerlink" href="#Storage.abs"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.abs-221"><a href="#Storage.abs-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Storage.abs-222"><a href="#Storage.abs-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.abs-224"><a href="#Storage.abs-224"><span class="linenos">224</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Storage.abs-225"><a href="#Storage.abs-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Storage.at" class="classattr">
+                                        <input id="Storage.at-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">at</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">index</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Storage.at-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Storage.at"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Storage.at-227"><a href="#Storage.at-227"><span class="linenos">227</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="Storage.at-228"><a href="#Storage.at-228"><span class="linenos">228</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="Storage.at-229"><a href="#Storage.at-229"><span class="linenos">229</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="Storage.at-230"><a href="#Storage.at-230"><span class="linenos">230</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="Storage.at-231"><a href="#Storage.at-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 

@@ -343,9 +343,9 @@ Instantiation of the <a href="https://open-atmos.github.io/PySDM/PySDM/particula
 
 <p></details></p>
 
-<p>The <code>backend</code> argument may be set to <code>CPU</code> or <code>GPU</code>
-  what translates to choosing the multi-threaded backend or the
-  GPU-resident computation mode, respectively.
+<p>The <code>backend</code> argument may be set to <code>CPU</code>, <code>GPU</code> or <code>JAX</code>
+  what translates to choosing the multi-threaded backend, the
+  GPU-resident computation mode, respectively or the early-in-development <a href="https://docs.jax.dev/en/latest/index.html#"><code>JAX</code></a> backend flexible to different device configurations.
 The employed <a href="https://open-atmos.github.io/PySDM/PySDM/environments/box.html#Box"><code>Box</code></a> environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities <code>n</code> and particle volumes <code>v</code> are
@@ -820,6 +820,7 @@ and the
     ((backends))
       Numba
       ThrustRTC
+      Jax
     ((dynamics))
       AqueousChemistry
       Collision

@@ -115,6 +115,8 @@
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">Storage</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;default_jit_flags&quot;</span><span class="p">):</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;block_until_ready&quot;</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">block_until_ready</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -140,6 +142,8 @@
 </span><span id="BackendMethods-16"><a href="#BackendMethods-16"><span class="linenos">16</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">Storage</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="BackendMethods-17"><a href="#BackendMethods-17"><span class="linenos">17</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;default_jit_flags&quot;</span><span class="p">):</span>
 </span><span id="BackendMethods-18"><a href="#BackendMethods-18"><span class="linenos">18</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="BackendMethods-19"><a href="#BackendMethods-19"><span class="linenos">19</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;block_until_ready&quot;</span><span class="p">):</span>
+</span><span id="BackendMethods-20"><a href="#BackendMethods-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">block_until_ready</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 

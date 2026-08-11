@@ -516,8 +516,8 @@
             </div>
             <div><dt><a href="impl_numba/methods/index_methods.html#IndexMethods">PySDM.backends.impl_numba.methods.index_methods.IndexMethods</a></dt>
                                 <dd id="Numba.identity_index" class="variable"><a href="impl_numba/methods/index_methods.html#IndexMethods.identity_index">identity_index</a></dd>
-                <dd id="Numba.shuffle_global" class="variable"><a href="impl_numba/methods/index_methods.html#IndexMethods.shuffle_global">shuffle_global</a></dd>
-                <dd id="Numba.shuffle_local" class="variable"><a href="impl_numba/methods/index_methods.html#IndexMethods.shuffle_local">shuffle_local</a></dd>
+                <dd id="Numba.shuffle_global" class="function"><a href="impl_numba/methods/index_methods.html#IndexMethods.shuffle_global">shuffle_global</a></dd>
+                <dd id="Numba.shuffle_local" class="function"><a href="impl_numba/methods/index_methods.html#IndexMethods.shuffle_local">shuffle_local</a></dd>
                 <dd id="Numba.sort_by_key" class="function"><a href="impl_numba/methods/index_methods.html#IndexMethods.sort_by_key">sort_by_key</a></dd>
 
             </div>
@@ -813,7 +813,7 @@
 </span><span id="Numba.Storage-201"><a href="#Numba.Storage-201"><span class="linenos">201</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 </span><span id="Numba.Storage-202"><a href="#Numba.Storage-202"><span class="linenos">202</span></a>
 </span><span id="Numba.Storage-203"><a href="#Numba.Storage-203"><span class="linenos">203</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">urand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-</span><span id="Numba.Storage-204"><a href="#Numba.Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Numba.Storage-204"><a href="#Numba.Storage-204"><span class="linenos">204</span></a>        <span class="n">generator</span><span class="o">.</span><span class="n">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Numba.Storage-205"><a href="#Numba.Storage-205"><span class="linenos">205</span></a>
 </span><span id="Numba.Storage-206"><a href="#Numba.Storage-206"><span class="linenos">206</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Numba.Storage-207"><a href="#Numba.Storage-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -827,11 +827,20 @@
 </span><span id="Numba.Storage-215"><a href="#Numba.Storage-215"><span class="linenos">215</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Numba.Storage-216"><a href="#Numba.Storage-216"><span class="linenos">216</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">other</span>
 </span><span id="Numba.Storage-217"><a href="#Numba.Storage-217"><span class="linenos">217</span></a>
-</span><span id="Numba.Storage-218"><a href="#Numba.Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Numba.Storage-219"><a href="#Numba.Storage-219"><span class="linenos">219</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-218"><a href="#Numba.Storage-218"><span class="linenos">218</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">row_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span id="Numba.Storage-219"><a href="#Numba.Storage-219"><span class="linenos">219</span></a>        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">StorageSignature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 </span><span id="Numba.Storage-220"><a href="#Numba.Storage-220"><span class="linenos">220</span></a>
-</span><span id="Numba.Storage-221"><a href="#Numba.Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Numba.Storage-222"><a href="#Numba.Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-221"><a href="#Numba.Storage-221"><span class="linenos">221</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Numba.Storage-222"><a href="#Numba.Storage-222"><span class="linenos">222</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-223"><a href="#Numba.Storage-223"><span class="linenos">223</span></a>
+</span><span id="Numba.Storage-224"><a href="#Numba.Storage-224"><span class="linenos">224</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Numba.Storage-225"><a href="#Numba.Storage-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Numba.Storage-226"><a href="#Numba.Storage-226"><span class="linenos">226</span></a>
+</span><span id="Numba.Storage-227"><a href="#Numba.Storage-227"><span class="linenos">227</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="Numba.Storage-228"><a href="#Numba.Storage-228"><span class="linenos">228</span></a>        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+</span><span id="Numba.Storage-229"><a href="#Numba.Storage-229"><span class="linenos">229</span></a>            <span class="mi">1</span><span class="p">,</span>
+</span><span id="Numba.Storage-230"><a href="#Numba.Storage-230"><span class="linenos">230</span></a>        <span class="p">),</span> <span class="s2">&quot;Cannot call at() on Storage of shape other than (1,)&quot;</span>
+</span><span id="Numba.Storage-231"><a href="#Numba.Storage-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -871,8 +880,10 @@
                 <dd id="Numba.Storage.to_ndarray" class="function"><a href="impl_numba/storage.html#Storage.to_ndarray">to_ndarray</a></dd>
                 <dd id="Numba.Storage.upload" class="function"><a href="impl_numba/storage.html#Storage.upload">upload</a></dd>
                 <dd id="Numba.Storage.fill" class="function"><a href="impl_numba/storage.html#Storage.fill">fill</a></dd>
+                <dd id="Numba.Storage.row_view" class="function"><a href="impl_numba/storage.html#Storage.row_view">row_view</a></dd>
                 <dd id="Numba.Storage.exp" class="function"><a href="impl_numba/storage.html#Storage.exp">exp</a></dd>
                 <dd id="Numba.Storage.abs" class="function"><a href="impl_numba/storage.html#Storage.abs">abs</a></dd>
+                <dd id="Numba.Storage.at" class="function"><a href="impl_numba/storage.html#Storage.at">at</a></dd>
 
             </div>
                                 </dl>
@@ -894,7 +905,7 @@
 </span><span id="Numba.Random-16"><a href="#Numba.Random-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
 </span><span id="Numba.Random-17"><a href="#Numba.Random-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 </span><span id="Numba.Random-18"><a href="#Numba.Random-18"><span class="linenos">18</span></a>
-</span><span id="Numba.Random-19"><a href="#Numba.Random-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
+</span><span id="Numba.Random-19"><a href="#Numba.Random-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">u01</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">):</span>
 </span><span id="Numba.Random-20"><a href="#Numba.Random-20"><span class="linenos">20</span></a>        <span class="n">storage</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </span></pre></div>
 
@@ -907,6 +918,7 @@
                                     <div><dt><a href="impl_numba/random.html#Random">PySDM.backends.impl_numba.random.Random</a></dt>
                                 <dd id="Numba.Random.__init__" class="function"><a href="impl_numba/random.html#Random.__init__">Random</a></dd>
                 <dd id="Numba.Random.generator" class="variable"><a href="impl_numba/random.html#Random.generator">generator</a></dd>
+                <dd id="Numba.Random.u01" class="function"><a href="impl_numba/random.html#Random.u01">u01</a></dd>
 
             </div>
             <div><dt><a href="impl_common/random_common.html#RandomCommon">PySDM.backends.impl_common.random_common.RandomCommon</a></dt>
