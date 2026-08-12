@@ -28,8 +28,9 @@ class TestBuilder:
     def test_request_attribute():
         # arrange
         env = Box(dt=-1, dv=np.nan)
-        builder = Builder(backend=CPU(), n_sd=1, environment=env)
-        builder.add_dynamic(Condensation())
+        builder = Builder(
+            backend=CPU(), n_sd=1, environment=env, dynamics=(Condensation(),)
+        )
 
         # act
         builder.request_attribute("critical saturation")
@@ -62,9 +63,9 @@ class TestBuilder:
         dynamics,
     ):
         # arrange
-        builder = Builder(backend=CPU(), n_sd=1, environment=Box(dt=-1, dv=np.nan))
-        for dynamic in dynamics:
-            builder.add_dynamic(dynamic)
+        builder = Builder(
+            backend=CPU(), n_sd=1, environment=Box(dt=-1, dv=np.nan), dynamics=dynamics
+        )
 
         _ = builder.build(
             products=(),

@@ -3,6 +3,7 @@
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
 [![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
+[![JAX](https://img.shields.io/badge/Google-JAX-blue?style=flat&logo=google)](https://docs.jax.dev/en/latest/index.html)
 [![Linux OK](https://img.shields.io/static/v1?label=Linux&logo=Linux&color=yellow&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Linux)
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
@@ -50,15 +51,17 @@ Each tutorial also comes with a set of questions at the end that can be used as 
 Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
   easy way for students to get started.
 
-PySDM has two alternative parallel number-crunching backends 
+PySDM has three alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+  Additionally, a new hybrid backend built with [Jax](https://docs.jax.dev/en/latest/index.html) is being developed.
 The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
   multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
 The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrust_rtc.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
+The [`Jax`](https://docs.jax.dev/en/latest/index.html) backend (aliased ``JAX``) is flexible and works with any device configurations (CPU/GPU/TPU), utilising the same backend API. As It is in early development, only simple coagulation cases in single-cell simulations are supported. 
 
 For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
@@ -69,7 +72,7 @@ For a list of talks and other materials on PySDM as well as a list of published 
 
 ## Dependencies and Installation
 
-PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
+PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [Jax](https://docs.jax.dev/en/latest/index.html), [SciPy](https://scipy.org/), 
 [Pint](https://pint.readthedocs.io/), [chempy](https://pypi.org/project/chempy/), 
 [pyevtk](https://pypi.org/project/pyevtk/),
 [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
@@ -84,7 +87,7 @@ For development purposes, we suggest cloning the repository and installing it us
 Test-time dependencies can be installed with ``pip -e .[tests]``.
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
-The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
+The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
 ```
@@ -104,6 +107,7 @@ only the supporting .py files).
 [![Numba](https://img.shields.io/static/v1?label=+&logo=Numba&color=orange&message=Numba)](https://numba.pydata.org)
 [![LLVM](https://img.shields.io/static/v1?label=+&logo=LLVM&color=gold&message=LLVM)](https://llvm.org)
 [![CUDA](https://img.shields.io/static/v1?label=+&logo=nVidia&color=darkgreen&message=ThrustRTC/CUDA)](https://pypi.org/project/ThrustRTC/)
+[![JAX](https://img.shields.io/badge/Google-JAX-blue?style=flat&logo=google)](https://docs.jax.dev/en/latest/index.html)
 [![NumPy](https://img.shields.io/static/v1?label=+&logo=numpy&color=blue&message=NumPy)](https://numpy.org/)
 [![pytest](https://img.shields.io/static/v1?label=+&logo=pytest&color=purple&message=pytest)](https://pytest.org/)   
 [![Colab](https://img.shields.io/static/v1?label=+&logo=googlecolab&color=darkred&message=Colab)](https://colab.research.google.com/)

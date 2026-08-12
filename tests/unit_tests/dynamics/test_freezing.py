@@ -13,7 +13,7 @@ from PySDM.products import (
 )
 from PySDM.backends import ThrustRTC
 
-VERY_BIG_J_HET = 1e20
+VERY_BIG_RATE = 1e20
 EPSILON_RH = 1e-3
 
 
@@ -23,28 +23,51 @@ class TestDropletFreezing:
         "record_freezing_temperature",
         (pytest.param(True, id="recording"), pytest.param(False, id="not recording")),
     )
+    @pytest.mark.parametrize(
+        "freezing_mode",
+        (
+            {"immersion_freezing": "time-dependent", "homogeneous_freezing": None},
+            {"immersion_freezing": None, "homogeneous_freezing": "threshold"},
+            {"immersion_freezing": None, "homogeneous_freezing": "time-dependent"},
+        ),
+    )
     def test_record_freezing_temperature_on_time_dependent_freeze(
-        backend_class, record_freezing_temperature
+        backend_class, record_freezing_temperature, freezing_mode
     ):
         if backend_class is ThrustRTC and record_freezing_temperature:
             pytest.skip("TODO #1495")
 
         # arrange
+        attr_names = (
+            "temperature of last freezing",
+            "supersaturation of last freezing",
+        )
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             heterogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HET": VERY_BIG_J_HET},
+            homogeneous_ice_nucleation_rate="Constant",
+            constants={
+                "J_HET": VERY_BIG_RATE,
+                "J_HOM": VERY_BIG_RATE,
+            },
         )
         builder = Builder(
             n_sd=1,
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
-        )
-        builder.add_dynamic(
-            Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
+            dynamics=(
+                [
+                    Freezing(
+                        immersion_freezing=freezing_mode["immersion_freezing"],
+                        homogeneous_freezing=freezing_mode["homogeneous_freezing"],
+                        thaw="instantaneous",
+                    )
+                ]
+            ),
         )
         if record_freezing_temperature:
-            builder.request_attribute("temperature of last freezing")
+            for attr_name in attr_names:
+                builder.request_attribute(attr_name)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray([1]),
@@ -53,38 +76,59 @@ class TestDropletFreezing:
             }
         )
 
-        temp_1 = 200 * si.K
-        temp_2 = 250 * si.K
+        temp_list = np.asarray([200 * si.K, 300 * si.K, 220 * si.K])
+        rh_list = np.asarray([0.9, 1.0, 1.1])
         particulator.environment["a_w_ice"] = np.nan
-        particulator.environment["T"] = temp_1
+        particulator.environment["T"] = temp_list[1]
+        particulator.environment["RH_ice"] = rh_list[0]
 
         # act & assert
-        attr_name = "temperature of last freezing"
         if not record_freezing_temperature:
-            assert attr_name not in particulator.attributes
+            for attr_name in attr_names:
+                assert attr_name not in particulator.attributes
         else:
             # never frozen yet
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # still not frozen since RH not greater than 100%
-            particulator.environment["RH"] = 1.0
+            particulator.environment["RH"] = rh_list[1]
+            particulator.environment["RH_ice"] = rh_list[1]
             particulator.run(steps=1)
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
 
             # should freeze and record T1
-            particulator.environment["RH"] += EPSILON_RH
+            particulator.environment["RH"] = rh_list[2]
+            particulator.environment["RH_ice"] = rh_list[2]
+            particulator.environment["T"] = temp_list[0]
             particulator.run(steps=1)
-            assert all(particulator.attributes[attr_name].to_ndarray() == temp_1)
+            assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
+            assert all(
+                particulator.attributes[attr_names[0]].to_ndarray() == temp_list[0]
+            )
+            assert all(
+                particulator.attributes[attr_names[1]].to_ndarray() == rh_list[2]
+            )
 
             # should thaw
-            particulator.environment["T"] = 300 * si.K
+            particulator.environment["T"] = temp_list[1]
             particulator.run(steps=1)
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # should re-freeze and record T2
-            particulator.environment["T"] = temp_2
+            particulator.environment["T"] = temp_list[2]
             particulator.run(steps=1)
-            assert all(particulator.attributes[attr_name].to_ndarray() == temp_2)
+            assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
+            assert all(
+                particulator.attributes[attr_names[0]].to_ndarray() == temp_list[2]
+            )
+            assert all(
+                particulator.attributes[attr_names[1]].to_ndarray() == rh_list[2]
+            )
 
     # TODO #599
     def test_no_subsaturated_freezing(self):
@@ -100,12 +144,14 @@ class TestDropletFreezing:
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
-            n_sd=1, backend=backend_class(formulae=formulae), environment=env
-        )
-        builder.add_dynamic(
-            Freezing(
-                thaw=thaw,
-            )
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=env,
+            dynamics=(
+                Freezing(
+                    thaw=thaw,
+                ),
+            ),
         )
         particulator = builder.build(
             products=(IceWaterContent(),),
@@ -140,9 +186,11 @@ class TestDropletFreezing:
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         env = Box(dt=1 * si.s, dv=dv)
         builder = Builder(
-            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+            n_sd=n_sd,
+            backend=backend_class(formulae=formulae),
+            environment=env,
+            dynamics=(Freezing(immersion_freezing="singular"),),
         )
-        builder.add_dynamic(Freezing(immersion_freezing="singular"))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
@@ -180,8 +228,8 @@ class TestDropletFreezing:
             n_sd=n_sd,
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=dv),
+            dynamics=(Freezing(homogeneous_freezing="threshold"),),
         )
-        builder.add_dynamic(Freezing(homogeneous_freezing="threshold"))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "signed water mass": np.full(n_sd, water_mass),
@@ -297,12 +345,12 @@ class TestDropletFreezing:
                     formulae=formulae, double_precision=double_precision
                 ),
                 environment=env,
-            )
-            builder.add_dynamic(
-                Freezing(
-                    immersion_freezing=immersion_freezing,
-                    homogeneous_freezing=homogeneous_freezing,
-                )
+                dynamics=(
+                    Freezing(
+                        immersion_freezing=immersion_freezing,
+                        homogeneous_freezing=homogeneous_freezing,
+                    ),
+                ),
             )
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),

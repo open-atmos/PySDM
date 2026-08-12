@@ -37,12 +37,14 @@ class Simulation(BasicSimulation):
                 w=settings.vertical_velocity,
                 mass_of_dry_air=mass_of_dry_air,
             ),
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x),
+            ),
         )
         if additional_attributes is not None:
             for attribute in additional_attributes:
                 builder.request_attribute(attribute)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
 
         volume = (
             builder.particulator.environment.mass_of_dry_air

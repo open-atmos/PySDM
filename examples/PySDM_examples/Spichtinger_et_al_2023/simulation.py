@@ -44,13 +44,14 @@ class Simulation(BasicSimulation):
             ),
             n_sd=settings.n_sd,
             environment=env,
-        )
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(VapourDepositionOnIce())
-        builder.add_dynamic(
-            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None)
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+                VapourDepositionOnIce(),
+                Freezing(
+                    homogeneous_freezing="time-dependent", immersion_freezing=None
+                ),
+            ),
         )
 
         self.n_sd = settings.n_sd

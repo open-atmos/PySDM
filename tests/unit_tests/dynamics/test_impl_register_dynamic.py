@@ -20,12 +20,16 @@ def test_impl_register_dynamic():
 
     dynamic = Dynamic()
     n_sd = 1
-    kwargs = {"n_sd": n_sd, "backend": CPU(), "environment": Box(dt=0, dv=0)}
+    kwargs = {
+        "n_sd": n_sd,
+        "backend": CPU(),
+        "environment": Box(dt=0, dv=0),
+        "dynamics": (dynamic,),
+    }
     builders = [Builder(**kwargs), Builder(**kwargs)]
 
     # act
     for builder in builders:
-        builder.add_dynamic(dynamic)
         builder.build(
             attributes={"multiplicity": np.ones(n_sd), "water mass": np.zeros(n_sd)}
         )

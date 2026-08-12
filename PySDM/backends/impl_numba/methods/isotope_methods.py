@@ -2,7 +2,7 @@
 CPU implementation of isotope-relates backend methods
 """
 
-from functools import cached_property
+from functools import cached_property, lru_cache
 
 import numba
 
@@ -76,9 +76,7 @@ class IsotopeMethods(BackendMethods):
                     dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
                 dn_heavy_molecule = dm_heavy / molar_mass_heavy_molecule
                 moles_heavy_molecule[sd_id] += dn_heavy_molecule
-                mass_of_dry_air = (
-                    dry_air_density[cell_id[sd_id]] * cell_volume[cell_id[sd_id]]
-                )
+                mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
                 molality_in_dry_air[cell_id[sd_id]] -= (
                     dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
                 )
@@ -102,7 +100,7 @@ class IsotopeMethods(BackendMethods):
         """Update heavy-isotope composition during droplet growth/evaporation."""
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
-            cell_volume=cell_volume.data,
+            cell_volume=cell_volume,
             multiplicity=multiplicity.data,
             dm_total=dm_total.data,
             signed_water_mass=signed_water_mass.data,
@@ -133,6 +131,8 @@ class IsotopeMethods(BackendMethods):
             *,
             output,
             cell_id,
+            alpha,
+            D_ratio,
             relative_humidity,
             temperature,
             density_dry_air,
@@ -148,38 +148,51 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-                rho_v = pvs_water / T / ff.constants.Rv
-
                 isotopic_fraction = ff.trivia__isotopic_fraction(
                     molality_in_dry_air=molality_in_dry_air[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
                     total_vap_concentration=conc_vap_total,
                 )
-                D_ratio_heavy_to_light = (
-                    ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
-                )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_heavy_to_light,
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
-                    D_light=ff.constants.D0,
+                    D_ratio_heavy_to_light=D_ratio(T),
+                    alpha=alpha(T),
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
+                    ),
+                    Fd=ff.drop_growth__Fd(
+                        T=T,
+                        D=ff.constants.D0,
+                        pvs=pvs_water,
                     ),
                     R_vap=ff.trivia__isotopic_ratio_assuming_single_heavy_isotope(
                         isotopic_fraction
                     ),
                     R_liq=moles_heavy_atom / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
-                    rho_v=rho_v,
                 )
 
         return body
+
+    @lru_cache
+    def alpha_l(self, isotope):
+        return getattr(
+            self.formulae_flattened,
+            f"isotope_equilibrium_fractionation_factors__alpha_l_{isotope}",
+        )
+
+    @lru_cache
+    def D_ratio(self, isotope):
+        return getattr(
+            self.formulae_flattened,
+            f"isotope_diffusivity_ratios__ratio_{isotope}_heavy_to_light",
+        )
 
     def bolin_number(
         self,
         *,
         output,
         cell_id,
+        isotope,
         relative_humidity,
         temperature,
         density_dry_air,
@@ -191,6 +204,8 @@ class IsotopeMethods(BackendMethods):
         self._bolin_number_body(
             output=output.data,
             cell_id=cell_id.data,
+            D_ratio=self.D_ratio(isotope),
+            alpha=self.alpha_l(isotope),
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
             density_dry_air=density_dry_air.data,

@@ -83,7 +83,7 @@ def _condensation(
         RH_max=RH_max.data,
         success=success.data,
     )
-    particulator.attributes.mark_updated("water mass")
+    particulator.attributes.mark_updated("signed water mass")
 
 
 @lru_cache()

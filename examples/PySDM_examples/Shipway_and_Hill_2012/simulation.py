@@ -1,4 +1,5 @@
 from collections import namedtuple
+from typing import List, Any
 
 import numpy as np
 from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
@@ -63,15 +64,10 @@ class Simulation:
         )
         self.g_factor_vec = settings.rhod(_z_vec)
 
-        self.builder = Builder(
-            n_sd=settings.n_sd,
-            backend=backend(formulae=settings.formulae),
-            environment=env,
-        )
-        self.builder.add_dynamic(AmbientThermodynamics())
+        dynamics: List[Any] = [AmbientThermodynamics()]
 
         if settings.enable_condensation:
-            self.builder.add_dynamic(
+            dynamics.append(
                 Condensation(
                     adaptive=settings.condensation_adaptive,
                     rtol_thd=settings.condensation_rtol_thd,
@@ -79,19 +75,28 @@ class Simulation:
                     update_thd=settings.condensation_update_thd,
                 )
             )
-        self.builder.add_dynamic(EulerianAdvection(mpdata))
+        dynamics.append(EulerianAdvection(mpdata))
 
         self.products = []
         if settings.precip:
-            self.add_collision_dynamic(self.builder, settings, self.products)
+            self.add_collision_dynamic(dynamics, settings, self.products)
 
-        displacement = Displacement(
-            enable_sedimentation=settings.precip,
-            precipitation_counting_level_index=int(
-                settings.particle_reservoir_depth / settings.dz
-            ),
+        dynamics.append(
+            Displacement(
+                enable_sedimentation=settings.precip,
+                precipitation_counting_level_index=int(
+                    settings.particle_reservoir_depth / settings.dz
+                ),
+            )
         )
-        self.builder.add_dynamic(displacement)
+
+        self.builder = Builder(
+            n_sd=settings.n_sd,
+            backend=backend(formulae=settings.formulae),
+            environment=env,
+            dynamics=dynamics,
+        )
+
         self.attributes = self.builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
@@ -194,8 +199,8 @@ class Simulation:
                 )
 
     @staticmethod
-    def add_collision_dynamic(builder, settings, _):
-        builder.add_dynamic(
+    def add_collision_dynamic(dynamics, settings, _):
+        dynamics.append(
             Coalescence(
                 collision_kernel=settings.collision_kernel,
                 adaptive=settings.coalescence_adaptive,

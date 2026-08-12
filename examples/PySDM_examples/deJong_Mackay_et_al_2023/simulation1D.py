@@ -13,9 +13,9 @@ class Simulation1D(SimulationSH):
         self.output_steps = settings.output_steps
 
     @staticmethod
-    def add_collision_dynamic(builder, settings, products):
+    def add_collision_dynamic(dynamics, settings, products):
         if settings.breakup:
-            builder.add_dynamic(
+            dynamics.append(
                 Collision(
                     collision_kernel=Geometric(collection_efficiency=1),
                     coalescence_efficiency=settings.coalescence_efficiency,
@@ -36,7 +36,7 @@ class Simulation1D(SimulationSH):
                 )
             )
         else:
-            SimulationSH.add_collision_dynamic(builder, settings, products)
+            SimulationSH.add_collision_dynamic(dynamics, settings, products)
 
         radius_bins_edges = np.logspace(
             np.log10(0.01 * si.um), np.log10(5000 * si.um), num=101, endpoint=True

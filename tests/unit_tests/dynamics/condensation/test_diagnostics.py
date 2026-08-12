@@ -79,9 +79,13 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             rho=rho,
             eta=eta,
         )
-        builder = Builder(n_sd=n_sd, backend=backend(), environment=env)
+        builder = Builder(
+            n_sd=n_sd,
+            backend=backend(),
+            environment=env,
+            dynamics=(Condensation(max_iters=max_iters),),
+        )
 
-        builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(
             attributes={
                 "multiplicity": np.full(n_sd, multiplicity),

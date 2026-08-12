@@ -41,8 +41,10 @@ class IsotopicFractionation:
                 raise AssertionError(
                     f"Isotopic fractionation not implemented for {isotope}"
                 )
-            builder.request_attribute(f"moles_{isotope}")
             builder.request_attribute(f"Bolin number for {isotope}")
+
+        for isotope in HEAVY_ISOTOPES:
+            builder.request_attribute(f"moles_{isotope}")
 
     def __call__(self):
         self.particulator.isotopic_fractionation(self.isotopes)

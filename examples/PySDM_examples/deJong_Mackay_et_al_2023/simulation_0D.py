@@ -31,6 +31,16 @@ def run_box_breakup(
         n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
         environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(
+            Collision(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                breakup_efficiency=settings.break_eff,
+                fragmentation_function=settings.fragmentation,
+                adaptive=settings.adaptive,
+                warn_overflows=settings.warn_overflows,
+            ),
+        ),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
@@ -44,15 +54,6 @@ def run_box_breakup(
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
         ).sample_deterministic(settings.n_sd)
-    breakup = Collision(
-        collision_kernel=settings.kernel,
-        coalescence_efficiency=settings.coal_eff,
-        breakup_efficiency=settings.break_eff,
-        fragmentation_function=settings.fragmentation,
-        adaptive=settings.adaptive,
-        warn_overflows=settings.warn_overflows,
-    )
-    builder.add_dynamic(breakup)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             radius_bins_edges=settings.radius_bins_edges, name="dv/dlnr"
@@ -95,18 +96,19 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
         environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(
+            Coalescence(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                adaptive=settings.adaptive,
+            ),
+        ),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
     ).sample_deterministic(settings.n_sd)
-    coal = Coalescence(
-        collision_kernel=settings.kernel,
-        coalescence_efficiency=settings.coal_eff,
-        adaptive=settings.adaptive,
-    )
-    builder.add_dynamic(coal)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             radius_bins_edges=settings.radius_bins_edges, name="dv/dlnr"

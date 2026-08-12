@@ -34,7 +34,11 @@ def make_particulator(
     builder = Builder(
         n_sd=1,
         backend=backend_instance,
-        environment=Box(dv=np.ones(1), dt=1 * si.s),
+        environment=Box(dv=np.nan, dt=1 * si.s),
+        dynamics=(
+            Condensation(),
+            IsotopicFractionation(isotopes=isotopes_considered),
+        ),
     )
     for iso in isotopes_considered:
         if not attributes.get(f"moles_{iso}"):
@@ -43,9 +47,7 @@ def make_particulator(
         builder.request_attribute(f"delta_{iso}")
     builder.particulator.environment["RH"] = np.array(rh)
     builder.particulator.environment["T"] = np.array(t)
-    builder.particulator.environment["dry_air_density"] = np.array(1)
-    builder.add_dynamic(Condensation())
-    builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
+    builder.particulator.environment["rhod"] = np.array(1)
 
     return builder.build(attributes)
 
@@ -89,10 +91,11 @@ class TestIsotopicFractionation:
 
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=1 * si.s)
+            n_sd=1,
+            backend=backend_instance,
+            environment=Box(dv=np.nan, dt=1 * si.s),
+            dynamics=dynamics,
         )
-        for dynamic in dynamics:
-            builder.add_dynamic(dynamic)
         builder.particulator.environment["molality 2H in dry air"] = np.nan
 
         # act
@@ -118,10 +121,14 @@ class TestIsotopicFractionation:
 
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_class(), environment=Box(dv=np.nan, dt=-1 * si.s)
+            n_sd=1,
+            backend=backend_class(),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
+            dynamics=(
+                Condensation(),
+                IsotopicFractionation(isotopes=(isotope,)),
+            ),
         )
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
         builder.particulator.environment[f"molality {isotope} in dry air"] = np.nan
         builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
