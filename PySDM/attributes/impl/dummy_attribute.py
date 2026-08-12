@@ -12,7 +12,7 @@ class DummyAttribute(Attribute):
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = np.nan
+        self.data.fill(np.nan)
 
     def get(self):
         return self.data
