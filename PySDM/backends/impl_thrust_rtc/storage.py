@@ -373,7 +373,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(output):
             Impl.__abs_body.launch_n(output.shape[0], Impl.thrust((output,)))
 
-    class Storage(StorageBase):
+    class Storage(StorageBase):  # pylint: disable=too-many-public-methods
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
         BOOL = np.bool_
@@ -579,7 +579,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             return result
 
         def urand(self, generator):
-            generator(self)
+            generator.u01(self)
 
         def upload(self, data):
             trtc.Copy(
@@ -612,6 +612,15 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 trtc.Fill(self.data, dvalue)
             return self
 
+        def row_view(self, i):
+            return Storage(
+                StorageSignature(
+                    self.data.range(self.shape[1] * i, self.shape[1] * (i + 1)),
+                    (*self.shape[1:],),
+                    self.dtype,
+                )
+            )
+
         def exp(self):
             Impl.exp(self)
             return self
@@ -619,5 +628,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(self):
             Impl.abs(self)
             return self
+
+        def at(self, index):
+            assert self.shape == (
+                1,
+            ), "Cannot call at() on Storage of shape other than (1,)"
+            return self.to_ndarray()[index]
 
     return Storage

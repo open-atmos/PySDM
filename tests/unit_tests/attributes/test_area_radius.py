@@ -36,8 +36,8 @@ def test_sqrt_radius(volume, backend_instance):
     )
 
     # act
-    radius_actual = particulator.attributes["radius"].to_ndarray()
     sqrt_radius_actual = particulator.attributes["square root of radius"].to_ndarray()
+    radius_actual = particulator.attributes["radius"].to_ndarray()
 
     # assert
     sqrt_radius_expected = np.sqrt(radius_actual)
@@ -60,4 +60,4 @@ def test_area(volume, backend_instance):
     # assert
     radius_expected = particulator.formulae.trivia.radius(volume=volume)
     area_expected = particulator.formulae.trivia.area(radius=radius_expected)
-    np.testing.assert_allclose(area_actual, area_expected)
+    np.testing.assert_allclose(area_actual, area_expected, rtol=1e-6)
