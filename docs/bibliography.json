@@ -757,7 +757,8 @@
       "PySDM/physics/drop_growth/howell_1949.py",
       "PySDM/physics/drop_growth/mason_1971.py",
       "PySDM/dynamics/terminal_velocity/rogers_and_yau.py",
-      "PySDM/dynamics/terminal_velocity/power_series.py"
+      "PySDM/dynamics/terminal_velocity/power_series.py",
+      "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb"
     ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
@@ -985,6 +986,10 @@
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
       "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_1.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_3_4.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_5.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_6_7_8.ipynb",
       "examples/PySDM_examples/Ware_et_al_2025/fig_A1.ipynb"
     ],
     "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",
@@ -1047,5 +1052,12 @@
     ],
     "label": "Arabas & Pawlowska 2011",
     "title": "Adaptive method of lines for multi-component aerosol condensational growth and CCN activation"
+  },
+  "https://doi.org/10.1016/j.jcp.2016.06.029": {
+    "usages": [
+      "PySDM/dynamics/sedimentation_removal_0d.py"
+    ],
+    "label": "Curtis et al. 2016 (J. Comp. Phys. 322)",
+    "title": "Accelerated simulation of stochastic particle removal processes in particle-resolved aerosol models"
   }
 }

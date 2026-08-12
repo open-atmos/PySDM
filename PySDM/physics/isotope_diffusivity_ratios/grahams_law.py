@@ -18,3 +18,15 @@ class GrahamsLaw:  # pylint: disable=too-few-public-methods
         return (
             (2 * const.M_1H + const.M_16O) / (const.M_3H + const.M_1H + const.M_16O)
         ) ** const.ONE_HALF
+
+    @staticmethod
+    def ratio_17O_heavy_to_light(const, temperature):  # pylint: disable=unused-argument
+        return (
+            (2 * const.M_1H + const.M_16O) / (2 * const.M_1H + const.M_17O)
+        ) ** const.ONE_HALF
+
+    @staticmethod
+    def ratio_18O_heavy_to_light(const, temperature):  # pylint: disable=unused-argument
+        return (
+            (2 * const.M_1H + const.M_16O) / (2 * const.M_1H + const.M_18O)
+        ) ** const.ONE_HALF

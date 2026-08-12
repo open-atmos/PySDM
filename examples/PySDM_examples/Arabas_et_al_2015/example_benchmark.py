@@ -54,7 +54,7 @@ def main():
         for sd in n_sd:
             settings.n_sd_per_gridbox = sd
             storage = Storage()
-            simulation = Simulation(settings, storage, None, backend)
+            simulation = Simulation(settings, storage, None, backend())
             simulation.reinit(products=[WallTime()])
             simulation.run()
             times[key].append(storage.load("wall time")[-1])

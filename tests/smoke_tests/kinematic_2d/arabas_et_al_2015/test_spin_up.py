@@ -18,7 +18,7 @@ from .dummy_storage import DummyStorage
         pytest.param(True, id="fastmath: True"),
     ),
 )
-def test_spin_up(backend_class, fastmath, plot=False):
+def test_spin_up(backend_instance, fastmath, plot=False):
     # Arrange
     settings = Settings(Formulae(fastmath=fastmath))
     settings.dt = 0.5 * si.second
@@ -27,9 +27,7 @@ def test_spin_up(backend_class, fastmath, plot=False):
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(
-        settings, storage, SpinUp=SpinUp, backend_class=backend_class
-    )
+    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_instance)
     simulation.reinit()
 
     # Act

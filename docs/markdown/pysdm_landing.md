@@ -203,9 +203,9 @@ particulator = builder.build(attributes, products)
 ```
 </details>
 
-The ``backend`` argument may be set to ``CPU`` or ``GPU``
-  what translates to choosing the multi-threaded backend or the
-  GPU-resident computation mode, respectively.
+The ``backend`` argument may be set to ``CPU``, ``GPU`` or ``JAX``
+  what translates to choosing the multi-threaded backend, the
+  GPU-resident computation mode, respectively or the early-in-development [`JAX`](https://docs.jax.dev/en/latest/index.html#) backend flexible to different device configurations.
 The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html#Box) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
@@ -664,6 +664,7 @@ mindmap
     ((backends))
       Numba
       ThrustRTC
+      Jax
     ((dynamics))
       AqueousChemistry
       Collision
@@ -743,6 +744,8 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
   https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 - Particula (Python)
   https://github.com/uncscode/particula/blob/main/particula/dynamics/coagulation/particle_resolved_step/super_droplet_method.py
+- CM1-SDM (FORTRAN)
+  https://zenodo.org/records/18896134
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
