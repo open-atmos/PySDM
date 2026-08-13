@@ -184,7 +184,6 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def moles_heavy_atom(
         *,
-        atoms_per_heavy_molecule,
         mass_total,
         mass_other_heavy_isotopes,
         molar_mass_light_molecule,
@@ -195,14 +194,14 @@ class Trivia:  # pylint: disable=too-many-public-methods
         Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
         from molecular isotope ratios (e.g. moles of HDO to moles of H2O),
         using total mass and mass of other heavy isotopes.
+
+        NOTE: this right hand side of the equation is divided by number of heavy atmos
+        in heavy molecule which in all considered cases is 1.
+        Hence, it is omitted in equation.
         """
-        return (
-            (mass_total - mass_other_heavy_isotopes)
-            / (
-                molar_mass_light_molecule / molecular_isotopic_ratio
-                + molar_mass_heavy_molecule
-            )
-            / atoms_per_heavy_molecule
+        return (mass_total - mass_other_heavy_isotopes) / (
+            molar_mass_light_molecule / molecular_isotopic_ratio
+            + molar_mass_heavy_molecule
         )
 
     @staticmethod
