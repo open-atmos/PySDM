@@ -74,13 +74,13 @@ class IsotopeMethods(BackendMethods):
             n_substeps = 1
             max_n_substeps = 5000
             converged = False
+            substepping = False
             substep = 0
-            while n_substeps <= max_n_substeps:  # TODO timestep!
+            while n_substeps <= max_n_substeps:
                 delta_n_heavy_total = 0
 
                 for sd_id in range(multiplicity.shape[0]):
-                    print("dm=", dm_total[sd_id])
-                    if not converged:
+                    if not converged or substepping:
 
                         old_n_molecules = (
                             signed_water_mass[sd_id] - dm_total[sd_id]
@@ -117,7 +117,7 @@ class IsotopeMethods(BackendMethods):
                         new_n_heavy_molecules - old_n_heavy_molecules
                     )
 
-                    # assert new_n_heavy_molecules >= 0
+                    assert new_n_heavy_molecules >= -1e-6
                     delta_n_heavy_total += delta_n_heavy_per_drop * multiplicity[sd_id]
                     if converged:  # run this *n_substeps
                         # eps_old = Rv / new_n_heavy_molecules * new_n_molecules
@@ -141,17 +141,16 @@ class IsotopeMethods(BackendMethods):
                 )
                 if not converged:
                     if new_molality < 0:  # check long vs short step
-                        n_substeps *= 2  # repeat substeps
-                        print(n_substeps, max_n_substeps, new_molality)
+                        n_substeps *= 2
                         if n_substeps > max_n_substeps:
-
                             assert (
                                 False
                             ), "Exceeded maximum number of substeps, solution not found!"
                     else:
                         converged = True
-
+                        substepping = True
                 else:
+                    # assert new_molality < 0
                     molality_in_dry_air[cell_id[0]] = new_molality
                     substep += 1
                 if substep == n_substeps:
