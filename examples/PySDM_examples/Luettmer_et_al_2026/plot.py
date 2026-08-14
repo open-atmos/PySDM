@@ -78,10 +78,10 @@ def plot_thermodynamics_and_bulk(
         ).homogeneous_ice_nucleation_rate
         koop_murray_2016 = j_hom_rate.j_hom(T, d_a_w_ice)
         j_hom_rate = Formulae(
-            homogeneous_ice_nucleation_rate="Koop_Correction"
+            homogeneous_ice_nucleation_rate="KoopMurray2016_DWA"
         ).homogeneous_ice_nucleation_rate
-        spichtinger_2023 = j_hom_rate.j_hom(T, d_a_w_ice)
-        abs_diff_j_hom = (koop_murray_2016 - spichtinger_2023) / koop_murray_2016
+        KoopMurray2016_DWA = j_hom_rate.j_hom(T, d_a_w_ice)
+        abs_diff_j_hom = (KoopMurray2016_DWA - koop_murray_2016) / koop_murray_2016
     else:
         radius = np.asarray(output["radius"])
         multiplicity = np.asarray(output["multiplicity"])
@@ -188,7 +188,7 @@ def plot_thermodynamics_and_bulk(
         )
         ax.plot(
             time,
-            spichtinger_2023,
+            KoopMurray2016_DWA,
             color="red",
             linestyle=lin_s_SP2023,
             label="JHOM-DWA",
@@ -375,6 +375,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     ens_variable = np.array(ens_variable)
     ens_variable_sec = np.array(ens_variable_sec)
     y_label, y_label_sec = "", ""
+    ylim = None
     if ens_variable_name == "w_updraft":
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         y_label_sec = r"cooling rate [$\mathrm{mK \, s^{-1}}$]"
@@ -387,10 +388,11 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         ens_variable_sec = ens_variable_sec * 1.0e6
         binwidth = 0.25
     elif ens_variable_name == "sig":
-        y_label = r"$\sigma$"
+        y_label = r"standard deviation DSD"
         second_axis = False
         y_log = False
         binwidth = 0.1
+        ylim = (1.5, 2.0)
 
     ens_variable_label = np.unique(np.sort(ens_variable))
 
@@ -399,6 +401,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         x=T_frz_hist,
         y=ens_variable,
         xlim=xlim,
+        ylim=ylim,
     )
     if y_log:
         h.ax_joint.set(yscale="log")
@@ -533,7 +536,7 @@ def plot_ensemble_bulk(
         ax.set_yscale("linear")
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         ens_label = "w ensemble"
-    elif ens_var_name == "sigma_droplet_distribution":
+    elif ens_var_name == "sigma_droplet_distribution" or ens_var_name == "sig":
         y_label = r"standard deviation DSD"
         ens_label = r"$\sigma$ ensemble"
     elif ens_var_name == "n_sd":
