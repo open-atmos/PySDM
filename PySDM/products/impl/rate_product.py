@@ -31,5 +31,5 @@ class RateProduct(Product):
             self.timestep_count = 0
             self._download_to_buffer(self.particulator.environment["rhod"])
             result[:] /= self.buffer
-        self.counter[:] = 0
+        self.counter.fill(0)
         return result
