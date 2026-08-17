@@ -47,7 +47,7 @@ CI_version_pins = [
     "joblib==1.5.3",
     "ipywidgets==8.1.7",
     "seaborn==0.13.2",
-    "numdifftools==0.9.42",
+    "numdifftools==0.10.1",
     "vtk==9.6.2",
     "pyrcel==2.0.0",
     "pyvinecopulib==0.7.6",
