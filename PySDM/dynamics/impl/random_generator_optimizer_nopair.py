@@ -15,8 +15,8 @@ class RandomGeneratorOptimizerNoPair:
         self.rand = None
         self.rnd = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         shift = (
             math.ceil(self.particulator.dt / self.dt_min)
             if self.optimized_random

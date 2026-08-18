@@ -7,9 +7,9 @@ from .attribute import Attribute
 
 
 class DerivedAttribute(Attribute):
-    def __init__(self, builder, name, dependencies):
+    def __init__(self, particulator, name, dependencies):
         assert len(dependencies) > 0
-        super().__init__(builder, name)
+        super().__init__(particulator, name)
         self.dependencies = dependencies
 
     def update(self):

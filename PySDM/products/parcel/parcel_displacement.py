@@ -12,10 +12,10 @@ class ParcelDisplacement(Product):
         super().__init__(unit=unit, name=name)
         self.environment = None
 
-    def register(self, builder):
-        super().register(builder)
-        assert isinstance(builder.particulator.environment, Parcel)
-        self.environment = builder.particulator.environment
+    def register(self, particulator):
+        super().register(particulator)
+        assert isinstance(particulator.environment, Parcel)
+        self.environment = particulator.environment
 
     def _impl(self, **kwargs):
         self._download_to_buffer(self.environment["z"])

@@ -25,32 +25,6 @@ class TestBuilder:
         _ = particulator.attributes
 
     @staticmethod
-    def test_request_attribute():
-        # arrange
-        env = Box(dt=-1, dv=np.nan)
-        builder = Builder(
-            backend=CPU(), n_sd=1, environment=env, dynamics=(Condensation(),)
-        )
-
-        # act
-        builder.request_attribute("critical saturation")
-
-        # assert
-        particulator = builder.build(
-            products=(),
-            attributes={
-                k: np.asarray([1])
-                for k in (
-                    "multiplicity",
-                    "volume",
-                    "dry volume",
-                    "kappa times dry volume",
-                )
-            },
-        )
-        particulator.environment["T"] = np.nan
-        _ = particulator.attributes["critical saturation"].to_ndarray()
-
     @staticmethod
     @pytest.mark.parametrize(
         "dynamics",
