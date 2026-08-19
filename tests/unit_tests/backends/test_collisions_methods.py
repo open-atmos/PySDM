@@ -374,3 +374,47 @@ class TestCollisionMethods:
         np.testing.assert_allclose(
             actual=prob.to_ndarray(), desired=[1 * mult] * (n_sd // 2)
         )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "cell_start, expected",
+        (
+            ([0, 4, 8], [3, 3, 3, 3]),
+            ([0, 5, 7], [5, 5, 1]),
+            ([0, 3, 9], [3, 5, 5, 5]),
+            ([0, 1, 5], [3, 3]),
+        ),
+    )
+    def test_normalize_multiple_cells(backend_instance, cell_start, expected):
+        backend = backend_instance
+
+        # Arrange
+        n_sd = cell_start[-1]
+        n_cell = len(cell_start) - 1
+        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
+        cell_id = backend.Storage.from_ndarray(
+            np.repeat(np.arange(n_cell), np.diff(cell_start.to_ndarray()))
+        )
+        cell_idx = backend.Storage.from_ndarray(np.arange(n_cell))
+        norm_factor = backend.Storage.from_ndarray(np.full(n_cell, np.nan))
+        prob = backend.Storage.from_ndarray(np.ones(n_sd // 2))
+
+        timestep = 44
+        dv = 666
+
+        # Act
+        backend.normalize(
+            prob=prob,
+            cell_id=cell_id,
+            cell_idx=cell_idx,
+            cell_start=cell_start,
+            norm_factor=norm_factor,
+            timestep=timestep,
+            dv=dv,
+        )
+
+        # Assert
+        np.testing.assert_allclose(
+            actual=prob.to_ndarray(),
+            desired=np.asarray(expected) * timestep / dv,
+        )
