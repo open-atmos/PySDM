@@ -85,7 +85,6 @@ def plot_thermodynamics_and_bulk(
     else:
         radius = np.asarray(output["radius"])
         multiplicity = np.asarray(output["multiplicity"])
-
     _, axs = pyplot.subplots(1, 4, figsize=(20, 5), constrained_layout=True)
 
     # Temperture profile
@@ -135,7 +134,7 @@ def plot_thermodynamics_and_bulk(
             r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize2
         )
         twin.tick_params(labelsize=tick_fsize)
-
+    # tfrz histogram or mean radius
     iax = 2
     ax = axs[iax]
     if show_tf:
@@ -168,7 +167,6 @@ def plot_thermodynamics_and_bulk(
         ax.grid(visible=True)
         ax.axvline(x=first_ice_time, color="black", linestyle=":")
         ax.set_title(title_add[iax] + r" mean radius", fontsize=ax_lab_fsize)
-
     # Water activity difference profile
     iax = 3
     ax = axs[iax]
@@ -393,7 +391,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         y_log = False
         binwidth = 0.1
         ylim = (1.5, 2.0)
-
     ens_variable_label = np.unique(np.sort(ens_variable))
 
     xlim = (232.5, 240)
@@ -435,7 +432,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     h.ax_marg_y.remove()
 
     if second_axis:
-
         ax2 = h.ax_joint.secondary_yaxis("right", functions=(lambda y: y, lambda y: y))
         ax2.set_yticks(ens_variable_label)
         ax2.set_yticklabels([f"{v:.1f}" for v in ens_variable_sec])
@@ -536,7 +532,7 @@ def plot_ensemble_bulk(
         ax.set_yscale("linear")
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         ens_label = "w ensemble"
-    elif ens_var_name == "sigma_droplet_distribution" or ens_var_name == "sig":
+    elif ens_var_name in ("sigma_droplet_distribution", "sig"):
         y_label = r"standard deviation DSD"
         ens_label = r"$\sigma$ ensemble"
     elif ens_var_name == "n_sd":
