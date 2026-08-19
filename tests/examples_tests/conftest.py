@@ -112,7 +112,7 @@ TEST_SUITES = {
         "Toon_et_al_1980",
     ],
     "homogeneous_freezing": [
-        "Luettmer_homogeneous_freezing",
+        "Luettmer_et_al_2026",
         "Murray_et_al_2010",
     ],
     "condensation_a": [
