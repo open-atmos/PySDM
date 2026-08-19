@@ -118,9 +118,9 @@
 
                         <label class="view-source-button" for="mod-box-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Bare zero-dimensional framework</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
@@ -153,8 +153,8 @@
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">spectral_discretisation</span><span class="p">):</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="p">(</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">],</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"volume"</span><span class="p">],</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"multiplicity"</span><span class="p">],</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="p">)</span> <span class="o">=</span> <span class="n">spectral_discretisation</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span> <span class="n">n_sd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="p">)</span>
@@ -200,8 +200,8 @@
 </span><span id="Box-34"><a href="#Box-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">spectral_discretisation</span><span class="p">):</span>
 </span><span id="Box-35"><a href="#Box-35"><span class="linenos">35</span></a>        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span id="Box-36"><a href="#Box-36"><span class="linenos">36</span></a>        <span class="p">(</span>
-</span><span id="Box-37"><a href="#Box-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">],</span>
-</span><span id="Box-38"><a href="#Box-38"><span class="linenos">38</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="Box-37"><a href="#Box-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"volume"</span><span class="p">],</span>
+</span><span id="Box-38"><a href="#Box-38"><span class="linenos">38</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"multiplicity"</span><span class="p">],</span>
 </span><span id="Box-39"><a href="#Box-39"><span class="linenos">39</span></a>        <span class="p">)</span> <span class="o">=</span> <span class="n">spectral_discretisation</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
 </span><span id="Box-40"><a href="#Box-40"><span class="linenos">40</span></a>            <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span> <span class="n">n_sd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span>
 </span><span id="Box-41"><a href="#Box-41"><span class="linenos">41</span></a>        <span class="p">)</span>
@@ -298,8 +298,8 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="Box.init_attributes-34"><a href="#Box.init_attributes-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">spectral_discretisation</span><span class="p">):</span>
 </span><span id="Box.init_attributes-35"><a href="#Box.init_attributes-35"><span class="linenos">35</span></a>        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span id="Box.init_attributes-36"><a href="#Box.init_attributes-36"><span class="linenos">36</span></a>        <span class="p">(</span>
-</span><span id="Box.init_attributes-37"><a href="#Box.init_attributes-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">],</span>
-</span><span id="Box.init_attributes-38"><a href="#Box.init_attributes-38"><span class="linenos">38</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="Box.init_attributes-37"><a href="#Box.init_attributes-37"><span class="linenos">37</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"volume"</span><span class="p">],</span>
+</span><span id="Box.init_attributes-38"><a href="#Box.init_attributes-38"><span class="linenos">38</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">"multiplicity"</span><span class="p">],</span>
 </span><span id="Box.init_attributes-39"><a href="#Box.init_attributes-39"><span class="linenos">39</span></a>        <span class="p">)</span> <span class="o">=</span> <span class="n">spectral_discretisation</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
 </span><span id="Box.init_attributes-40"><a href="#Box.init_attributes-40"><span class="linenos">40</span></a>            <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span> <span class="n">n_sd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span>
 </span><span id="Box.init_attributes-41"><a href="#Box.init_attributes-41"><span class="linenos">41</span></a>        <span class="p">)</span>

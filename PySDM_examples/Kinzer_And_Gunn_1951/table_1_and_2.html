@@ -101,16 +101,16 @@ but for different relative humidities (from 10% to 100%).</p>
 
                         <label class="view-source-button" for="mod-table_1_and_2-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">from [Kinzer &amp; Gunn 1951](https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">Table1 represents factor 4*pi*radius(1 + F*radius/s_prim) for several drop diameters</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">and temperatures (0, 10, 20, 40 deg. Celsius).</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">Table2 contains factor D(rho_a - rho_b) for the same temperatures as in Table1</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">but for different relative humidities (from 10% to 100%).</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">"""</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">table1</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>    <span class="s2">&quot;Diameter [cm]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>    <span class="s2">"Diameter [cm]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>        <span class="mf">0.01</span><span class="p">,</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>        <span class="mf">0.02</span><span class="p">,</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>        <span class="mf">0.03</span><span class="p">,</span>
@@ -139,7 +139,7 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="mf">0.42</span><span class="p">,</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="mf">0.44</span><span class="p">,</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="p">),</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="s2">&quot;0 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="s2">"0 [deg C]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="mf">0.086</span><span class="p">,</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="mf">0.29</span><span class="p">,</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="mf">0.49</span><span class="p">,</span>
@@ -168,7 +168,7 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="mf">0.0</span><span class="p">,</span>
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="mf">0.0</span><span class="p">,</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="p">),</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>    <span class="s2">&quot;10 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>    <span class="s2">"10 [deg C]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="mf">0.082</span><span class="p">,</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="mf">0.29</span><span class="p">,</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="mf">0.48</span><span class="p">,</span>
@@ -197,7 +197,7 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="mf">0.0</span><span class="p">,</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="mf">0.0</span><span class="p">,</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="p">),</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="s2">&quot;20 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="s2">"20 [deg C]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>        <span class="mf">0.079</span><span class="p">,</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="mf">0.29</span><span class="p">,</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="mf">0.48</span><span class="p">,</span>
@@ -226,7 +226,7 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="mi">0</span><span class="p">,</span>
 </span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="mi">0</span><span class="p">,</span>
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>    <span class="p">),</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="s2">&quot;30 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="s2">"30 [deg C]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="mf">0.079</span><span class="p">,</span>
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="mf">0.28</span><span class="p">,</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="mf">0.47</span><span class="p">,</span>
@@ -255,7 +255,7 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="mi">39</span><span class="p">,</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="mi">0</span><span class="p">,</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="p">),</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="s2">&quot;40 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="s2">"40 [deg C]"</span><span class="p">:</span> <span class="p">(</span>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>        <span class="mf">0.073</span><span class="p">,</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="mf">0.28</span><span class="p">,</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="mf">0.47</span><span class="p">,</span>
@@ -287,11 +287,11 @@ but for different relative humidities (from 10% to 100%).</p>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="p">}</span>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>
 </span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="n">table2</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>    <span class="s2">&quot;relative humidity [percent]&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>    <span class="s2">&quot;0 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.61</span><span class="p">,</span> <span class="mf">0.54</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.41</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.135</span><span class="p">,</span> <span class="mf">0.067</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>    <span class="s2">&quot;20 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.47</span><span class="p">,</span> <span class="mf">1.29</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">,</span> <span class="mf">0.46</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mf">0.159</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="s2">&quot;30 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.06</span><span class="p">,</span> <span class="mf">1.79</span><span class="p">,</span> <span class="mf">1.55</span><span class="p">,</span> <span class="mf">1.32</span><span class="p">,</span> <span class="mf">1.09</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="s2">&quot;40 [deg C]&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.68</span><span class="p">,</span> <span class="mf">2.36</span><span class="p">,</span> <span class="mf">2.05</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.45</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.56</span><span class="p">,</span> <span class="mf">0.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>    <span class="s2">"relative humidity [percent]"</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>    <span class="s2">"0 [deg C]"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.61</span><span class="p">,</span> <span class="mf">0.54</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.41</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.135</span><span class="p">,</span> <span class="mf">0.067</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>    <span class="s2">"20 [deg C]"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.47</span><span class="p">,</span> <span class="mf">1.29</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">,</span> <span class="mf">0.46</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mf">0.159</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="s2">"30 [deg C]"</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.06</span><span class="p">,</span> <span class="mf">1.79</span><span class="p">,</span> <span class="mf">1.55</span><span class="p">,</span> <span class="mf">1.32</span><span class="p">,</span> <span class="mf">1.09</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="s2">"40 [deg C]"</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.68</span><span class="p">,</span> <span class="mf">2.36</span><span class="p">,</span> <span class="mf">2.05</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.45</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.56</span><span class="p">,</span> <span class="mf">0.28</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="p">}</span>
 </span></pre></div>
 

@@ -109,9 +109,9 @@
 
                         <label class="view-source-button" for="mod-pair_methods-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">JAX implementation of pairwise operations backend methods</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">partial</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
@@ -125,7 +125,7 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_find_pairs_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">])</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"size"</span><span class="p">])</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">is_first_in_pair</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">indices</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
@@ -257,7 +257,7 @@
 </span><span id="PairMethods-15"><a href="#PairMethods-15"><span class="linenos"> 15</span></a>
 </span><span id="PairMethods-16"><a href="#PairMethods-16"><span class="linenos"> 16</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-17"><a href="#PairMethods-17"><span class="linenos"> 17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_find_pairs_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="PairMethods-18"><a href="#PairMethods-18"><span class="linenos"> 18</span></a>        <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">])</span>
+</span><span id="PairMethods-18"><a href="#PairMethods-18"><span class="linenos"> 18</span></a>        <span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"size"</span><span class="p">])</span>
 </span><span id="PairMethods-19"><a href="#PairMethods-19"><span class="linenos"> 19</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">is_first_in_pair</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 </span><span id="PairMethods-20"><a href="#PairMethods-20"><span class="linenos"> 20</span></a>
 </span><span id="PairMethods-21"><a href="#PairMethods-21"><span class="linenos"> 21</span></a>            <span class="n">indices</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>

@@ -109,7 +109,7 @@
 
                         <label class="view-source-button" for="mod-moment_product-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;common code for products computing statistical moments (e.g., effective radius, acidity)&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""common code for products computing statistical moments (e.g., effective radius, acidity)"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
@@ -138,9 +138,9 @@
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="n">attr</span><span class="p">,</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">rank</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="n">filter_attr</span><span class="o">=</span><span class="s2">"signed water mass"</span><span class="p">,</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="n">filter_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="n">weighting_attribute</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="n">weighting_attribute</span><span class="o">=</span><span class="s2">"water mass"</span><span class="p">,</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="n">weighting_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="n">skip_division_by_m0</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="p">):</span>
@@ -193,9 +193,9 @@
 </span><span id="MomentProduct-28"><a href="#MomentProduct-28"><span class="linenos">28</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentProduct-29"><a href="#MomentProduct-29"><span class="linenos">29</span></a>        <span class="n">attr</span><span class="p">,</span>
 </span><span id="MomentProduct-30"><a href="#MomentProduct-30"><span class="linenos">30</span></a>        <span class="n">rank</span><span class="p">,</span>
-</span><span id="MomentProduct-31"><a href="#MomentProduct-31"><span class="linenos">31</span></a>        <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">,</span>
+</span><span id="MomentProduct-31"><a href="#MomentProduct-31"><span class="linenos">31</span></a>        <span class="n">filter_attr</span><span class="o">=</span><span class="s2">"signed water mass"</span><span class="p">,</span>
 </span><span id="MomentProduct-32"><a href="#MomentProduct-32"><span class="linenos">32</span></a>        <span class="n">filter_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span>
-</span><span id="MomentProduct-33"><a href="#MomentProduct-33"><span class="linenos">33</span></a>        <span class="n">weighting_attribute</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="MomentProduct-33"><a href="#MomentProduct-33"><span class="linenos">33</span></a>        <span class="n">weighting_attribute</span><span class="o">=</span><span class="s2">"water mass"</span><span class="p">,</span>
 </span><span id="MomentProduct-34"><a href="#MomentProduct-34"><span class="linenos">34</span></a>        <span class="n">weighting_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 </span><span id="MomentProduct-35"><a href="#MomentProduct-35"><span class="linenos">35</span></a>        <span class="n">skip_division_by_m0</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 </span><span id="MomentProduct-36"><a href="#MomentProduct-36"><span class="linenos">36</span></a>    <span class="p">):</span>

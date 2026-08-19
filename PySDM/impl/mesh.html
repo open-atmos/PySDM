@@ -136,9 +136,9 @@
 
                         <label class="view-source-button" for="mod-mesh-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">spatial mesh representation (incl. memory strides)</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
@@ -147,7 +147,7 @@
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mesh</span><span class="p">:</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">n_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;sizes of dimensions not specified in grid/size are assumed to be of 1 m&quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">"""sizes of dimensions not specified in grid/size are assumed to be of 1 m"""</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">strides</span> <span class="o">=</span> <span class="n">strides</span> <span class="ow">or</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">__strides</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
@@ -183,12 +183,12 @@
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__strides</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        returns strides, i.e.: to compute a `cell_id`, use np.dot(strides, cell_origin)</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        returns the stride vector for a given grid (for use in `cell_id` arithmetics where</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">        the stride vector indicates the distances of cell ids adjacent in a given dimension)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        """</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="n">domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">grid</span><span class="p">))</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="n">strides</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">strides</span><span class="p">)</span> <span class="o">//</span> <span class="n">domain</span><span class="o">.</span><span class="n">itemsize</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -198,7 +198,7 @@
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="n">strides</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cellular_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">        computes values of `cell_id`, `cell_origin` and `position_in_cell` attributes</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">        based on `positions` values passed as input</span>
 </span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
@@ -214,7 +214,7 @@
 </span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="sd">             (each within the range of 0...grid[dim])</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="sd">           - `position_in_cell`: n-component vector of floats</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a><span class="sd">             (each within the range of 0...1)</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="sd">        """</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>        <span class="n">cell_origin</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>        <span class="n">position_in_cell</span> <span class="o">=</span> <span class="n">positions</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
@@ -241,7 +241,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="Mesh-10"><a href="#Mesh-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mesh</span><span class="p">:</span>
 </span><span id="Mesh-11"><a href="#Mesh-11"><span class="linenos">11</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="Mesh-12"><a href="#Mesh-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">n_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="Mesh-13"><a href="#Mesh-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;sizes of dimensions not specified in grid/size are assumed to be of 1 m&quot;&quot;&quot;</span>
+</span><span id="Mesh-13"><a href="#Mesh-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">"""sizes of dimensions not specified in grid/size are assumed to be of 1 m"""</span>
 </span><span id="Mesh-14"><a href="#Mesh-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
 </span><span id="Mesh-15"><a href="#Mesh-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 </span><span id="Mesh-16"><a href="#Mesh-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">strides</span> <span class="o">=</span> <span class="n">strides</span> <span class="ow">or</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">__strides</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
@@ -277,12 +277,12 @@
 </span><span id="Mesh-46"><a href="#Mesh-46"><span class="linenos">46</span></a>
 </span><span id="Mesh-47"><a href="#Mesh-47"><span class="linenos">47</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Mesh-48"><a href="#Mesh-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__strides</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
-</span><span id="Mesh-49"><a href="#Mesh-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Mesh-49"><a href="#Mesh-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Mesh-50"><a href="#Mesh-50"><span class="linenos">50</span></a><span class="sd">        returns strides, i.e.: to compute a `cell_id`, use np.dot(strides, cell_origin)</span>
 </span><span id="Mesh-51"><a href="#Mesh-51"><span class="linenos">51</span></a>
 </span><span id="Mesh-52"><a href="#Mesh-52"><span class="linenos">52</span></a><span class="sd">        returns the stride vector for a given grid (for use in `cell_id` arithmetics where</span>
 </span><span id="Mesh-53"><a href="#Mesh-53"><span class="linenos">53</span></a><span class="sd">        the stride vector indicates the distances of cell ids adjacent in a given dimension)</span>
-</span><span id="Mesh-54"><a href="#Mesh-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Mesh-54"><a href="#Mesh-54"><span class="linenos">54</span></a><span class="sd">        """</span>
 </span><span id="Mesh-55"><a href="#Mesh-55"><span class="linenos">55</span></a>        <span class="n">domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">grid</span><span class="p">))</span>
 </span><span id="Mesh-56"><a href="#Mesh-56"><span class="linenos">56</span></a>        <span class="n">strides</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">strides</span><span class="p">)</span> <span class="o">//</span> <span class="n">domain</span><span class="o">.</span><span class="n">itemsize</span>
 </span><span id="Mesh-57"><a href="#Mesh-57"><span class="linenos">57</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -292,7 +292,7 @@
 </span><span id="Mesh-61"><a href="#Mesh-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">strides</span>
 </span><span id="Mesh-62"><a href="#Mesh-62"><span class="linenos">62</span></a>
 </span><span id="Mesh-63"><a href="#Mesh-63"><span class="linenos">63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cellular_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
-</span><span id="Mesh-64"><a href="#Mesh-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Mesh-64"><a href="#Mesh-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Mesh-65"><a href="#Mesh-65"><span class="linenos">65</span></a><span class="sd">        computes values of `cell_id`, `cell_origin` and `position_in_cell` attributes</span>
 </span><span id="Mesh-66"><a href="#Mesh-66"><span class="linenos">66</span></a><span class="sd">        based on `positions` values passed as input</span>
 </span><span id="Mesh-67"><a href="#Mesh-67"><span class="linenos">67</span></a>
@@ -308,7 +308,7 @@
 </span><span id="Mesh-77"><a href="#Mesh-77"><span class="linenos">77</span></a><span class="sd">             (each within the range of 0...grid[dim])</span>
 </span><span id="Mesh-78"><a href="#Mesh-78"><span class="linenos">78</span></a><span class="sd">           - `position_in_cell`: n-component vector of floats</span>
 </span><span id="Mesh-79"><a href="#Mesh-79"><span class="linenos">79</span></a><span class="sd">             (each within the range of 0...1)</span>
-</span><span id="Mesh-80"><a href="#Mesh-80"><span class="linenos">80</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Mesh-80"><a href="#Mesh-80"><span class="linenos">80</span></a><span class="sd">        """</span>
 </span><span id="Mesh-81"><a href="#Mesh-81"><span class="linenos">81</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </span><span id="Mesh-82"><a href="#Mesh-82"><span class="linenos">82</span></a>        <span class="n">cell_origin</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 </span><span id="Mesh-83"><a href="#Mesh-83"><span class="linenos">83</span></a>        <span class="n">position_in_cell</span> <span class="o">=</span> <span class="n">positions</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
@@ -333,7 +333,7 @@
     </div>
     <a class="headerlink" href="#Mesh.__init__"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Mesh.__init__-12"><a href="#Mesh.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">n_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="Mesh.__init__-13"><a href="#Mesh.__init__-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;sizes of dimensions not specified in grid/size are assumed to be of 1 m&quot;&quot;&quot;</span>
+</span><span id="Mesh.__init__-13"><a href="#Mesh.__init__-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">"""sizes of dimensions not specified in grid/size are assumed to be of 1 m"""</span>
 </span><span id="Mesh.__init__-14"><a href="#Mesh.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
 </span><span id="Mesh.__init__-15"><a href="#Mesh.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 </span><span id="Mesh.__init__-16"><a href="#Mesh.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">strides</span> <span class="o">=</span> <span class="n">strides</span> <span class="ow">or</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">__strides</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
@@ -525,7 +525,7 @@
     </div>
     <a class="headerlink" href="#Mesh.cellular_attributes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Mesh.cellular_attributes-63"><a href="#Mesh.cellular_attributes-63"><span class="linenos">63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cellular_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
-</span><span id="Mesh.cellular_attributes-64"><a href="#Mesh.cellular_attributes-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Mesh.cellular_attributes-64"><a href="#Mesh.cellular_attributes-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Mesh.cellular_attributes-65"><a href="#Mesh.cellular_attributes-65"><span class="linenos">65</span></a><span class="sd">        computes values of `cell_id`, `cell_origin` and `position_in_cell` attributes</span>
 </span><span id="Mesh.cellular_attributes-66"><a href="#Mesh.cellular_attributes-66"><span class="linenos">66</span></a><span class="sd">        based on `positions` values passed as input</span>
 </span><span id="Mesh.cellular_attributes-67"><a href="#Mesh.cellular_attributes-67"><span class="linenos">67</span></a>
@@ -541,7 +541,7 @@
 </span><span id="Mesh.cellular_attributes-77"><a href="#Mesh.cellular_attributes-77"><span class="linenos">77</span></a><span class="sd">             (each within the range of 0...grid[dim])</span>
 </span><span id="Mesh.cellular_attributes-78"><a href="#Mesh.cellular_attributes-78"><span class="linenos">78</span></a><span class="sd">           - `position_in_cell`: n-component vector of floats</span>
 </span><span id="Mesh.cellular_attributes-79"><a href="#Mesh.cellular_attributes-79"><span class="linenos">79</span></a><span class="sd">             (each within the range of 0...1)</span>
-</span><span id="Mesh.cellular_attributes-80"><a href="#Mesh.cellular_attributes-80"><span class="linenos">80</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Mesh.cellular_attributes-80"><a href="#Mesh.cellular_attributes-80"><span class="linenos">80</span></a><span class="sd">        """</span>
 </span><span id="Mesh.cellular_attributes-81"><a href="#Mesh.cellular_attributes-81"><span class="linenos">81</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </span><span id="Mesh.cellular_attributes-82"><a href="#Mesh.cellular_attributes-82"><span class="linenos">82</span></a>        <span class="n">cell_origin</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 </span><span id="Mesh.cellular_attributes-83"><a href="#Mesh.cellular_attributes-83"><span class="linenos">83</span></a>        <span class="n">position_in_cell</span> <span class="o">=</span> <span class="n">positions</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>

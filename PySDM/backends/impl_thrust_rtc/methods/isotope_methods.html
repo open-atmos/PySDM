@@ -103,9 +103,9 @@
 
                         <label class="view-source-button" for="mod-isotope_methods-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">GPU implementation of isotope-relates backend methods</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
@@ -120,14 +120,14 @@
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__isotopic_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="s2">&quot;ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_ratio&quot;</span><span class="p">),</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"output"</span><span class="p">,</span> <span class="s2">"ratio"</span><span class="p">,</span> <span class="s2">"reference_ratio"</span><span class="p">),</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">"""</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="s2">            output[i] = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">isotopic_ratio_2_delta</span><span class="o">.</span><span class="n">c_inline</span><span class="p">(</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="w">                </span><span class="n">ratio</span><span class="o">=</span><span class="s2">&quot;ratio[i]&quot;</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="w">                </span><span class="n">reference_ratio</span><span class="o">=</span><span class="s2">&quot;reference_ratio&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="w">                </span><span class="n">ratio</span><span class="o">=</span><span class="s2">"ratio[i]"</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="w">                </span><span class="n">reference_ratio</span><span class="o">=</span><span class="s2">"reference_ratio"</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="w">            </span><span class="p">)</span><span class="si">}</span><span class="s2">;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="s2">            """</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"real_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>        <span class="p">)</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -141,19 +141,19 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__isotopic_fractionation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>                <span class="s2">&quot;cell_volume&quot;</span><span class="p">,</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>                <span class="s2">&quot;dm_total&quot;</span><span class="p">,</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>                <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">,</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>                <span class="s2">&quot;dry_air_density&quot;</span><span class="p">,</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>                <span class="s2">&quot;molar_mass_heavy_molecule&quot;</span><span class="p">,</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>                <span class="s2">&quot;moles_heavy_molecule&quot;</span><span class="p">,</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>                <span class="s2">&quot;bolin_number&quot;</span><span class="p">,</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>                <span class="s2">&quot;molality_in_dry_air&quot;</span><span class="p">,</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>                <span class="s2">"cell_id"</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>                <span class="s2">"cell_volume"</span><span class="p">,</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>                <span class="s2">"multiplicity"</span><span class="p">,</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>                <span class="s2">"dm_total"</span><span class="p">,</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>                <span class="s2">"signed_water_mass"</span><span class="p">,</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>                <span class="s2">"dry_air_density"</span><span class="p">,</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>                <span class="s2">"molar_mass_heavy_molecule"</span><span class="p">,</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>                <span class="s2">"moles_heavy_molecule"</span><span class="p">,</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>                <span class="s2">"bolin_number"</span><span class="p">,</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>                <span class="s2">"molality_in_dry_air"</span><span class="p">,</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>            <span class="p">),</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="s2">            auto cid = cell_id[i];</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="s2">            real_type mass_ratio = (moles_heavy_molecule[i] * molar_mass_heavy_molecule) / signed_water_mass[i];</span>
@@ -171,7 +171,7 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume;</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="s2">            atomicAdd((real_type*) &amp;molality_in_dry_air[cid], -dn_heavy * multiplicity[i] / mass_of_dry_air);</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">            """</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"real_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="p">)</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -222,14 +222,14 @@
 </span><span id="IsotopeMethods-16"><a href="#IsotopeMethods-16"><span class="linenos"> 16</span></a>    <span class="nd">@cached_property</span>
 </span><span id="IsotopeMethods-17"><a href="#IsotopeMethods-17"><span class="linenos"> 17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__isotopic_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="IsotopeMethods-18"><a href="#IsotopeMethods-18"><span class="linenos"> 18</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="IsotopeMethods-19"><a href="#IsotopeMethods-19"><span class="linenos"> 19</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="s2">&quot;ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_ratio&quot;</span><span class="p">),</span>
-</span><span id="IsotopeMethods-20"><a href="#IsotopeMethods-20"><span class="linenos"> 20</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-21"><a href="#IsotopeMethods-21"><span class="linenos"> 21</span></a>            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="IsotopeMethods-19"><a href="#IsotopeMethods-19"><span class="linenos"> 19</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"output"</span><span class="p">,</span> <span class="s2">"ratio"</span><span class="p">,</span> <span class="s2">"reference_ratio"</span><span class="p">),</span>
+</span><span id="IsotopeMethods-20"><a href="#IsotopeMethods-20"><span class="linenos"> 20</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-21"><a href="#IsotopeMethods-21"><span class="linenos"> 21</span></a>            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">"""</span>
 </span><span id="IsotopeMethods-22"><a href="#IsotopeMethods-22"><span class="linenos"> 22</span></a><span class="s2">            output[i] = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">isotopic_ratio_2_delta</span><span class="o">.</span><span class="n">c_inline</span><span class="p">(</span>
-</span><span id="IsotopeMethods-23"><a href="#IsotopeMethods-23"><span class="linenos"> 23</span></a><span class="w">                </span><span class="n">ratio</span><span class="o">=</span><span class="s2">&quot;ratio[i]&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-24"><a href="#IsotopeMethods-24"><span class="linenos"> 24</span></a><span class="w">                </span><span class="n">reference_ratio</span><span class="o">=</span><span class="s2">&quot;reference_ratio&quot;</span>
+</span><span id="IsotopeMethods-23"><a href="#IsotopeMethods-23"><span class="linenos"> 23</span></a><span class="w">                </span><span class="n">ratio</span><span class="o">=</span><span class="s2">"ratio[i]"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-24"><a href="#IsotopeMethods-24"><span class="linenos"> 24</span></a><span class="w">                </span><span class="n">reference_ratio</span><span class="o">=</span><span class="s2">"reference_ratio"</span>
 </span><span id="IsotopeMethods-25"><a href="#IsotopeMethods-25"><span class="linenos"> 25</span></a><span class="w">            </span><span class="p">)</span><span class="si">}</span><span class="s2">;</span>
-</span><span id="IsotopeMethods-26"><a href="#IsotopeMethods-26"><span class="linenos"> 26</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="IsotopeMethods-26"><a href="#IsotopeMethods-26"><span class="linenos"> 26</span></a><span class="s2">            """</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"real_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
 </span><span id="IsotopeMethods-27"><a href="#IsotopeMethods-27"><span class="linenos"> 27</span></a>        <span class="p">)</span>
 </span><span id="IsotopeMethods-28"><a href="#IsotopeMethods-28"><span class="linenos"> 28</span></a>
 </span><span id="IsotopeMethods-29"><a href="#IsotopeMethods-29"><span class="linenos"> 29</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -243,19 +243,19 @@
 </span><span id="IsotopeMethods-37"><a href="#IsotopeMethods-37"><span class="linenos"> 37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__isotopic_fractionation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="IsotopeMethods-38"><a href="#IsotopeMethods-38"><span class="linenos"> 38</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="IsotopeMethods-39"><a href="#IsotopeMethods-39"><span class="linenos"> 39</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="IsotopeMethods-40"><a href="#IsotopeMethods-40"><span class="linenos"> 40</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-41"><a href="#IsotopeMethods-41"><span class="linenos"> 41</span></a>                <span class="s2">&quot;cell_volume&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-42"><a href="#IsotopeMethods-42"><span class="linenos"> 42</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-43"><a href="#IsotopeMethods-43"><span class="linenos"> 43</span></a>                <span class="s2">&quot;dm_total&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-44"><a href="#IsotopeMethods-44"><span class="linenos"> 44</span></a>                <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-45"><a href="#IsotopeMethods-45"><span class="linenos"> 45</span></a>                <span class="s2">&quot;dry_air_density&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-46"><a href="#IsotopeMethods-46"><span class="linenos"> 46</span></a>                <span class="s2">&quot;molar_mass_heavy_molecule&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-47"><a href="#IsotopeMethods-47"><span class="linenos"> 47</span></a>                <span class="s2">&quot;moles_heavy_molecule&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-48"><a href="#IsotopeMethods-48"><span class="linenos"> 48</span></a>                <span class="s2">&quot;bolin_number&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-49"><a href="#IsotopeMethods-49"><span class="linenos"> 49</span></a>                <span class="s2">&quot;molality_in_dry_air&quot;</span><span class="p">,</span>
+</span><span id="IsotopeMethods-40"><a href="#IsotopeMethods-40"><span class="linenos"> 40</span></a>                <span class="s2">"cell_id"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-41"><a href="#IsotopeMethods-41"><span class="linenos"> 41</span></a>                <span class="s2">"cell_volume"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-42"><a href="#IsotopeMethods-42"><span class="linenos"> 42</span></a>                <span class="s2">"multiplicity"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-43"><a href="#IsotopeMethods-43"><span class="linenos"> 43</span></a>                <span class="s2">"dm_total"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-44"><a href="#IsotopeMethods-44"><span class="linenos"> 44</span></a>                <span class="s2">"signed_water_mass"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-45"><a href="#IsotopeMethods-45"><span class="linenos"> 45</span></a>                <span class="s2">"dry_air_density"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-46"><a href="#IsotopeMethods-46"><span class="linenos"> 46</span></a>                <span class="s2">"molar_mass_heavy_molecule"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-47"><a href="#IsotopeMethods-47"><span class="linenos"> 47</span></a>                <span class="s2">"moles_heavy_molecule"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-48"><a href="#IsotopeMethods-48"><span class="linenos"> 48</span></a>                <span class="s2">"bolin_number"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-49"><a href="#IsotopeMethods-49"><span class="linenos"> 49</span></a>                <span class="s2">"molality_in_dry_air"</span><span class="p">,</span>
 </span><span id="IsotopeMethods-50"><a href="#IsotopeMethods-50"><span class="linenos"> 50</span></a>            <span class="p">),</span>
-</span><span id="IsotopeMethods-51"><a href="#IsotopeMethods-51"><span class="linenos"> 51</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="IsotopeMethods-52"><a href="#IsotopeMethods-52"><span class="linenos"> 52</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="IsotopeMethods-51"><a href="#IsotopeMethods-51"><span class="linenos"> 51</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="IsotopeMethods-52"><a href="#IsotopeMethods-52"><span class="linenos"> 52</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="IsotopeMethods-53"><a href="#IsotopeMethods-53"><span class="linenos"> 53</span></a><span class="s2">            auto cid = cell_id[i];</span>
 </span><span id="IsotopeMethods-54"><a href="#IsotopeMethods-54"><span class="linenos"> 54</span></a>
 </span><span id="IsotopeMethods-55"><a href="#IsotopeMethods-55"><span class="linenos"> 55</span></a><span class="s2">            real_type mass_ratio = (moles_heavy_molecule[i] * molar_mass_heavy_molecule) / signed_water_mass[i];</span>
@@ -273,7 +273,7 @@
 </span><span id="IsotopeMethods-67"><a href="#IsotopeMethods-67"><span class="linenos"> 67</span></a><span class="s2">            real_type mass_of_dry_air = dry_air_density[cid] * cell_volume;</span>
 </span><span id="IsotopeMethods-68"><a href="#IsotopeMethods-68"><span class="linenos"> 68</span></a>
 </span><span id="IsotopeMethods-69"><a href="#IsotopeMethods-69"><span class="linenos"> 69</span></a><span class="s2">            atomicAdd((real_type*) &amp;molality_in_dry_air[cid], -dn_heavy * multiplicity[i] / mass_of_dry_air);</span>
-</span><span id="IsotopeMethods-70"><a href="#IsotopeMethods-70"><span class="linenos"> 70</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="IsotopeMethods-70"><a href="#IsotopeMethods-70"><span class="linenos"> 70</span></a><span class="s2">            """</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"real_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
 </span><span id="IsotopeMethods-71"><a href="#IsotopeMethods-71"><span class="linenos"> 71</span></a>        <span class="p">)</span>
 </span><span id="IsotopeMethods-72"><a href="#IsotopeMethods-72"><span class="linenos"> 72</span></a>
 </span><span id="IsotopeMethods-73"><a href="#IsotopeMethods-73"><span class="linenos"> 73</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>

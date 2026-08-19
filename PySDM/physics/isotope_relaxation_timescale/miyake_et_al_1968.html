@@ -104,9 +104,9 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 
                         <label class="view-source-button" for="mod-miyake_et_al_1968-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">theta is as discussed in [Kinzer &amp; Gunn 1951 (J. Meteor.)](https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2)</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>  <span class="c1"># pylint: disable=line-too-long</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">"""</span>  <span class="c1"># pylint: disable=line-too-long</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MiyakeEtAl1968</span><span class="p">:</span>  <span class="c1"># pylint:disable=too-few-public-methods</span>
@@ -117,7 +117,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        Parameters</span>
@@ -126,7 +126,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        D</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        """</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 
@@ -151,7 +151,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="MiyakeEtAl1968-12"><a href="#MiyakeEtAl1968-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
 </span><span id="MiyakeEtAl1968-13"><a href="#MiyakeEtAl1968-13"><span class="linenos">13</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
 </span><span id="MiyakeEtAl1968-14"><a href="#MiyakeEtAl1968-14"><span class="linenos">14</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="MiyakeEtAl1968-15"><a href="#MiyakeEtAl1968-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968-15"><a href="#MiyakeEtAl1968-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="MiyakeEtAl1968-16"><a href="#MiyakeEtAl1968-16"><span class="linenos">16</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
 </span><span id="MiyakeEtAl1968-17"><a href="#MiyakeEtAl1968-17"><span class="linenos">17</span></a>
 </span><span id="MiyakeEtAl1968-18"><a href="#MiyakeEtAl1968-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
@@ -160,7 +160,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="MiyakeEtAl1968-21"><a href="#MiyakeEtAl1968-21"><span class="linenos">21</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
 </span><span id="MiyakeEtAl1968-22"><a href="#MiyakeEtAl1968-22"><span class="linenos">22</span></a><span class="sd">        D</span>
 </span><span id="MiyakeEtAl1968-23"><a href="#MiyakeEtAl1968-23"><span class="linenos">23</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
-</span><span id="MiyakeEtAl1968-24"><a href="#MiyakeEtAl1968-24"><span class="linenos">24</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968-24"><a href="#MiyakeEtAl1968-24"><span class="linenos">24</span></a><span class="sd">        """</span>
 </span><span id="MiyakeEtAl1968-25"><a href="#MiyakeEtAl1968-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 
@@ -201,7 +201,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="MiyakeEtAl1968.tau-12"><a href="#MiyakeEtAl1968.tau-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
 </span><span id="MiyakeEtAl1968.tau-13"><a href="#MiyakeEtAl1968.tau-13"><span class="linenos">13</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
 </span><span id="MiyakeEtAl1968.tau-14"><a href="#MiyakeEtAl1968.tau-14"><span class="linenos">14</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="MiyakeEtAl1968.tau-15"><a href="#MiyakeEtAl1968.tau-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968.tau-15"><a href="#MiyakeEtAl1968.tau-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="MiyakeEtAl1968.tau-16"><a href="#MiyakeEtAl1968.tau-16"><span class="linenos">16</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
 </span><span id="MiyakeEtAl1968.tau-17"><a href="#MiyakeEtAl1968.tau-17"><span class="linenos">17</span></a>
 </span><span id="MiyakeEtAl1968.tau-18"><a href="#MiyakeEtAl1968.tau-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
@@ -210,7 +210,7 @@ theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0
 </span><span id="MiyakeEtAl1968.tau-21"><a href="#MiyakeEtAl1968.tau-21"><span class="linenos">21</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
 </span><span id="MiyakeEtAl1968.tau-22"><a href="#MiyakeEtAl1968.tau-22"><span class="linenos">22</span></a><span class="sd">        D</span>
 </span><span id="MiyakeEtAl1968.tau-23"><a href="#MiyakeEtAl1968.tau-23"><span class="linenos">23</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
-</span><span id="MiyakeEtAl1968.tau-24"><a href="#MiyakeEtAl1968.tau-24"><span class="linenos">24</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968.tau-24"><a href="#MiyakeEtAl1968.tau-24"><span class="linenos">24</span></a><span class="sd">        """</span>
 </span><span id="MiyakeEtAl1968.tau-25"><a href="#MiyakeEtAl1968.tau-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 

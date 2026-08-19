@@ -121,9 +121,9 @@
 
                         <label class="view-source-button" for="mod-pair_methods-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">GPU implementation of pairwise operations backend methods</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
@@ -138,13 +138,13 @@
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__distance_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;data_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"data_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="s2">        if (is_first_in_pair[i]) {</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="s2">            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="s2">        }</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="s2">        """</span><span class="p">,</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="p">)</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -158,9 +158,9 @@
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__find_pairs_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">),</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"cell_start"</span><span class="p">,</span> <span class="s2">"perm_cell_id"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">),</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="s2">            if (i &lt; length -1) {</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="s2">                auto is_in_same_cell = perm_cell_id[i] == perm_cell_id[i + 1];</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="s2">                auto is_even_index = (i - cell_start[perm_cell_id[i]]) % 2 == 0;</span>
@@ -169,7 +169,7 @@
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="s2">            } else {</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="s2">                is_first_in_pair[i] = false;</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="s2">            }</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="p">)</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -190,13 +190,13 @@
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__max_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"perm_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="s2">                data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);</span>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="s2">            }</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="p">)</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -210,9 +210,9 @@
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;data_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"data_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="s2">                if (data_in[i] &lt; data_in[i + 1]) {</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="s2">                    data_out[i] = data_in[i + 1];</span>
@@ -223,7 +223,7 @@
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="s2">                    data_out[i + 1] = data_in[i + 1];</span>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="s2">                }</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="s2">            }</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="p">)</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -238,9 +238,9 @@
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_within_pair_by_attr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;attr&quot;</span><span class="p">),</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"idx"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">,</span> <span class="s2">"attr"</span><span class="p">),</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="s2">                if (attr[idx[i]] &lt; attr[idx[i + 1]]) {</span>
 </span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="s2">                    auto tmp = idx[i];</span>
@@ -248,7 +248,7 @@
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="s2">                    idx[i + 1] = tmp;</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="s2">                }</span>
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="s2">            }</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="p">)</span>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sort_within_pair_by_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">is_first_in_pair</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
@@ -261,13 +261,13 @@
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="nd">@cached_property</span>
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sum_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"perm_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="s2">                data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];</span>
 </span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="s2">            }</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>        <span class="p">)</span>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -283,17 +283,17 @@
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__min_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>                <span class="s2">&quot;data_out&quot;</span><span class="p">,</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>                <span class="s2">&quot;data_in&quot;</span><span class="p">,</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>                <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>                <span class="s2">"data_out"</span><span class="p">,</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>                <span class="s2">"data_in"</span><span class="p">,</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>                <span class="s2">"is_first_in_pair"</span><span class="p">,</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>                <span class="s2">"idx"</span><span class="p">,</span>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>            <span class="p">),</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="s2">                data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="s2">            }</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>        <span class="p">)</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -313,17 +313,17 @@
 </span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__multiply_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>                <span class="s2">&quot;data_out&quot;</span><span class="p">,</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>                <span class="s2">&quot;data_in&quot;</span><span class="p">,</span>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>                <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>                <span class="s2">"data_out"</span><span class="p">,</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>                <span class="s2">"data_in"</span><span class="p">,</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>                <span class="s2">"is_first_in_pair"</span><span class="p">,</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>                <span class="s2">"idx"</span><span class="p">,</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>            <span class="p">),</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="s2">                data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];</span>
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="s2">            }</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>        <span class="p">)</span>
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>
 </span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -357,13 +357,13 @@
 </span><span id="PairMethods-16"><a href="#PairMethods-16"><span class="linenos"> 16</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-17"><a href="#PairMethods-17"><span class="linenos"> 17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__distance_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-18"><a href="#PairMethods-18"><span class="linenos"> 18</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-19"><a href="#PairMethods-19"><span class="linenos"> 19</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;data_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-20"><a href="#PairMethods-20"><span class="linenos"> 20</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-21"><a href="#PairMethods-21"><span class="linenos"> 21</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-19"><a href="#PairMethods-19"><span class="linenos"> 19</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"data_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="PairMethods-20"><a href="#PairMethods-20"><span class="linenos"> 20</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-21"><a href="#PairMethods-21"><span class="linenos"> 21</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-22"><a href="#PairMethods-22"><span class="linenos"> 22</span></a><span class="s2">        if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-23"><a href="#PairMethods-23"><span class="linenos"> 23</span></a><span class="s2">            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);</span>
 </span><span id="PairMethods-24"><a href="#PairMethods-24"><span class="linenos"> 24</span></a><span class="s2">        }</span>
-</span><span id="PairMethods-25"><a href="#PairMethods-25"><span class="linenos"> 25</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-25"><a href="#PairMethods-25"><span class="linenos"> 25</span></a><span class="s2">        """</span><span class="p">,</span>
 </span><span id="PairMethods-26"><a href="#PairMethods-26"><span class="linenos"> 26</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-27"><a href="#PairMethods-27"><span class="linenos"> 27</span></a>
 </span><span id="PairMethods-28"><a href="#PairMethods-28"><span class="linenos"> 28</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -377,9 +377,9 @@
 </span><span id="PairMethods-36"><a href="#PairMethods-36"><span class="linenos"> 36</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-37"><a href="#PairMethods-37"><span class="linenos"> 37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__find_pairs_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-38"><a href="#PairMethods-38"><span class="linenos"> 38</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-39"><a href="#PairMethods-39"><span class="linenos"> 39</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-40"><a href="#PairMethods-40"><span class="linenos"> 40</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-41"><a href="#PairMethods-41"><span class="linenos"> 41</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-39"><a href="#PairMethods-39"><span class="linenos"> 39</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"cell_start"</span><span class="p">,</span> <span class="s2">"perm_cell_id"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">,</span> <span class="s2">"length"</span><span class="p">),</span>
+</span><span id="PairMethods-40"><a href="#PairMethods-40"><span class="linenos"> 40</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-41"><a href="#PairMethods-41"><span class="linenos"> 41</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-42"><a href="#PairMethods-42"><span class="linenos"> 42</span></a><span class="s2">            if (i &lt; length -1) {</span>
 </span><span id="PairMethods-43"><a href="#PairMethods-43"><span class="linenos"> 43</span></a><span class="s2">                auto is_in_same_cell = perm_cell_id[i] == perm_cell_id[i + 1];</span>
 </span><span id="PairMethods-44"><a href="#PairMethods-44"><span class="linenos"> 44</span></a><span class="s2">                auto is_even_index = (i - cell_start[perm_cell_id[i]]) % 2 == 0;</span>
@@ -388,7 +388,7 @@
 </span><span id="PairMethods-47"><a href="#PairMethods-47"><span class="linenos"> 47</span></a><span class="s2">            } else {</span>
 </span><span id="PairMethods-48"><a href="#PairMethods-48"><span class="linenos"> 48</span></a><span class="s2">                is_first_in_pair[i] = false;</span>
 </span><span id="PairMethods-49"><a href="#PairMethods-49"><span class="linenos"> 49</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-50"><a href="#PairMethods-50"><span class="linenos"> 50</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-50"><a href="#PairMethods-50"><span class="linenos"> 50</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-51"><a href="#PairMethods-51"><span class="linenos"> 51</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-52"><a href="#PairMethods-52"><span class="linenos"> 52</span></a>
 </span><span id="PairMethods-53"><a href="#PairMethods-53"><span class="linenos"> 53</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -409,13 +409,13 @@
 </span><span id="PairMethods-68"><a href="#PairMethods-68"><span class="linenos"> 68</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-69"><a href="#PairMethods-69"><span class="linenos"> 69</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__max_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-70"><a href="#PairMethods-70"><span class="linenos"> 70</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-71"><a href="#PairMethods-71"><span class="linenos"> 71</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-72"><a href="#PairMethods-72"><span class="linenos"> 72</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-73"><a href="#PairMethods-73"><span class="linenos"> 73</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-71"><a href="#PairMethods-71"><span class="linenos"> 71</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"perm_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="PairMethods-72"><a href="#PairMethods-72"><span class="linenos"> 72</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-73"><a href="#PairMethods-73"><span class="linenos"> 73</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-74"><a href="#PairMethods-74"><span class="linenos"> 74</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-75"><a href="#PairMethods-75"><span class="linenos"> 75</span></a><span class="s2">                data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);</span>
 </span><span id="PairMethods-76"><a href="#PairMethods-76"><span class="linenos"> 76</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-77"><a href="#PairMethods-77"><span class="linenos"> 77</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-77"><a href="#PairMethods-77"><span class="linenos"> 77</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-78"><a href="#PairMethods-78"><span class="linenos"> 78</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-79"><a href="#PairMethods-79"><span class="linenos"> 79</span></a>
 </span><span id="PairMethods-80"><a href="#PairMethods-80"><span class="linenos"> 80</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -429,9 +429,9 @@
 </span><span id="PairMethods-88"><a href="#PairMethods-88"><span class="linenos"> 88</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-89"><a href="#PairMethods-89"><span class="linenos"> 89</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-90"><a href="#PairMethods-90"><span class="linenos"> 90</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-91"><a href="#PairMethods-91"><span class="linenos"> 91</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;data_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-92"><a href="#PairMethods-92"><span class="linenos"> 92</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-93"><a href="#PairMethods-93"><span class="linenos"> 93</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-91"><a href="#PairMethods-91"><span class="linenos"> 91</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"data_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="PairMethods-92"><a href="#PairMethods-92"><span class="linenos"> 92</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-93"><a href="#PairMethods-93"><span class="linenos"> 93</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-94"><a href="#PairMethods-94"><span class="linenos"> 94</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-95"><a href="#PairMethods-95"><span class="linenos"> 95</span></a><span class="s2">                if (data_in[i] &lt; data_in[i + 1]) {</span>
 </span><span id="PairMethods-96"><a href="#PairMethods-96"><span class="linenos"> 96</span></a><span class="s2">                    data_out[i] = data_in[i + 1];</span>
@@ -442,7 +442,7 @@
 </span><span id="PairMethods-101"><a href="#PairMethods-101"><span class="linenos">101</span></a><span class="s2">                    data_out[i + 1] = data_in[i + 1];</span>
 </span><span id="PairMethods-102"><a href="#PairMethods-102"><span class="linenos">102</span></a><span class="s2">                }</span>
 </span><span id="PairMethods-103"><a href="#PairMethods-103"><span class="linenos">103</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-104"><a href="#PairMethods-104"><span class="linenos">104</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-104"><a href="#PairMethods-104"><span class="linenos">104</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-105"><a href="#PairMethods-105"><span class="linenos">105</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-106"><a href="#PairMethods-106"><span class="linenos">106</span></a>
 </span><span id="PairMethods-107"><a href="#PairMethods-107"><span class="linenos">107</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -457,9 +457,9 @@
 </span><span id="PairMethods-116"><a href="#PairMethods-116"><span class="linenos">116</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-117"><a href="#PairMethods-117"><span class="linenos">117</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_within_pair_by_attr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-118"><a href="#PairMethods-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-119"><a href="#PairMethods-119"><span class="linenos">119</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;attr&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-120"><a href="#PairMethods-120"><span class="linenos">120</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-121"><a href="#PairMethods-121"><span class="linenos">121</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-119"><a href="#PairMethods-119"><span class="linenos">119</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"idx"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">,</span> <span class="s2">"attr"</span><span class="p">),</span>
+</span><span id="PairMethods-120"><a href="#PairMethods-120"><span class="linenos">120</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-121"><a href="#PairMethods-121"><span class="linenos">121</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-122"><a href="#PairMethods-122"><span class="linenos">122</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-123"><a href="#PairMethods-123"><span class="linenos">123</span></a><span class="s2">                if (attr[idx[i]] &lt; attr[idx[i + 1]]) {</span>
 </span><span id="PairMethods-124"><a href="#PairMethods-124"><span class="linenos">124</span></a><span class="s2">                    auto tmp = idx[i];</span>
@@ -467,7 +467,7 @@
 </span><span id="PairMethods-126"><a href="#PairMethods-126"><span class="linenos">126</span></a><span class="s2">                    idx[i + 1] = tmp;</span>
 </span><span id="PairMethods-127"><a href="#PairMethods-127"><span class="linenos">127</span></a><span class="s2">                }</span>
 </span><span id="PairMethods-128"><a href="#PairMethods-128"><span class="linenos">128</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-129"><a href="#PairMethods-129"><span class="linenos">129</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-129"><a href="#PairMethods-129"><span class="linenos">129</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-130"><a href="#PairMethods-130"><span class="linenos">130</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-131"><a href="#PairMethods-131"><span class="linenos">131</span></a>
 </span><span id="PairMethods-132"><a href="#PairMethods-132"><span class="linenos">132</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sort_within_pair_by_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">is_first_in_pair</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
@@ -480,13 +480,13 @@
 </span><span id="PairMethods-139"><a href="#PairMethods-139"><span class="linenos">139</span></a>    <span class="nd">@cached_property</span>
 </span><span id="PairMethods-140"><a href="#PairMethods-140"><span class="linenos">140</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sum_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-141"><a href="#PairMethods-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="PairMethods-142"><a href="#PairMethods-142"><span class="linenos">142</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data_out&quot;</span><span class="p">,</span> <span class="s2">&quot;perm_in&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">),</span>
-</span><span id="PairMethods-143"><a href="#PairMethods-143"><span class="linenos">143</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-144"><a href="#PairMethods-144"><span class="linenos">144</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-142"><a href="#PairMethods-142"><span class="linenos">142</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">"data_out"</span><span class="p">,</span> <span class="s2">"perm_in"</span><span class="p">,</span> <span class="s2">"is_first_in_pair"</span><span class="p">),</span>
+</span><span id="PairMethods-143"><a href="#PairMethods-143"><span class="linenos">143</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-144"><a href="#PairMethods-144"><span class="linenos">144</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-145"><a href="#PairMethods-145"><span class="linenos">145</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-146"><a href="#PairMethods-146"><span class="linenos">146</span></a><span class="s2">                data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];</span>
 </span><span id="PairMethods-147"><a href="#PairMethods-147"><span class="linenos">147</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-148"><a href="#PairMethods-148"><span class="linenos">148</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-148"><a href="#PairMethods-148"><span class="linenos">148</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-149"><a href="#PairMethods-149"><span class="linenos">149</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-150"><a href="#PairMethods-150"><span class="linenos">150</span></a>
 </span><span id="PairMethods-151"><a href="#PairMethods-151"><span class="linenos">151</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -502,17 +502,17 @@
 </span><span id="PairMethods-161"><a href="#PairMethods-161"><span class="linenos">161</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__min_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-162"><a href="#PairMethods-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="PairMethods-163"><a href="#PairMethods-163"><span class="linenos">163</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="PairMethods-164"><a href="#PairMethods-164"><span class="linenos">164</span></a>                <span class="s2">&quot;data_out&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-165"><a href="#PairMethods-165"><span class="linenos">165</span></a>                <span class="s2">&quot;data_in&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-166"><a href="#PairMethods-166"><span class="linenos">166</span></a>                <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-167"><a href="#PairMethods-167"><span class="linenos">167</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-164"><a href="#PairMethods-164"><span class="linenos">164</span></a>                <span class="s2">"data_out"</span><span class="p">,</span>
+</span><span id="PairMethods-165"><a href="#PairMethods-165"><span class="linenos">165</span></a>                <span class="s2">"data_in"</span><span class="p">,</span>
+</span><span id="PairMethods-166"><a href="#PairMethods-166"><span class="linenos">166</span></a>                <span class="s2">"is_first_in_pair"</span><span class="p">,</span>
+</span><span id="PairMethods-167"><a href="#PairMethods-167"><span class="linenos">167</span></a>                <span class="s2">"idx"</span><span class="p">,</span>
 </span><span id="PairMethods-168"><a href="#PairMethods-168"><span class="linenos">168</span></a>            <span class="p">),</span>
-</span><span id="PairMethods-169"><a href="#PairMethods-169"><span class="linenos">169</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-170"><a href="#PairMethods-170"><span class="linenos">170</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-169"><a href="#PairMethods-169"><span class="linenos">169</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-170"><a href="#PairMethods-170"><span class="linenos">170</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-171"><a href="#PairMethods-171"><span class="linenos">171</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-172"><a href="#PairMethods-172"><span class="linenos">172</span></a><span class="s2">                data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);</span>
 </span><span id="PairMethods-173"><a href="#PairMethods-173"><span class="linenos">173</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-174"><a href="#PairMethods-174"><span class="linenos">174</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-174"><a href="#PairMethods-174"><span class="linenos">174</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-175"><a href="#PairMethods-175"><span class="linenos">175</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-176"><a href="#PairMethods-176"><span class="linenos">176</span></a>
 </span><span id="PairMethods-177"><a href="#PairMethods-177"><span class="linenos">177</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
@@ -532,17 +532,17 @@
 </span><span id="PairMethods-191"><a href="#PairMethods-191"><span class="linenos">191</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__multiply_pair_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="PairMethods-192"><a href="#PairMethods-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="PairMethods-193"><a href="#PairMethods-193"><span class="linenos">193</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
-</span><span id="PairMethods-194"><a href="#PairMethods-194"><span class="linenos">194</span></a>                <span class="s2">&quot;data_out&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-195"><a href="#PairMethods-195"><span class="linenos">195</span></a>                <span class="s2">&quot;data_in&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-196"><a href="#PairMethods-196"><span class="linenos">196</span></a>                <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-197"><a href="#PairMethods-197"><span class="linenos">197</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-194"><a href="#PairMethods-194"><span class="linenos">194</span></a>                <span class="s2">"data_out"</span><span class="p">,</span>
+</span><span id="PairMethods-195"><a href="#PairMethods-195"><span class="linenos">195</span></a>                <span class="s2">"data_in"</span><span class="p">,</span>
+</span><span id="PairMethods-196"><a href="#PairMethods-196"><span class="linenos">196</span></a>                <span class="s2">"is_first_in_pair"</span><span class="p">,</span>
+</span><span id="PairMethods-197"><a href="#PairMethods-197"><span class="linenos">197</span></a>                <span class="s2">"idx"</span><span class="p">,</span>
 </span><span id="PairMethods-198"><a href="#PairMethods-198"><span class="linenos">198</span></a>            <span class="p">),</span>
-</span><span id="PairMethods-199"><a href="#PairMethods-199"><span class="linenos">199</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="PairMethods-200"><a href="#PairMethods-200"><span class="linenos">200</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="PairMethods-199"><a href="#PairMethods-199"><span class="linenos">199</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span>
+</span><span id="PairMethods-200"><a href="#PairMethods-200"><span class="linenos">200</span></a>            <span class="n">body</span><span class="o">=</span><span class="s2">"""</span>
 </span><span id="PairMethods-201"><a href="#PairMethods-201"><span class="linenos">201</span></a><span class="s2">            if (is_first_in_pair[i]) {</span>
 </span><span id="PairMethods-202"><a href="#PairMethods-202"><span class="linenos">202</span></a><span class="s2">                data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];</span>
 </span><span id="PairMethods-203"><a href="#PairMethods-203"><span class="linenos">203</span></a><span class="s2">            }</span>
-</span><span id="PairMethods-204"><a href="#PairMethods-204"><span class="linenos">204</span></a><span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="PairMethods-204"><a href="#PairMethods-204"><span class="linenos">204</span></a><span class="s2">            """</span><span class="p">,</span>
 </span><span id="PairMethods-205"><a href="#PairMethods-205"><span class="linenos">205</span></a>        <span class="p">)</span>
 </span><span id="PairMethods-206"><a href="#PairMethods-206"><span class="linenos">206</span></a>
 </span><span id="PairMethods-207"><a href="#PairMethods-207"><span class="linenos">207</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>

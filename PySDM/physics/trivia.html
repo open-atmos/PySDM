@@ -219,11 +219,11 @@
 
                         <label class="view-source-button" for="mod-trivia-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Various (hopefully) undebatable formulae</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">`erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">"""</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
@@ -338,7 +338,7 @@
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="w">        </span><span class="sd">"""(see also eq. 10 in Pierchala et al. 2022)</span>
 </span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
 </span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
 </span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
@@ -348,7 +348,7 @@
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        where:</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">        """</span>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
 </span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="nd">@staticmethod</span>
@@ -357,10 +357,10 @@
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction_assuming_single_heavy_isotope</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">isotopic_ratio</span><span class="p">):</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">        isotopic ratio = n1/n2</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">        isotopic fraction = n1/n_total = n1 / (n1 + n2) = isotopic_ratio / (1 + isotopic_ratio)</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">        """</span>
 </span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">isotopic_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">isotopic_ratio</span><span class="p">)</span>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="nd">@staticmethod</span>
@@ -389,17 +389,17 @@
 </span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>
 </span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="w">        </span><span class="sd">"""cumulative probability of zero events occurring within time `dt`</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">        """</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="sd">        """</span>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
 </span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>    <span class="nd">@staticmethod</span>
@@ -412,11 +412,11 @@
 </span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>        <span class="n">molecular_isotopic_ratio</span><span class="p">,</span>
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>    <span class="p">):</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)</span>
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">        using total mass and mass of other heavy isotopes.</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">        """</span>
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>            <span class="p">(</span><span class="n">mass_total</span> <span class="o">-</span> <span class="n">mass_other_heavy_isotopes</span><span class="p">)</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>            <span class="o">/</span> <span class="p">(</span>
@@ -435,7 +435,7 @@
 </span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="n">molar_mass_light_molecule</span><span class="p">,</span>
 </span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="p">):</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">        Molecular isotope ratio (e.g. moles of HDO to moles of H2O):</span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">            n_{heavy molecule}/n_{light molecule},</span>
 </span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">        in contrast to (atomic) isotopic ratio as in VSMOW standard:</span>
@@ -443,7 +443,7 @@
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">        calculated with:</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="sd">            m_light = m_total - m_considered_heavy_isotope - m_other_heavy_isotopes</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a><span class="sd">        """</span>
 </span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>            <span class="n">moles_heavy_molecule</span>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>            <span class="o">*</span> <span class="n">molar_mass_light_molecule</span>
@@ -458,28 +458,28 @@
 </span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">molality_in_dry_air</span><span class="p">(</span>
 </span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="n">isotopic_fraction</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>    <span class="p">):</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a><span class="sd">        n&#39;/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a><span class="sd">        n'/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
 </span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a><span class="sd">        n/V - total vapour concentration</span>
 </span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>
-</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a><span class="sd">        molality_in_dry_air = n&#39;/m_d =</span>
-</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a><span class="sd">            = n&#39;/(rho_d * V) = isotopic_concentration / rho_d</span>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a><span class="sd">        isotopic_concentration = n&#39;/V = n/V * n&#39;/n =</span>
+</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a><span class="sd">        molality_in_dry_air = n'/m_d =</span>
+</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a><span class="sd">            = n'/(rho_d * V) = isotopic_concentration / rho_d</span>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a><span class="sd">        isotopic_concentration = n'/V = n/V * n'/n =</span>
 </span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a><span class="sd">            = total vapour concentration * isotopic_fraction</span>
 </span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>
-</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a><span class="sd">        where n&#39;/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
+</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a><span class="sd">        where n'/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
 </span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a><span class="sd">        on p. 10 in [Gat 2010](https://doi.org/10.1142/p027)</span>
-</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a><span class="sd">        """</span>
 </span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>        <span class="k">return</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">isotopic_fraction</span> <span class="o">/</span> <span class="n">density_dry_air</span>
 </span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>
 </span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction</span><span class="p">(</span>
 </span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>        <span class="n">molality_in_dry_air</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>    <span class="p">):</span>
-</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="sd">        isotopic_fraction: n&#39;/n = n&#39;/m_d / (n/V) * rho_d</span>
+</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="sd">        isotopic_fraction: n'/n = n'/m_d / (n/V) * rho_d</span>
 </span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a><span class="sd">            = molality in dry air / total vapour concentration * dry air density</span>
-</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a><span class="sd">        """</span>
 </span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>        <span class="k">return</span> <span class="n">molality_in_dry_air</span> <span class="o">/</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">density_dry_air</span>
 </span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>
 </span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>    <span class="nd">@staticmethod</span>
@@ -611,7 +611,7 @@
 </span><span id="Trivia-118"><a href="#Trivia-118"><span class="linenos">118</span></a>
 </span><span id="Trivia-119"><a href="#Trivia-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia-120"><a href="#Trivia-120"><span class="linenos">120</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="Trivia-121"><a href="#Trivia-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia-121"><a href="#Trivia-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">"""(see also eq. 10 in Pierchala et al. 2022)</span>
 </span><span id="Trivia-122"><a href="#Trivia-122"><span class="linenos">122</span></a>
 </span><span id="Trivia-123"><a href="#Trivia-123"><span class="linenos">123</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
 </span><span id="Trivia-124"><a href="#Trivia-124"><span class="linenos">124</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
@@ -621,7 +621,7 @@
 </span><span id="Trivia-128"><a href="#Trivia-128"><span class="linenos">128</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
 </span><span id="Trivia-129"><a href="#Trivia-129"><span class="linenos">129</span></a><span class="sd">        where:</span>
 </span><span id="Trivia-130"><a href="#Trivia-130"><span class="linenos">130</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="Trivia-131"><a href="#Trivia-131"><span class="linenos">131</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-131"><a href="#Trivia-131"><span class="linenos">131</span></a><span class="sd">        """</span>
 </span><span id="Trivia-132"><a href="#Trivia-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="Trivia-133"><a href="#Trivia-133"><span class="linenos">133</span></a>
 </span><span id="Trivia-134"><a href="#Trivia-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
@@ -630,10 +630,10 @@
 </span><span id="Trivia-137"><a href="#Trivia-137"><span class="linenos">137</span></a>
 </span><span id="Trivia-138"><a href="#Trivia-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia-139"><a href="#Trivia-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction_assuming_single_heavy_isotope</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">isotopic_ratio</span><span class="p">):</span>
-</span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia-141"><a href="#Trivia-141"><span class="linenos">141</span></a><span class="sd">        isotopic ratio = n1/n2</span>
 </span><span id="Trivia-142"><a href="#Trivia-142"><span class="linenos">142</span></a><span class="sd">        isotopic fraction = n1/n_total = n1 / (n1 + n2) = isotopic_ratio / (1 + isotopic_ratio)</span>
-</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a><span class="sd">        """</span>
 </span><span id="Trivia-144"><a href="#Trivia-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">isotopic_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">isotopic_ratio</span><span class="p">)</span>
 </span><span id="Trivia-145"><a href="#Trivia-145"><span class="linenos">145</span></a>
 </span><span id="Trivia-146"><a href="#Trivia-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
@@ -662,17 +662,17 @@
 </span><span id="Trivia-169"><a href="#Trivia-169"><span class="linenos">169</span></a>
 </span><span id="Trivia-170"><a href="#Trivia-170"><span class="linenos">170</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia-171"><a href="#Trivia-171"><span class="linenos">171</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia-172"><a href="#Trivia-172"><span class="linenos">172</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia-172"><a href="#Trivia-172"><span class="linenos">172</span></a><span class="w">        </span><span class="sd">"""cumulative probability of zero events occurring within time `dt`</span>
 </span><span id="Trivia-173"><a href="#Trivia-173"><span class="linenos">173</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
 </span><span id="Trivia-174"><a href="#Trivia-174"><span class="linenos">174</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia-175"><a href="#Trivia-175"><span class="linenos">175</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-175"><a href="#Trivia-175"><span class="linenos">175</span></a><span class="sd">        """</span>
 </span><span id="Trivia-176"><a href="#Trivia-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span><span id="Trivia-177"><a href="#Trivia-177"><span class="linenos">177</span></a>
 </span><span id="Trivia-178"><a href="#Trivia-178"><span class="linenos">178</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia-179"><a href="#Trivia-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="Trivia-180"><a href="#Trivia-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia-180"><a href="#Trivia-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia-181"><a href="#Trivia-181"><span class="linenos">181</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
-</span><span id="Trivia-182"><a href="#Trivia-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-182"><a href="#Trivia-182"><span class="linenos">182</span></a><span class="sd">        """</span>
 </span><span id="Trivia-183"><a href="#Trivia-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
 </span><span id="Trivia-184"><a href="#Trivia-184"><span class="linenos">184</span></a>
 </span><span id="Trivia-185"><a href="#Trivia-185"><span class="linenos">185</span></a>    <span class="nd">@staticmethod</span>
@@ -685,11 +685,11 @@
 </span><span id="Trivia-192"><a href="#Trivia-192"><span class="linenos">192</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="Trivia-193"><a href="#Trivia-193"><span class="linenos">193</span></a>        <span class="n">molecular_isotopic_ratio</span><span class="p">,</span>
 </span><span id="Trivia-194"><a href="#Trivia-194"><span class="linenos">194</span></a>    <span class="p">):</span>
-</span><span id="Trivia-195"><a href="#Trivia-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia-195"><a href="#Trivia-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia-196"><a href="#Trivia-196"><span class="linenos">196</span></a><span class="sd">        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)</span>
 </span><span id="Trivia-197"><a href="#Trivia-197"><span class="linenos">197</span></a><span class="sd">        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),</span>
 </span><span id="Trivia-198"><a href="#Trivia-198"><span class="linenos">198</span></a><span class="sd">        using total mass and mass of other heavy isotopes.</span>
-</span><span id="Trivia-199"><a href="#Trivia-199"><span class="linenos">199</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-199"><a href="#Trivia-199"><span class="linenos">199</span></a><span class="sd">        """</span>
 </span><span id="Trivia-200"><a href="#Trivia-200"><span class="linenos">200</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Trivia-201"><a href="#Trivia-201"><span class="linenos">201</span></a>            <span class="p">(</span><span class="n">mass_total</span> <span class="o">-</span> <span class="n">mass_other_heavy_isotopes</span><span class="p">)</span>
 </span><span id="Trivia-202"><a href="#Trivia-202"><span class="linenos">202</span></a>            <span class="o">/</span> <span class="p">(</span>
@@ -708,7 +708,7 @@
 </span><span id="Trivia-215"><a href="#Trivia-215"><span class="linenos">215</span></a>        <span class="n">molar_mass_light_molecule</span><span class="p">,</span>
 </span><span id="Trivia-216"><a href="#Trivia-216"><span class="linenos">216</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="Trivia-217"><a href="#Trivia-217"><span class="linenos">217</span></a>    <span class="p">):</span>
-</span><span id="Trivia-218"><a href="#Trivia-218"><span class="linenos">218</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia-218"><a href="#Trivia-218"><span class="linenos">218</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia-219"><a href="#Trivia-219"><span class="linenos">219</span></a><span class="sd">        Molecular isotope ratio (e.g. moles of HDO to moles of H2O):</span>
 </span><span id="Trivia-220"><a href="#Trivia-220"><span class="linenos">220</span></a><span class="sd">            n_{heavy molecule}/n_{light molecule},</span>
 </span><span id="Trivia-221"><a href="#Trivia-221"><span class="linenos">221</span></a><span class="sd">        in contrast to (atomic) isotopic ratio as in VSMOW standard:</span>
@@ -716,7 +716,7 @@
 </span><span id="Trivia-223"><a href="#Trivia-223"><span class="linenos">223</span></a>
 </span><span id="Trivia-224"><a href="#Trivia-224"><span class="linenos">224</span></a><span class="sd">        calculated with:</span>
 </span><span id="Trivia-225"><a href="#Trivia-225"><span class="linenos">225</span></a><span class="sd">            m_light = m_total - m_considered_heavy_isotope - m_other_heavy_isotopes</span>
-</span><span id="Trivia-226"><a href="#Trivia-226"><span class="linenos">226</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-226"><a href="#Trivia-226"><span class="linenos">226</span></a><span class="sd">        """</span>
 </span><span id="Trivia-227"><a href="#Trivia-227"><span class="linenos">227</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Trivia-228"><a href="#Trivia-228"><span class="linenos">228</span></a>            <span class="n">moles_heavy_molecule</span>
 </span><span id="Trivia-229"><a href="#Trivia-229"><span class="linenos">229</span></a>            <span class="o">*</span> <span class="n">molar_mass_light_molecule</span>
@@ -731,28 +731,28 @@
 </span><span id="Trivia-238"><a href="#Trivia-238"><span class="linenos">238</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">molality_in_dry_air</span><span class="p">(</span>
 </span><span id="Trivia-239"><a href="#Trivia-239"><span class="linenos">239</span></a>        <span class="n">isotopic_fraction</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="Trivia-240"><a href="#Trivia-240"><span class="linenos">240</span></a>    <span class="p">):</span>
-</span><span id="Trivia-241"><a href="#Trivia-241"><span class="linenos">241</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Trivia-242"><a href="#Trivia-242"><span class="linenos">242</span></a><span class="sd">        n&#39;/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
+</span><span id="Trivia-241"><a href="#Trivia-241"><span class="linenos">241</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="Trivia-242"><a href="#Trivia-242"><span class="linenos">242</span></a><span class="sd">        n'/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
 </span><span id="Trivia-243"><a href="#Trivia-243"><span class="linenos">243</span></a><span class="sd">        n/V - total vapour concentration</span>
 </span><span id="Trivia-244"><a href="#Trivia-244"><span class="linenos">244</span></a>
-</span><span id="Trivia-245"><a href="#Trivia-245"><span class="linenos">245</span></a><span class="sd">        molality_in_dry_air = n&#39;/m_d =</span>
-</span><span id="Trivia-246"><a href="#Trivia-246"><span class="linenos">246</span></a><span class="sd">            = n&#39;/(rho_d * V) = isotopic_concentration / rho_d</span>
-</span><span id="Trivia-247"><a href="#Trivia-247"><span class="linenos">247</span></a><span class="sd">        isotopic_concentration = n&#39;/V = n/V * n&#39;/n =</span>
+</span><span id="Trivia-245"><a href="#Trivia-245"><span class="linenos">245</span></a><span class="sd">        molality_in_dry_air = n'/m_d =</span>
+</span><span id="Trivia-246"><a href="#Trivia-246"><span class="linenos">246</span></a><span class="sd">            = n'/(rho_d * V) = isotopic_concentration / rho_d</span>
+</span><span id="Trivia-247"><a href="#Trivia-247"><span class="linenos">247</span></a><span class="sd">        isotopic_concentration = n'/V = n/V * n'/n =</span>
 </span><span id="Trivia-248"><a href="#Trivia-248"><span class="linenos">248</span></a><span class="sd">            = total vapour concentration * isotopic_fraction</span>
 </span><span id="Trivia-249"><a href="#Trivia-249"><span class="linenos">249</span></a>
-</span><span id="Trivia-250"><a href="#Trivia-250"><span class="linenos">250</span></a><span class="sd">        where n&#39;/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
+</span><span id="Trivia-250"><a href="#Trivia-250"><span class="linenos">250</span></a><span class="sd">        where n'/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
 </span><span id="Trivia-251"><a href="#Trivia-251"><span class="linenos">251</span></a><span class="sd">        on p. 10 in [Gat 2010](https://doi.org/10.1142/p027)</span>
-</span><span id="Trivia-252"><a href="#Trivia-252"><span class="linenos">252</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-252"><a href="#Trivia-252"><span class="linenos">252</span></a><span class="sd">        """</span>
 </span><span id="Trivia-253"><a href="#Trivia-253"><span class="linenos">253</span></a>        <span class="k">return</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">isotopic_fraction</span> <span class="o">/</span> <span class="n">density_dry_air</span>
 </span><span id="Trivia-254"><a href="#Trivia-254"><span class="linenos">254</span></a>
 </span><span id="Trivia-255"><a href="#Trivia-255"><span class="linenos">255</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia-256"><a href="#Trivia-256"><span class="linenos">256</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction</span><span class="p">(</span>
 </span><span id="Trivia-257"><a href="#Trivia-257"><span class="linenos">257</span></a>        <span class="n">molality_in_dry_air</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="Trivia-258"><a href="#Trivia-258"><span class="linenos">258</span></a>    <span class="p">):</span>
-</span><span id="Trivia-259"><a href="#Trivia-259"><span class="linenos">259</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Trivia-260"><a href="#Trivia-260"><span class="linenos">260</span></a><span class="sd">        isotopic_fraction: n&#39;/n = n&#39;/m_d / (n/V) * rho_d</span>
+</span><span id="Trivia-259"><a href="#Trivia-259"><span class="linenos">259</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="Trivia-260"><a href="#Trivia-260"><span class="linenos">260</span></a><span class="sd">        isotopic_fraction: n'/n = n'/m_d / (n/V) * rho_d</span>
 </span><span id="Trivia-261"><a href="#Trivia-261"><span class="linenos">261</span></a><span class="sd">            = molality in dry air / total vapour concentration * dry air density</span>
-</span><span id="Trivia-262"><a href="#Trivia-262"><span class="linenos">262</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-262"><a href="#Trivia-262"><span class="linenos">262</span></a><span class="sd">        """</span>
 </span><span id="Trivia-263"><a href="#Trivia-263"><span class="linenos">263</span></a>        <span class="k">return</span> <span class="n">molality_in_dry_air</span> <span class="o">/</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">density_dry_air</span>
 </span><span id="Trivia-264"><a href="#Trivia-264"><span class="linenos">264</span></a>
 </span><span id="Trivia-265"><a href="#Trivia-265"><span class="linenos">265</span></a>    <span class="nd">@staticmethod</span>
@@ -1291,7 +1291,7 @@
     <a class="headerlink" href="#Trivia.isotopic_enrichment_to_delta_SMOW"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-119"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-120"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-120"><span class="linenos">120</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-121"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-121"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">"""(see also eq. 10 in Pierchala et al. 2022)</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-122"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-122"><span class="linenos">122</span></a>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-123"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-123"><span class="linenos">123</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-124"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-124"><span class="linenos">124</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
@@ -1301,7 +1301,7 @@
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-128"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-128"><span class="linenos">128</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-129"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-129"><span class="linenos">129</span></a><span class="sd">        where:</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-130"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-130"><span class="linenos">130</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-131"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-131"><span class="linenos">131</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-131"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-131"><span class="linenos">131</span></a><span class="sd">        """</span>
 </span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-132"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span></pre></div>
 
@@ -1355,10 +1355,10 @@ where:
     <a class="headerlink" href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-138"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-139"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction_assuming_single_heavy_isotope</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">isotopic_ratio</span><span class="p">):</span>
-</span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-140"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-140"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-141"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-141"><span class="linenos">141</span></a><span class="sd">        isotopic ratio = n1/n2</span>
 </span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-142"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-142"><span class="linenos">142</span></a><span class="sd">        isotopic fraction = n1/n_total = n1 / (n1 + n2) = isotopic_ratio / (1 + isotopic_ratio)</span>
-</span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-143"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-143"><span class="linenos">143</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-143"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-143"><span class="linenos">143</span></a><span class="sd">        """</span>
 </span><span id="Trivia.isotopic_fraction_assuming_single_heavy_isotope-144"><a href="#Trivia.isotopic_fraction_assuming_single_heavy_isotope-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">isotopic_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">isotopic_ratio</span><span class="p">)</span>
 </span></pre></div>
 
@@ -1509,10 +1509,10 @@ isotopic fraction = n1/n_total = n1 / (n1 + n2) = isotopic_ratio / (1 + isotopic
     <a class="headerlink" href="#Trivia.poissonian_avoidance_function"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.poissonian_avoidance_function-170"><a href="#Trivia.poissonian_avoidance_function-170"><span class="linenos">170</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia.poissonian_avoidance_function-171"><a href="#Trivia.poissonian_avoidance_function-171"><span class="linenos">171</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia.poissonian_avoidance_function-172"><a href="#Trivia.poissonian_avoidance_function-172"><span class="linenos">172</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia.poissonian_avoidance_function-172"><a href="#Trivia.poissonian_avoidance_function-172"><span class="linenos">172</span></a><span class="w">        </span><span class="sd">"""cumulative probability of zero events occurring within time `dt`</span>
 </span><span id="Trivia.poissonian_avoidance_function-173"><a href="#Trivia.poissonian_avoidance_function-173"><span class="linenos">173</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
 </span><span id="Trivia.poissonian_avoidance_function-174"><a href="#Trivia.poissonian_avoidance_function-174"><span class="linenos">174</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia.poissonian_avoidance_function-175"><a href="#Trivia.poissonian_avoidance_function-175"><span class="linenos">175</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.poissonian_avoidance_function-175"><a href="#Trivia.poissonian_avoidance_function-175"><span class="linenos">175</span></a><span class="sd">        """</span>
 </span><span id="Trivia.poissonian_avoidance_function-176"><a href="#Trivia.poissonian_avoidance_function-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
@@ -1538,9 +1538,9 @@ process with a constant rate <code>r</code></p>
     <a class="headerlink" href="#Trivia.tau"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.tau-178"><a href="#Trivia.tau-178"><span class="linenos">178</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Trivia.tau-179"><a href="#Trivia.tau-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="Trivia.tau-180"><a href="#Trivia.tau-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia.tau-180"><a href="#Trivia.tau-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia.tau-181"><a href="#Trivia.tau-181"><span class="linenos">181</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
-</span><span id="Trivia.tau-182"><a href="#Trivia.tau-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.tau-182"><a href="#Trivia.tau-182"><span class="linenos">182</span></a><span class="sd">        """</span>
 </span><span id="Trivia.tau-183"><a href="#Trivia.tau-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
 </span></pre></div>
 
@@ -1572,11 +1572,11 @@ process with a constant rate <code>r</code></p>
 </span><span id="Trivia.moles_heavy_atom-192"><a href="#Trivia.moles_heavy_atom-192"><span class="linenos">192</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="Trivia.moles_heavy_atom-193"><a href="#Trivia.moles_heavy_atom-193"><span class="linenos">193</span></a>        <span class="n">molecular_isotopic_ratio</span><span class="p">,</span>
 </span><span id="Trivia.moles_heavy_atom-194"><a href="#Trivia.moles_heavy_atom-194"><span class="linenos">194</span></a>    <span class="p">):</span>
-</span><span id="Trivia.moles_heavy_atom-195"><a href="#Trivia.moles_heavy_atom-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia.moles_heavy_atom-195"><a href="#Trivia.moles_heavy_atom-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia.moles_heavy_atom-196"><a href="#Trivia.moles_heavy_atom-196"><span class="linenos">196</span></a><span class="sd">        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)</span>
 </span><span id="Trivia.moles_heavy_atom-197"><a href="#Trivia.moles_heavy_atom-197"><span class="linenos">197</span></a><span class="sd">        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),</span>
 </span><span id="Trivia.moles_heavy_atom-198"><a href="#Trivia.moles_heavy_atom-198"><span class="linenos">198</span></a><span class="sd">        using total mass and mass of other heavy isotopes.</span>
-</span><span id="Trivia.moles_heavy_atom-199"><a href="#Trivia.moles_heavy_atom-199"><span class="linenos">199</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.moles_heavy_atom-199"><a href="#Trivia.moles_heavy_atom-199"><span class="linenos">199</span></a><span class="sd">        """</span>
 </span><span id="Trivia.moles_heavy_atom-200"><a href="#Trivia.moles_heavy_atom-200"><span class="linenos">200</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Trivia.moles_heavy_atom-201"><a href="#Trivia.moles_heavy_atom-201"><span class="linenos">201</span></a>            <span class="p">(</span><span class="n">mass_total</span> <span class="o">-</span> <span class="n">mass_other_heavy_isotopes</span><span class="p">)</span>
 </span><span id="Trivia.moles_heavy_atom-202"><a href="#Trivia.moles_heavy_atom-202"><span class="linenos">202</span></a>            <span class="o">/</span> <span class="p">(</span>
@@ -1616,7 +1616,7 @@ using total mass and mass of other heavy isotopes.</p>
 </span><span id="Trivia.molecular_isotopic_ratio-215"><a href="#Trivia.molecular_isotopic_ratio-215"><span class="linenos">215</span></a>        <span class="n">molar_mass_light_molecule</span><span class="p">,</span>
 </span><span id="Trivia.molecular_isotopic_ratio-216"><a href="#Trivia.molecular_isotopic_ratio-216"><span class="linenos">216</span></a>        <span class="n">molar_mass_heavy_molecule</span><span class="p">,</span>
 </span><span id="Trivia.molecular_isotopic_ratio-217"><a href="#Trivia.molecular_isotopic_ratio-217"><span class="linenos">217</span></a>    <span class="p">):</span>
-</span><span id="Trivia.molecular_isotopic_ratio-218"><a href="#Trivia.molecular_isotopic_ratio-218"><span class="linenos">218</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia.molecular_isotopic_ratio-218"><a href="#Trivia.molecular_isotopic_ratio-218"><span class="linenos">218</span></a><span class="w">        </span><span class="sd">"""</span>
 </span><span id="Trivia.molecular_isotopic_ratio-219"><a href="#Trivia.molecular_isotopic_ratio-219"><span class="linenos">219</span></a><span class="sd">        Molecular isotope ratio (e.g. moles of HDO to moles of H2O):</span>
 </span><span id="Trivia.molecular_isotopic_ratio-220"><a href="#Trivia.molecular_isotopic_ratio-220"><span class="linenos">220</span></a><span class="sd">            n_{heavy molecule}/n_{light molecule},</span>
 </span><span id="Trivia.molecular_isotopic_ratio-221"><a href="#Trivia.molecular_isotopic_ratio-221"><span class="linenos">221</span></a><span class="sd">        in contrast to (atomic) isotopic ratio as in VSMOW standard:</span>
@@ -1624,7 +1624,7 @@ using total mass and mass of other heavy isotopes.</p>
 </span><span id="Trivia.molecular_isotopic_ratio-223"><a href="#Trivia.molecular_isotopic_ratio-223"><span class="linenos">223</span></a>
 </span><span id="Trivia.molecular_isotopic_ratio-224"><a href="#Trivia.molecular_isotopic_ratio-224"><span class="linenos">224</span></a><span class="sd">        calculated with:</span>
 </span><span id="Trivia.molecular_isotopic_ratio-225"><a href="#Trivia.molecular_isotopic_ratio-225"><span class="linenos">225</span></a><span class="sd">            m_light = m_total - m_considered_heavy_isotope - m_other_heavy_isotopes</span>
-</span><span id="Trivia.molecular_isotopic_ratio-226"><a href="#Trivia.molecular_isotopic_ratio-226"><span class="linenos">226</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.molecular_isotopic_ratio-226"><a href="#Trivia.molecular_isotopic_ratio-226"><span class="linenos">226</span></a><span class="sd">        """</span>
 </span><span id="Trivia.molecular_isotopic_ratio-227"><a href="#Trivia.molecular_isotopic_ratio-227"><span class="linenos">227</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Trivia.molecular_isotopic_ratio-228"><a href="#Trivia.molecular_isotopic_ratio-228"><span class="linenos">228</span></a>            <span class="n">moles_heavy_molecule</span>
 </span><span id="Trivia.molecular_isotopic_ratio-229"><a href="#Trivia.molecular_isotopic_ratio-229"><span class="linenos">229</span></a>            <span class="o">*</span> <span class="n">molar_mass_light_molecule</span>
@@ -1664,18 +1664,18 @@ in contrast to (atomic) isotopic ratio as in VSMOW standard:
 </span><span id="Trivia.molality_in_dry_air-238"><a href="#Trivia.molality_in_dry_air-238"><span class="linenos">238</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">molality_in_dry_air</span><span class="p">(</span>
 </span><span id="Trivia.molality_in_dry_air-239"><a href="#Trivia.molality_in_dry_air-239"><span class="linenos">239</span></a>        <span class="n">isotopic_fraction</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="Trivia.molality_in_dry_air-240"><a href="#Trivia.molality_in_dry_air-240"><span class="linenos">240</span></a>    <span class="p">):</span>
-</span><span id="Trivia.molality_in_dry_air-241"><a href="#Trivia.molality_in_dry_air-241"><span class="linenos">241</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Trivia.molality_in_dry_air-242"><a href="#Trivia.molality_in_dry_air-242"><span class="linenos">242</span></a><span class="sd">        n&#39;/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
+</span><span id="Trivia.molality_in_dry_air-241"><a href="#Trivia.molality_in_dry_air-241"><span class="linenos">241</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="Trivia.molality_in_dry_air-242"><a href="#Trivia.molality_in_dry_air-242"><span class="linenos">242</span></a><span class="sd">        n'/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air</span>
 </span><span id="Trivia.molality_in_dry_air-243"><a href="#Trivia.molality_in_dry_air-243"><span class="linenos">243</span></a><span class="sd">        n/V - total vapour concentration</span>
 </span><span id="Trivia.molality_in_dry_air-244"><a href="#Trivia.molality_in_dry_air-244"><span class="linenos">244</span></a>
-</span><span id="Trivia.molality_in_dry_air-245"><a href="#Trivia.molality_in_dry_air-245"><span class="linenos">245</span></a><span class="sd">        molality_in_dry_air = n&#39;/m_d =</span>
-</span><span id="Trivia.molality_in_dry_air-246"><a href="#Trivia.molality_in_dry_air-246"><span class="linenos">246</span></a><span class="sd">            = n&#39;/(rho_d * V) = isotopic_concentration / rho_d</span>
-</span><span id="Trivia.molality_in_dry_air-247"><a href="#Trivia.molality_in_dry_air-247"><span class="linenos">247</span></a><span class="sd">        isotopic_concentration = n&#39;/V = n/V * n&#39;/n =</span>
+</span><span id="Trivia.molality_in_dry_air-245"><a href="#Trivia.molality_in_dry_air-245"><span class="linenos">245</span></a><span class="sd">        molality_in_dry_air = n'/m_d =</span>
+</span><span id="Trivia.molality_in_dry_air-246"><a href="#Trivia.molality_in_dry_air-246"><span class="linenos">246</span></a><span class="sd">            = n'/(rho_d * V) = isotopic_concentration / rho_d</span>
+</span><span id="Trivia.molality_in_dry_air-247"><a href="#Trivia.molality_in_dry_air-247"><span class="linenos">247</span></a><span class="sd">        isotopic_concentration = n'/V = n/V * n'/n =</span>
 </span><span id="Trivia.molality_in_dry_air-248"><a href="#Trivia.molality_in_dry_air-248"><span class="linenos">248</span></a><span class="sd">            = total vapour concentration * isotopic_fraction</span>
 </span><span id="Trivia.molality_in_dry_air-249"><a href="#Trivia.molality_in_dry_air-249"><span class="linenos">249</span></a>
-</span><span id="Trivia.molality_in_dry_air-250"><a href="#Trivia.molality_in_dry_air-250"><span class="linenos">250</span></a><span class="sd">        where n&#39;/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
+</span><span id="Trivia.molality_in_dry_air-250"><a href="#Trivia.molality_in_dry_air-250"><span class="linenos">250</span></a><span class="sd">        where n'/n is an isotopic fraction (referred to as isotopic concentration (C)</span>
 </span><span id="Trivia.molality_in_dry_air-251"><a href="#Trivia.molality_in_dry_air-251"><span class="linenos">251</span></a><span class="sd">        on p. 10 in [Gat 2010](https://doi.org/10.1142/p027)</span>
-</span><span id="Trivia.molality_in_dry_air-252"><a href="#Trivia.molality_in_dry_air-252"><span class="linenos">252</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.molality_in_dry_air-252"><a href="#Trivia.molality_in_dry_air-252"><span class="linenos">252</span></a><span class="sd">        """</span>
 </span><span id="Trivia.molality_in_dry_air-253"><a href="#Trivia.molality_in_dry_air-253"><span class="linenos">253</span></a>        <span class="k">return</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">isotopic_fraction</span> <span class="o">/</span> <span class="n">density_dry_air</span>
 </span></pre></div>
 
@@ -1710,10 +1710,10 @@ on p. 10 in <a href="https://doi.org/10.1142/p027">Gat 2010</a></p>
 </span><span id="Trivia.isotopic_fraction-256"><a href="#Trivia.isotopic_fraction-256"><span class="linenos">256</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_fraction</span><span class="p">(</span>
 </span><span id="Trivia.isotopic_fraction-257"><a href="#Trivia.isotopic_fraction-257"><span class="linenos">257</span></a>        <span class="n">molality_in_dry_air</span><span class="p">,</span> <span class="n">density_dry_air</span><span class="p">,</span> <span class="n">total_vap_concentration</span>
 </span><span id="Trivia.isotopic_fraction-258"><a href="#Trivia.isotopic_fraction-258"><span class="linenos">258</span></a>    <span class="p">):</span>
-</span><span id="Trivia.isotopic_fraction-259"><a href="#Trivia.isotopic_fraction-259"><span class="linenos">259</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Trivia.isotopic_fraction-260"><a href="#Trivia.isotopic_fraction-260"><span class="linenos">260</span></a><span class="sd">        isotopic_fraction: n&#39;/n = n&#39;/m_d / (n/V) * rho_d</span>
+</span><span id="Trivia.isotopic_fraction-259"><a href="#Trivia.isotopic_fraction-259"><span class="linenos">259</span></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="Trivia.isotopic_fraction-260"><a href="#Trivia.isotopic_fraction-260"><span class="linenos">260</span></a><span class="sd">        isotopic_fraction: n'/n = n'/m_d / (n/V) * rho_d</span>
 </span><span id="Trivia.isotopic_fraction-261"><a href="#Trivia.isotopic_fraction-261"><span class="linenos">261</span></a><span class="sd">            = molality in dry air / total vapour concentration * dry air density</span>
-</span><span id="Trivia.isotopic_fraction-262"><a href="#Trivia.isotopic_fraction-262"><span class="linenos">262</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_fraction-262"><a href="#Trivia.isotopic_fraction-262"><span class="linenos">262</span></a><span class="sd">        """</span>
 </span><span id="Trivia.isotopic_fraction-263"><a href="#Trivia.isotopic_fraction-263"><span class="linenos">263</span></a>        <span class="k">return</span> <span class="n">molality_in_dry_air</span> <span class="o">/</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">density_dry_air</span>
 </span></pre></div>
 

@@ -104,16 +104,16 @@
 
                         <label class="view-source-button" for="mod-compressed_film_ovadnevaite-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">surface tension coefficient model featuring surface-partitioning</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd"> as in [Ovadnevaite et al. (2017)](https://doi.org/10.1038/nature22806)</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">"""</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CompressedFilmOvadnevaite</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    and as described in Lowe et al. (2019).</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
@@ -121,7 +121,7 @@
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    partitions to the surface of the droplet and that the surface tension is a weighted</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    average of the surface tension of water and the organic material.</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    """</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">sgm_org</span><span class="p">)</span>
@@ -160,7 +160,7 @@
     </div>
     <a class="headerlink" href="#CompressedFilmOvadnevaite"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="CompressedFilmOvadnevaite-10"><a href="#CompressedFilmOvadnevaite-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CompressedFilmOvadnevaite</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="CompressedFilmOvadnevaite-11"><a href="#CompressedFilmOvadnevaite-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="CompressedFilmOvadnevaite-11"><a href="#CompressedFilmOvadnevaite-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="CompressedFilmOvadnevaite-12"><a href="#CompressedFilmOvadnevaite-12"><span class="linenos">12</span></a><span class="sd">    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)</span>
 </span><span id="CompressedFilmOvadnevaite-13"><a href="#CompressedFilmOvadnevaite-13"><span class="linenos">13</span></a><span class="sd">    and as described in Lowe et al. (2019).</span>
 </span><span id="CompressedFilmOvadnevaite-14"><a href="#CompressedFilmOvadnevaite-14"><span class="linenos">14</span></a>
@@ -168,7 +168,7 @@
 </span><span id="CompressedFilmOvadnevaite-16"><a href="#CompressedFilmOvadnevaite-16"><span class="linenos">16</span></a><span class="sd">    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic</span>
 </span><span id="CompressedFilmOvadnevaite-17"><a href="#CompressedFilmOvadnevaite-17"><span class="linenos">17</span></a><span class="sd">    partitions to the surface of the droplet and that the surface tension is a weighted</span>
 </span><span id="CompressedFilmOvadnevaite-18"><a href="#CompressedFilmOvadnevaite-18"><span class="linenos">18</span></a><span class="sd">    average of the surface tension of water and the organic material.</span>
-</span><span id="CompressedFilmOvadnevaite-19"><a href="#CompressedFilmOvadnevaite-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="CompressedFilmOvadnevaite-19"><a href="#CompressedFilmOvadnevaite-19"><span class="linenos">19</span></a><span class="sd">    """</span>
 </span><span id="CompressedFilmOvadnevaite-20"><a href="#CompressedFilmOvadnevaite-20"><span class="linenos">20</span></a>
 </span><span id="CompressedFilmOvadnevaite-21"><a href="#CompressedFilmOvadnevaite-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
 </span><span id="CompressedFilmOvadnevaite-22"><a href="#CompressedFilmOvadnevaite-22"><span class="linenos">22</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">sgm_org</span><span class="p">)</span>

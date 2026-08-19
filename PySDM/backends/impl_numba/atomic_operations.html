@@ -103,9 +103,9 @@
 
                         <label class="view-source-button" for="mod-atomic_operations-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">https://github.com/KatanaGraph/katana/blob/master/python/katana/native_interfacing/numpy_atomic.py</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">types</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">numba.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">cgutils</span>
@@ -119,7 +119,7 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="k">assert</span> <span class="n">arrayty</span><span class="o">.</span><span class="n">aligned</span>  <span class="c1"># We probably have to have aligned arrays.</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="n">dataval</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_value_as_data</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">arrayty</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="n">atomic_rmw</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">dataval</span><span class="p">,</span> <span class="s2">&quot;monotonic&quot;</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="n">atomic_rmw</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">dataval</span><span class="p">,</span> <span class="s2">"monotonic"</span><span class="p">)</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_declare_atomic_array_op</span><span class="p">(</span><span class="n">iop</span><span class="p">,</span> <span class="n">uop</span><span class="p">,</span> <span class="n">fop</span><span class="p">):</span>
@@ -141,10 +141,10 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="nd">@lower_builtin</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Buffer</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="c1"># pylint: disable=too-many-locals</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">func_impl</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="w">            </span><span class="sd">"""</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">            array[a] = scalar_or_array</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">            array[a,..,b] = scalar_or_array</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">            """</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>            <span class="n">aryty</span><span class="p">,</span> <span class="n">idxty</span><span class="p">,</span> <span class="n">valty</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">args</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>            <span class="n">ary</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">args</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
@@ -171,7 +171,7 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>                <span class="n">boundscheck</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">enable_boundscheck</span><span class="p">,</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="p">)</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="k">if</span> <span class="n">shapes</span><span class="p">:</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Complex shapes are not supported&quot;</span><span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Complex shapes are not supported"</span><span class="p">)</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>            <span class="c1"># Store source value the given location</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="n">val</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">valty</span><span class="p">,</span> <span class="n">aryty</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -183,7 +183,7 @@
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aryty</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">Float</span><span class="p">):</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>                <span class="n">operation</span> <span class="o">=</span> <span class="n">fop</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="k">if</span> <span class="n">operation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Atomic operation not supported on &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">aryty</span><span class="p">))</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Atomic operation not supported on "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">aryty</span><span class="p">))</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>            <span class="k">return</span> <span class="n">_atomic_rmw</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">aryty</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">dataptr</span><span class="p">)</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="n">_</span> <span class="o">=</span> <span class="n">func_impl</span>
@@ -193,39 +193,39 @@
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">return</span> <span class="n">decorator</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;fadd&quot;</span><span class="p">)</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"add"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span> <span class="s2">"fadd"</span><span class="p">)</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_add</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">    Atomically, perform `ary[i] += v` and return the previous value of `ary[i]`.</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    i must be a simple index for a single element of ary.</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    """</span>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="k">return</span> <span class="n">orig</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">,</span> <span class="s2">&quot;sub&quot;</span><span class="p">,</span> <span class="s2">&quot;fsub&quot;</span><span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"sub"</span><span class="p">,</span> <span class="s2">"sub"</span><span class="p">,</span> <span class="s2">"fsub"</span><span class="p">)</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_sub</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">    Atomically, perform `ary[i] -= v` and return the previous value of `ary[i]`.</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">    i must be a simple index for a single element of ary.</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    """</span>
 </span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">value</span>
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="k">return</span> <span class="n">orig</span>
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
 </span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;umax&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"max"</span><span class="p">,</span> <span class="s2">"umax"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_max</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">    Atomically, perform `ary[i] = max(ary[i], v)` and return the previous value of `ary[i]`.</span>
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">    This operation does not support floating-point values.</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>
@@ -233,15 +233,15 @@
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    """</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 </span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>    <span class="k">return</span> <span class="n">orig</span>
 </span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;umin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"min"</span><span class="p">,</span> <span class="s2">"umin"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_min</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">    Atomically, perform `ary[i] = min(ary[i], v)` and return the previous value of `ary[i]`.</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">    This operation does not support floating-point values.</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>
@@ -249,7 +249,7 @@
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>
 </span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="sd">    """</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">return</span> <span class="n">orig</span>
@@ -268,16 +268,16 @@
 
     </div>
     <a class="headerlink" href="#atomic_add"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_add-92"><a href="#atomic_add-92"><span class="linenos"> 92</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;fadd&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_add-92"><a href="#atomic_add-92"><span class="linenos"> 92</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"add"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span> <span class="s2">"fadd"</span><span class="p">)</span>
 </span><span id="atomic_add-93"><a href="#atomic_add-93"><span class="linenos"> 93</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_add</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="atomic_add-94"><a href="#atomic_add-94"><span class="linenos"> 94</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="atomic_add-94"><a href="#atomic_add-94"><span class="linenos"> 94</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="atomic_add-95"><a href="#atomic_add-95"><span class="linenos"> 95</span></a><span class="sd">    Atomically, perform `ary[i] += v` and return the previous value of `ary[i]`.</span>
 </span><span id="atomic_add-96"><a href="#atomic_add-96"><span class="linenos"> 96</span></a>
 </span><span id="atomic_add-97"><a href="#atomic_add-97"><span class="linenos"> 97</span></a><span class="sd">    i must be a simple index for a single element of ary.</span>
 </span><span id="atomic_add-98"><a href="#atomic_add-98"><span class="linenos"> 98</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="atomic_add-99"><a href="#atomic_add-99"><span class="linenos"> 99</span></a>
 </span><span id="atomic_add-100"><a href="#atomic_add-100"><span class="linenos">100</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="atomic_add-101"><a href="#atomic_add-101"><span class="linenos">101</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="atomic_add-101"><a href="#atomic_add-101"><span class="linenos">101</span></a><span class="sd">    """</span>
 </span><span id="atomic_add-102"><a href="#atomic_add-102"><span class="linenos">102</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="atomic_add-103"><a href="#atomic_add-103"><span class="linenos">103</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
 </span><span id="atomic_add-104"><a href="#atomic_add-104"><span class="linenos">104</span></a>    <span class="k">return</span> <span class="n">orig</span>
@@ -305,16 +305,16 @@ Broadcasting and vector operations are not supported.</p>
 
     </div>
     <a class="headerlink" href="#atomic_sub"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_sub-107"><a href="#atomic_sub-107"><span class="linenos">107</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">,</span> <span class="s2">&quot;sub&quot;</span><span class="p">,</span> <span class="s2">&quot;fsub&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_sub-107"><a href="#atomic_sub-107"><span class="linenos">107</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"sub"</span><span class="p">,</span> <span class="s2">"sub"</span><span class="p">,</span> <span class="s2">"fsub"</span><span class="p">)</span>
 </span><span id="atomic_sub-108"><a href="#atomic_sub-108"><span class="linenos">108</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_sub</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="atomic_sub-109"><a href="#atomic_sub-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="atomic_sub-109"><a href="#atomic_sub-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="atomic_sub-110"><a href="#atomic_sub-110"><span class="linenos">110</span></a><span class="sd">    Atomically, perform `ary[i] -= v` and return the previous value of `ary[i]`.</span>
 </span><span id="atomic_sub-111"><a href="#atomic_sub-111"><span class="linenos">111</span></a>
 </span><span id="atomic_sub-112"><a href="#atomic_sub-112"><span class="linenos">112</span></a><span class="sd">    i must be a simple index for a single element of ary.</span>
 </span><span id="atomic_sub-113"><a href="#atomic_sub-113"><span class="linenos">113</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="atomic_sub-114"><a href="#atomic_sub-114"><span class="linenos">114</span></a>
 </span><span id="atomic_sub-115"><a href="#atomic_sub-115"><span class="linenos">115</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="atomic_sub-116"><a href="#atomic_sub-116"><span class="linenos">116</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="atomic_sub-116"><a href="#atomic_sub-116"><span class="linenos">116</span></a><span class="sd">    """</span>
 </span><span id="atomic_sub-117"><a href="#atomic_sub-117"><span class="linenos">117</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="atomic_sub-118"><a href="#atomic_sub-118"><span class="linenos">118</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">value</span>
 </span><span id="atomic_sub-119"><a href="#atomic_sub-119"><span class="linenos">119</span></a>    <span class="k">return</span> <span class="n">orig</span>
@@ -342,9 +342,9 @@ Broadcasting and vector operations are not supported.</p>
 
     </div>
     <a class="headerlink" href="#atomic_max"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_max-122"><a href="#atomic_max-122"><span class="linenos">122</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;umax&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_max-122"><a href="#atomic_max-122"><span class="linenos">122</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"max"</span><span class="p">,</span> <span class="s2">"umax"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="atomic_max-123"><a href="#atomic_max-123"><span class="linenos">123</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_max</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="atomic_max-124"><a href="#atomic_max-124"><span class="linenos">124</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="atomic_max-124"><a href="#atomic_max-124"><span class="linenos">124</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="atomic_max-125"><a href="#atomic_max-125"><span class="linenos">125</span></a><span class="sd">    Atomically, perform `ary[i] = max(ary[i], v)` and return the previous value of `ary[i]`.</span>
 </span><span id="atomic_max-126"><a href="#atomic_max-126"><span class="linenos">126</span></a><span class="sd">    This operation does not support floating-point values.</span>
 </span><span id="atomic_max-127"><a href="#atomic_max-127"><span class="linenos">127</span></a>
@@ -352,7 +352,7 @@ Broadcasting and vector operations are not supported.</p>
 </span><span id="atomic_max-129"><a href="#atomic_max-129"><span class="linenos">129</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="atomic_max-130"><a href="#atomic_max-130"><span class="linenos">130</span></a>
 </span><span id="atomic_max-131"><a href="#atomic_max-131"><span class="linenos">131</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="atomic_max-132"><a href="#atomic_max-132"><span class="linenos">132</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="atomic_max-132"><a href="#atomic_max-132"><span class="linenos">132</span></a><span class="sd">    """</span>
 </span><span id="atomic_max-133"><a href="#atomic_max-133"><span class="linenos">133</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="atomic_max-134"><a href="#atomic_max-134"><span class="linenos">134</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 </span><span id="atomic_max-135"><a href="#atomic_max-135"><span class="linenos">135</span></a>    <span class="k">return</span> <span class="n">orig</span>
@@ -381,9 +381,9 @@ Broadcasting and vector operations are not supported.</p>
 
     </div>
     <a class="headerlink" href="#atomic_min"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_min-138"><a href="#atomic_min-138"><span class="linenos">138</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;umin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="atomic_min-138"><a href="#atomic_min-138"><span class="linenos">138</span></a><span class="nd">@_declare_atomic_array_op</span><span class="p">(</span><span class="s2">"min"</span><span class="p">,</span> <span class="s2">"umin"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="atomic_min-139"><a href="#atomic_min-139"><span class="linenos">139</span></a><span class="k">def</span><span class="w"> </span><span class="nf">atomic_min</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span id="atomic_min-140"><a href="#atomic_min-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="atomic_min-140"><a href="#atomic_min-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">"""</span>
 </span><span id="atomic_min-141"><a href="#atomic_min-141"><span class="linenos">141</span></a><span class="sd">    Atomically, perform `ary[i] = min(ary[i], v)` and return the previous value of `ary[i]`.</span>
 </span><span id="atomic_min-142"><a href="#atomic_min-142"><span class="linenos">142</span></a><span class="sd">    This operation does not support floating-point values.</span>
 </span><span id="atomic_min-143"><a href="#atomic_min-143"><span class="linenos">143</span></a>
@@ -391,7 +391,7 @@ Broadcasting and vector operations are not supported.</p>
 </span><span id="atomic_min-145"><a href="#atomic_min-145"><span class="linenos">145</span></a><span class="sd">    Broadcasting and vector operations are not supported.</span>
 </span><span id="atomic_min-146"><a href="#atomic_min-146"><span class="linenos">146</span></a>
 </span><span id="atomic_min-147"><a href="#atomic_min-147"><span class="linenos">147</span></a><span class="sd">    This should be used from numba compiled code.</span>
-</span><span id="atomic_min-148"><a href="#atomic_min-148"><span class="linenos">148</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="atomic_min-148"><a href="#atomic_min-148"><span class="linenos">148</span></a><span class="sd">    """</span>
 </span><span id="atomic_min-149"><a href="#atomic_min-149"><span class="linenos">149</span></a>    <span class="n">orig</span> <span class="o">=</span> <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="atomic_min-150"><a href="#atomic_min-150"><span class="linenos">150</span></a>    <span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 </span><span id="atomic_min-151"><a href="#atomic_min-151"><span class="linenos">151</span></a>    <span class="k">return</span> <span class="n">orig</span>

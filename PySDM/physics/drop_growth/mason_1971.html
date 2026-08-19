@@ -106,15 +106,15 @@ The difference between Howell'49 and Mason'71 is <code>-1</code> in the <code>Fk
 
                         <label class="view-source-button" for="mod-mason_1971-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">single-equation approximation of the vapour and heat diffusion problem</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">as given in eq. 3.11 in [Mason 1971](https://archive.org/details/physicsofclouds0000maso)</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">(see also discussion of the ventilation effect on page 125).</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">The difference between Howell&#39;49 and Mason&#39;71 is `-1` in the `Fk` definition.</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">The difference between Howell'49 and Mason'71 is `-1` in the `Fk` definition.</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">The notation for terms associated with heat conduction and diffusion are from</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">[Rogers &amp; Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">"""</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.howell_1949</span><span class="w"> </span><span class="kn">import</span> <span class="n">Howell1949</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
@@ -123,7 +123,7 @@ The difference between Howell'49 and Mason'71 is <code>-1</code> in the <code>Fk
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">"""thermodynamic term associated with heat conduction"""</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
@@ -144,7 +144,7 @@ The difference between Howell'49 and Mason'71 is <code>-1</code> in the <code>Fk
 </span><span id="Mason1971-16"><a href="#Mason1971-16"><span class="linenos">16</span></a>
 </span><span id="Mason1971-17"><a href="#Mason1971-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Mason1971-18"><a href="#Mason1971-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="Mason1971-19"><a href="#Mason1971-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="Mason1971-19"><a href="#Mason1971-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">"""thermodynamic term associated with heat conduction"""</span>
 </span><span id="Mason1971-20"><a href="#Mason1971-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
@@ -165,7 +165,7 @@ The difference between Howell'49 and Mason'71 is <code>-1</code> in the <code>Fk
     <a class="headerlink" href="#Mason1971.Fk"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971.Fk-17"><a href="#Mason1971.Fk-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Mason1971.Fk-18"><a href="#Mason1971.Fk-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="Mason1971.Fk-19"><a href="#Mason1971.Fk-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="Mason1971.Fk-19"><a href="#Mason1971.Fk-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">"""thermodynamic term associated with heat conduction"""</span>
 </span><span id="Mason1971.Fk-20"><a href="#Mason1971.Fk-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 

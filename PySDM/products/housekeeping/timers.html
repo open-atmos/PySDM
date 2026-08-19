@@ -121,9 +121,9 @@
 
                         <label class="view-source-button" for="mod-timers-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">CPU- and wall-time counters (fetching a value resets the counter)</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
@@ -158,7 +158,7 @@
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="nd">@register_product</span><span class="p">()</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CPUTime</span><span class="p">(</span><span class="n">_Timer</span><span class="p">):</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CPU Time&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"CPU Time"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
 </span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="nd">@staticmethod</span>
@@ -168,7 +168,7 @@
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="nd">@register_product</span><span class="p">()</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WallTime</span><span class="p">(</span><span class="n">_Timer</span><span class="p">):</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="nd">@staticmethod</span>
@@ -192,7 +192,7 @@
     <a class="headerlink" href="#CPUTime"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="CPUTime-37"><a href="#CPUTime-37"><span class="linenos">37</span></a><span class="nd">@register_product</span><span class="p">()</span>
 </span><span id="CPUTime-38"><a href="#CPUTime-38"><span class="linenos">38</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CPUTime</span><span class="p">(</span><span class="n">_Timer</span><span class="p">):</span>
-</span><span id="CPUTime-39"><a href="#CPUTime-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CPU Time&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+</span><span id="CPUTime-39"><a href="#CPUTime-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"CPU Time"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="CPUTime-40"><a href="#CPUTime-40"><span class="linenos">40</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span><span id="CPUTime-41"><a href="#CPUTime-41"><span class="linenos">41</span></a>
 </span><span id="CPUTime-42"><a href="#CPUTime-42"><span class="linenos">42</span></a>    <span class="nd">@staticmethod</span>
@@ -207,13 +207,13 @@
                                         <input id="CPUTime.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">CPUTime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="o">=</span><span class="s1">&#39;CPU Time&#39;</span>, </span><span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span></span>)</span>
+        <span class="name">CPUTime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="o">=</span><span class="s1">'CPU Time'</span>, </span><span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">'s'</span></span>)</span>
 
                 <label class="view-source-button" for="CPUTime.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#CPUTime.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CPUTime.__init__-39"><a href="#CPUTime.__init__-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CPU Time&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CPUTime.__init__-39"><a href="#CPUTime.__init__-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"CPU Time"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="CPUTime.__init__-40"><a href="#CPUTime.__init__-40"><span class="linenos">40</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span></pre></div>
 
@@ -301,7 +301,7 @@
     <a class="headerlink" href="#WallTime"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="WallTime-47"><a href="#WallTime-47"><span class="linenos">47</span></a><span class="nd">@register_product</span><span class="p">()</span>
 </span><span id="WallTime-48"><a href="#WallTime-48"><span class="linenos">48</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WallTime</span><span class="p">(</span><span class="n">_Timer</span><span class="p">):</span>
-</span><span id="WallTime-49"><a href="#WallTime-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+</span><span id="WallTime-49"><a href="#WallTime-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="WallTime-50"><a href="#WallTime-50"><span class="linenos">50</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span><span id="WallTime-51"><a href="#WallTime-51"><span class="linenos">51</span></a>
 </span><span id="WallTime-52"><a href="#WallTime-52"><span class="linenos">52</span></a>    <span class="nd">@staticmethod</span>
@@ -316,13 +316,13 @@
                                         <input id="WallTime.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">WallTime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="o">=</span><span class="kc">None</span>, </span><span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span></span>)</span>
+        <span class="name">WallTime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="o">=</span><span class="kc">None</span>, </span><span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">'s'</span></span>)</span>
 
                 <label class="view-source-button" for="WallTime.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#WallTime.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WallTime.__init__-49"><a href="#WallTime.__init__-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WallTime.__init__-49"><a href="#WallTime.__init__-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">):</span>
 </span><span id="WallTime.__init__-50"><a href="#WallTime.__init__-50"><span class="linenos">50</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span></pre></div>
 

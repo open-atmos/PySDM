@@ -95,10 +95,10 @@ default nice_thrust flags</p>
 
                         <label class="view-source-button" for="mod-conf-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">default nice_thrust flags</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">"""</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
@@ -110,15 +110,15 @@ default nice_thrust flags</p>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="c1"># noinspection PyUnresolvedReferences</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">ThrustRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">trtc</span>  <span class="c1"># pylint: disable=unused-import</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="s2">&quot;NVRTC_PATH&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">trtc</span><span class="o">.</span><span class="n">set_libnvrtc_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;NVRTC_PATH&quot;</span><span class="p">])</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="s2">"NVRTC_PATH"</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">trtc</span><span class="o">.</span><span class="n">set_libnvrtc_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"NVRTC_PATH"</span><span class="p">])</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;importing ThrustRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"importing ThrustRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">try</span><span class="p">:</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="c1"># noinspection PyUnresolvedReferences</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">CURandRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rndrtc</span>  <span class="c1"># pylint: disable=unused-import</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;importing CURandRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"importing CURandRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="k">else</span><span class="p">:</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="c1"># noinspection PyUnresolvedReferences</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="c1"># fmt: off</span>
@@ -132,8 +132,8 @@ default nice_thrust flags</p>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">rndrtc</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="n">NICE_THRUST_FLAGS</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s2">&quot;wait&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s2">&quot;debug_print&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s2">"wait"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s2">"debug_print"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="p">}</span>  <span class="c1"># TODO #1120: move to GPU backend ctor</span>
 </span></pre></div>
 
