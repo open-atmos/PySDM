@@ -48,7 +48,7 @@ CI_version_pins = [
     "ipywidgets==8.1.7",
     "seaborn==0.13.2",
     "numdifftools==0.9.42",
-    "vtk==9.6.2",
+    "vtk==9.7.0",
     "pyrcel==2.0.0",
     "pyvinecopulib==0.7.6",
     "cmcrameri==1.10",
