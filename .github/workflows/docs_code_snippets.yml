@@ -50,7 +50,7 @@ jobs:
           awk "{print}; /readme.png/ {exit}" docs_code.py > docs_code_jax.py
           python -We docs_code_jax.py
       - name: jax-artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: jax
           if-no-files-found: error
