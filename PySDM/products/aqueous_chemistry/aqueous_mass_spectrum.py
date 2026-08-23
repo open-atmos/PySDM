@@ -6,6 +6,7 @@ dry-radius-binned concentration of aqueous-chemistry relevant compounds (optiona
 import numpy as np
 from chempy import Substance
 
+import particulator
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.constants import si
 from PySDM.products.impl import SpectrumMomentProduct, register_product
@@ -24,20 +25,20 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
         )
         self.specific = specific
 
-    def register(self, builder):
-        builder.request_attribute("dry volume")
-        builder.request_attribute(f"moles_{self.key}")
+    def register(self, particulator):
+        particulator.request_attribute("dry volume")
+        particulator.request_attribute(f"moles_{self.key}")
 
-        dry_volume_bins_edges = builder.particulator.formulae.trivia.volume(
+        dry_volume_bins_edges = particulator.formulae.trivia.volume(
             self.dry_radius_bins_edges
         )
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
             dry_volume_bins_edges
         )
 
-        super().register(builder)
+        super().register(particulator)
 
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])

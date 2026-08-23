@@ -13,11 +13,11 @@ from PySDM.attributes.impl import (
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" in dynamics
 )
 class DryVolumeDynamic(DerivedAttribute):
-    def __init__(self, builder):
-        self.particulator = builder.particulator
-        self.moles_sulphur_p6 = builder.get_attribute("moles_S_VI")
+    def __init__(self, particulator):
+        self.particulator = particulator
+        self.moles_sulphur_p6 = particulator.get_attribute("moles_S_VI")
         super().__init__(
-            builder, name="dry volume", dependencies=(self.moles_sulphur_p6,)
+            particulator, name="dry volume", dependencies=(self.moles_sulphur_p6,)
         )
 
     def recalculate(self):
@@ -30,8 +30,8 @@ class DryVolumeDynamic(DerivedAttribute):
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" not in dynamics
 )
 class DryVolume(ExtensiveAttribute):
-    def __init__(self, builder):
-        super().__init__(builder, name="dry volume")
+    def __init__(self, particulator):
+        super().__init__(particulator, name="dry volume")
 
 
 @register_attribute(
@@ -40,8 +40,8 @@ class DryVolume(ExtensiveAttribute):
     dummy_default=True,
 )
 class DryVolumeOrganic(ExtensiveAttribute):
-    def __init__(self, builder):
-        super().__init__(builder, name="dry volume organic")
+    def __init__(self, particulator):
+        super().__init__(particulator, name="dry volume organic")
 
 
 @register_attribute(
@@ -50,11 +50,11 @@ class DryVolumeOrganic(ExtensiveAttribute):
     dummy_default=True,
 )
 class OrganicFraction(DerivedAttribute):
-    def __init__(self, builder):
-        self.volume_dry_org = builder.get_attribute("dry volume organic")
-        self.volume_dry = builder.get_attribute("dry volume")
+    def __init__(self, particulator):
+        self.volume_dry_org = particulator.get_attribute("dry volume organic")
+        self.volume_dry = particulator.get_attribute("dry volume")
         super().__init__(
-            builder,
+            particulator,
             name="dry volume organic fraction",
             dependencies=(self.volume_dry_org, self.volume_dry),
         )
