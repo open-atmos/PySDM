@@ -1,6 +1,6 @@
 import numpy as np
 import PySDM.products as PySDM_products
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import (
     AmbientThermodynamics,
     Condensation,
@@ -29,29 +29,7 @@ class Simulation:
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.w_updraft,
-        )
-
-        builder = Builder(
             backend=settings.backend,
-            n_sd=settings.n_sd,
-            environment=env,
-            dynamics=(
-                [
-                    AmbientThermodynamics(),
-                    Condensation(adaptive=True),
-                ]
-                + (
-                    [VapourDepositionOnIce(adaptive=True)]
-                    if settings.deposition_enable
-                    else []
-                )
-                + [
-                    Freezing(
-                        homogeneous_freezing=settings.hom_freezing_type,
-                        immersion_freezing=None,
-                    )
-                ]
-            ),
         )
 
         self.n_sd = settings.n_sd
@@ -64,7 +42,7 @@ class Simulation:
 
         self.r_dry = equilibrate_dry_radii(
             r_wet=self.r_wet,
-            environment=builder.particulator.environment,
+            environment=env,
             kappa=kappa,
         )
         v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
@@ -79,7 +57,7 @@ class Simulation:
             "signed water mass": self.initial_mass,
         }
 
-        products = [
+        products = (
             PySDM_products.ParcelDisplacement(name="z"),
             PySDM_products.Time(name="t"),
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
@@ -99,7 +77,7 @@ class Simulation:
             ),
             PySDM_products.MeanRadius(name="rs", radius_range=(0, np.inf)),
             PySDM_products.MeanRadius(name="ri", radius_range=(-np.inf, 0)),
-        ]
+        )
         self.output_product_list = [
             "z",
             "t",
@@ -116,10 +94,29 @@ class Simulation:
             "ri",
         ]
 
-        self.particulator = builder.build(
-            attributes,
-            products,
-            req_attr_names=(
+        self.particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=(
+                [
+                    AmbientThermodynamics(),
+                    Condensation(adaptive=True),
+                ]
+                + (
+                    [VapourDepositionOnIce(adaptive=True)]
+                    if settings.deposition_enable
+                    else []
+                )
+                + [
+                    Freezing(
+                        homogeneous_freezing=settings.hom_freezing_type,
+                        immersion_freezing=None,
+                    )
+                ]
+            ),
+            attributes=attributes,
+            products=products,
+            requested_attributes=(
                 "temperature of last freezing",
                 "supersaturation of last freezing",
                 "radius",
