@@ -1,7 +1,7 @@
 import numpy as np
 from PySDM_examples.utils import BasicSimulation
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
@@ -23,33 +23,19 @@ class Simulation(BasicSimulation):
         mass_of_dry_air=44 * si.kg,
         additional_attributes=None,
     ):
-        n_sd = sum(settings.n_sd_per_mode)
-        builder = Builder(
-            n_sd=n_sd,
+        environment = Parcel(
+            dt=settings.timestep,
+            p0=settings.initial_pressure,
+            initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
+            T0=settings.initial_temperature,
+            w=settings.vertical_velocity,
+            mass_of_dry_air=mass_of_dry_air,
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=Parcel(
-                dt=settings.timestep,
-                p0=settings.initial_pressure,
-                initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
-                T0=settings.initial_temperature,
-                w=settings.vertical_velocity,
-                mass_of_dry_air=mass_of_dry_air,
-            ),
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x),
-            ),
         )
-        if additional_attributes is not None:
-            for attribute in additional_attributes:
-                builder.request_attribute(attribute)
-
-        volume = (
-            builder.particulator.environment.mass_of_dry_air
-            / settings.initial_air_density
-        )
+        n_sd = sum(settings.n_sd_per_mode)
+        volume = environment.mass_of_dry_air / settings.initial_air_density
         attributes = {
             k: np.empty(0)
             for k in ("dry volume", "kappa times dry volume", "multiplicity")
@@ -69,14 +55,27 @@ class Simulation(BasicSimulation):
             )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-            environment=builder.particulator.environment,
+            environment=environment,
             kappa_times_dry_volume=attributes["kappa times dry volume"],
         )
         attributes["volume"] = settings.formulae.trivia.volume(radius=r_wet)
 
-        super().__init__(
-            particulator=builder.build(attributes=attributes, products=products)
-        )
+        particulator_kwargs = {
+            "n_sd": n_sd,
+            "environment": environment,
+            "dynamics": (
+                AmbientThermodynamics(),
+                Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x),
+            ),
+            "attributes": attributes,
+            "products": products,
+        }
+
+        if additional_attributes is not None:
+            particulator_kwargs["requested_attributes"] = additional_attributes
+
+        super().__init__(particulator=Particulator(**particulator_kwargs))
+
         if scipy_solver:
             scipy_ode_condensation_solver.patch_particulator(self.particulator)
 
