@@ -151,12 +151,6 @@ class TestTrivia:
         assert mass_other_heavy_isotopes <= water_mass
         molar_mass_heavy_molecule = getattr(CONST, f"M_{heavy_isotope_molecule}")
         molar_mass_light_molecule = CONST.M_1H2_16O
-        if heavy_isotope_name[-1] == "O":
-            atoms_per_heavy_molecule = 1
-        elif heavy_isotope_name[-1] == "H":
-            atoms_per_heavy_molecule = 1
-        else:
-            assert False
 
         # act
         moles_heavy_atom = Trivia.moles_heavy_atom(
@@ -165,7 +159,6 @@ class TestTrivia:
             mass_other_heavy_isotopes=mass_other_heavy_isotopes,
             molar_mass_light_molecule=molar_mass_light_molecule,
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
-            atoms_per_heavy_molecule=atoms_per_heavy_molecule,
         )
 
         moles_heavy_molecule = atoms_per_heavy_molecule * moles_heavy_atom
