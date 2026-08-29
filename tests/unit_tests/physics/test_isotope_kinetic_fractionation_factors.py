@@ -22,20 +22,20 @@ class TestIsotopeKineticFractionationFactors:
             # arrange
             alpha_eq = 1 * physics.si.dimensionless
             D_ratio = 1 * physics.si.dimensionless
-            saturation_over_ice = 1 * physics.si.dimensionless
+            rh_over_ice = 1 * physics.si.dimensionless
 
             # act
             sut = JouzelAndMerlivat1984.alpha_kinetic(
                 alpha_equilibrium=alpha_eq,
                 D_ratio_heavy_to_light=D_ratio,
-                saturation=saturation_over_ice,
+                relative_humidity=rh_over_ice,
             )
 
             # assert
             assert sut.check("[]")
 
     @staticmethod
-    def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
+    def test_fig_9_from_jouzel_and_merlivat_1984(plot=PLOT):
         """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
         # arrange
         formulae = Formulae(
@@ -44,7 +44,7 @@ class TestIsotopeKineticFractionationFactors:
             isotope_diffusivity_ratios="Stewart1975",
         )
         temperatures = formulae.trivia.C2K(np.asarray([-30, -20, -10]))
-        saturation = np.linspace(start=1, stop=1.35)
+        rh = np.linspace(start=1, stop=1.35)
         alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O
         diffusivity_ratio_heavy_to_light = (
             formulae.isotope_diffusivity_ratios.ratio_18O_heavy_to_light
@@ -56,7 +56,7 @@ class TestIsotopeKineticFractionationFactors:
         alpha_k = {
             temperature: sut(
                 alpha_equilibrium=alpha_s[temperature],
-                saturation=saturation,
+                relative_humidity=rh,
                 D_ratio_heavy_to_light=diffusivity_ratio_heavy_to_light(temperature),
             )
             for temperature in temperatures
@@ -68,12 +68,12 @@ class TestIsotopeKineticFractionationFactors:
         }
 
         # plot
-        pyplot.xlim(saturation[0], saturation[-1])
+        pyplot.xlim(rh[0], rh[-1])
         pyplot.ylim(1.003, 1.022)
-        pyplot.xlabel("S")
-        pyplot.ylabel("alpha_k * alpha_s")
+        pyplot.xlabel("Si [1]")
+        pyplot.ylabel(r"$\alpha_\text{kin} \alpha_\text{eq}$ [1]")
         for k, v in alpha_s_times_alpha_k.items():
-            pyplot.plot(saturation, v, label=k)
+            pyplot.plot(rh, v, label=k)
         pyplot.legend()
         if plot:
             pyplot.show()
@@ -88,10 +88,10 @@ class TestIsotopeKineticFractionationFactors:
 
     @staticmethod
     @pytest.mark.parametrize(
-        ("temperature_C", "saturation", "alpha"),
+        ("temperature_C", "relative_humidity", "alpha"),
         ((-10, 1, 1.021), (-10, 1.35, 1.0075), (-30, 1, 1.0174), (-30, 1.35, 1.004)),
     )
-    def test_fig9_values(temperature_C, saturation, alpha):
+    def test_fig9_values(temperature_C, relative_humidity, alpha):
         # arrange
         formulae = Formulae(
             isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
@@ -105,7 +105,7 @@ class TestIsotopeKineticFractionationFactors:
         alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O(T)
         alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_s,
-            saturation=saturation,
+            relative_humidity=relative_humidity,
             D_ratio_heavy_to_light=diffusivity_ratio_18O(T),
         )
 
@@ -123,13 +123,14 @@ class TestIsotopeKineticFractionationFactors:
     ):
         # arrange
         T = Formulae().trivia.C2K(temperature_C)
-        RH = np.linspace(0.3, 1)
+        rh = np.linspace(0.3, 1)
         formulae = Formulae(
             isotope_equilibrium_fractionation_factors="VanHook1968",
             isotope_diffusivity_ratios="HellmannAndHarvey2020",
             isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
         )
-        Si = formulae.saturation_vapour_pressure.pvs_ice(T)
+        vapour_partial_pressure = rh * formulae.saturation_vapour_pressure.pvs_water(T)
+        Si = vapour_partial_pressure / formulae.saturation_vapour_pressure.pvs_ice(T)
         alpha_eq = getattr(
             formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{isotope}"
         )(T)
@@ -138,14 +139,14 @@ class TestIsotopeKineticFractionationFactors:
         )(T)
         alpha_kin_jm = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_eq,
-            saturation=Si,
+            relative_humidity=Si,
             D_ratio_heavy_to_light=D_heavy_to_light,
         )
         formulae = Formulae(
             isotope_kinetic_fractionation_factors="CraigGordon",
         )
         alpha_kin_cg = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
-            relative_humidity=RH,
+            relative_humidity=rh,
             turbulence_parameter_n=1,
             delta_diff=alpha_eq - 1,
             theta=1,
@@ -155,7 +156,7 @@ class TestIsotopeKineticFractionationFactors:
         n = (alpha_kin_jm + 1) / (alpha_kin_cg + 1)
 
         # plot
-        pyplot.plot(1 - RH, n)
+        pyplot.plot(1 - rh, n)
         pyplot.gca().set(
             xlabel="1-RH",
             ylabel="turbulence parameter n",
