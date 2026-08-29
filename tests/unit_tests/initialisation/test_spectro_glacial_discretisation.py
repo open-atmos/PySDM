@@ -13,7 +13,7 @@ formulae = Formulae(
 )
 spectrum = Lognormal(
     norm_factor=1,
-    m_mode=formulae.trivia.sphere_surface(diameter=0.74 * si.um),
+    median=formulae.trivia.sphere_surface(diameter=0.74 * si.um),
     s_geom=np.exp(0.25),
 )
 m_range = (

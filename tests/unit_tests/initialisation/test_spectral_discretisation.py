@@ -7,10 +7,10 @@ from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
-m_mode = 0.5e-5
+median = 0.5e-5
 n_part = 256 * 16
 s_geom = 1.5
-spectrum = spectra.Lognormal(n_part, m_mode, s_geom)
+spectrum = spectra.Lognormal(norm_factor=n_part, median=median, s_geom=s_geom)
 m_range = (0.1 * si.um, 100 * si.um)
 formulae = Formulae()
 
@@ -91,5 +91,6 @@ class TestSpectralDiscretisation:
         sampling_class, error_threshold
     ):
         sampling_class(
-            spectra.Lognormal(n_part, m_mode, s_geom), error_threshold=error_threshold
+            spectra.Lognormal(norm_factor=n_part, median=median, s_geom=s_geom),
+            error_threshold=error_threshold,
         ).sample_deterministic(n_sd=10)

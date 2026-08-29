@@ -17,7 +17,7 @@ from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 
 FORMULAE = Formulae()
-SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, median=50 * si.nm, s_geom=1.5)
 N_SD = 64
 R_DRY, specific_concentration = spectral_sampling.Logarithmic(
     SPECTRUM

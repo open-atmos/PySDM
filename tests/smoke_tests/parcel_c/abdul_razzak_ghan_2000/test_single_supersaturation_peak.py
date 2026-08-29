@@ -42,7 +42,7 @@ def test_single_saturation_peak(
     n_steps = 70
     n_sd = 2
     kappa = 0.4
-    spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
+    spectrum = Lognormal(norm_factor=5000 / si.cm**3, median=50.0 * si.nm, s_geom=2.0)
     formulae = Formulae(constants=CONSTANTS_ARG)
     builder = Builder(
         backend=CPU(formulae),
