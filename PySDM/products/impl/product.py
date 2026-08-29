@@ -16,6 +16,7 @@ _UNIT_REGISTRY = pint.UnitRegistry()
 
 class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
+        self.non_default_name = name is not None
         self.name = name or camel_case_to_words(self.__class__.__name__)
 
         self._unit = self._parse_unit(unit)
@@ -85,6 +86,12 @@ class Product:
                 f" ({self._unit.dimensionality}) than the default one"
                 f" ({default_unit.dimensionality})"
                 f" for product {type(self).__name__}"
+            )
+
+        if self._unit != default_unit and not self.non_default_name:
+            raise AssertionError(
+                f"custom non-SI unit specified for product {type(self).__name__}"
+                " requires a custom name (intention: include the custom unit in the name)"
             )
 
     @property
