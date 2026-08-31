@@ -165,17 +165,13 @@ class CollisionsMethods(BackendMethods):
     def _normalize_body(self):
         @jax.jit
         def body(prob, cell_start, timestep, dv):
-            sd_num = cell_start[1] - cell_start[0]
-
-            def loop_body(i, prob):
-                norm_factor = (sd_num >= 2) * (
-                    timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-                )
-                prob = prob.at[i].multiply(norm_factor)
-                return prob
-
-            return jax.lax.fori_loop(0, prob.shape[0], loop_body, prob)
-
+            sd_num = jnp.roll(cell_start, -1) - cell_start
+            sd_num = sd_num[:-1]
+            norm_factor = (sd_num >= 2) * (
+               timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+            )
+            prob *= norm_factor # Fix for multiple cell operation
+            return prob
         return body
 
     # pylint: disable=too-many-arguments,disable=unused-argument
@@ -185,6 +181,7 @@ class CollisionsMethods(BackendMethods):
         ).block_until_ready()
 
     @staticmethod
+    @jax.jit
     # pylint: disable=too-many-arguments
     def _counting_sort_by_cell_id_and_update_cell_start(
         new_idx,  # pylint: disable=unused-argument

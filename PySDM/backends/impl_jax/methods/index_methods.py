@@ -23,7 +23,7 @@ class IndexMethods(BackendMethods):
     def shuffle_global(self, idx, u01):
         # TODO #1913: decide whether to use u01 argsort or random.permute
         # TODO #1913: https://github.com/jax-ml/jax/issues/5328
-        idx.data = self._shuffle_global_body(idx.data, u01) # (requires actual u01)
+        idx.data = self._shuffle_global_body(idx.data, u01).block_until_ready() # (requires actual u01)
         # u01.permute(idx)
 
     def shuffle_local(self, idx, u01, cell_start):  # pylint: disable=unused-argument
