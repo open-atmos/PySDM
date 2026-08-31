@@ -6,6 +6,7 @@ from functools import cached_property, partial
 
 from jax import random
 import jax
+import os
 
 from ..impl_common.random_common import RandomCommon
 
@@ -27,7 +28,11 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         return body
 
     def u01(self, storage):
-        new_key, subkey = random.split(self.key)
+        if os.environ.get("FIXED_RAND") != "1":
+            new_key, subkey = random.split(self.key)
+        else:
+            new_key = self.key
+            subkey = self.key
 
         storage.data = self._u01_body(
             storage.data,
@@ -48,7 +53,11 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         return body
 
     def permute(self, storage):
-        new_key, subkey = random.split(self.key)
+        if os.environ.get("FIXED_RAND") != "1":
+            new_key, subkey = random.split(self.key)
+        else:
+            new_key = self.key
+            subkey = self.key
         storage.data = self._permute_body(
             storage.data,
             subkey,

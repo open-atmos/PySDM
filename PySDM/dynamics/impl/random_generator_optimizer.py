@@ -45,10 +45,11 @@ class RandomGeneratorOptimizer:  # pylint: disable=too-many-instance-attributes
                 self.rnd.u01(self.pairs_rand)
         else:
             shift = 0
-            if not hasattr(self.rnd, "JAX"):
-                self.rnd.u01(self.pairs_rand)
-            else:  # TODO #1913: TEMPORARY, undo this (or keep if staying with jax.random.permute)
-                self.pairs_rand = Data(data=self.rnd)
+            # if not hasattr(self.rnd, "JAX"):
+            #     self.rnd.u01(self.pairs_rand)
+            # else:  # TODO #1913: TEMPORARY, undo this (or keep if staying with jax.random.permute)
+            #     self.pairs_rand = Data(data=self.rnd)
+            self.rnd.u01(self.pairs_rand)
             self.rnd.u01(self.rand)
         self.substep += 1
         if self.optimized_random:

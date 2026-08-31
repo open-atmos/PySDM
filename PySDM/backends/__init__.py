@@ -9,6 +9,7 @@ import sys
 import warnings
 
 from numba import cuda
+import jax as jaxapi
 
 from . import numba as _numba
 from . import jax as _jax
@@ -85,9 +86,12 @@ _BACKEND_CACHE = {}
 
 
 def _cached_backend(formulae=None, backend_class=None, **kwargs):
+
     key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
     if key not in _BACKEND_CACHE:
         _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
+    if backend_class == Jax: # WORKAROUND
+        jaxapi.clear_caches()
     return _BACKEND_CACHE[key]
 
 

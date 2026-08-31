@@ -36,29 +36,20 @@ class MomentsMethods(BackendMethods):
             moments,
             multiplicity,
             attr_data,
-            cell_id,
-            idx,
+            x_attr,
+            min_x,
+            max_x,
             ranks,
             weighting_attribute,
             weighting_rank,
-            count_element_flags,
-            idx_i,
         ):
             assert len(ranks) == 1
-            k = 0
-            i = idx[idx_i]
-            moment_0 = moment_0.at[:].set(0)
-            moments = moments.at[:, :].set(0)
-            moment_0 = moment_0.at[cell_id[i]].add(
-                count_element_flags[i]
-                * multiplicity[i]
-                * weighting_attribute[i] ** weighting_rank
-            )
-            moments = moments.at[k, cell_id[i]].add(
-                count_element_flags[i]
-                * multiplicity[i]
-                * weighting_attribute[i] ** weighting_rank
-                * attr_data[i] ** ranks[k]
+            k = range(ranks.shape[0])
+            count_element_flag = (min_x <= x_attr) & (x_attr < max_x)
+            moment_0 += count_element_flag * multiplicity * weighting_attribute ** weighting_rank
+
+            moments = moments.at[k].add(
+                count_element_flag * multiplicity * weighting_attribute ** weighting_rank * attr_data ** ranks[k]
             )
 
             return moment_0, moments
@@ -83,43 +74,33 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-        idx_i = jnp.arange(length)
-        count_cells_func = jax.vmap(moments_helper, (None, None, None, None, 0))
-        idx_to_count = count_cells_func(min_x, max_x, x_attr.data, idx.data, idx_i)
+        # This method isnt used in shima example
         mapped_moments = jax.vmap(
             self._moments_body,
-            (
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                0,
-            ),
+            in_axes=(0, 1, 0, 0, 0, None, None, None, 0, None),
+            out_axes=(0, 1)
         )
+        moments.data = moments.data.at[:, :].set(0)
+        moment_0.data = moment_0.data.at[:].set(0)
 
         moment_0.data, moments.data = mapped_moments(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
+            moment_0.data[cell_id.data],
+            moments.data[cell_id.data],
+            multiplicity.data[idx.data],
+            attr_data.data[idx.data],
+            x_attr.data[idx.data],
+            min_x,
+            max_x,
             ranks.data,
-            weighting_attribute.data,
+            weighting_attribute.data[idx.data],
             weighting_rank,
-            idx_to_count,
-            idx_i,
         )
-        moment_0.data.block_until_ready()
 
-        moment_0.data = jnp.sum(moment_0.data, axis=0)
-        moments.data = jnp.sum(moments.data, axis=0)
+        moment_0.data.block_until_ready()
+        moments.data = jnp.sum(moments.data, axis=1, keepdims=True) # This won't work for multi-cell
+        # moment_0.data = jnp.sum(moment_0.data, axis=0, keepdims=True) # This won't work for multi-cell
+
+
 
         if not skip_division_by_m0:
             moments.data = jnp.where(
@@ -134,24 +115,38 @@ class MomentsMethods(BackendMethods):
             moments,
             multiplicity,
             attr_data,
-            cell_id,
-            idx,
+            x_attr,
+            x_bins,
+            # cell_id,
+            # idx,
             rank,
             weighting_attribute,
             weighting_rank,
-            bin_to_count,
-            idx_i,
+            # bin_to_count,
+            # idx_i,
         ):
+            def loop_break_cond(cond_args):
+                k, loop_break, _, _, x_bins = cond_args
 
-            i = idx[idx_i]
-            moment_0 = moment_0.at[bin_to_count, cell_id[i]].add(
-                multiplicity[i] * weighting_attribute[i] ** weighting_rank
-            )
-            moments = moments.at[bin_to_count, cell_id[i]].add(
-                multiplicity[i]
-                * weighting_attribute[i] ** weighting_rank
-                * attr_data[i] ** rank
-            )
+                return ~((k == x_bins.shape[0] - 1) | loop_break)
+
+            # i = idx[idx_i]
+            def loop_body(loop_args):
+                k, loop_break, moment_0, moments, x_bins = loop_args
+
+                loop_break = (x_bins[k] <= x_attr) & (x_attr < x_bins[k + 1])
+                moment_0 = moment_0.at[k].add(loop_break * multiplicity * weighting_attribute ** weighting_rank)
+                moments = moments.at[k].add(loop_break * multiplicity * weighting_attribute ** weighting_rank * attr_data ** rank)
+                return (k+1, loop_break, moment_0, moments, x_bins)
+            _, _, moment_0, moments, _ = jax.lax.while_loop(loop_break_cond, loop_body, (0, False, moment_0, moments, x_bins))
+            # moment_0 = moment_0.at[bin_to_count, cell_id[i]].add(
+            #     multiplicity[i] * weighting_attribute[i] ** weighting_rank
+            # )
+            # moments = moments.at[bin_to_count, cell_id[i]].add(
+            #     multiplicity[i]
+            #     * weighting_attribute[i] ** weighting_rank
+            #     * attr_data[i] ** rank
+            # )
 
             return moment_0, moments
 
@@ -176,37 +171,32 @@ class MomentsMethods(BackendMethods):
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
-        new_moment_0 = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
-        new_moments = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
-        idx_idxs = jnp.arange(length)
+        moments.data = moments.data.at[:, :].set(0)
+        moment_0.data = moment_0.data.at[:, :].set(0)
+        idx_i = jnp.arange(length)
 
-        count_bins_func = jax.vmap(spectrum_moments_helper, (None, None, None, 0))
-        bins_to_count = count_bins_func(x_bins.data, x_attr.data, idx.data, idx_idxs)
-        assert all(bins_to_count < new_moments.shape[0])
-        mapped_spectrum_moments = jax.vmap(
-            self._spectrum_moments_body,
-            (None, None, None, None, None, None, None, None, None, 0, 0),
-        )
+        mapped_spectrum_moments = jax.vmap(self._spectrum_moments_body,
+                                           in_axes=(1, 1, 0, 0, 0, None, None, 0, None),
+                                           out_axes=(1,1))
 
-        new_moment_0, new_moments = mapped_spectrum_moments(
-            new_moment_0,
-            new_moments,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
+        moment_0.data, moments.data = mapped_spectrum_moments(
+            moment_0.data[:, cell_id.data[idx.data[idx_i]]],
+            moments.data[:, cell_id.data[idx.data[idx_i]]],
+            multiplicity.data[idx.data[idx_i]],
+            attr_data.data[idx.data[idx_i]],
+            x_attr.data[idx.data[idx_i]],
+            x_bins.data,
             rank,
-            weighting_attribute.data,
+            weighting_attribute.data[idx.data[idx_i]],
             weighting_rank,
-            bins_to_count,
-            idx_idxs,
         )
-        new_moment_0.block_until_ready()
-
-        moments.data = jnp.sum(new_moments[:, :-1, :], axis=0)
-        moment_0.data = jnp.sum(new_moment_0[:, :-1, :], axis=0)
+        moment_0.data.block_until_ready()
+        moments.data = jnp.sum(moments.data, axis=1, keepdims=True) # This won't work for multi-cell
+        moment_0.data = jnp.sum(moment_0.data, axis=1, keepdims=True) # This won't work for multi-cell
+ 
 
         if not skip_division_by_m0:
             moments.data = jnp.where(
                 moment_0.data != 0, moments.data / moment_0.data, 0.0
             )
+        
