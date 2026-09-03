@@ -26,7 +26,8 @@ def backend_instance(request):
     params=(
         pytest.param(CPU(), id="CPU"),
         pytest.param(GPU(), id="GPU"),
-        pytest.param(JAX(), id="JAX"),
+        pytest.param(JAX_CPU(), id="JAX_CPU"),
+        pytest.param(JAX_GPU(), id="JAX_GPU"),
     ),
     scope="session",
 )

@@ -98,3 +98,6 @@ GPU = partial(_cached_backend, backend_class=ThrustRTC)
 """ returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) """
 
 JAX = partial(_cached_backend, backend_class=Jax)
+JAX_CPU = partial(_cached_backend, backend_class=Jax, jax_backend="cpu")
+JAX_GPU = partial(_cached_backend, backend_class=Jax, jax_backend="gpu")
+JAX_TPU = partial(_cached_backend, backend_class=Jax, jax_backend="tpu")
