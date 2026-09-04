@@ -636,7 +636,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
         self.attributes.mark_updated("signed water mass")
 
-    # Methods copied from builder.py for move of builder.build()
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
@@ -676,14 +675,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 self.dynamics.keys(),
                 self.formulae,
             )(self)
-
-    # def build(
-    #     self,
-    #     attributes: dict,
-    #     products: tuple = (),
-    #     int_caster=discretise_multiplicities,
-    # ):
-    #     self._build(attributes, products, int_caster)
 
     def _build(
         self,
@@ -751,7 +742,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes.sanitize()
 
         self.request_attribute = None
-        # self.build = None
 
     def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
         if stochastic_sedimentation_removal:

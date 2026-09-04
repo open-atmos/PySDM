@@ -6,7 +6,6 @@ dry-radius-binned concentration of aqueous-chemistry relevant compounds (optiona
 import numpy as np
 from chempy import Substance
 
-import particulator
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.constants import si
 from PySDM.products.impl import SpectrumMomentProduct, register_product
