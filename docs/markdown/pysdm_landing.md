@@ -196,7 +196,7 @@ radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3, backend=CPU())
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
-particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
+particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
 ```
 </details>
 
