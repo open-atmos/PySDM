@@ -27,13 +27,12 @@ def with_default_device(cls):
     return cls
 
 
-@with_default_device
 class Jax(
-    methods.CollisionsMethods,
-    methods.PairMethods,
-    methods.IndexMethods,
-    methods.PhysicsMethods,
-    methods.MomentsMethods,
+    with_default_device(methods.CollisionsMethods),
+    with_default_device(methods.PairMethods),
+    with_default_device(methods.IndexMethods),
+    with_default_device(methods.PhysicsMethods),
+    with_default_device(methods.MomentsMethods),
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -59,13 +58,14 @@ class Jax(
         self.block_until_ready = (
             block_until_ready  # TODO #1913: implement switch in jit code
         )
-        self.formulae = formulae or Formulae()
-        self.formulae_flattened = self.formulae.flatten
-
         self.default_jit_flags = {"parallel": False}
 
-        methods.CollisionsMethods.__init__(self)
-        methods.PairMethods.__init__(self)
-        methods.IndexMethods.__init__(self)
-        methods.PhysicsMethods.__init__(self)
-        methods.MomentsMethods.__init__(self)
+        with jax.default_device(self.default_device):
+            self.formulae = formulae or Formulae()
+            self.formulae_flattened = self.formulae.flatten
+
+            methods.CollisionsMethods.__init__(self)
+            methods.PairMethods.__init__(self)
+            methods.IndexMethods.__init__(self)
+            methods.PhysicsMethods.__init__(self)
+            methods.MomentsMethods.__init__(self)
