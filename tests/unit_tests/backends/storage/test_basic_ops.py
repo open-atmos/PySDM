@@ -63,3 +63,24 @@ class TestBasicOps:
 
         # Assert
         assert actual == expected
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "output, divisor, expected",
+        [
+            ([1.0], 2, [0.5]),
+            ([4.0], [2], [2.0]),
+        ],
+    )
+    def test_itruediv(backend_instance_with_jax, output, divisor, expected):
+        # Arrange
+        backend = backend_instance_with_jax
+        output = backend.Storage.from_ndarray(np.asarray(output))
+        if hasattr(divisor, "__len__"):
+            divisor = backend.Storage.from_ndarray(np.asarray(divisor))
+
+        # Act
+        output /= divisor
+
+        # Assert
+        np.testing.assert_array_equal(output.to_ndarray(), expected)

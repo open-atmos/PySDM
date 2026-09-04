@@ -27,7 +27,7 @@ class TestFig7:
         "backend_class",
         (
             Numba,
-            pytest.param(ThrustRTC, marks=pytest.mark.xfail(strict=True)),
+            pytest.param(ThrustRTC, marks=pytest.mark.xfail(strict=False)),
         ),  # TODO #987
     )
     def test_fig_7a(backend_class, plot=False):

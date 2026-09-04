@@ -210,7 +210,6 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
             )
 
-    # TODO #684
     # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def spectrum_moments(
@@ -228,6 +227,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
+        # TODO #684
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape

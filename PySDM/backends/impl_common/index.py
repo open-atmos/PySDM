@@ -40,12 +40,10 @@ def make_Index(backend):
 
         def shuffle(self, temporary, parts=None):
             if parts is None:
-                backend.shuffle_global(
-                    idx=self.data, length=self.length, u01=temporary.data
-                )
+                backend.shuffle_global(idx=self, u01=temporary.data)
             else:
                 backend.shuffle_local(
-                    idx=self.data, u01=temporary.data, cell_start=parts.data
+                    idx=self, u01=temporary.data, cell_start=parts.data
                 )
 
         def remove_zero_n_or_flagged(self, indexed_storage):
