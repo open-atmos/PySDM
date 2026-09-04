@@ -1,7 +1,7 @@
 """commons for homogeneous freezing notebooks"""
 
-from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
-from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
+from PySDM_examples.Luettmer_et_al_2026.settings import Settings
+from PySDM_examples.Luettmer_et_al_2026.simulation import Simulation
 from PySDM import Formulae
 from PySDM.physics.constants import si
 from PySDM.backends import CPU
