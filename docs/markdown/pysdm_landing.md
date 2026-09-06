@@ -401,7 +401,7 @@ n_sd = 256
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
 attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
@@ -491,7 +491,7 @@ v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(pyargs(...
     'r_dry', r_dry, ...
-    'environment', builder.particulator.environment, ...
+    'environment', env, ...
     'kappa_times_dry_volume', kappa * v_dry...
 ));
 
@@ -502,7 +502,7 @@ attributes = py.dict(pyargs( ...
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
-particulator = builder.build(pyargs(
+particulator = Particulator(pyargs(
     'attributes', attributes,
     'products', py.list({ ...
         products.PeakSaturation(pyargs('name', 'S_max_percent', 'unit', '%')), ...
@@ -591,7 +591,7 @@ n_sd = 256
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
   'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
