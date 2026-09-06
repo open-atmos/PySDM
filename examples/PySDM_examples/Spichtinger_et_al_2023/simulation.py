@@ -4,7 +4,7 @@ from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
 from PySDM.backends import Numba
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import (
     AmbientThermodynamics,
     Condensation,
@@ -31,25 +31,12 @@ class Simulation(BasicSimulation):
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.w_updraft,
-        )
-
-        builder = Builder(
             backend=backend(
                 formulae=settings.formulae,
                 **(
                     {"override_jit_flags": {"parallel": False}}
                     if backend is Numba
                     else {}
-                ),
-            ),
-            n_sd=settings.n_sd,
-            environment=env,
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(),
-                VapourDepositionOnIce(),
-                Freezing(
-                    homogeneous_freezing="time-dependent", immersion_freezing=None
                 ),
             ),
         )
@@ -87,7 +74,22 @@ class Simulation(BasicSimulation):
 
         self.n_output = settings.n_output
         self.n_substeps = int(settings.t_duration / dt / self.n_output)
-        super().__init__(builder.build(attributes, products))
+        super().__init__(
+            Particulator(
+                attributes=attributes,
+                products=products,
+                n_sd=settings.n_sd,
+                environment=env,
+                dynamics=(
+                    AmbientThermodynamics(),
+                    Condensation(),
+                    VapourDepositionOnIce(),
+                    Freezing(
+                        homogeneous_freezing="time-dependent", immersion_freezing=None
+                    ),
+                ),
+            )
+        )
 
     def save(self, output):
         cell_id = 0
