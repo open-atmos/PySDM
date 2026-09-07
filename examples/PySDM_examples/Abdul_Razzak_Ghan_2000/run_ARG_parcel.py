@@ -11,7 +11,6 @@ from PySDM.environments import Parcel
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
-from attributes.impl import attribute_registry
 
 
 def run_parcel(
