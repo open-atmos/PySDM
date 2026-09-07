@@ -4,8 +4,7 @@ import pytest
 
 from PySDM.physics import si
 import PySDM.products as PySDM_products
-from PySDM.builder import Builder
-from PySDM import Formulae
+from PySDM import Formulae, Particulator
 from PySDM.environments import Box
 
 MASSES = (10.0 * si.ug, -10.0 * si.ug)
@@ -16,15 +15,17 @@ MASSES = (10.0 * si.ug, -10.0 * si.ug)
 )
 def test_mixed_phase_moments(particle_mass, backend_class):
     # arrange
-    particulator = Builder(
+    particulator = Particulator(
         n_sd=len(particle_mass),
-        environment=Box(dt=np.nan, dv=1 * si.m**3),
-        backend=backend_class(
-            formulae=Formulae(
-                particle_shape_and_density="MixedPhaseSpheres",
-            )
+        environment=Box(
+            dt=np.nan,
+            dv=1 * si.m**3,
+            backend=backend_class(
+                formulae=Formulae(
+                    particle_shape_and_density="MixedPhaseSpheres",
+                )
+            ),
         ),
-    ).build(
         attributes={
             "multiplicity": np.full_like(particle_mass, fill_value=1),
             "signed water mass": particle_mass,
