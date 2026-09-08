@@ -51,7 +51,7 @@ class Simulation(BasicSimulation):
 
         self.r_wet = equilibrate_wet_radii(
             r_dry=self.r_dry,
-            environment=builder.particulator.environment,
+            environment=env,
             kappa_times_dry_volume=kappa * v_dry,
         )
 
