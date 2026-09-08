@@ -30,11 +30,11 @@ class SLAMS(VolumeBasedFragmentationFunction):
             nfmax=self.nfmax,
         )
 
-    def register(self, builder):
-        super().register(builder)
-        self.p_vec = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
+    def register(self, particulator):
+        super().register(particulator)
+        self.p_vec = particulator.PairwiseStorage.empty(
+            particulator.n_sd // 2, dtype=float
         )
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
+        self.sum_of_volumes = particulator.PairwiseStorage.empty(
+            particulator.n_sd // 2, dtype=float
         )

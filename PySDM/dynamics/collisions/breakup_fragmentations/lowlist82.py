@@ -16,21 +16,21 @@ class LowList1982Nf(VolumeBasedFragmentationFunction):
         self.sum_of_volumes = None
         self.const = None
 
-    def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
+    def register(self, particulator):
+        super().register(particulator)
+        self.sum_of_volumes = particulator.PairwiseStorage.empty(
+            particulator.n_sd // 2, dtype=float
         )
-        self.const = self.particulator.formulae.constants
+        self.const = particulator.formulae.constants
         builder.request_attribute("radius")
         builder.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
-            self.arrays[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float
+            self.arrays[key] = particulator.PairwiseStorage.empty(
+                particulator.n_sd // 2, dtype=float
             )
         for key in ("Rf", "Rs", "Rd"):
-            self.ll82_tmp[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float
+            self.ll82_tmp[key] = particulator.PairwiseStorage.empty(
+                particulator.n_sd // 2, dtype=float
             )
 
     def compute_fragment_number_and_volumes(
