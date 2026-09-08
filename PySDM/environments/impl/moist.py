@@ -24,22 +24,23 @@ class Moist:
                 if var not in self.variables:
                     self.variables += [var]
 
-        self._values = {"predicted": None, "current": self._allocate(self.variables)}
-        self._tmp = self._allocate(self.variables)
+        self._values = {
+            "predicted": None,
+            "current": self._allocate(self.variables, backend),
+        }
+        self._tmp = self._allocate(self.variables, backend)
 
-        self._nan_field = self._allocate(("_",))["_"]
+        self._nan_field = self._allocate(("_",), backend)["_"]
         self._nan_field.fill(np.nan)
 
     def register(self, particulator):
         self.particulator = particulator
         self.particulator.observers.append(self)
 
-    def _allocate(self, variables):
+    def _allocate(self, variables, backend):
         result = {}
         for var in variables:
-            result[var] = self.particulator.backend.Storage.empty(
-                (self.mesh.n_cell,), float
-            )
+            result[var] = backend.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, key: str):
