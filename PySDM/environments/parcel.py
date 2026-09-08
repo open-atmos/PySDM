@@ -5,7 +5,6 @@ Zero-dimensional adiabatic parcel framework
 from typing import List, Optional, Union
 
 import numpy as np
-from zmq import backend
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh

@@ -4,7 +4,6 @@ Single-column time-varying-updraft framework with moisture advection handled by
 """
 
 import numpy as np
-from zmq import backend
 
 from PySDM.environments.impl.moist import Moist
 
