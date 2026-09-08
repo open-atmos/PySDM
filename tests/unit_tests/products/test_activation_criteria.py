@@ -38,13 +38,12 @@ def test_activation_criteria(backend, plot=False):
         w=2.5 * si.m / si.s,
     )
 
-    n_sd = 1000
     r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
         Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
-    ).sample_deterministic(n_sd)
+    ).sample_deterministic(1000)
 
     particulator = Particulator(
-        n_sd=n_sd,
+        n_sd=len(r_dry),
         dynamics=(
             AmbientThermodynamics(),
             Condensation(),
