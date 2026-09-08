@@ -18,7 +18,6 @@ python -m venv ./.venv
 source ./.venv/bin/activate
 
 pip install uv
-uv pip install numpy==1.26.4
 uv pip install \
   --find-links "/mnt/cluster-workspace/shared/python/wheels" \
   --index-strategy first-index \

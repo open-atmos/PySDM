@@ -57,5 +57,6 @@ jobs:
       - name: Run GPU Tests
         uses: ./.github/actions/run-slurm-job
         with:
-          python-version: 3.13.13 # DO NOT CHANGE
+          # DO NOT CHANGE. This is the only Python version available on the Bowie Cluster.
+          python-version: 3.13.13
           command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -p no:unraisableexception --timeout=900 --timeout_method=thread ${{ inputs.tests_to_run || 'tests/unit_tests' }} -k 'GPU or ThrustRTC'"
