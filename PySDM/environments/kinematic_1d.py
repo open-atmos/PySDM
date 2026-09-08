@@ -18,15 +18,11 @@ class Kinematic1D(Moist):
         super().__init__(dt, mesh, [], backend=backend)
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
-        self.formulae = backend.formulae
         self.backend = backend
         self.dynamics = {}
         rhod = self.backend.Storage.from_ndarray(self.rhod)
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
-
-    def register(self, particulator):
-        super().register(particulator)
 
     def register_dynamics(self, dynamics):
         self.dynamics = {}
@@ -75,7 +71,9 @@ class Kinematic1D(Moist):
                 r_dry, n_per_kg = spectral_discretisation.sample_deterministic(
                     backend=self.backend, n_sd=n_sd
                 )
-                attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
+                attributes["dry volume"] = self.backend.formulae.trivia.volume(
+                    radius=r_dry
+                )
                 attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
                 r_wet = equilibrate_wet_radii(
                     r_dry=r_dry,
@@ -83,7 +81,7 @@ class Kinematic1D(Moist):
                     cell_id=attributes["cell id"],
                     kappa_times_dry_volume=attributes["kappa times dry volume"],
                 )
-                attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
+                attributes["volume"] = self.backend.formulae.trivia.volume(radius=r_wet)
 
             rhod = self["rhod"].to_ndarray()
             cell_id = attributes["cell id"]

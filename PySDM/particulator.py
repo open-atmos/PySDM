@@ -664,7 +664,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute_name):
+    def request_attribute(self, attribute_name):  # pylint:disable=method-hidden
         self._request_attribute(attribute_name)
 
     def _resolve_attribute(self, attr_name):

@@ -38,9 +38,6 @@ class Kinematic2D(Moist):
         for dynamic in dynamics:
             self.dynamics[type(dynamic).__name__] = dynamic
 
-    def register(self, particulator):
-        super().register(particulator)
-
     @property
     def dv(self):
         return self.mesh.dv
