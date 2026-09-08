@@ -15,7 +15,6 @@ from PySDM.impl.mesh import Mesh
 from PySDM.dynamics import Displacement, AmbientThermodynamics
 
 T = 300 * si.K
-n_sd = 100
 dt = 44
 dT = -2
 
@@ -24,6 +23,7 @@ class TestCoolingRate:
     @staticmethod
     def _make_particulator():
         env = Box(dt=dt, dv=np.nan, backend=CPU())
+        n_sd = 100
         particulator = Particulator(
             n_sd=n_sd,
             environment=env,

@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from PySDM.products.size_spectral.arbitrary_moment import make_arbitrary_moment_product
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
@@ -103,8 +103,9 @@ class TestArbitraryMoment:
             skip_division_by_m0=False,
             skip_division_by_dv=skip_division_by_dv,
         )
-        builder = Builder(n_sd=1, backend=CPU(), environment=Box(dv=dv, dt=np.nan))
-        particulator = builder.build(
+        particulator = Particulator(
+            n_sd=1,
+            environment=Box(dv=dv, dt=np.nan, backend=CPU()),
             attributes={
                 k: np.ones(builder.particulator.n_sd)
                 for k in ("multiplicity", "water mass")

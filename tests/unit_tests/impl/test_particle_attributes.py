@@ -7,7 +7,6 @@ from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 
-from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
 
 
@@ -126,7 +125,6 @@ class TestParticleAttributes:
         initial_position = np.array([[0], [0]])
         grid = (1, 1)
         particulator = DummyParticulator(backend_class, n_sd=1)
-        particulator.environment = DummyEnvironment(grid=grid)
         cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(
             initial_position
         )
