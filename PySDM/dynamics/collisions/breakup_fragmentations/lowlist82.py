@@ -22,8 +22,8 @@ class LowList1982Nf(VolumeBasedFragmentationFunction):
             particulator.n_sd // 2, dtype=float
         )
         self.const = particulator.formulae.constants
-        builder.request_attribute("radius")
-        builder.request_attribute("relative fall velocity")
+        particulator.request_attribute("radius")
+        particulator.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = particulator.PairwiseStorage.empty(
                 particulator.n_sd // 2, dtype=float
