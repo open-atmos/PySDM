@@ -22,7 +22,7 @@ y_unit = 1 / si.cm**3
 
 def pysdm(dry_diam, temp, rel_humid, kpa):
     r_dry = dry_diam / 2
-    env = environment = Box(dt=np.nan, dv=np.nan, backend=CPU())
+    env = Box(dt=np.nan, dv=np.nan, backend=CPU())
     env["T"] = temp
     env["RH"] = rel_humid
     kappa_times_dry_volume = kpa * (np.pi / 6) * dry_diam**3
