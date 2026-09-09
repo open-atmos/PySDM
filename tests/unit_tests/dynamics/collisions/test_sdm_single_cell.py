@@ -17,19 +17,20 @@ class TestSDMSingleCell:
     def test_single_collision(backend_class_with_jax, v_2, T_2, n_2):
         # Arrange
         const = 1.0
-        particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class_with_jax, len(n_2)
-        )
-        sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
-            out, 1
-        )
         attributes = {
             "multiplicity": n_2,
             "volume": v_2,
             "heat": const * T_2 * v_2,
         }
-        particulator.request_attribute("temperature")
-        particulator.build(attributes)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_class_with_jax,
+            len(n_2),
+            attributes=attributes,
+            requested_attributes=("temperature",),
+        )
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
+            out, 1
+        )
 
         # Act
         sut()
@@ -85,13 +86,13 @@ class TestSDMSingleCell:
     def test_single_collision_same_n(backend_class_with_jax, n_in, n_out):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class_with_jax, 2
+            backend_class_with_jax,
+            2,
+            attributes={"multiplicity": np.full(2, n_in), "volume": np.full(2, 1.0)},
         )
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
         )
-        attributes = {"multiplicity": np.full(2, n_in), "volume": np.full(2, 1.0)}
-        particulator.build(attributes)
 
         # Act
         sut()
@@ -115,7 +116,9 @@ class TestSDMSingleCell:
     def test_multi_collision(backend_class_with_jax, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class_with_jax, len(n_2)
+            backend_class_with_jax,
+            len(n_2),
+            attributes={"multiplicity": n_2, "volume": v_2},
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -123,9 +126,6 @@ class TestSDMSingleCell:
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
-
-        attributes = {"multiplicity": n_2, "volume": v_2}
-        particulator.build(attributes)
 
         # Act
         sut()
@@ -167,7 +167,7 @@ class TestSDMSingleCell:
     def test_multi_droplet(backend_class_with_jax, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class_with_jax, len(n)
+            backend_class_with_jax, len(n), attributes={"multiplicity": n, "volume": v}
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -175,8 +175,6 @@ class TestSDMSingleCell:
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
-        attributes = {"multiplicity": n, "volume": v}
-        particulator.build(attributes)
 
         # Act
         sut()
@@ -196,14 +194,12 @@ class TestSDMSingleCell:
         v = np.random.uniform(size=n_sd)
 
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class_with_jax, n_sd
+            backend_class_with_jax, n_sd, attributes={"multiplicity": n, "volume": v}
         )
 
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, rand.to_ndarray() > 0.5, odd_zeros=True
         )
-        attributes = {"multiplicity": n, "volume": v}
-        particulator.build(attributes)
 
         # Act
         for _ in range(32):
@@ -288,9 +284,8 @@ class TestSDMSingleCell:
             n_sd,
             optimized_random=optimized_random,
             substeps=n_substeps,
+            attributes={"multiplicity": n, "volume": v},
         )
-        attributes = {"multiplicity": n, "volume": v}
-        particles.build(attributes)
 
         class CountingRandom(
             backend_class.Random

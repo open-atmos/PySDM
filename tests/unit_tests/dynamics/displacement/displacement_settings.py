@@ -25,12 +25,15 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-a
 
     def get_displacement(self, backend, scheme, adaptive=True):
         formulae = Formulae(particle_advection=scheme)
-        particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
-        particulator.environment = DummyEnvironment(
-            timestep=self.dt, grid=self.grid, courant_field_data=self.courant_field_data
+        backend = backend(formulae, double_precision=True)
+        environment = DummyEnvironment(
+            timestep=self.dt,
+            grid=self.grid,
+            courant_field_data=self.courant_field_data,
+            backend=backend,
         )
         positions = np.array(self.positions)
-        cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(
+        cell_id, cell_origin, position_in_cell = environment.mesh.cellular_attributes(
             positions
         )
         attributes = {
@@ -40,9 +43,22 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-a
             "cell origin": cell_origin,
             "position in cell": position_in_cell,
         }
-        particulator.build(attributes)
-        sut = Displacement(enable_sedimentation=self.sedimentation, adaptive=adaptive)
-        sut.register(particulator)
+        particulator = DummyParticulator(
+            n_sd=len(self.n),
+            formulae=formulae,
+            attributes=attributes,
+            environment=environment,
+            dynamics=(
+                Displacement(
+                    enable_sedimentation=self.sedimentation, adaptive=adaptive
+                ),
+            ),
+        )
+        sut = next(
+            dynamic
+            for dynamic in particulator.dynamics.values()
+            if isinstance(dynamic, Displacement)
+        )
         sut.upload_courant_field(self.courant_field_data)
 
         return sut, particulator
