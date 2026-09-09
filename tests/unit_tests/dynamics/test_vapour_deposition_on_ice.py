@@ -9,8 +9,7 @@ import numba
 
 from PySDM.physics import si, in_unit
 from PySDM.backends import CPU
-from PySDM import Builder
-from PySDM import Formulae
+from PySDM import Formulae, Particulator
 from PySDM.environments import Box
 from PySDM.environments.impl import register_environment
 from PySDM.environments.impl.moist import Moist
@@ -22,12 +21,19 @@ from PySDM.products import IceWaterContent
 class MoistBox(Box, Moist):
     """env providing get_predicted() logic from Moist with box-model basics"""
 
-    def __init__(self, dt: float, dv: float, mixed_phase: bool = False):
-        Box.__init__(self, dt, dv)
-        Moist.__init__(self, dt, self.mesh, variables=["rhod"], mixed_phase=mixed_phase)
+    def __init__(self, dt: float, dv: float, backend, mixed_phase: bool = False):
+        Box.__init__(self, dt, dv, backend=backend)
+        Moist.__init__(
+            self,
+            dt,
+            self.mesh,
+            variables=["rhod"],
+            mixed_phase=mixed_phase,
+            backend=backend,
+        )
 
-    def register(self, builder):
-        Moist.register(self, builder)
+    def register(self, particulator):
+        Moist.register(self, particulator)
 
     def get_water_vapour_mixing_ratio(self):
         return self["water_vapour_mixing_ratio"]
@@ -64,26 +70,27 @@ def make_particulator(
 ):
     """instantiates a particulator with minimal components for testing ice depositional growth"""
     assert RH_water is None or RH_ice is None
-    builder = Builder(
+    particulator = Particulator(
         n_sd=len(signed_water_masses),
-        environment=MoistBox(dt=dt, dv=1 * si.m**3),
-        backend=CPU(
-            override_jit_flags={"parallel": False},
-            formulae=Formulae(
-                particle_shape_and_density="MixedPhaseSpheres",
-                diffusion_coordinate=diffusion_coordinate,
-                diffusion_ice_capacity=diffusion_ice_capacity,
+        environment=MoistBox(
+            dt=dt,
+            dv=1 * si.m**3,
+            backend=CPU(
+                override_jit_flags={"parallel": False},
+                formulae=Formulae(
+                    particle_shape_and_density="MixedPhaseSpheres",
+                    diffusion_coordinate=diffusion_coordinate,
+                    diffusion_ice_capacity=diffusion_ice_capacity,
+                ),
             ),
         ),
         dynamics=(
             AmbientThermodynamics(),
             VapourDepositionOnIce(adaptive=adaptive),
         ),
-    )
-    particulator = builder.build(
         attributes={
             "multiplicity": np.full(
-                shape=(builder.particulator.n_sd,), fill_value=multiplicity
+                shape=(len(signed_water_masses),), fill_value=multiplicity
             ),
             "signed water mass": np.asarray(signed_water_masses),
         },
