@@ -163,13 +163,13 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             )
             self.rnd_opt_proc.register(particulator)
             self.rnd_opt_frag.register(particulator)
-            self.compute_coalescence_efficiency.register(particulator)
             self.compute_breakup_efficiency.register(particulator)
             self.compute_number_of_fragments.register(particulator)
             self.breakup_rate = self.particulator.Storage.from_ndarray(*counter_args)
             self.breakup_rate_deficit = self.particulator.Storage.from_ndarray(
                 *counter_args
             )
+        self.compute_coalescence_efficiency.register(particulator)
 
     def __call__(self):
         if self.enable:
