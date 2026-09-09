@@ -6,6 +6,7 @@ import pytest
 from PySDM.attributes import DiffusionalGrowthMassChange
 from PySDM.physics import si
 from PySDM.dynamics import Collision
+from attributes.physics import diffusional_growth_mass_change
 from ..dummy_particulator import DummyParticulator
 
 
@@ -16,14 +17,12 @@ class TestDiffusionalGrowthMassChange:
             pytest.skip("only Numba supported - TODO #1438")
 
         # arrange
-        particulator = DummyParticulator(backend_class)
-        particulator.request_attribute("diffusional growth mass change")
-
-        # act
-        particulator.build(
-            attributes={"multiplicity": np.ones(1), "water mass": np.ones(1)}
+        particulator = DummyParticulator(
+            backend_class,
+            n_sd=1,
+            requested_attributes=("diffusional growth mass change",),
+            attributes={"multiplicity": np.ones(1), "water mass": np.ones(1)},
         )
-
         # assert
         for items in (particulator.initialisers, particulator.observers):
             assert len(items) == 1
@@ -46,9 +45,9 @@ class TestDiffusionalGrowthMassChange:
                     fragmentation_function=np.nan,
                 ),
             ),
+            attributes={},
+            requested_attributes=("diffusional growth mass change",),
         )
-        particulator.request_attribute("diffusional growth mass change")
-        particulator.build(attributes={})
 
     @staticmethod
     @pytest.mark.parametrize("steps", (0, 1, 2))
@@ -60,13 +59,15 @@ class TestDiffusionalGrowthMassChange:
         n_sd = 1
         mass_delta = np.ones(n_sd) * si.ng
 
-        particulator = DummyParticulator(backend_class, n_sd=n_sd, formulae=None)
-        particulator.request_attribute("diffusional growth mass change")
-        particulator.build(
+        particulator = DummyParticulator(
+            backend_class,
+            n_sd=n_sd,
+            formulae=None,
+            requested_attributes=("diffusional growth mass change",),
             attributes={
                 "multiplicity": np.ones(n_sd),
                 "water mass": np.ones(n_sd) * si.ug,
-            }
+            },
         )
 
         # act
