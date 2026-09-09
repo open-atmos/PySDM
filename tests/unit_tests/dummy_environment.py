@@ -39,10 +39,12 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
 
     def register(self, *, particulator):
         if hasattr(self, "halo"):
-            self.pred["water_vapour_mixing_ratio"] = backend.Storage.empty(
+            self.pred["water_vapour_mixing_ratio"] = particulator.backend.Storage.empty(
                 self.mesh.n_cell, dtype=float
             )
-            self.pred["thd"] = backend.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred["thd"] = particulator.backend.Storage.empty(
+                self.mesh.n_cell, dtype=float
+            )
 
     def get_courant_field_data(self):
         return self.courant_field_data

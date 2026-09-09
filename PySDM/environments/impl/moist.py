@@ -33,6 +33,8 @@ class Moist:
         self._nan_field = self._allocate(("_",), backend)["_"]
         self._nan_field.fill(np.nan)
 
+        self.backend = backend
+
     def register(self, particulator):
         self.particulator = particulator
         self.particulator.observers.append(self)

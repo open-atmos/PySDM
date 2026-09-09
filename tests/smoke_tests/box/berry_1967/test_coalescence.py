@@ -6,7 +6,7 @@ import pytest
 from PySDM_examples.Berry_1967.settings import Settings
 
 from PySDM.backends import ThrustRTC
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import (
     Electric,
@@ -31,20 +31,19 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
     s.formulae.seed = 0
     steps = [0, 800]
 
-    env = Box(dt=s.dt, dv=s.dv)
-    builder = Builder(
+    env = Box(dt=s.dt, dv=s.dv, backend=backend_class(formulae=s.formulae))
+    attributes = {}
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
+        s.spectrum
+    ).sample_deterministic(s.n_sd)
+    particulator = Particulator(
+        attributes=attributes,
         n_sd=s.n_sd,
-        backend=backend_class(formulae=s.formulae),
         environment=env,
         dynamics=(
             Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
         ),
     )
-    attributes = {}
-    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
-        s.spectrum
-    ).sample_deterministic(s.n_sd)
-    particulator = builder.build(attributes)
 
     volumes = {}
 
@@ -69,18 +68,17 @@ def test_coalescence_2_sd(backend_class):
     steps = [0, 200]
     s.n_sd = 2
 
-    env = Box(dt=s.dt, dv=s.dv)
-    builder = Builder(
-        n_sd=s.n_sd,
-        backend=backend_class(formulae=s.formulae),
-        environment=env,
-        dynamics=(Coalescence(collision_kernel=s.kernel, adaptive=False),),
-    )
+    env = Box(dt=s.dt, dv=s.dv, backend=backend_class(formulae=s.formulae))
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         s.spectrum
     ).sample_deterministic(s.n_sd)
-    particulator = builder.build(attributes)
+    particulator = Particulator(
+        n_sd=s.n_sd,
+        environment=env,
+        dynamics=(Coalescence(collision_kernel=s.kernel, adaptive=False),),
+        attributes=attributes,
+    )
 
     volumes = {}
 
