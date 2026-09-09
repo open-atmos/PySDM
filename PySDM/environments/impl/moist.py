@@ -62,7 +62,7 @@ class Moist:
         return self._values["predicted"][key]
 
     def _recalculate_temperature_pressure_relative_humidity(self, target):
-        self.particulator.backend.temperature_pressure_rh(
+        self.backend.temperature_pressure_rh(
             rhod=target["rhod"],
             thd=target["thd"],
             water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
@@ -79,7 +79,7 @@ class Moist:
         self._recalculate_temperature_pressure_relative_humidity(target)
 
         if "a_w_ice" in self.variables:
-            self.particulator.backend.a_w_ice(
+            self.backend.a_w_ice(
                 T=target["T"],
                 p=target["p"],
                 RH=target["RH"],
@@ -87,14 +87,15 @@ class Moist:
                 a_w_ice=target["a_w_ice"],
                 RH_ice=target["RH_ice"],
             )
+            print("AQQ", target["T"].data)
         if "air density" in self.variables:
-            self.particulator.backend.air_density(
+            self.backend.air_density(
                 water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
                 rhod=target["rhod"],
                 output=target["air density"],
             )
         if "air dynamic viscosity" in self.variables:
-            self.particulator.backend.air_dynamic_viscosity(
+            self.backend.air_dynamic_viscosity(
                 temperature=target["T"],
                 output=target["air dynamic viscosity"],
             )
