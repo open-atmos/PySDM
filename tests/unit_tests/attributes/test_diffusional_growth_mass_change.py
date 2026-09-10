@@ -3,7 +3,6 @@
 import numpy as np
 import pytest
 
-from PySDM.attributes import DiffusionalGrowthMassChange
 from PySDM.physics import si
 from PySDM.dynamics import Collision
 from PySDM.attributes.physics import diffusional_growth_mass_change
@@ -35,7 +34,7 @@ class TestDiffusionalGrowthMassChange:
         strict=True,
     )
     def test_if_collision(backend_class):
-        particulator = DummyParticulator(
+        _ = DummyParticulator(
             backend_class,
             dynamics=(
                 Collision(

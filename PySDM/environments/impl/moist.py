@@ -7,7 +7,7 @@ from abc import abstractmethod
 import numpy as np
 
 
-class Moist:
+class Moist:  # pylint: disable=too-many-instance-attributes
     def __init__(self, dt, mesh, variables, *, backend, mixed_phase=False):
         variables += ["water_vapour_mixing_ratio", "thd", "T", "p", "RH"]
         if mixed_phase:

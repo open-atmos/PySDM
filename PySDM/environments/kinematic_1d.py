@@ -50,17 +50,18 @@ class Kinematic1D(Moist):
 
         attributes = {}
         with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(
-                backend=self.backend,
-                grid=self.mesh.grid,
-                n_sd=n_sd,
-                z_part=z_part,
-            )
             (
                 attributes["cell id"],
                 attributes["cell origin"],
                 attributes["position in cell"],
-            ) = self.mesh.cellular_attributes(positions)
+            ) = self.mesh.cellular_attributes(
+                spatial_discretisation.sample(
+                    backend=self.backend,
+                    grid=self.mesh.grid,
+                    n_sd=n_sd,
+                    z_part=z_part,
+                )
+            )
 
             if collisions_only:
                 v_wet, n_per_kg = spectral_discretisation.sample_deterministic(

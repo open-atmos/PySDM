@@ -279,7 +279,7 @@ class TestSDMSingleCell:
         v = np.random.uniform(size=n_sd)
         n_substeps = 5
 
-        particles, sut = get_dummy_particulator_and_coalescence(
+        _, sut = get_dummy_particulator_and_coalescence(
             backend_class,
             n_sd,
             optimized_random=optimized_random,
