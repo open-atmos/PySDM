@@ -3,7 +3,6 @@ import numpy as np
 
 from PySDM.dynamics import EulerianAdvection
 
-from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
 
 
@@ -11,12 +10,14 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
     @staticmethod
     def test_update(backend_class):
         # Arrange
+        grid = (11, 13)
         particulator = DummyParticulator(
             backend_class,
+            n_sd=1,
             halo=3,
-            grid=(11, 13),
+            grid=grid,
             attributes={
-                "cell id": np.zeros(1, dtype=np.float64),
+                "cell id": np.zeros(1, dtype=np.int64),
                 "multiplicity": np.zeros(1, dtype=np.int64),
                 "water mass": np.zeros(1, dtype=np.float64),
             },
@@ -26,7 +27,6 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
         env.thd[:] = 59.5
         env.pred["water_vapour_mixing_ratio"][:] = 3.7
         env.pred["thd"][:] = 5.59
-        particulator.environment = env
         particulator.dynamics["Displacement"] = None
 
         sut = EulerianAdvection(lambda _: None)
