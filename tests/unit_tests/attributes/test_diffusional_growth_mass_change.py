@@ -40,7 +40,6 @@ class TestDiffusionalGrowthMassChange:
             backend_class,
             dynamics=(
                 Collision(
-                    collision_kernel=np.nan,
                     breakup_efficiency=np.nan,
                     coalescence_efficiency=np.nan,
                     fragmentation_function=np.nan,

@@ -8,7 +8,6 @@ import pytest
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -41,7 +40,11 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
         pytest.skip()
     # Arrange
-    formulae = Formulae(seed=256)
+    formulae = Formulae(
+        seed=256,
+        collision_kernel_liquid_liquid="Golovin",
+        constants={"GOLOVIN_b": 1.5e3 / si.s},
+    )
     n_sd = 2**14
     steps = [0, 100, 200]
     X0 = formulae.trivia.volume(radius=30.531e-6)
@@ -51,7 +54,6 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
 
-    kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
     env = Box(dt=dt, dv=dv)
@@ -59,9 +61,7 @@ def test_lwc_constant(backend_class, croupier, adaptive):
         n_sd=n_sd,
         backend=backend_class(formulae=formulae),
         environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
-        ),
+        dynamics=(Coalescence(croupier=croupier, adaptive=adaptive),),
     )
 
     attributes = {}

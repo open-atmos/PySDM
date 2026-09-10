@@ -6,6 +6,7 @@ from packaging import version
 from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
 
 from PySDM.physics.constants import si
+from PySDM.physics.collision_kernel_liquid_liquid import golovin
 
 _matplotlib_version_3_3_3 = version.parse("3.3.0")
 _matplotlib_version_actual = version.parse(matplotlib.__version__)
@@ -96,8 +97,12 @@ class SpectrumPlotter:
         else:
 
             def analytic_solution(x):
-                return settings.norm_factor * settings.kernel.analytic_solution(
-                    x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+                return settings.norm_factor * golovin.analytic_solution(
+                    x=x,
+                    t=t,
+                    x_0=settings.X0,
+                    N_0=settings.n_part,
+                    b=self.settings.formulae.constants.GOLOVIN_b,
                 )
 
         volume_bins_edges = self.settings.formulae.trivia.volume(

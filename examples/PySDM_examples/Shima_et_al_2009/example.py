@@ -19,9 +19,7 @@ def run(settings, backend=CPU, observers=()):
         n_sd=settings.n_sd,
         backend=backend(formulae=settings.formulae),
         environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
+        dynamics=(Coalescence(adaptive=settings.adaptive),),
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)

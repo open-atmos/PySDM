@@ -13,7 +13,6 @@ from PySDM_examples.Srivastava_1982.settings import Settings, SimProducts
 from PySDM_examples.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.physics import si
 
 ASSERT_PROD = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
@@ -39,9 +38,9 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
     simulation = Simulation(
         n_steps=N_STEPS,
         settings=settings,
-        collision_dynamic=Coalescence(
-            collision_kernel=ConstantK(a=settings.srivastava_c)
-        ),
+        collision_dynamic=Coalescence(),
+        collision_kernel="ConstantK",
+        constants_overrides={"CONSTANTK_a": settings.srivastava_c},
     )
 
     x = np.arange(N_STEPS + 1, dtype=float)

@@ -4,7 +4,6 @@ import numpy as np
 from pystrict import strict
 
 from PySDM import Formulae
-from PySDM.dynamics.collisions import collision_kernels
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
@@ -15,10 +14,16 @@ class Settings:
         self,
         steps: Optional[list] = None,
         terminal_velocity_variant: str = "GunnKinzer1949",
+        kernel: str = None,
+        constants: dict = None,
     ):
         steps = steps or [200 * i for i in range(10)]
 
-        self.formulae = Formulae(terminal_velocity=terminal_velocity_variant)
+        self.formulae = Formulae(
+            terminal_velocity=terminal_velocity_variant,
+            collision_kernel_liquid_liquid=kernel,
+            constants=constants or {},
+        )
         self.init_x_min = self.formulae.trivia.volume(radius=3.94 * si.micrometre)
         self.init_x_max = self.formulae.trivia.volume(radius=25 * si.micrometres)
 
@@ -34,7 +39,6 @@ class Settings:
         self.adaptive = False
         self.seed = 44
         self._steps = steps
-        self.kernel = collision_kernels.Geometric(collection_efficiency=1)
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
 
         # Note 220 instead of 200 for smoothing

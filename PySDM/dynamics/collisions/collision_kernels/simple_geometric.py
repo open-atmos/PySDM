@@ -4,10 +4,9 @@ basic geometric kernel (not taking fall velocity into account)
 
 
 class SimpleGeometric:
-    def __init__(self, C):
+    def __init__(self):
         self.particulator = None
         self.pair_tmp = None
-        self.C = C
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -18,7 +17,7 @@ class SimpleGeometric:
         )
 
     def __call__(self, output, is_first_in_pair):
-        output[:] = self.C
+        output[:] = self.particulator.formulae.constants.SIMPLE_GEOMETRIC_c
         self.pair_tmp.sum(self.particulator.attributes["radius"], is_first_in_pair)
         self.pair_tmp **= 2
         output *= self.pair_tmp
