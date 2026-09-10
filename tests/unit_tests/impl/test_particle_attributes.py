@@ -123,7 +123,6 @@ class TestParticleAttributes:
         multiplicity = np.ones(1, dtype=np.int64)
         droplet_id = 0
         initial_position = np.array([[0], [0]])
-        grid = (1, 1)
         particulator = DummyParticulator(backend_class, n_sd=1)
         cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(
             initial_position
