@@ -13,7 +13,9 @@ class DummyParticulator(Particulator):
         backend_class=None,
         n_sd=0,
         formulae=None,
+        *,
         grid=None,
+        halo=None,
         dynamics=None,
         attributes=None,
         requested_attributes=None,
@@ -29,6 +31,7 @@ class DummyParticulator(Particulator):
         if environment is None:
             environment = DummyEnvironment(
                 grid=grid,
+                halo=halo,
                 backend=backend_class(formulae, double_precision=True),
             )
         super().__init__(

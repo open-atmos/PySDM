@@ -11,11 +11,17 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
     @staticmethod
     def test_update(backend_class):
         # Arrange
-        particulator = DummyParticulator(backend_class)
-        halo = 3
-        grid = (11, 13)
-        env = DummyEnvironment(grid=grid, halo=halo)
-        env.register(builder=particulator)
+        particulator = DummyParticulator(
+            backend_class,
+            halo=3,
+            grid=(11, 13),
+            attributes={
+                "cell id": np.zeros(1, dtype=np.float64),
+                "multiplicity": np.zeros(1, dtype=np.int64),
+                "water mass": np.zeros(1, dtype=np.float64),
+            },
+        )
+        env = particulator.environment
         env.water_vapour_mixing_ratio[:] = 7.3
         env.thd[:] = 59.5
         env.pred["water_vapour_mixing_ratio"][:] = 3.7
