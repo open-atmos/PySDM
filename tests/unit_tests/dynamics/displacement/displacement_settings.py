@@ -54,11 +54,7 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-a
                 ),
             ),
         )
-        sut = next(
-            dynamic
-            for dynamic in particulator.dynamics.values()
-            if isinstance(dynamic, Displacement)
-        )
+        sut = particulator.dynamics["Displacement"]
         sut.upload_courant_field(self.courant_field_data)
 
         return sut, particulator

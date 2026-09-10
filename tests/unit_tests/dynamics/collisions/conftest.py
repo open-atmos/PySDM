@@ -72,11 +72,7 @@ def get_dummy_particulator_and_coalescence(
         requested_attributes=requested_attributes,
         dynamics=(coalescence,),
     )
-    coalescence = next(
-        dynamic
-        for dynamic in particulator.dynamics.values()
-        if isinstance(dynamic, Coalescence)
-    )
+    coalescence = particulator.dynamics["Collision"]
     return particulator, coalescence
 
 
