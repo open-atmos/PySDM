@@ -1,8 +1,7 @@
 import numpy as np
-
-from PySDM import Particulator
 from PySDM_examples.utils import BasicSimulation
 
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation

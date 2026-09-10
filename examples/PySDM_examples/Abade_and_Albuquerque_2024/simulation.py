@@ -1,5 +1,4 @@
 import numpy as np
-from zmq import backend
 
 from PySDM_examples.utils import BasicSimulation
 
