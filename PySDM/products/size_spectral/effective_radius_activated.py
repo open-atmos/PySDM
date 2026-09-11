@@ -22,9 +22,9 @@ class ActivatedEffectiveRadius(MomentProduct, ActivationFilteredProduct):
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
 
-    def register(self, builder):
-        ActivationFilteredProduct.register(self, builder)
-        MomentProduct.register(self, builder)
+    def register(self, particulator):
+        ActivationFilteredProduct.register(self, particulator)
+        MomentProduct.register(self, particulator)
 
     def _impl(self, **kwargs):
         ActivationFilteredProduct.impl(

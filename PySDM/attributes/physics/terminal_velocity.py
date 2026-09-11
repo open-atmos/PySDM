@@ -11,18 +11,20 @@ from PySDM.attributes.impl import DerivedAttribute, register_attribute
 )
 @register_attribute()
 class TerminalVelocity(DerivedAttribute):
-    def __init__(self, builder):
-        self.radius = builder.get_attribute("radius")
-        self.signed_water_mass = builder.get_attribute("signed water mass")
-        self.cell_id = builder.get_attribute("cell id")
+    def __init__(self, particulator):
+        self.radius = particulator.get_attribute("radius")
+        self.signed_water_mass = particulator.get_attribute("signed water mass")
+        self.cell_id = particulator.get_attribute("cell id")
         dependencies = [self.radius, self.signed_water_mass, self.cell_id]
-        super().__init__(builder, name="terminal velocity", dependencies=dependencies)
-
-        self.approximation_liquid = builder.formulae.terminal_velocity_class(
-            builder.particulator
+        super().__init__(
+            particulator, name="terminal velocity", dependencies=dependencies
         )
-        self.approximation_ice = builder.formulae.terminal_velocity_ice_class(
-            builder.particulator
+
+        self.approximation_liquid = particulator.formulae.terminal_velocity_class(
+            particulator
+        )
+        self.approximation_ice = particulator.formulae.terminal_velocity_ice_class(
+            particulator
         )
 
     def recalculate(self):

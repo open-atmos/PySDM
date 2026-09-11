@@ -24,8 +24,8 @@ class _CondensationTimestep(Product):
         self.condensation = None
         self.range = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.particulator.observers.append(self)
         self.condensation = self.particulator.dynamics["Condensation"]
         self.range = self.condensation.dt_cond_range

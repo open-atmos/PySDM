@@ -1,18 +1,43 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.builder import Builder
+
+import numpy as np
+
 from PySDM.particulator import Particulator
 
 from .dummy_environment import DummyEnvironment
 
 
-class DummyParticulator(Builder, Particulator):
-    def __init__(self, backend_class, n_sd=0, formulae=None, grid=None, dynamics=None):
-        backend = backend_class(formulae, double_precision=True)
-        env = DummyEnvironment(grid=grid)
-        Particulator.__init__(self, n_sd, backend)
-        Builder.__init__(self, n_sd, backend, env, dynamics)
-        self.environment = env.instantiate(builder=self)  # pylint: disable=no-member
-        self.dynamics = self.particulator.dynamics
-        self.particulator = self
-        self.req_attr_names = ["multiplicity", "cell id"]
-        self.attributes = None
+class DummyParticulator(Particulator):
+    def __init__(
+        self,
+        backend_class=None,
+        n_sd=0,
+        formulae=None,
+        *,
+        grid=None,
+        halo=None,
+        dynamics=None,
+        attributes=None,
+        requested_attributes=None,
+        environment=None,
+    ):
+        if attributes is None:
+            attributes = {
+                "multiplicity": np.ones(n_sd),
+                "signed water mass": np.full(n_sd, np.nan),
+            }
+        if requested_attributes is None:
+            requested_attributes = ("cell id",)
+        if environment is None:
+            environment = DummyEnvironment(
+                grid=grid,
+                halo=halo,
+                backend=backend_class(formulae, double_precision=True),
+            )
+        super().__init__(
+            n_sd=n_sd,
+            environment=environment,
+            attributes=attributes,
+            dynamics=dynamics,
+            requested_attributes=requested_attributes,
+        )

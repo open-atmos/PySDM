@@ -18,8 +18,8 @@ class SurfacePrecipitation(Product):
         self.accumulated_rainfall_mass = 0.0
         self.elapsed_time = 0.0
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.particulator.observers.append(self)
         self.shape = ()
         self.displacement = self.particulator.dynamics["Displacement"]

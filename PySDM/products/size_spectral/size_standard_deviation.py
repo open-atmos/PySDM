@@ -29,10 +29,10 @@ class _SizeStandardDeviation(MomentProduct, ActivationFilteredProduct):
         )
         self.tmp = None
 
-    def register(self, builder):
-        builder.request_attribute(self.attr)
+    def register(self, particulator):
+        particulator.request_attribute(self.attr)
         for base_class in (ActivationFilteredProduct, MomentProduct):
-            base_class.register(self, builder)
+            base_class.register(self, particulator=particulator)
         self.tmp = np.empty_like(self.buffer)
 
     def _impl(self, **kwargs):

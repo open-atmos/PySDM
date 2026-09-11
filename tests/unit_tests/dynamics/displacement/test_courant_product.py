@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import Displacement
 from PySDM.environments import Kinematic2D
@@ -23,11 +23,12 @@ GRID = (3, 4)
 def test_courant_product(courant_field):
     # arrange
     n_sd = 1
-    env = Kinematic2D(dt=1, grid=GRID, size=(100, 100), rhod_of=lambda x: x * 0 + 1)
-    builder = Builder(
-        n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Displacement(),)
-    )
-    particulator = builder.build(
+    particulator = Particulator(
+        n_sd=n_sd,
+        environment=Kinematic2D(
+            dt=1, grid=GRID, size=(100, 100), rhod_of=lambda x: x * 0 + 1, backend=CPU()
+        ),
+        dynamics=(Displacement(),),
         attributes={
             "multiplicity": np.ones(n_sd),
             "volume": np.ones(n_sd),

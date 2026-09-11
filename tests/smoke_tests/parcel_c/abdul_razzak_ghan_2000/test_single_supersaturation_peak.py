@@ -5,7 +5,7 @@ from matplotlib import pyplot
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
 from scipy import signal
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
@@ -44,17 +44,35 @@ def test_single_saturation_peak(
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
     formulae = Formulae(constants=CONSTANTS_ARG)
-    builder = Builder(
+    environment = Parcel(
+        dt=2 * si.s,
+        mass_of_dry_air=1e3 * si.kg,
+        p0=1000 * si.hPa,
+        initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
+        w=0.5 * si.m / si.s,
+        T0=300 * si.K,
         backend=CPU(formulae),
+    )
+
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(n_sd)
+    v_dry = formulae.trivia.volume(radius=r_dry)
+    r_wet = equilibrate_wet_radii(
+        r_dry=r_dry,
+        environment=environment,
+        kappa_times_dry_volume=kappa * v_dry,
+    )
+    specific_concentration = concentration / formulae.constants.rho_STP
+    attributes = {
+        "multiplicity": specific_concentration * environment.mass_of_dry_air,
+        "dry volume": v_dry,
+        "kappa times dry volume": kappa * v_dry,
+        "volume": formulae.trivia.volume(radius=r_wet),
+    }
+
+    particulator = Particulator(
+        attributes=attributes,
+        products=products,
         n_sd=n_sd,
-        environment=Parcel(
-            dt=2 * si.s,
-            mass_of_dry_air=1e3 * si.kg,
-            p0=1000 * si.hPa,
-            initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
-            w=0.5 * si.m / si.s,
-            T0=300 * si.K,
-        ),
         dynamics=(
             AmbientThermodynamics(),
             Condensation(
@@ -63,25 +81,8 @@ def test_single_saturation_peak(
                 rtol_thd=rtol_thd,
             ),
         ),
+        environment=environment,
     )
-
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(n_sd)
-    v_dry = builder.formulae.trivia.volume(radius=r_dry)
-    r_wet = equilibrate_wet_radii(
-        r_dry=r_dry,
-        environment=builder.particulator.environment,
-        kappa_times_dry_volume=kappa * v_dry,
-    )
-    specific_concentration = concentration / builder.formulae.constants.rho_STP
-    attributes = {
-        "multiplicity": specific_concentration
-        * builder.particulator.environment.mass_of_dry_air,
-        "dry volume": v_dry,
-        "kappa times dry volume": kappa * v_dry,
-        "volume": builder.formulae.trivia.volume(radius=r_wet),
-    }
-
-    particulator = builder.build(attributes, products=products)
 
     if scheme == "SciPy":
         scipy_ode_condensation_solver.patch_particulator(particulator)

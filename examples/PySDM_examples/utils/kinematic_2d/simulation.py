@@ -1,12 +1,12 @@
 import numpy as np
+
 from PySDM_examples.utils.kinematic_2d.make_default_product_collection import (
     make_default_product_collection,
 )
 from PySDM_examples.utils.kinematic_2d.mpdata_2d import MPDATA_2D
 from PySDM_examples.utils import DummyController
-
+from PySDM import Particulator
 from PySDM.backends import CPU
-from PySDM.builder import Builder
 from PySDM.dynamics import (
     AmbientThermodynamics,
     Coalescence,
@@ -41,6 +41,7 @@ class Simulation:
             size=self.settings.size,
             rhod_of=self.settings.rhod_of_zZ,
             mixed_phase=self.settings.processes["freezing"],
+            backend=backend,
         )
 
         dynamics = []
@@ -144,14 +145,9 @@ class Simulation:
                 )
             )
 
-        builder = Builder(
-            n_sd=self.settings.n_sd,
-            backend=backend,
-            environment=environment,
-            dynamics=dynamics,
-        )
+        environment.register_dynamics(dynamics)
 
-        attributes = builder.particulator.environment.init_attributes(
+        attributes = environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             dry_radius_spectrum=self.settings.spectrum_per_mass_of_dry_air,
             kappa=self.settings.kappa,
@@ -222,7 +218,13 @@ class Simulation:
                 ) / np.prod(self.settings.grid)
                 assert non_zero_per_gridbox == self.settings.n_sd_per_gridbox / 2
 
-        self.particulator = builder.build(attributes, tuple(products))
+        self.particulator = Particulator(
+            n_sd=self.settings.n_sd,
+            environment=environment,
+            dynamics=dynamics,
+            attributes=attributes,
+            products=products,
+        )
 
         if self.SpinUp is not None:
             self.SpinUp(self.particulator, self.settings.n_spin_up)

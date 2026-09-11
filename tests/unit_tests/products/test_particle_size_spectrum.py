@@ -4,7 +4,7 @@ tests the ParticleSizeSpectrum product against per-mass/per-volume and dry-/wet-
 
 import pytest
 import numpy as np
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.physics import si
 from PySDM.environments import Box
 from PySDM.products import (
@@ -40,12 +40,9 @@ class TestParticleSizeSpectrum:
         max_size = 1 * si.mm
 
         n_sd = 1
-        builder = Builder(
+        particulator = Particulator(
             n_sd=n_sd,
-            backend=backend_instance,
-            environment=Box(dt=np.nan, dv=666 * si.m**3),
-        )
-        particulator = builder.build(
+            environment=Box(dt=np.nan, dv=666 * si.m**3, backend=backend_instance),
             products=(
                 product_class(
                     name=name,
@@ -93,12 +90,9 @@ class TestParticleSizeSpectrum:
         multiplicity = 100
         rhod = 44 * si.kg / si.m**3
 
-        builder = Builder(
+        particulator = Particulator(
+            environment=Box(dt=np.nan, dv=666 * si.m**3, backend=backend_instance),
             n_sd=n_sd,
-            backend=backend_instance,
-            environment=Box(dt=np.nan, dv=666 * si.m**3),
-        )
-        particulator = builder.build(
             products=(
                 product_class(
                     name=name, radius_bins_edges=(min_size, max_size), dry=dry

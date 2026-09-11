@@ -13,8 +13,8 @@ class CollisionTimestepMin(Product):
         self.collision = None
         self.range = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.collision = self.particulator.dynamics["Collision"]
         self.range = self.collision.dt_coal_range
 

@@ -27,8 +27,6 @@ def test_final_state(croupier, backend_class):
     attributes["volume"], attributes["multiplicity"] = Linear(
         spectrum
     ).sample_deterministic(n_sd)
-    particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
-    particulator.croupier = croupier
 
     attributes["cell id"] = np.array((n_sd,), dtype=int)
     cell_origin_np = np.concatenate(
@@ -39,7 +37,10 @@ def test_final_state(croupier, backend_class):
         [np.random.rand(n_sd), np.random.rand(n_sd)]
     ).reshape((2, -1))
     attributes["position in cell"] = position_in_cell_np
-    particulator.build(attributes)
+    particulator = DummyParticulator(
+        backend_class, n_sd, grid=(x, y), attributes=attributes
+    )
+    particulator.croupier = croupier
 
     # Act
     u01 = backend_class.Storage.from_ndarray(np.random.random(n_sd))

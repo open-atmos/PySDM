@@ -12,7 +12,7 @@ from PySDM.products import (
 )
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.physics import si
 from PySDM.backends import CPU, GPU
 from PySDM.initialisation.spectra import Lognormal
@@ -28,31 +28,29 @@ from PySDM.initialisation.sampling import spectral_sampling
 )
 def test_activation_criteria(backend, plot=False):
     # arrange
-    builder = Builder(
-        n_sd=1000,
+    environment = Parcel(
         backend=backend,
-        environment=Parcel(
-            dt=2 * si.s,
-            mass_of_dry_air=100 * si.kg,
-            p0=1000 * si.hPa,
-            initial_water_vapour_mixing_ratio=22 * si.g / si.kg,
-            T0=300 * si.K,
-            w=2.5 * si.m / si.s,
-        ),
-        dynamics=(
-            AmbientThermodynamics(),
-            Condensation(),
-        ),
+        dt=2 * si.s,
+        mass_of_dry_air=100 * si.kg,
+        p0=1000 * si.hPa,
+        initial_water_vapour_mixing_ratio=22 * si.g / si.kg,
+        T0=300 * si.K,
+        w=2.5 * si.m / si.s,
     )
 
     r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
         Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
-    ).sample_deterministic(builder.particulator.n_sd)
+    ).sample_deterministic(1000)
 
-    particulator = builder.build(
-        attributes=builder.particulator.environment.init_attributes(
-            n_in_dv=specific_concentration
-            * builder.particulator.environment.mass_of_dry_air,
+    particulator = Particulator(
+        n_sd=len(r_dry),
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(),
+        ),
+        environment=environment,
+        attributes=environment.init_attributes(
+            n_in_dv=specific_concentration * environment.mass_of_dry_air,
             kappa=0.666,
             r_dry=r_dry,
         ),

@@ -27,5 +27,5 @@ class ActivationFilteredProduct:
             filter_range=self.__filter_range,
         )
 
-    def register(self, builder):
-        builder.request_attribute(self.__filter_attr)
+    def register(self, particulator):
+        particulator.request_attribute(self.__filter_attr)

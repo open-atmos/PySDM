@@ -1,45 +1,58 @@
 """checks for impl subpackage contents"""
 
+from collections import namedtuple
+
+import numpy as np
+
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments.impl import register_environment
 
 
 @register_environment()
 class Env:  # pylint: disable=too-few-public-methods
-    def __init__(self):
+    def __init__(self, backend):
         self.particulator = None
+        self.backend = backend
+        self.mesh = namedtuple("MeshMock", ("grid", "dimension", "n_cell"))(
+            grid=(1, 1), dimension=0, n_cell=1
+        )
 
-    def register(self, *, builder):
-        self.particulator = builder.particulator
+    def register(self, *, particulator):
+        self.particulator = particulator
 
 
 class TestImpl:
     @staticmethod
     def test_register_environment_makes_env_instances_reusable():
         # arrange
-        env = Env()
-        kwargs = {"environment": env, "backend": CPU(), "n_sd": 0}
+        env = Env(backend=CPU())
+        kwargs = {
+            "environment": env,
+            "n_sd": 0,
+            "attributes": {
+                "water mass": np.empty(0),
+                "multiplicity": np.empty(0),
+            },
+        }
 
         # act
-        builders = [
-            Builder(**kwargs),
-            Builder(**kwargs),
-        ]
+        particulators = (
+            Particulator(**kwargs),
+            Particulator(**kwargs),
+        )
 
         # assert
         assert env.particulator is None
-        assert builders[0].particulator is not builders[1].particulator
-        for builder in builders:
-            assert builder.particulator.environment.particulator is not None
+        assert particulators[0].environment is not particulators[1].environment
 
     @staticmethod
     def test_register_environment_fails_with_other_instantiate_present():
         # arrange
         class BogusEnv(Env):
-            def instantiate(self, *, builder):  # pylint: disable=unused-argument
+            def instantiate(self, *, particulator):  # pylint: disable=unused-argument
                 assert False
 
         # act

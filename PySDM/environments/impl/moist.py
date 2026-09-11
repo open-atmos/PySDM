@@ -7,41 +7,42 @@ from abc import abstractmethod
 import numpy as np
 
 
-class Moist:
-    def __init__(self, dt, mesh, variables, mixed_phase=False):
+class Moist:  # pylint: disable=too-many-instance-attributes
+    def __init__(self, dt, mesh, variables, *, backend, mixed_phase=False):
         variables += ["water_vapour_mixing_ratio", "thd", "T", "p", "RH"]
         if mixed_phase:
             variables += ["a_w_ice", "RH_ice"]
         all_vars_unique = len(variables) == len(set(variables))
         assert all_vars_unique
-
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
         self.variables = variables
-        self._values = None
-        self._tmp = None
-        self._nan_field = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        self.particulator.observers.append(self)
-
-        if self.particulator.formulae.ventilation.__name__ != "Neglect":
+        if backend.formulae.ventilation.__name__ != "Neglect":
             for var in ("air density", "air dynamic viscosity"):
                 if var not in self.variables:
                     self.variables += [var]
 
-        self._values = {"predicted": None, "current": self._allocate(self.variables)}
-        self._tmp = self._allocate(self.variables)
+        self._values = {
+            "predicted": None,
+            "current": self._allocate(self.variables, backend),
+        }
+        self._tmp = self._allocate(self.variables, backend)
 
-        self._nan_field = self._allocate(("_",))["_"]
+        self._nan_field = self._allocate(("_",), backend)["_"]
         self._nan_field.fill(np.nan)
 
-    def _allocate(self, variables):
+        self.backend = backend
+
+    def register(self, particulator):
+        self.particulator = particulator
+        self.particulator.observers.append(self)
+
+    def _allocate(self, variables, backend):
         result = {}
         for var in variables:
-            result[var] = self.particulator.Storage.empty((self.mesh.n_cell,), float)
+            result[var] = backend.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, key: str):
@@ -61,7 +62,7 @@ class Moist:
         return self._values["predicted"][key]
 
     def _recalculate_temperature_pressure_relative_humidity(self, target):
-        self.particulator.backend.temperature_pressure_rh(
+        self.backend.temperature_pressure_rh(
             rhod=target["rhod"],
             thd=target["thd"],
             water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
@@ -78,7 +79,7 @@ class Moist:
         self._recalculate_temperature_pressure_relative_humidity(target)
 
         if "a_w_ice" in self.variables:
-            self.particulator.backend.a_w_ice(
+            self.backend.a_w_ice(
                 T=target["T"],
                 p=target["p"],
                 RH=target["RH"],
@@ -86,14 +87,15 @@ class Moist:
                 a_w_ice=target["a_w_ice"],
                 RH_ice=target["RH_ice"],
             )
+            print("AQQ", target["T"].data)
         if "air density" in self.variables:
-            self.particulator.backend.air_density(
+            self.backend.air_density(
                 water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
                 rhod=target["rhod"],
                 output=target["air density"],
             )
         if "air dynamic viscosity" in self.variables:
-            self.particulator.backend.air_dynamic_viscosity(
+            self.backend.air_dynamic_viscosity(
                 temperature=target["T"],
                 output=target["air dynamic viscosity"],
             )

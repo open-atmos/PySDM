@@ -6,7 +6,7 @@ Test initialization of
 import numpy as np
 import pytest
 
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.environments.box import Box
 from PySDM.initialisation import init_fall_momenta
 from PySDM.physics import si
@@ -40,12 +40,11 @@ class TestInitFallMomenta:
         """
         Fall momenta correctly initialized to the terminal velocity * mass.
         """
-        env = Box(dt=1, dv=1)
-        builder = Builder(
-            n_sd=len(params["multiplicity"]), backend=backend_instance, environment=env
-        )
-        builder.request_attribute("terminal velocity")
-        particulator = builder.build(
+        env = Box(dt=1, dv=1, backend=backend_instance)
+        particulator = Particulator(
+            n_sd=len(params["multiplicity"]),
+            environment=env,
+            requested_attributes=("terminal velocity",),
             attributes={
                 "multiplicity": params["multiplicity"],
                 "water mass": params["water mass"],

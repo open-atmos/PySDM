@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.environments import Box
 
 
@@ -12,11 +12,12 @@ def test_water_mass(mass, backend_class_with_jax):
     backend = backend_class_with_jax(
         Formulae(particle_shape_and_density="MixedPhaseSpheres")
     )
-    env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend, n_sd=mass.size, environment=env)
-    builder.request_attribute("water mass")
-    particulator = builder.build(
-        attributes={"signed water mass": -mass, "multiplicity": np.ones_like(mass)}
+    env = Box(dt=None, dv=None, backend=backend)
+    particulator = Particulator(
+        requested_attributes=("water mass",),
+        n_sd=mass.size,
+        environment=env,
+        attributes={"signed water mass": -mass, "multiplicity": np.ones_like(mass)},
     )
 
     # act

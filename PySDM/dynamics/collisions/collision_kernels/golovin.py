@@ -17,9 +17,9 @@ class Golovin:
         output.sum(self.particulator.attributes["volume"], is_first_in_pair)
         output *= self.b
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute("volume")
+    def register(self, particulator):
+        self.particulator = particulator
+        particulator.request_attribute("volume")
 
     def analytic_solution(self, x, t, x_0, N_0):
         tau = 1 - np.exp(-N_0 * self.b * x_0 * t)

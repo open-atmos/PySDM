@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.dynamics.terminal_velocity import (
     GunnKinzer1949,
     PowerSeries,
@@ -72,14 +72,14 @@ def test_terminal_velocity_boundary_values(
         context = exception_context
 
     formulae = Formulae(terminal_velocity=variant)
-    env = Box(dv=np.nan, dt=np.nan)
-    builder = Builder(n_sd=1, backend=backend_class(formulae), environment=env)
-    builder.request_attribute("terminal velocity")
-    particulator = builder.build(
+    particulator = Particulator(
+        n_sd=1,
+        environment=Box(dv=np.nan, dt=np.nan, backend=backend_class(formulae)),
+        requested_attributes=("terminal velocity",),
         attributes={
             "signed water mass": np.asarray([water_mass]),
             "multiplicity": np.asarray([-1]),
-        }
+        },
     )
 
     # act
@@ -123,22 +123,22 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
 
     # arrange
     water_mass = np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
-    env = Box(dt=None, dv=None)
     formulae_enabling_terminal_velocity_ice_calculation = Formulae(
         particle_shape_and_density="MixedPhaseSpheres",
         terminal_velocity_ice=ice_variant,
     )
-    builder = Builder(
-        backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
+    particulator = Particulator(
+        environment=Box(
+            dt=None,
+            dv=None,
+            backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
+        ),
         n_sd=len(water_mass),
-        environment=env,
-    )
-    builder.request_attribute("terminal velocity")
-    particulator = builder.build(
+        requested_attributes=("terminal velocity",),
         attributes={
             "signed water mass": -water_mass,
             "multiplicity": np.ones_like(water_mass),
-        }
+        },
     )
     atmospheric_settings = [
         {"temperature": 233 * si.kelvin, "pressure": 300 * si.hectopascal},
@@ -200,23 +200,23 @@ def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_
     ambient_temperature = 233 * si.K
     ambient_pressure = 300 * si.hectopascal
 
-    env = Box(dt=None, dv=None)
     formulae_enabling_terminal_velocity_ice_calculation = Formulae(
         particle_shape_and_density="MixedPhaseSpheres",
         terminal_velocity_ice="ColumnarIceCrystal",
     )
-    builder = Builder(
-        backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
-        n_sd=len(water_mass),
-        environment=env,
-    )
 
-    builder.request_attribute("terminal velocity")
-    particulator = builder.build(
+    particulator = Particulator(
+        environment=Box(
+            dt=None,
+            dv=None,
+            backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
+        ),
+        n_sd=len(water_mass),
+        requested_attributes=("terminal velocity",),
         attributes={
             "signed water mass": -water_mass,
             "multiplicity": np.ones_like(water_mass),
-        }
+        },
     )
 
     particulator.environment["T"] = ambient_temperature

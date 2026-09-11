@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
@@ -15,7 +15,19 @@ from PySDM.environments.impl import register_environment
 @register_environment()
 class _TestEnv:
     def __init__(
-        self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH, rho, eta
+        self,
+        *,
+        dt,
+        dv,
+        rhod,
+        thd,
+        water_vapour_mixing_ratio,
+        T,
+        p,
+        RH,
+        rho,
+        eta,
+        backend,
     ):
         self.mesh = Mesh.mesh_0d()
         self.full = None
@@ -32,11 +44,12 @@ class _TestEnv:
             "air density": rho,
             "air dynamic viscosity": eta,
         }
+        self.backend = backend
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        self.full = lambda item: self.particulator.backend.Storage.from_ndarray(
-            np.full(self.particulator.n_sd, self.env[item])
+    def register(self, particulator):
+        self.particulator = particulator
+        self.full = lambda item: particulator.backend.Storage.from_ndarray(
+            np.full(particulator.n_sd, self.env[item])
         )
 
     def get_predicted(self, item):
@@ -78,21 +91,19 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             RH=RH,
             rho=rho,
             eta=eta,
-        )
-        builder = Builder(
-            n_sd=n_sd,
             backend=backend(),
-            environment=env,
-            dynamics=(Condensation(max_iters=max_iters),),
         )
 
-        self.particulator = builder.build(
+        self.particulator = Particulator(
+            n_sd=n_sd,
+            environment=env,
+            dynamics=(Condensation(max_iters=max_iters),),
             attributes={
                 "multiplicity": np.full(n_sd, multiplicity),
                 "volume": np.full(n_sd, wet_radius),
                 "dry volume": np.full(n_sd, dry_volume),
                 "kappa times dry volume": np.ones(n_sd),
-            }
+            },
         )
 
     def run(self, steps):

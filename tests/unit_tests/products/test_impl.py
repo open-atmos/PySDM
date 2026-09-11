@@ -6,7 +6,7 @@ from collections import namedtuple
 import numpy as np
 import pytest
 
-from PySDM import Builder, products
+from PySDM import Particulator, products
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import (
@@ -148,12 +148,16 @@ class TestProducts:
     def test_register_can_be_called_twice_on_r_eff():
         # arrange
         sut = products.EffectiveRadius()
-        env = Box(dt=0, dv=0)
-        builder = Builder(backend=CPU(), n_sd=0, environment=env)
-        sut.register(builder)
+        env = Box(dt=0, dv=0, backend=CPU())
+        particulator = Particulator(
+            n_sd=1,
+            environment=env,
+            attributes={"multiplicity": np.ones(1), "water mass": np.full(1, np.nan)},
+        )
+        sut.register(particulator)
 
         # act
-        sut.register(builder)
+        sut.register(particulator)
 
     @staticmethod
     def test_register_product_make_product_instances_reusable():
@@ -169,17 +173,24 @@ class TestProducts:
                 pass
 
         product = Prod()
-        kwargs = {"backend": CPU(), "n_sd": 0, "environment": Box(dt=0, dv=0)}
-        builders = (
-            Builder(**kwargs),
-            Builder(**kwargs),
+        kwargs = {
+            "n_sd": 0,
+            "environment": Box(dt=0, dv=0, backend=CPU()),
+            "attributes": {
+                "multiplicity": np.ones(1),
+                "water mass": np.full(1, np.nan),
+            },
+        }
+        particulators = (
+            Particulator(**kwargs),
+            Particulator(**kwargs),
         )
 
         # act
-        for builder in builders:
-            builder._register_product(product=product, buffer=None)
+        for particulator in particulators:
+            particulator._register_product(product=product, buffer=None)
 
         # assert
         assert product.particulator is None
-        for builder in builders:
-            assert builder.particulator.products[name] is not product
+        for particulator in particulators:
+            assert particulator.products[name] is not product

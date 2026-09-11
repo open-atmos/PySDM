@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import ThrustRTC
 from PySDM.physics import si
 from PySDM.impl.mesh import Mesh
@@ -18,16 +18,17 @@ class TestSurfacePrecipitation:
         """checks if builder fails with a relevant error message on an attempt to use surface
         precipitation product with a zero-dimensional environment"""
         # arrange
-        builder = Builder(
-            n_sd=1,
-            backend=backend_instance,
-            environment=Box(dt=np.nan, dv=np.nan),
-            dynamics=(Displacement(),),
-        )
+        env = Box(dt=np.nan, dv=np.nan, backend=backend_instance)
 
         # act
         with pytest.raises(AssertionError) as ex:
-            _ = builder.build(attributes={}, products=(SurfacePrecipitation(),))
+            _ = Particulator(
+                attributes={},
+                products=(SurfacePrecipitation(),),
+                n_sd=1,
+                environment=env,
+                dynamics=(Displacement(),),
+            )
 
         # assert
         assert "n_dims > 0" in str(ex.traceback[-1].statement)
@@ -65,13 +66,7 @@ class TestSurfacePrecipitation:
 
         # arrange
         n_cell = 1
-        builder = Builder(
-            n_sd=n_sd,
-            backend=backend_instance,
-            environment=env_class(**env_ctor_args, dt=dt),
-            dynamics=(Displacement(enable_sedimentation=True),),
-        )
-        particulator = builder.build(
+        particulator = Particulator(
             attributes={
                 "multiplicity": np.asarray([multiplicity] * n_sd),
                 "water mass": np.asarray([drop_mass] * n_sd),
@@ -80,6 +75,9 @@ class TestSurfacePrecipitation:
                 "position in cell": np.zeros(n_sd),
             },
             products=(SurfacePrecipitation(),),
+            n_sd=n_sd,
+            environment=env_class(**env_ctor_args, dt=dt, backend=backend_instance),
+            dynamics=(Displacement(enable_sedimentation=True),),
         )
         particulator.dynamics[Displacement.__name__].upload_courant_field(
             courant_field=(np.zeros(n_cell + 1),)

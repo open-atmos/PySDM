@@ -12,5 +12,5 @@ class Multiplicity(BaseAttribute):
     TYPE = np.int64
     MAX_VALUE = np.iinfo(TYPE).max
 
-    def __init__(self, builder):
-        super().__init__(builder, name="multiplicity", dtype=Multiplicity.TYPE)
+    def __init__(self, particulator):
+        super().__init__(particulator, name="multiplicity", dtype=Multiplicity.TYPE)
