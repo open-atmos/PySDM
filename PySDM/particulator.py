@@ -345,14 +345,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         Mathematically, the computations correspond to:
         $$
         M_k = \frac{
-            \left.\sum_i\right|_{\text{attr_range[0]} < a_i < \text{attr_range[1]} a_i^k m_i w_i^l
+            \left.\sum_i\right|_{\text{attr_range[0]} < x_i < \text{attr_range[1]} a_i^k m_i w_i^l
         }{
-            \left.\sum_i\right|_{\text{attr_range[0]} < a_i < \text{attr_range[1]} m_i w_i^l
+            \left.\sum_i\right|_{\text{attr_range[0]} < x_i < \text{attr_range[1]} m_i w_i^l
         }
         $$
-        where $k$ is the rank (e.g., 1 for an ordinary mean), $a$ is the attribute (e.g., water mass),
-        $m$ is the multiplicity, $w$ is the weighting attribute (e.g., mass) and $l$ is the weighting 
-        rank (by default 0 translating to plain multiplicity weighting).
+        where $k$ is the rank (e.g., 1 for an ordinary mean), $x$ is the attribute used for filtering
+        (e.g., radius), $a$ is the attribute of which the moment is calculated (specified via the `specs`
+        parameter), $m$ is the multiplicity, $w$ is the weighting attribute (e.g., mass) and $l$ is the 
+        weighting rank (by default 0 translating to plain multiplicity weighting).
 
         Parameters:
             specs: e.g., `specs={'volume': (1,2,3), 'kappa': (1)}` computes three moments
