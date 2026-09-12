@@ -333,10 +333,27 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
-        """
-        Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
+        r"""
+        Writes to `moment_0` and `moments` the zero-th and the k-th statistical moments
         of particle attributes computed filtering by value of the attribute `attr_name`
         to fall within `attr_range`. The moment ranks are defined by `specs`.
+        By default, the moments are multiplicity-weighted, and any other weighting
+        (e.g., mass-weighting) can be specified using `weighting_attribute` and
+        `weighting_rank` parameters. All calculations are done per-cell, hence the
+        dimensionality of `moment_0` and `moments` matches the environment grid.
+
+        Mathematically, the computations correspond to:
+        $$
+        M_k = \frac{
+            \left.\sum_i\right|_{\text{attr_range[0]} < x_i < \text{attr_range[1]} a_i^k m_i w_i^l
+        }{
+            \left.\sum_i\right|_{\text{attr_range[0]} < x_i < \text{attr_range[1]} m_i w_i^l
+        }
+        $$
+        where $k$ is the rank (e.g., 1 for an ordinary mean), $x$ is the attribute used for filtering
+        (e.g., radius), $a$ is the attribute of which the moment is calculated (specified via the `specs`
+        parameter), $m$ is the multiplicity, $w$ is the weighting attribute (e.g., mass) and $l$ is the 
+        weighting rank (by default 0 translating to plain multiplicity weighting).
 
         Parameters:
             specs: e.g., `specs={'volume': (1,2,3), 'kappa': (1)}` computes three moments
@@ -389,6 +406,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
+        """
+        Performns calculation of statistical moments as in `moments()`, but with the attribute-value
+        filtering applied to a series of ranges (bins), instead of just a single range. Typical usage
+        is to create a binned spectrum representation in one call, rather than executing `moments()`
+        separately for each spectrum bin.
+        """
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
             moment_0=moment_0,
