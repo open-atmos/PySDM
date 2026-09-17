@@ -6,7 +6,7 @@ from packaging import version
 from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
 
 from PySDM.physics.constants import si
-from PySDM.physics.collision_kernel_liquid_liquid import golovin
+from PySDM.physics.collision_kernel import golovin
 
 _matplotlib_version_3_3_3 = version.parse("3.3.0")
 _matplotlib_version_actual = version.parse(matplotlib.__version__)

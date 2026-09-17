@@ -10,7 +10,7 @@ from PySDM.dynamics.collisions.collision_kernels import (
 )
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
-from PySDM.physics.collision_kernel_liquid_liquid.golovin import analytic_solution
+from PySDM.physics.collision_kernel.golovin import analytic_solution
 
 
 class TestKernels:

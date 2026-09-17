@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from PySDM import Builder
 from PySDM.formulae import Formulae, _choices
-from PySDM.physics import collision_kernel_liquid_liquid
+from PySDM.physics import collision_kernel
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.products import (
@@ -18,7 +18,7 @@ from PySDM.physics import si
 
 class TestCollisionKernel:  # pylint: disable=too-few-public-methods
     @staticmethod
-    @pytest.mark.parametrize("variant", _choices(collision_kernel_liquid_liquid))
+    @pytest.mark.parametrize("variant", _choices(collision_kernel))
     def test_collision_kernel_call(backend_class, variant):
         if (
             variant == "Linear"
@@ -28,7 +28,7 @@ class TestCollisionKernel:  # pylint: disable=too-few-public-methods
             pytest.skip()
 
         formulae = Formulae(
-            collision_kernel_liquid_liquid=variant,
+            collision_kernel=variant + "+Neglect+Neglect",
             seed=666,
             constants={
                 "CONSTANTK_a": 1,
