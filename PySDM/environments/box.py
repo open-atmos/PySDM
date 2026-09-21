@@ -30,6 +30,9 @@ class Box:
     def register(self, builder):
         self.particulator = builder.particulator
 
+    def get_predicted(self, item):
+        return self._ambient_air[item]
+
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
         (

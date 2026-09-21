@@ -34,7 +34,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         assert (initial_water_vapour_mixing_ratio is not None) ^ (
             initial_relative_humidity is not None
         )
-        variables = (variables or []) + ["rhod", "z"]
+        variables = list(variables or []) + ["rhod", "z"]
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
