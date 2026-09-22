@@ -16,14 +16,14 @@ def test_final_state(croupier, backend_class):
 
     # Arrange
     n_part = 100000
-    v_mean = 2e-6
+    v_median = 2e-6
     d = 1.2
     n_sd = 32
     x = 4
     y = 4
 
     attributes = {}
-    spectrum = Lognormal(n_part, v_mean, d)
+    spectrum = Lognormal(norm_factor=n_part, median=v_median, s_geom=d)
     attributes["volume"], attributes["multiplicity"] = Linear(
         spectrum
     ).sample_deterministic(n_sd)

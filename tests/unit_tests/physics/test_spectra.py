@@ -13,7 +13,7 @@ class TestLognormal:
         # Arrange
         s = 1.5
         n_part = 256
-        sut = Lognormal(n_part, 0.5e-5, s)
+        sut = Lognormal(norm_factor=n_part, median=0.5e-5, s_geom=s)
 
         # Act
         m, dm = np.linspace(0.1e-6, 100e-6, 100, retstep=True)
@@ -27,7 +27,7 @@ class TestLognormal:
         # Arrange
         s = 1.001
         r_mode = 1e-6
-        sut = Lognormal(norm_factor=1, m_mode=r_mode, s_geom=s)
+        sut = Lognormal(norm_factor=1, mode=r_mode, s_geom=s)
 
         # Act
         m = np.linspace(start=0.01e-6, stop=100e-6, num=1000)
@@ -69,7 +69,7 @@ class TestSum:
 
     s = 1.001
     r_mode = 1e-6
-    lognormal = Lognormal(1, r_mode, s)
+    lognormal = Lognormal(norm_factor=1, mode=r_mode, s_geom=s)
 
     @staticmethod
     def test_size_distribution():
