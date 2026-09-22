@@ -72,7 +72,7 @@ CI_version_pins = [
   "CURandRTC==0.1.7",
   "jax==0.8.0",
   "Pint==0.24.4",
-  "chempy==0.10.1",
+  "chempy==0.10.2",
   "pyevtk==1.7.0",
   "pyparsing==3.2.5",
 ]
