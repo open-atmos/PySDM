@@ -67,8 +67,8 @@ class TestParticleAttributes:
             (
                 [1, 2, 3, 4, 5, 6, 0],
                 [2, 2, 2, 2, 1, 1, 1],
-                [0, 1, 2, 3, 4, 5, 6],
-                [4, 5, 0, 1, 2, 3],
+                [1, 0, 2, 3, 4, 5, 6],
+                [4, 5, 1, 0, 2, 3],
                 [0, 0, 2, 6],
             ),
         ],
@@ -82,19 +82,18 @@ class TestParticleAttributes:
     ):
         # Arrange
         n_sd = len(multiplicity)
-        particulator = DummyParticulator(
-            backend_cls, n_sd=n_sd, attributes={"multiplicity": np.ones(n_sd)}
-        )
         n_cell = max(cells) + 1
-        particulator.environment.mesh.n_cell = n_cell
+        particulator = DummyParticulator(
+            backend_cls,
+            n_sd=n_sd,
+            attributes={
+                "multiplicity": np.asarray(multiplicity),
+                "cell id": np.asarray(cells),
+            },
+            grid=(n_cell,),
+        )
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
-        sut._ParticleAttributes__attributes["multiplicity"].data = make_indexed_storage(
-            particulator.backend, multiplicity, sut._ParticleAttributes__idx
-        )
-        sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
-            particulator.backend, cells, sut._ParticleAttributes__idx
-        )
         sut._ParticleAttributes__cell_start = make_indexed_storage(
             particulator.backend, [0] * (n_cell + 1)
         )
@@ -114,11 +113,12 @@ class TestParticleAttributes:
 
         # Assert
         np.testing.assert_array_equal(
-            np.array(new_idx),
-            sut._ParticleAttributes__idx.to_ndarray()[: sut.super_droplet_count],
+            desired=np.array(new_idx),
+            actual=sut._ParticleAttributes__idx.to_ndarray()[: sut.super_droplet_count],
         )
         np.testing.assert_array_equal(
-            np.array(cell_start), sut._ParticleAttributes__cell_start.to_ndarray()
+            desired=np.array(cell_start),
+            actual=sut._ParticleAttributes__cell_start.to_ndarray(),
         )
 
     @staticmethod
