@@ -260,14 +260,17 @@ class TestParticleAttributes:
         cell_start = [0, 0, 20, 250, 700, n_sd]
         n_cell = len(cell_start) - 1
         cell_id = []
-        for i in range(particulator.environment.mesh.n_cell):
+        environment = DummyEnvironment(
+            grid=(n_cell,), backend=backend_class(None, double_precision=True)
+        )
+        for i in range(environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
         particulator = DummyParticulator(
             backend_class,
             n_sd=n_sd,
             attributes={"multiplicity": np.ones(n_sd), "cell id": np.asarray(cell_id)},
-            grid=(n_cell,),
+            environment=environment,
         )
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
