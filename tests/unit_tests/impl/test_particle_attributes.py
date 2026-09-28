@@ -252,28 +252,28 @@ class TestParticleAttributes:
     def test_permutation_local_repeatable(backend_class):
         if backend_class is ThrustRTC:
             pytest.skip("TODO #358")
+
+        # Arrange
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)
         cell_start = [0, 0, 20, 250, 700, n_sd]
-
-        # Arrange
-        particulator = DummyParticulator(
-            backend_class, n_sd=n_sd, attributes={"multiplicity": np.ones(n_sd)}
-        )
+        n_cell = len(cell_start) - 1
         cell_id = []
-        particulator.environment.mesh.n_cell = len(cell_start) - 1
         for i in range(particulator.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
+        particulator = DummyParticulator(
+            backend_class,
+            n_sd=n_sd,
+            attributes={"multiplicity": np.ones(n_sd), "cell id": np.asarray(cell_id)},
+            grid=(n_cell,),
+        )
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
             particulator.backend, [0] * idx_length
-        )
-        sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
-            particulator.backend, cell_id
         )
         sut._ParticleAttributes__cell_start = make_indexed_storage(
             particulator.backend, cell_start

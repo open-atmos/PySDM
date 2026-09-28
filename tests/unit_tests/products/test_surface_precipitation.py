@@ -15,8 +15,8 @@ from PySDM.dynamics import Displacement
 class TestSurfacePrecipitation:
     @staticmethod
     def test_fails_for_0d_env(backend_instance):
-        """checks if Particulaotr's constructor fails with a relevant error message on an attempt to use surface
-        precipitation product with a zero-dimensional environment"""
+        """checks if Particulator's constructor fails with a relevant error message on an attempt
+        to use surface precipitation product with a zero-dimensional environment"""
         # arrange
         env = Box(dt=np.nan, dv=np.nan, backend=backend_instance)
 
