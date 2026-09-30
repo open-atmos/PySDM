@@ -12,6 +12,6 @@ from .moments_methods import MomentsMethods
 from .pair_methods import PairMethods
 from .physics_methods import PhysicsMethods
 from .terminal_velocity_methods import TerminalVelocityMethods
-from .seeding_methods import SeedingMethods
+from .spawning_methods import SpawningMethods
 from .deposition_methods import DepositionMethods
 from .sedimentation_removal_0d_methods import SedimentationRemoval0DMethods

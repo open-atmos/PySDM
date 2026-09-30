@@ -54,6 +54,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         hydrostatics: str = "ConstantGVapourMixingRatioAndThetaStd",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
+        homogeneous_liquid_nucleation_rate: str = "Null",
         homogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
@@ -71,6 +72,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         terminal_velocity_ice: str = "ColumnarIceCrystal",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
+        adiabatic_exponent: str = "Dry",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -95,6 +97,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.hydrostatics = hydrostatics
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
+        self.homogeneous_liquid_nucleation_rate = homogeneous_liquid_nucleation_rate
         self.homogeneous_ice_nucleation_rate = homogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
         self.isotope_equilibrium_fractionation_factors = (
@@ -114,6 +117,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.terminal_velocity = terminal_velocity
         self.terminal_velocity_ice = terminal_velocity_ice
         self.bulk_phase_partitioning = bulk_phase_partitioning
+        self.adiabatic_exponent = adiabatic_exponent
 
         self._components = tuple(
             i

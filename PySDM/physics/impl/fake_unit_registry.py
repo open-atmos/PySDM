@@ -30,6 +30,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                 "hour",
                 "newton",
                 "watt",
+                "dyne",
             ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))
                 self.__setattr__(
@@ -54,5 +55,6 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                 "bar",  # note: "b" is barn !!!
                 "N",
                 "W",
+                "dyn",
             ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))
