@@ -24,8 +24,9 @@ def test_courant_product(courant_field):
     # arrange
     n_sd = 1
     env = Kinematic2D(dt=1, grid=GRID, size=(100, 100), rhod_of=lambda x: x * 0 + 1)
-    builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-    builder.add_dynamic(Displacement())
+    builder = Builder(
+        n_sd=n_sd, backend=CPU(), environment=env, dynamics=(Displacement(),)
+    )
     particulator = builder.build(
         attributes={
             "multiplicity": np.ones(n_sd),

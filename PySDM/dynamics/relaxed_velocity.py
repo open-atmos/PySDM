@@ -63,7 +63,7 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
             "relative fall momentum"
         )
         self.terminal_vel_attr: Attribute = builder.get_attribute("terminal velocity")
-        self.water_mass_attr: Attribute = builder.get_attribute("water mass")
+        self.water_mass_attr: Attribute = builder.get_attribute("signed water mass")
         self.sqrt_radius_attr: Attribute = builder.get_attribute(
             "square root of radius"
         )

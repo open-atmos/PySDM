@@ -6,6 +6,7 @@ single-column prescribed-flow constant-temperature example from
 fig_1.ipynb:
 .. include:: ./fig_1.ipynb.badges.md
 """
+
 from .plot import plot
 from .settings import Settings
 from .simulation import Simulation

@@ -24,7 +24,7 @@ CLASSES = (
     "exporters.VTKExporter",
     "initialisation.aerosol_composition.DryAerosolMixture",
     "initialisation.init_fall_momenta",
-    "initialisation.sampling.spectral_sampling.DeterministicSpectralSampling",
+    "initialisation.sampling.spectral_sampling.AlphaSampling",
     "initialisation.spectra.Lognormal",
     "physics.constants_defaults",
     "physics.diffusion_thermics.LoweEtAl2019",

@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import CPU, GPU, JAX
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -206,9 +206,17 @@ class TestCollisionMethods:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class, scheme",
-        ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
+        (
+            (CPU, "counting_sort"),
+            (CPU, "counting_sort_parallel"),
+            (GPU, "default"),
+            (JAX, "default"),
+        ),
     )
     def test_cell_caretaker(backend_class, scheme):
+        if backend_class == JAX:
+            pytest.skip("TODO #1913")
+
         # Arrange
         backend = backend_class()
         idx = [0, 3, 2, 4]
@@ -333,4 +341,80 @@ class TestCollisionMethods:
         assert all(
             _multiplicity.data
             == (0, 1, 25, 25, 25, 25, 12, 13, 12, 13, 50, 50, 50, 50, 50, 50)
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize("n_sd", [2, 4, 7])
+    def test_normalize(backend_instance_with_jax, n_sd):
+        backend = backend_instance_with_jax
+
+        # Arrange
+        cell_id = backend.Storage.from_ndarray(np.asarray([0] * n_sd))
+        cell_start = backend.Storage.from_ndarray(np.asarray([0, n_sd]))
+        cell_idx = backend.Storage.from_ndarray(np.asarray([0, 1]))
+        norm_factor = backend.Storage.from_ndarray(np.asarray([np.nan]))
+        prob = backend.Storage.from_ndarray(np.asarray([1.0] * (n_sd // 2)))
+
+        timestep = 44
+        dv = 666
+
+        # Act
+        backend.normalize(
+            prob=prob,
+            cell_id=cell_id,
+            cell_idx=cell_idx,
+            cell_start=cell_start,
+            norm_factor=norm_factor,
+            timestep=timestep,
+            dv=dv,
+        )
+
+        # Assert
+        mult = 0 if n_sd < 2 else (timestep / dv * n_sd * (n_sd - 1) / 2 / (n_sd // 2))
+        np.testing.assert_allclose(
+            actual=prob.to_ndarray(), desired=[1 * mult] * (n_sd // 2)
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "cell_start, expected",
+        (
+            ([0, 4, 8], [3, 3, 3, 3]),
+            ([0, 5, 7], [5, 5, 1]),
+            ([0, 3, 9], [3, 5, 5, 5]),
+            ([0, 1, 5], [3, 3]),
+        ),
+    )
+    def test_normalize_multiple_cells(backend_instance, cell_start, expected):
+        backend = backend_instance
+
+        # Arrange
+        n_sd = cell_start[-1]
+        n_cell = len(cell_start) - 1
+        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
+        cell_id = backend.Storage.from_ndarray(
+            np.repeat(np.arange(n_cell), np.diff(cell_start.to_ndarray()))
+        )
+        cell_idx = backend.Storage.from_ndarray(np.arange(n_cell))
+        norm_factor = backend.Storage.from_ndarray(np.full(n_cell, np.nan))
+        prob = backend.Storage.from_ndarray(np.ones(n_sd // 2))
+
+        timestep = 44
+        dv = 666
+
+        # Act
+        backend.normalize(
+            prob=prob,
+            cell_id=cell_id,
+            cell_idx=cell_idx,
+            cell_start=cell_start,
+            norm_factor=norm_factor,
+            timestep=timestep,
+            dv=dv,
+        )
+
+        # Assert
+        np.testing.assert_allclose(
+            actual=prob.to_ndarray(),
+            desired=np.asarray(expected) * timestep / dv,
         )

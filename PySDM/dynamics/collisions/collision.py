@@ -131,9 +131,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_n_substep = self.particulator.Storage.empty(
             self.particulator.mesh.n_cell, dtype=int
         )
-        self.stats_n_substep[:] = 0 if self.adaptive else self.__substeps
+        self.stats_n_substep.fill(0 if self.adaptive else self.__substeps)
         self.stats_dt_min = self.particulator.Storage.empty(**empty_args_cellwise)
-        self.stats_dt_min[:] = np.nan
+        self.stats_dt_min.fill(np.nan)
 
         self.rnd_opt_coll.register(builder)
         self.collision_kernel.register(builder)
@@ -177,7 +177,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 for _ in range(self.__substeps):
                     self.step()
             else:
-                self.dt_left[:] = self.particulator.dt
+                self.dt_left.fill(self.particulator.dt)
 
                 while self.particulator.attributes.get_working_length() != 0:
                     self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
@@ -275,7 +275,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")
-        else:
+        elif self.__substeps > 1:
             prob /= self.__substeps
 
         self.particulator.backend.compute_gamma(

@@ -30,6 +30,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.dynamics = {}
         self.products = {}
         self.observers = []
+        self.initialisers = []
 
         self.n_steps = 0
 
@@ -49,6 +50,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.null = self.Storage.empty(0, dtype=float)
 
     def run(self, steps):
+        if len(self.initialisers) > 0:
+            self._notify_initialisers()
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
@@ -60,6 +63,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         reversed_order_so_that_environment_is_last = reversed(self.observers)
         for observer in reversed_order_so_that_environment_is_last:
             observer.notify()
+
+    def _notify_initialisers(self):
+        for initialiser in self.initialisers:
+            initialiser.setup()
+        self.initialisers.clear()
 
     @property
     def Storage(self):
@@ -376,9 +384,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name="water mass",
+        attr_name,
         weighting_attribute="water mass",
         weighting_rank=0,
+        skip_division_by_m0=False,
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
@@ -394,6 +403,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     def adaptive_sdm_end(self, dt_left):
@@ -441,8 +451,27 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             )
 
     def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
         for isotope in heavy_isotopes:
+            self.backend.isotopic_fractionation(
+                cell_id=self.attributes["cell id"],
+                cell_volume=self.environment.mesh.dv,
+                multiplicity=self.attributes["multiplicity"],
+                dm_total=self.attributes["diffusional growth mass change"],
+                signed_water_mass=self.attributes["signed water mass"],
+                dry_air_density=self.environment["rhod"],
+                molar_mass_heavy_molecule=getattr(
+                    self.formulae.constants,
+                    {
+                        "2H": "M_2H_1H_16O",
+                        "3H": "M_3H_1H_16O",
+                        "17O": "M_1H2_17O",
+                        "18O": "M_1H2_18O",
+                    }[isotope],
+                ),
+                moles_heavy_molecule=self.attributes[f"moles_{isotope}"],  # TODO #1787
+                molality_in_dry_air=self.environment[f"molality {isotope} in dry air"],
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
+            )
             self.attributes.mark_updated(f"moles_{isotope}")
 
     def spawn(
@@ -546,6 +575,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
         )
+        self.attributes.mark_updated("signed water mass")
 
     def homogeneous_freezing_threshold(self):
         self.backend.homogeneous_freezing_threshold(
@@ -556,6 +586,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
         )
+        self.attributes.mark_updated("signed water mass")
 
     def thaw_instantaneous(self):
         self.backend.thaw_instantaneous(
@@ -565,3 +596,20 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell=self.attributes["cell id"],
             temperature=self.environment["T"],
         )
+        self.attributes.mark_updated("signed water mass")
+
+    def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
+        if stochastic_sedimentation_removal:
+            self.backend.sedimentation_removal_stochastic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )
+        else:
+            self.backend.sedimentation_removal_deterministic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )

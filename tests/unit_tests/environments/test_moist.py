@@ -5,7 +5,7 @@ import numpy as np
 from PySDM.environments import Parcel
 from PySDM.physics import si, constants_defaults
 from PySDM import Builder
-from PySDM.backends import GPU
+from PySDM.backends import ThrustRTC
 
 COMMON_PARCEL_CTOR_ARGS = {
     "mixed_phase": True,
@@ -59,7 +59,7 @@ T0 = constants_defaults.T0
 )
 def test_ice_properties(backend_instance, env, check):
     """checks ice-related values in recalculated thermodynamic state make sense"""
-    if isinstance(backend_instance, GPU):
+    if isinstance(backend_instance, ThrustRTC):
         pytest.skip("TODO #1495")
 
     # arrange

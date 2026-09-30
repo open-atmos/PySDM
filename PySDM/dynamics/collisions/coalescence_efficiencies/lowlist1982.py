@@ -1,5 +1,5 @@
 """
-See Low & List 1982
+See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2)
 """
 
 import numpy as np

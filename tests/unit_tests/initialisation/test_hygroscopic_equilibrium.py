@@ -4,7 +4,7 @@ import pytest
 from matplotlib import pyplot
 
 from PySDM import Formulae, Builder
-from PySDM.backends import CPU
+from PySDM.backends import Numba
 from PySDM.initialisation.hygroscopic_equilibrium import (
     equilibrate_wet_radii,
     equilibrate_dry_radii,
@@ -44,8 +44,8 @@ class TestHygroscopicEquilibrium:
         class Env:  # pylint: disable=too-few-public-methods
             particulator = Particulator()
             thermo = {
-                "T": CPU.Storage.from_ndarray(np.full(1, T)),
-                "RH": CPU.Storage.from_ndarray(np.full(1, RH)),
+                "T": Numba.Storage.from_ndarray(np.full(1, T)),
+                "RH": Numba.Storage.from_ndarray(np.full(1, RH)),
             }
 
             def __getitem__(self, item):

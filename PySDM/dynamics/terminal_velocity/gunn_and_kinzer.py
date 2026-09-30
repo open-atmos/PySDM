@@ -1,7 +1,7 @@
 """
 [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
- terminal velocities used for things like coalescence kernel evaluation, particle displacement,
- ventilation factor, etc
+terminal velocities used for things like coalescence kernel evaluation, particle
+displacement, ventilation factor, etc
 """
 
 import numba
@@ -17,7 +17,8 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
         self.particulator = particulator
 
         """
-        Gunn & Kinzer 1949, Table 2
+        Table 2 in
+        [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
         """
         ir = (
             np.array(
@@ -131,7 +132,7 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
                 f"Radii can be interpolated up to {self.maximum_radius} m"
                 + f" (max value of {r_max} m within input data)"
             )
-        self.particulator.backend.interpolation(
+        self.particulator.backend.gunn_and_kinzer_interpolation(
             output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 

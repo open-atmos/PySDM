@@ -29,7 +29,7 @@ class SpectroGlacialSampling:  # pylint: disable=too-few-public-methods
 
         n_elements = n_sd * N_DIMS
         storage = backend.Storage.empty(n_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        backend.Random(seed=backend.formulae.seed, size=n_elements).u01(storage)
         random_numbers = storage.to_ndarray().reshape(n_sd, N_DIMS)
 
         simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(

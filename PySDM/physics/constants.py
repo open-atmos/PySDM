@@ -39,6 +39,7 @@ ONE = 1
 TWO = 2
 THREE = 3
 FOUR = 4
+NINE = 9
 TWELVE = 12
 ONE_THIRD = 1 / 3
 ONE_HALF = 1 / 2
@@ -63,7 +64,9 @@ PER_MEG = PPM
 
 T0 = sci.zero_Celsius * si.kelvin
 
-# there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
+# there are so few water ions instead of K we have K [H2O], see [Seinfeld & Pandis, p. 345](
+# https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww
+# )
 M = si.mole / si.litre
 K_H2O = 1e-14 * M * M
 

@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from PySDM import Builder
-from PySDM.backends import GPU
+from PySDM.backends import ThrustRTC
 from PySDM.physics import si
 from PySDM.impl.mesh import Mesh
 from PySDM.environments import Box, Kinematic1D
@@ -19,9 +19,11 @@ class TestSurfacePrecipitation:
         precipitation product with a zero-dimensional environment"""
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_instance, environment=Box(dt=np.nan, dv=np.nan)
+            n_sd=1,
+            backend=backend_instance,
+            environment=Box(dt=np.nan, dv=np.nan),
+            dynamics=(Displacement(),),
         )
-        builder.add_dynamic(Displacement())
 
         # act
         with pytest.raises(AssertionError) as ex:
@@ -58,7 +60,7 @@ class TestSurfacePrecipitation:
         so any downward movement triggers counting as precip
         """
 
-        if isinstance(backend_instance, GPU):
+        if isinstance(backend_instance, ThrustRTC):
             pytest.skip("TODO #1418")
 
         # arrange
@@ -67,8 +69,8 @@ class TestSurfacePrecipitation:
             n_sd=n_sd,
             backend=backend_instance,
             environment=env_class(**env_ctor_args, dt=dt),
+            dynamics=(Displacement(enable_sedimentation=True),),
         )
-        builder.add_dynamic(Displacement(enable_sedimentation=True))
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray([multiplicity] * n_sd),

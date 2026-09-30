@@ -55,17 +55,17 @@ def test_single_saturation_peak(
             w=0.5 * si.m / si.s,
             T0=300 * si.K,
         ),
-    )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(
-        Condensation(
-            adaptive=adaptive,
-            rtol_x=rtol_x,
-            rtol_thd=rtol_thd,
-        )
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(
+                adaptive=adaptive,
+                rtol_x=rtol_x,
+                rtol_thd=rtol_thd,
+            ),
+        ),
     )
 
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry,

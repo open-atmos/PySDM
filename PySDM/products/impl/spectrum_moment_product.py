@@ -48,6 +48,6 @@ class SpectrumMomentProduct(ABC, Product):
 
     def _download_spectrum_moment_to_buffer(self, rank, bin_number):
         if rank == 0:  # TODO #217
-            self._download_to_buffer(self.moment_0[bin_number, :])
+            self._download_to_buffer(self.moment_0.row_view(bin_number))
         else:
-            self._download_to_buffer(self.moments[bin_number, :])
+            self._download_to_buffer(self.moments.row_view(bin_number))

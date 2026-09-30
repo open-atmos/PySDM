@@ -7,7 +7,7 @@ from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 from PySDM.physics import si
 
 
-class TestInitialCondition:  # pylint: disable=too-few-public-methods
+class TestInitialCondition:
     @staticmethod
     @pytest.mark.parametrize(
         "particle_reservoir_depth",
@@ -66,3 +66,36 @@ class TestInitialCondition:  # pylint: disable=too-few-public-methods
         assert 285 * si.K < np.amin(output["T"]) < 290 * si.K
         assert output["T"][0] > np.amin(output["T"])
         assert 295 * si.K < np.amax(output["T"]) < 300 * si.K
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "old_buggy_density_formula",
+        (pytest.param(True, marks=pytest.mark.xfail(strict=True)), False),
+    )
+    def test_density_profile(old_buggy_density_formula: bool, plot=False):
+        """depicts a bug found in 2025 (thanks Clara!) in the density profile formula"""
+        # arrange
+        settings = Settings(
+            old_buggy_density_formula=old_buggy_density_formula,
+            n_sd_per_gridbox=0,
+        )
+
+        # act
+        altitude = np.linspace(0, settings.z_max, 10)
+        dry_air_density = settings.rhod(altitude)
+
+        # plot
+        pyplot.plot(dry_air_density, altitude)
+        pyplot.ylabel("altitude [m]")
+        pyplot.xlabel("dry-air density [kg m$^{-3}$]")
+        pyplot.grid()
+        pyplot.xlim(0.9, settings.rhod0)
+        if plot:
+            pyplot.show()
+        else:
+            pyplot.clf()
+
+        # assert
+        np.testing.assert_approx_equal(
+            actual=0.9029, desired=dry_air_density[-1], significant=4
+        )

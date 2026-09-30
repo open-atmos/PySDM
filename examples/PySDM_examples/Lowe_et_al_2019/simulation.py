@@ -7,6 +7,7 @@ from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Sum
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 
 class Simulation(BasicSimulation):
@@ -23,6 +24,7 @@ class Simulation(BasicSimulation):
                 T0=settings.T0,
                 w=settings.w,
             ),
+            dynamics=(AmbientThermodynamics(), Condensation()),
         )
 
         attributes = {
@@ -33,9 +35,9 @@ class Simulation(BasicSimulation):
         }
         initial_volume = settings.mass_of_dry_air / settings.rho0
         for mode in settings.aerosol.modes:
-            r_dry, n_in_dv = settings.spectral_sampling(
+            r_dry, n_in_dv = ConstantMultiplicity(
                 spectrum=mode["spectrum"]
-            ).sample(settings.n_sd_per_mode)
+            ).sample_deterministic(settings.n_sd_per_mode)
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
             attributes["multiplicity"] = np.append(
                 attributes["multiplicity"], n_in_dv * initial_volume
@@ -71,9 +73,6 @@ class Simulation(BasicSimulation):
 
         if settings.model == "Constant":
             del attributes["dry volume organic"]
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
 
         products = products or (
             PySDM_products.ParcelDisplacement(name="z"),

@@ -17,7 +17,7 @@ class DeltaImpl(DerivedAttribute):
         else:
             raise NotImplementedError()
 
-        self.heavy_isotope = builder.get_attribute("moles_" + heavy_isotope)
+        self.heavy_isotope = builder.get_attribute(f"moles_{heavy_isotope}")
         self.light_isotope = builder.get_attribute(f"moles_{light_isotope}")
         super().__init__(
             builder,

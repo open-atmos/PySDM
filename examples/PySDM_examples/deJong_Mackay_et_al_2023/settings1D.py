@@ -35,6 +35,7 @@ class Settings1D(SettingsSH):
     def __init__(
         self,
         *,
+        old_buggy_density_formula: bool,
         n_sd_per_gridbox: int,
         p0: float = 1007 * si.hPa,  # as used in Olesik et al. 2022 (GMD)
         kappa: float = 1,
@@ -80,6 +81,7 @@ class Settings1D(SettingsSH):
                 fragmentation_function=self.fragmentation_function.__class__.__name__
             ),
             save_spec_and_attr_times=save_spec_at,
+            old_buggy_density_formula=old_buggy_density_formula,
         )
         self.breakup = breakup
         self.stochastic_breakup = stochastic_breakup

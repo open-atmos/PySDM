@@ -37,9 +37,8 @@ class TestSeeding:
                 backend=backend_instance,
                 n_sd=n_sd_seeding + n_sd_initial,
                 environment=Box(dt=timestep, dv=dv),
+                dynamics=dynamics,
             )
-            for dynamic in dynamics:
-                builder.add_dynamic(dynamic)
 
             particulator = builder.build(
                 attributes={

@@ -16,7 +16,7 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
     def test_coalescence_call(n_sd, backend_class, adaptive):
-        if backend_class is ThrustRTC:
+        if isinstance(backend_class(), ThrustRTC):
             pytest.skip("TODO #330")
 
         # Arrange
@@ -24,7 +24,7 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         v = np.ones_like(n)
         env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
         grid = (25, 25)
-        env.mesh = Mesh(grid, size=grid)
+        env.mesh = Mesh(grid=grid, size=grid)
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n), environment=env
         )

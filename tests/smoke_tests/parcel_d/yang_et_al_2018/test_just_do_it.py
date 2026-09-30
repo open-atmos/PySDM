@@ -30,7 +30,7 @@ def test_just_do_it(scheme, adaptive, backend_class=CPU):
 
     # Act
     output = simulation.run()
-    r = np.array(output["r"]).T * si.metres
+    r = output["r"].T * si.metres
     n = settings.n / (settings.mass_of_dry_air * si.kilogram)
 
     # Assert

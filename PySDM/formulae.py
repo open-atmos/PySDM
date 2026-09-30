@@ -13,18 +13,25 @@ from types import SimpleNamespace
 from typing import Optional
 
 import numba
+import jax
 import numpy as np
 import pint
 from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
+from PySDM.dynamics.terminal_velocity import (
+    GunnKinzer1949,
+    PowerSeries,
+    RogersYau,
+    ColumnarIceCrystal,
+    IceSphere,
+)
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
-    def __init__(  # pylint: disable=too-many-locals
+    def __init__(  # pylint: disable=too-many-locals,too-many-arguments
         self,
         *,
         constants: Optional[dict] = None,
@@ -62,6 +69,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        terminal_velocity_ice: str = "ColumnarIceCrystal",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
         adiabatic_exponent: str = "Dry",
@@ -107,6 +115,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.terminal_velocity_ice = terminal_velocity_ice
         self.bulk_phase_partitioning = bulk_phase_partitioning
         self.adiabatic_exponent = adiabatic_exponent
 
@@ -170,6 +179,10 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "TpDependent": TpDependent,
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
+        self.terminal_velocity_ice_class = {
+            "ColumnarIceCrystal": ColumnarIceCrystal,
+            "IceSphere": IceSphere,
+        }[terminal_velocity_ice]
 
     def __str__(self):
         description = []
@@ -263,8 +276,15 @@ def _formula(func, constants, dimensional_analysis, **kw):
     )
 
 
+def _jax(fun, constants):
+    # TODO #1913: add handling of methods without the constants argument
+    return jax.jit(partial(fun, constants))
+
+
 def _boost(obj, fastmath, constants, dimensional_analysis):
-    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
+    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached
+    additionally, adds `jax` attribute for jax.jit compiling of formulae
+    """
     formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
@@ -280,6 +300,7 @@ def _boost(obj, fastmath, constants, dimensional_analysis):
             setattr(
                 formula, "c_inline", partial(_c_inline, constants=constants, fun=attr)
             )
+            setattr(formula, "jax", _jax(fun=attr, constants=constants))
             formulae[attr.__name__] = formula
     return SimpleNamespace(**formulae)
 

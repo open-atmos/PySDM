@@ -107,7 +107,7 @@ class TestProducts:
         assert value == 1e3
 
     @staticmethod
-    def test_rate_product():
+    def test_rate_product(backend_instance_with_jax):
         # arrange
         n_steps = 10
         dt = 44
@@ -120,7 +120,7 @@ class TestProducts:
             def __init__(self, unit="s^-1"):
                 super().__init__(unit=unit, name=None, counter="", dynamic=None)
 
-        backend = CPU()
+        backend = backend_instance_with_jax
         sut = SUT()
         sut.buffer = np.empty(size)
         sut.particulator = namedtuple("_", ("dt", "mesh", "environment"))(

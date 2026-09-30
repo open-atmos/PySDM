@@ -1,16 +1,25 @@
 """
-Backend classes: CPU=`PySDM.backends.numba.Numba`
-and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
+Number-crunching backends
 """
 
 import ctypes
+from functools import partial
 import os
 import sys
 import warnings
 
 from numba import cuda
 
-from .numba import Numba
+from . import numba as _numba
+from . import jax as _jax
+
+# for pdoc
+CPU = None
+GPU = None
+JAX = None
+Numba = _numba.Numba
+Jax = _jax.Jax
+ThrustRTC = None
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
@@ -66,18 +75,26 @@ else:
             super().__init__(size, seed)
             self.generator = np.random.default_rng(seed)
 
-        def __call__(self, storage):
+        def u01(self, storage):
             # pylint: disable=unsupported-assignment-operation
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
     ThrustRTC.Random = Random
 
-CPU = Numba
-"""
-alias for Numba
-"""
+_BACKEND_CACHE = {}
 
-GPU = ThrustRTC
-"""
-alias for ThrustRTC
-"""
+
+def _cached_backend(formulae=None, backend_class=None, **kwargs):
+    key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
+    if key not in _BACKEND_CACHE:
+        _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
+    return _BACKEND_CACHE[key]
+
+
+CPU = partial(_cached_backend, backend_class=Numba)
+""" returns a cached instance of the Numba backend (cache key including formulae parameters) """
+
+GPU = partial(_cached_backend, backend_class=ThrustRTC)
+""" returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) """
+
+JAX = partial(_cached_backend, backend_class=Jax)

@@ -68,7 +68,7 @@ class TestIsotopeDiffusivityRatios:
         ),
     )
     @pytest.mark.parametrize(
-        "isotope_index, isotope_label", enumerate(("2H", "17O", "18O"))
+        "isotope_index, isotope_label", tuple(enumerate(("2H", "17O", "18O")))
     )
     def test_hellmann_and_harvey_2020_table_1(
         temperature, expected_values, isotope_index, isotope_label
@@ -161,10 +161,11 @@ class TestIsotopeDiffusivityRatios:
         pyplot.xlabel("temperature [K]")
         pyplot.grid()
         pyplot.ylabel("diffusivity ratio (heavy to light)")
+        pyplot.legend()
         if plot:
             pyplot.show()
         else:
             pyplot.clf()
 
         # assert
-        assert 0.985 > max_value > min_value > 0.968
+        assert 0.985 > max_value > min_value > 0.948

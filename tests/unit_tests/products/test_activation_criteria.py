@@ -39,13 +39,15 @@ def test_activation_criteria(backend, plot=False):
             T0=300 * si.K,
             w=2.5 * si.m / si.s,
         ),
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(),
+        ),
     )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation())
 
     r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
         Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
-    ).sample(builder.particulator.n_sd)
+    ).sample_deterministic(builder.particulator.n_sd)
 
     particulator = builder.build(
         attributes=builder.particulator.environment.init_attributes(

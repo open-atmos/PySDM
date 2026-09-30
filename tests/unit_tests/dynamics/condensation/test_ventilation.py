@@ -27,13 +27,15 @@ def _make_particulator(backend):
             T0=285 * si.K,
             w=1 * si.m / si.s,
         ),
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(),
+        ),
     )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation())
     return builder.build(
         attributes={
             "multiplicity": np.ones(1),
-            "water mass": np.asarray([INITIAL_DROPLET_MASS]),
+            "signed water mass": np.asarray([INITIAL_DROPLET_MASS]),
             "dry volume": np.asarray([DRY_VOLUME]),
             "kappa times dry volume": 0.5 * np.asarray([DRY_VOLUME]),
         },
@@ -75,7 +77,8 @@ def test_ventilation(backend_class, var_ventilation, var_drop_growth, scipy_solv
 
     # assert
     mass_ratios = {
-        key: particulator.attributes["water mass"].to_ndarray() / INITIAL_DROPLET_MASS
+        key: particulator.attributes["signed water mass"].to_ndarray()
+        / INITIAL_DROPLET_MASS
         for key, particulator in particulators.items()
     }
     assert 0.93 < mass_ratios[var_ventilation] < mass_ratios["Neglect"] < 1

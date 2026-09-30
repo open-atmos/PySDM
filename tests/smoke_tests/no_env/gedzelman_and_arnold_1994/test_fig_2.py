@@ -13,31 +13,86 @@ from PySDM_examples import Gedzelman_and_Arnold_1994
 PLOT = False
 
 
-@pytest.fixture(scope="session", name="notebook_local_variables")
-def notebook_local_variables_fixture():
+@pytest.fixture(scope="session", name="notebook_variables")
+def notebook_variables_fixture():
+    """notebook variables fixture"""
     return notebook_vars(
         Path(Gedzelman_and_Arnold_1994.__file__).parent / "fig_2.ipynb", plot=PLOT
     )
 
 
 @pytest.mark.parametrize(
-    "x, y, var",
+    "x, expected_y, phase",
     (
-        (0.99, 0.27, "eq_22"),
-        (0.898, 0.62, "eq_22"),
-        (0.875, 0.95, "eq_22"),
-        (0.8875, 0, "eq_23"),
-        (0.88, 0.32, "eq_23"),
-        (0.85, 1, "eq_23"),
+        (1.0, 0.30, "liquid"),
+        (0.93, 0.5, "liquid"),
+        (0.8776, 1.0, "liquid"),
+        (0.9, 0.0, "vapour"),
+        (0.8776, 1.0, "vapour"),
     ),
 )
-def test_fig_2(notebook_local_variables, x, y, var):
-    """given that the plot depends on a number of constants that are likely to cause
-    discrepancies, the comparison is rough and effectively just a regression test
-    (expected values roughly correspond to the paper plot, but are based on PySDM output)
+def test_fig_2(notebook_variables, x, expected_y, phase):
     """
-    plot_x = notebook_local_variables["fig2_x"]
-    plot_y = notebook_local_variables["fig2_y"][var]
-    eps = (plot_x[1] - plot_x[0]) / 2
-    index = np.where(abs(plot_x - x) < eps)
-    np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
+    Verify values plotted in Figure 2.
+
+    The test selects the data point whose x-value is closest to ``x`` and
+    checks that the corresponding y-value matches ``expected_y``.
+    The (x, expected_y) pairs are approximated from Fig 2 in paper.
+    """
+
+    # arrange
+    plot_x = notebook_variables["plots"][phase]["x"]
+    plot_y = notebook_variables["plots"][phase]["y"]
+    plot_x_eps = (plot_x[1] - plot_x[0]) / 2
+    plot_y_eps = np.max(abs(np.diff(plot_y))) / 2
+
+    # act
+    idx = np.where(abs(plot_x - x) < plot_x_eps)
+    sut = max(0, plot_y[idx])
+
+    # assert
+    np.testing.assert_allclose(
+        actual=sut,
+        desired=expected_y,
+        rtol=plot_y_eps,
+    )
+
+
+@pytest.mark.parametrize(
+    "phase, condition, rtol, eps",
+    (
+        ("vapour", 0.0, 0.1, 1e-3),
+        ("liquid", 1.0, 0.1, 1e-2),
+    ),
+)
+def test_dR_zero_condition(notebook_variables, phase, condition, rtol, eps):
+    """Test values plotted with color in Fig 1.
+    Points (x, y) for which z equals condition should match theoretical lines."""
+    # arrange
+    cmn = notebook_variables["CMN_FOR_TEST"]
+    iso_ratio_v = notebook_variables["ISO_RATIO_V"]
+
+    Y = notebook_variables["YY"]
+    X = notebook_variables["XX"]
+
+    pcm_data = notebook_variables["cases"][phase]["pcolormesh"].get_array()
+    within = (
+        (condition - eps < pcm_data)
+        & (pcm_data < condition + eps)
+        & (X > notebook_variables["X_eq"])
+    )
+    assert np.sum(within) > 0
+
+    # act
+    iso_ratio_r = X[within] * cmn.params.vsmow
+    expected_y = cmn.f.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+        iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
+        diff_rat_light_to_heavy=1 / cmn.params.D_ratio_heavy_to_light,
+        b=cmn.params.b,
+        alpha_w=cmn.params.alpha_w,
+        iso_ratio_r=iso_ratio_r,
+        iso_ratio_v=iso_ratio_v,
+    )
+
+    # assert
+    np.testing.assert_allclose(Y[within], expected_y, rtol=rtol)

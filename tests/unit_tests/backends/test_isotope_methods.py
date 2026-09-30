@@ -3,16 +3,45 @@ unit tests for backend isotope-related routines
 """
 
 import numpy as np
+import pytest
+
+from PySDM import Formulae
 
 
 class TestIsotopeMethods:
     @staticmethod
     def test_isotopic_fractionation(backend_instance):
+        """checks if for a given dm_dt of total liquid water, the changes
+        in the amounts of moles of heavy isotopes in droplets,
+        and in the ambient air are OK"""
         # arrange
         backend = backend_instance
+        arr2storage = backend.Storage.from_ndarray
+
+        moles_heavy = arr2storage(np.array([0.5]))
+        molality_in_dry_air = arr2storage(np.array([0.1]))
+
+        expected_moles_heavy = 0.5 + 0.05
+        mass_of_dry_air = 1.0 * 2.0
+        expected_molality_air = 0.1 - (0.05 * 3.0 / mass_of_dry_air)
 
         # act
-        backend.isotopic_fractionation()
+        backend.isotopic_fractionation(
+            cell_id=arr2storage(np.array([0], dtype=int)),
+            cell_volume=2.0,
+            multiplicity=arr2storage(np.array([3.0])),
+            dm_total=arr2storage(np.array([0.2])),
+            signed_water_mass=arr2storage(np.array([1.0])),
+            dry_air_density=arr2storage(np.array([1.0])),
+            molar_mass_heavy_molecule=2.0,
+            moles_heavy_molecule=moles_heavy,
+            bolin_number=arr2storage(np.array([2.0])),
+            molality_in_dry_air=molality_in_dry_air,
+        )
+
+        # assert
+        assert np.isclose(moles_heavy.to_ndarray()[0], expected_moles_heavy)
+        assert np.isclose(molality_in_dry_air.to_ndarray()[0], expected_molality_air)
 
     @staticmethod
     def test_isotopic_delta(backend_instance):
@@ -28,3 +57,52 @@ class TestIsotopeMethods:
 
         # assert
         assert (output.to_ndarray() == -1).all()
+
+    @staticmethod
+    def test_bolin_number(backend_class):
+        # arrange
+        if backend_class.__name__ == "ThrustRTC":
+            pytest.xfail("bolin_number not yet supported for ThrustRTC")
+
+        backend = backend_class(
+            Formulae(
+                isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
+                isotope_relaxation_timescale="ZabaEtAl",
+                isotope_equilibrium_fractionation_factors="VanHook1968",
+            )
+        )
+
+        arr2storage = backend.Storage.from_ndarray
+
+        n_sd = 3
+        n_cell = 2
+
+        output = arr2storage(np.empty(n_sd))
+
+        cell_id = arr2storage(np.zeros(n_sd, dtype=np.int64))
+        relative_humidity = arr2storage(np.full(n_cell, 0.95))
+        temperature = arr2storage(np.full(n_cell, 283.15))
+        density_dry_air = arr2storage(np.full(n_cell, 1.2))
+        moles_light_molecule = arr2storage(np.array([1e-3, 2e-3, 3e-3]))
+        moles_heavy = arr2storage(np.array([2e-6, 4e-6, 6e-6]))
+        molality_in_dry_air = arr2storage(np.full(n_cell, 1e-5))
+
+        # act
+        backend.bolin_number(
+            output=output,
+            cell_id=cell_id,
+            isotope="2H",
+            relative_humidity=relative_humidity,
+            temperature=temperature,
+            density_dry_air=density_dry_air,
+            moles_light_molecule=moles_light_molecule,
+            moles_heavy=moles_heavy,
+            molality_in_dry_air=molality_in_dry_air,
+        )
+
+        # assert
+        result = output.to_ndarray()
+
+        assert result.shape == (n_sd,)
+        assert np.all(np.isfinite(result))
+        assert np.all(result > 0)

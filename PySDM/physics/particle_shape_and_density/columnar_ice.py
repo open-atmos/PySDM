@@ -11,7 +11,7 @@ class ColumnarIce(PorousSpheroid):
 
     @staticmethod
     def polar_radius_empirical_parametrisation(const, mass):
-        """Sec. 3.1.2 in [Spichtinger & Gierens 2009].
+        """Sec. 3.1.2 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009).
         Note that the notation in the paper is incorrect.
         """
         return np.where(
@@ -26,7 +26,7 @@ class ColumnarIce(PorousSpheroid):
 
     @staticmethod
     def aspect_ratio_empirical_parametrisation(const, mass):
-        """Eq. 17 in [Spichtinger & Gierens 2009]"""
+        """Eq. 17 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
         return np.where(
             mass < const.columnar_ice_mass_transition,
             1,

@@ -91,17 +91,6 @@ class TestCoolingRate:
         n_steps=3,
     ):
         # arrange
-        builder = Builder(
-            environment=Kinematic1D(
-                dt=timestep,
-                mesh=Mesh(grid=(nz,), size=(z_max,)),
-                thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
-                rhod_of_z=lambda z: 0 * z + constant_rhod,
-            ),
-            n_sd=mean_n_sd_per_gridbox * nz,
-            backend=CPU(),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
 
         class EulerianAdvection:
             solvers = namedtuple(typename="_", field_names=("advectee",))(
@@ -117,8 +106,17 @@ class TestCoolingRate:
             def __call__(self):
                 pass
 
-        builder.add_dynamic(EulerianAdvection())
-        builder.add_dynamic(Displacement())
+        builder = Builder(
+            environment=Kinematic1D(
+                dt=timestep,
+                mesh=Mesh(grid=(nz,), size=(z_max,)),
+                thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
+                rhod_of_z=lambda z: 0 * z + constant_rhod,
+            ),
+            n_sd=mean_n_sd_per_gridbox * nz,
+            backend=CPU(),
+            dynamics=(AmbientThermodynamics(), EulerianAdvection(), Displacement()),
+        )
 
         cellular_attributes = {}
         (

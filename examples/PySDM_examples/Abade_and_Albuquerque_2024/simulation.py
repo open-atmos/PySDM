@@ -22,6 +22,24 @@ from PySDM.environments import Parcel
 
 class Simulation(BasicSimulation):
     def __init__(self, settings):
+
+        dynamics = [
+            AmbientThermodynamics(),
+            Condensation(),
+        ]
+
+        if settings.enable_immersion_freezing:
+            dynamics.append(
+                Freezing(
+                    immersion_freezing=(
+                        "singular" if settings.singular else "time-dependent"
+                    )
+                )
+            )
+
+        if settings.enable_vapour_deposition_on_ice:
+            dynamics.append(VapourDepositionOnIce(adaptive=True))
+
         builder = Builder(
             backend=settings.backend,
             n_sd=settings.n_sd,
@@ -34,24 +52,12 @@ class Simulation(BasicSimulation):
                 w=settings.updraft,
                 mixed_phase=True,
             ),
+            dynamics=dynamics,
         )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
 
-        if settings.enable_immersion_freezing:
-            builder.add_dynamic(
-                Freezing(
-                    immersion_freezing=(
-                        "singular" if settings.singular else "time-dependent"
-                    )
-                )
-            )
-        if settings.enable_vapour_deposition_on_ice:
-            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
-
-        r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
-            n_sd=settings.n_sd
-        )
+        r_dry, n_in_dv = ConstantMultiplicity(
+            settings.soluble_aerosol
+        ).sample_deterministic(n_sd=settings.n_sd)
         attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )

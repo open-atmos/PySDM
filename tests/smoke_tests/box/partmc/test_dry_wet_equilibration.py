@@ -50,8 +50,8 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
 
     aero_data = PyPartMC.AeroData(
         (
-            {"H2O": [1000 * si.kg / si.m**3, 0, 18e-3 * si.kg / si.mol, 0]},
-            {"XXX": [np.nan * si.kg / si.m**3, 0, np.nan * si.kg / si.mol, kpa]},
+            {"H2O": [1000 * si.kg / si.m**3, 0, 18e-3 * si.kg / si.mol, 0, 0, 0]},
+            {"XXX": [np.nan * si.kg / si.m**3, 0, np.nan * si.kg / si.mol, kpa, 0, 0]},
         )
     )
 

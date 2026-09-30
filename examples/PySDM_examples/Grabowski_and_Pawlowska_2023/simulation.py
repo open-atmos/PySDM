@@ -17,7 +17,6 @@ class Simulation(BasicSimulation):
         settings,
         products=None,
         scipy_solver=False,
-        sampling_class=ConstantMultiplicity,
     ):
         builder = Builder(
             n_sd=settings.n_sd,
@@ -27,15 +26,15 @@ class Simulation(BasicSimulation):
             environment=Parcel(
                 dt=settings.timestep,
                 p0=settings.initial_pressure,
-                initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
+                initial_relative_humidity=settings.initial_relative_humidity,
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
                 mass_of_dry_air=44 * si.kg,
             ),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x),
+            ),
         )
         for attribute in (
             "critical saturation",
@@ -55,7 +54,9 @@ class Simulation(BasicSimulation):
         kappa = tuple(settings.aerosol_modes_by_kappa.keys())[0]
         spectrum = settings.aerosol_modes_by_kappa[kappa]
 
-        r_dry, n_per_volume = sampling_class(spectrum).sample(settings.n_sd)
+        r_dry, n_per_volume = ConstantMultiplicity(spectrum).sample_deterministic(
+            settings.n_sd
+        )
         v_dry = settings.formulae.trivia.volume(radius=r_dry)
         attributes["multiplicity"] = np.append(
             attributes["multiplicity"], n_per_volume * volume

@@ -27,22 +27,36 @@ class Simulation:
                 p0=settings.initial_total_pressure,
                 T0=settings.initial_temperature,
             ),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        if settings.enable_collisions:
-            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
-        builder.add_dynamic(
-            Seeding(
-                super_droplet_injection_rate=settings.super_droplet_injection_rate,
-                seeded_particle_multiplicity=settings.seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes=settings.seeded_particle_extensive_attributes,
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(),
+            ]
+            + (
+                []
+                if not settings.enable_collisions
+                else [
+                    Coalescence(collision_kernel=Geometric()),
+                ]
             )
+            + [
+                Seeding(
+                    **{
+                        k: getattr(settings, k)
+                        for k in (
+                            "super_droplet_injection_rate",
+                            "seeded_particle_multiplicity",
+                            "seeded_particle_extensive_attributes",
+                        )
+                    }
+                ),
+            ],
         )
 
         r_dry, n_in_dv = ConstantMultiplicity(
             settings.initial_aerosol_dry_radii
-        ).sample(n_sd=settings.n_sd_initial, backend=builder.particulator.backend)
+        ).sample_deterministic(
+            n_sd=settings.n_sd_initial, backend=builder.particulator.backend
+        )
         attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.initial_aerosol_kappa, r_dry=r_dry
         )

@@ -12,30 +12,22 @@ from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
-_BACKEND_CACHE = {}
-
-
-def backend_factory(backend_class, formulae):
-    key = backend_class.__name__ + ":" + str(formulae)
-    if key not in _BACKEND_CACHE:
-        _BACKEND_CACHE[key] = backend_class(formulae=formulae)
-    return _BACKEND_CACHE[key]
-
 
 def run(settings, backend=CPU, observers=()):
     env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
         n_sd=settings.n_sd,
-        backend=backend_factory(backend, formulae=settings.formulae),
+        backend=backend(formulae=settings.formulae),
         environment=env,
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
-    coalescence = Coalescence(
-        collision_kernel=settings.kernel, adaptive=settings.adaptive
+    attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
+        settings.n_sd
     )
-    builder.add_dynamic(coalescence)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             settings.radius_bins_edges, name="dv/dlnr"

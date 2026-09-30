@@ -18,6 +18,7 @@ def discretise_multiplicities(values_arg):
         if not np.logical_or(values_int > 0, np.isnan(values_arg)).all():
             raise ValueError(
                 f"int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})"
+                f"if using parcel environment try increasing mass of dry air"
             )
 
         percent_diff = 100 * abs(
