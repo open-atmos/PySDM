@@ -35,15 +35,6 @@ class Simulation:
             size=(settings.z_max + settings.particle_reservoir_depth,),
         )
 
-        env = Kinematic1D(
-            dt=settings.dt,
-            mesh=self.mesh,
-            thd_of_z=settings.thd,
-            rhod_of_z=settings.rhod,
-            z0=-settings.particle_reservoir_depth,
-            backend=backend(formulae=settings.formulae),
-        )
-
         def zZ_to_z_above_reservoir(zZ):
             z_above_reservoir = zZ * (settings.nz * settings.dz) + self.z0
             return z_above_reservoir
@@ -57,6 +48,16 @@ class Simulation:
                 zZ_to_z_above_reservoir(zZ)
             ),
             g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
+        )
+
+        env = Kinematic1D(
+            dt=settings.dt,
+            mesh=self.mesh,
+            thd_of_z=settings.thd,
+            rhod_of_z=settings.rhod,
+            z0=-settings.particle_reservoir_depth,
+            backend=backend(formulae=settings.formulae),
+            solvers=mpdata,
         )
 
         _extra_nz = settings.particle_reservoir_depth // settings.dz
@@ -76,7 +77,7 @@ class Simulation:
                     update_thd=settings.condensation_update_thd,
                 )
             )
-        dynamics.append(EulerianAdvection(mpdata))
+        dynamics.append(EulerianAdvection())
 
         self.products = []
         if settings.precip:
@@ -260,7 +261,7 @@ class Simulation:
 
         self.save(0)
         for step in range(self.nt):
-            mpdata = self.particulator.dynamics["EulerianAdvection"].solvers
+            mpdata = self.particulator.environment.solvers
             mpdata.update_advector_field()
             if "Displacement" in self.particulator.dynamics:
                 self.particulator.dynamics["Displacement"].upload_courant_field(

@@ -14,16 +14,19 @@ from PySDM.environments.impl import register_environment
 
 @register_environment()
 class Kinematic1D(Moist):
-    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0, backend=None):
+    def __init__(
+        self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0, backend=None, solvers=None
+    ):
         super().__init__(dt, mesh, [], backend=backend)
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
 
         rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self._values["current"]["rhod"] = backend.Storage.from_ndarray(rhod)
         self._tmp["rhod"] = backend.Storage.from_ndarray(rhod)
+        self.solvers = solvers
 
     def get_water_vapour_mixing_ratio(self) -> np.ndarray:
-        return self.particulator.dynamics["EulerianAdvection"].solvers.advectee
+        return self.solvers.advectee
 
     def get_thd(self) -> np.ndarray:
         return self.thd0
@@ -49,7 +52,7 @@ class Kinematic1D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(
                 spatial_discretisation.sample(
-                    backend=self.particulator.backend,
+                    backend=self.backend,
                     grid=self.mesh.grid,
                     n_sd=n_sd,
                     z_part=z_part,
@@ -58,15 +61,15 @@ class Kinematic1D(Moist):
 
             if collisions_only:
                 v_wet, n_per_kg = spectral_discretisation.sample_deterministic(
-                    backend=self.particulator.backend, n_sd=n_sd
+                    backend=self.backend, n_sd=n_sd
                 )
                 attributes["volume"] = v_wet
             else:
                 r_dry, n_per_kg = spectral_discretisation.sample_deterministic(
-                    backend=self.particulator.backend, n_sd=n_sd
+                    backend=self.backend, n_sd=n_sd
                 )
-                attributes["dry volume"] = (
-                    self.particulator.backend.formulae.trivia.volume(radius=r_dry)
+                attributes["dry volume"] = self.backend.formulae.trivia.volume(
+                    radius=r_dry
                 )
                 attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
                 r_wet = equilibrate_wet_radii(
@@ -75,9 +78,7 @@ class Kinematic1D(Moist):
                     cell_id=attributes["cell id"],
                     kappa_times_dry_volume=attributes["kappa times dry volume"],
                 )
-                attributes["volume"] = self.particulator.backend.formulae.trivia.volume(
-                    radius=r_wet
-                )
+                attributes["volume"] = self.backend.formulae.trivia.volume(radius=r_wet)
 
             rhod = self["rhod"].to_ndarray()
             cell_id = attributes["cell id"]

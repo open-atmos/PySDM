@@ -27,9 +27,10 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
         env.thd[:] = 59.5
         env.pred["water_vapour_mixing_ratio"][:] = 3.7
         env.pred["thd"][:] = 5.59
+        env.solvers = lambda _: None
         particulator.dynamics["Displacement"] = None
 
-        sut = EulerianAdvection(lambda _: None)
+        sut = EulerianAdvection()
         sut.register(particulator)
 
         # Act

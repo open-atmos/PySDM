@@ -35,6 +35,33 @@ class Simulation:
     def reinit(self, products=None):
         formulae = self.settings.formulae
         backend = self.backend
+        initial_profiles = {
+            "th": self.settings.initial_dry_potential_temperature_profile,
+            "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
+        }
+        advectees = dict(
+            (
+                key,
+                np.repeat(
+                    profile.reshape(1, -1),
+                    self.settings.grid[0],
+                    axis=0,
+                ),
+            )
+            for key, profile in initial_profiles.items()
+        )
+        mpdata = MPDATA_2D(
+            advectees=advectees,
+            stream_function=self.settings.stream_function,
+            rhod_of_zZ=self.settings.rhod_of_zZ,
+            dt=self.settings.dt,
+            grid=self.settings.grid,
+            size=self.settings.size,
+            n_iters=self.settings.mpdata_iters,
+            infinite_gauge=self.settings.mpdata_iga,
+            nonoscillatory=self.settings.mpdata_fct,
+            third_order_terms=self.settings.mpdata_tot,
+        )
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
@@ -42,6 +69,7 @@ class Simulation:
             rhod_of=self.settings.rhod_of_zZ,
             mixed_phase=self.settings.processes["freezing"],
             backend=backend,
+            solvers=mpdata,
         )
 
         dynamics = []
@@ -67,34 +95,7 @@ class Simulation:
             )
             dynamics.append(condensation)
         if self.settings.processes["fluid advection"]:
-            initial_profiles = {
-                "th": self.settings.initial_dry_potential_temperature_profile,
-                "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
-            }
-            advectees = dict(
-                (
-                    key,
-                    np.repeat(
-                        profile.reshape(1, -1),
-                        self.settings.grid[0],
-                        axis=0,
-                    ),
-                )
-                for key, profile in initial_profiles.items()
-            )
-            solver = MPDATA_2D(
-                advectees=advectees,
-                stream_function=self.settings.stream_function,
-                rhod_of_zZ=self.settings.rhod_of_zZ,
-                dt=self.settings.dt,
-                grid=self.settings.grid,
-                size=self.settings.size,
-                n_iters=self.settings.mpdata_iters,
-                infinite_gauge=self.settings.mpdata_iga,
-                nonoscillatory=self.settings.mpdata_fct,
-                third_order_terms=self.settings.mpdata_tot,
-            )
-            dynamics.append(EulerianAdvection(solver))
+            dynamics.append(EulerianAdvection())
         if self.settings.processes["particle advection"]:
             dynamics.append(
                 Displacement(

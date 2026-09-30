@@ -18,13 +18,16 @@ from PySDM.environments.impl import register_environment
 
 @register_environment()
 class Kinematic2D(Moist):
-    def __init__(self, *, dt, grid, size, rhod_of, backend, mixed_phase=False):
+    def __init__(
+        self, *, dt, grid, size, rhod_of, backend, mixed_phase=False, solvers=None
+    ):
         super().__init__(
             dt, Mesh(grid=grid, size=size), [], mixed_phase=mixed_phase, backend=backend
         )
         rhod = arakawa_c.make_rhod(self.mesh.grid, rhod_of).ravel()
         self._values["current"]["rhod"] = backend.Storage.from_ndarray(rhod)
         self._tmp["rhod"] = backend.Storage.from_ndarray(rhod)
+        self.solvers = solvers
 
     @property
     def dv(self):
@@ -46,7 +49,7 @@ class Kinematic2D(Moist):
 
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+                backend=self.backend, grid=self.mesh.grid, n_sd=n_sd
             )
             (
                 attributes["cell id"],
@@ -56,11 +59,9 @@ class Kinematic2D(Moist):
 
             r_dry, n_per_kg = spectral_sampling(
                 spectrum=dry_radius_spectrum
-            ).sample_deterministic(n_sd=n_sd, backend=self.particulator.backend)
+            ).sample_deterministic(n_sd=n_sd, backend=self.backend)
 
-            attributes["dry volume"] = self.particulator.formulae.trivia.volume(
-                radius=r_dry
-            )
+            attributes["dry volume"] = self.backend.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
 
             if kappa == 0:
@@ -80,20 +81,17 @@ class Kinematic2D(Moist):
 
         attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
         attributes["water mass"] = (
-            self.particulator.formulae.particle_shape_and_density.radius_to_mass(r_wet)
+            self.backend.formulae.particle_shape_and_density.radius_to_mass(r_wet)
         )
 
         return attributes
 
-    def _eulerian_advection(self):
-        return self.particulator.dynamics["EulerianAdvection"]
-
     def get_thd(self):
-        return self._eulerian_advection().solvers["th"]
+        return self.solvers["th"]
 
     def get_water_vapour_mixing_ratio(self):
-        return self._eulerian_advection().solvers["water_vapour_mixing_ratio"]
+        return self.solvers["water_vapour_mixing_ratio"]
 
     def sync(self):
-        self._eulerian_advection().solvers.wait()
+        self.solvers.wait()
         super().sync()
