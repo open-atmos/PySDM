@@ -248,7 +248,7 @@ class TestCollisionMethods:
     @pytest.mark.parametrize(
         "gamma, permutation, multiplicity, cell_id, dt_left, dt, dt_max, is_first_in_pair, ",
         (
-            (  # pylint: disable=undefined-variable,unused-variable
+            (  # pylint: disable=undefined-variable,unused-variable,used-before-assignment
                 [2, 2, 2] + [3, 3] + [1, 1, 1],
                 tuple(range(n_part := 16)),
                 [1] * 2 + [100] * (n_part - 2),
