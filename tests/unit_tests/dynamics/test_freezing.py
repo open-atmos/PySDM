@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.physics import si
@@ -51,29 +51,30 @@ class TestDropletFreezing:
                 "J_HOM": VERY_BIG_RATE,
             },
         )
-        builder = Builder(
+        requested_attributes = []
+        if record_freezing_temperature:
+            for attr_name in attr_names:
+                requested_attributes.append(attr_name)
+        particulator = Particulator(
+            requested_attributes=requested_attributes,
             n_sd=1,
-            backend=backend_class(formulae=formulae),
-            environment=Box(dt=1 * si.s, dv=1 * si.m**3),
+            environment=Box(
+                dt=1 * si.s, dv=1 * si.m**3, backend=backend_class(formulae=formulae)
+            ),
             dynamics=(
-                [
+                (
                     Freezing(
                         immersion_freezing=freezing_mode["immersion_freezing"],
                         homogeneous_freezing=freezing_mode["homogeneous_freezing"],
                         thaw="instantaneous",
-                    )
-                ]
+                    ),
+                )
             ),
-        )
-        if record_freezing_temperature:
-            for attr_name in attr_names:
-                builder.request_attribute(attr_name)
-        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray([1]),
                 "signed water mass": np.asarray([1 * si.ug]),
                 "immersed surface area": np.asarray([1 * si.um**2]),
-            }
+            },
         )
 
         temp_list = np.asarray([200 * si.K, 300 * si.K, 220 * si.K])
@@ -142,22 +143,20 @@ class TestDropletFreezing:
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
         )
-        env = Box(dt=1 * si.s, dv=1 * si.m**3)
-        builder = Builder(
+        particulator = Particulator(
             n_sd=1,
-            backend=backend_class(formulae=formulae),
-            environment=env,
+            environment=Box(
+                dt=1 * si.s, dv=1 * si.m**3, backend=backend_class(formulae=formulae)
+            ),
             dynamics=(
                 Freezing(
                     thaw=thaw,
                 ),
             ),
-        )
-        particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
-                "multiplicity": np.ones(builder.particulator.n_sd),
-                "signed water mass": -1 * np.ones(builder.particulator.n_sd) * si.ug,
+                "multiplicity": np.ones(1),
+                "signed water mass": -1 * np.ones(1) * si.ug,
             },
         )
         particulator.environment["T"] = formulae.constants.T0 + epsilon
@@ -184,20 +183,19 @@ class TestDropletFreezing:
         multiplicity = 1e10
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        env = Box(dt=1 * si.s, dv=dv)
-        builder = Builder(
+        particulator = Particulator(
             n_sd=n_sd,
-            backend=backend_class(formulae=formulae),
-            environment=env,
+            products=(IceWaterContent(name="qi"),),
+            environment=Box(
+                dt=1 * si.s, dv=dv, backend=backend_class(formulae=formulae)
+            ),
             dynamics=(Freezing(immersion_freezing="singular"),),
+            attributes={
+                "multiplicity": np.full(n_sd, multiplicity),
+                "freezing temperature": np.full(n_sd, T_fz),
+                "signed water mass": np.full(n_sd, water_mass),
+            },
         )
-        attributes = {
-            "multiplicity": np.full(n_sd, multiplicity),
-            "freezing temperature": np.full(n_sd, T_fz),
-            "signed water mass": np.full(n_sd, water_mass),
-        }
-        products = (IceWaterContent(name="qi"),)
-        particulator = builder.build(attributes=attributes, products=products)
         particulator.environment["T"] = T_fz
         particulator.environment["RH"] = 1.000001
 
@@ -224,21 +222,21 @@ class TestDropletFreezing:
         dv = 1 * si.m**3
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        builder = Builder(
+        particulator = Particulator(
             n_sd=n_sd,
-            backend=backend_class(formulae=formulae),
-            environment=Box(dt=1 * si.s, dv=dv),
+            environment=Box(
+                dt=1 * si.s, dv=dv, backend=backend_class(formulae=formulae)
+            ),
             dynamics=(Freezing(homogeneous_freezing="threshold"),),
+            products=(
+                LiquidWaterContent(name="qc"),
+                IceWaterContent(name="qi"),
+            ),
+            attributes={
+                "multiplicity": np.full(n_sd, multiplicity),
+                "signed water mass": np.full(n_sd, water_mass),
+            },
         )
-        attributes = {
-            "multiplicity": np.full(n_sd, multiplicity),
-            "signed water mass": np.full(n_sd, water_mass),
-        }
-        products = (
-            LiquidWaterContent(name="qc"),
-            IceWaterContent(name="qi"),
-        )
-        particulator = builder.build(attributes=attributes, products=products)
         particulator.environment["T"] = temperature
         particulator.environment["RH"] = 1.0001
         particulator.environment["RH_ice"] = 1.5
@@ -328,8 +326,6 @@ class TestDropletFreezing:
             seed=seed,
         )
 
-        products = (IceWaterContent(name="qi"),)
-
         for case in cases:
             n_sd = int(number_of_real_droplets // case["N"])
             assert n_sd == number_of_real_droplets / case["N"]
@@ -338,26 +334,28 @@ class TestDropletFreezing:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
-            env = Box(dt=case["dt"], dv=d_v)
-            builder = Builder(
+            particulator = Particulator(
                 n_sd=n_sd,
-                backend=backend_class(
-                    formulae=formulae, double_precision=double_precision
+                environment=Box(
+                    dt=case["dt"],
+                    dv=d_v,
+                    backend=backend_class(
+                        formulae=formulae, double_precision=double_precision
+                    ),
                 ),
-                environment=env,
                 dynamics=(
                     Freezing(
                         immersion_freezing=immersion_freezing,
                         homogeneous_freezing=homogeneous_freezing,
                     ),
                 ),
+                attributes={
+                    "multiplicity": np.full(n_sd, int(case["N"])),
+                    "immersed surface area": np.full(n_sd, immersed_surface_area),
+                    "signed water mass": np.full(n_sd, initial_water_mass),
+                },
+                products=(IceWaterContent(name="qi"),),
             )
-            attributes = {
-                "multiplicity": np.full(n_sd, int(case["N"])),
-                "immersed surface area": np.full(n_sd, immersed_surface_area),
-                "signed water mass": np.full(n_sd, initial_water_mass),
-            }
-            particulator = builder.build(attributes=attributes, products=products)
             particulator.environment["RH"] = 1.0001
             particulator.environment["RH_ice"] = 1.5
             particulator.environment["a_w_ice"] = 0.6

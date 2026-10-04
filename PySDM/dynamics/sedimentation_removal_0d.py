@@ -12,10 +12,10 @@ class SedimentationRemoval0D:
         self.stochastic_sedimentation_removal = stochastic_sedimentation_removal
         self.particulator = None
 
-    def register(self, builder):
-        builder.request_attribute("relative fall velocity")
-        assert builder.particulator.environment.mesh.n_dims == 0
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        particulator.request_attribute("relative fall velocity")
+        assert particulator.environment.mesh.n_dims == 0
+        self.particulator = particulator
 
     def __call__(self):
         """for stochastic removal, see, e.g., the naive scheme in Algorithm 1 in

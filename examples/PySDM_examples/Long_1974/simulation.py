@@ -1,7 +1,7 @@
 from PySDM_examples.utils import BasicSimulation
 
 from PySDM.backends import CPU
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -11,19 +11,8 @@ from PySDM.products import Time
 
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        builder = Builder(
-            n_sd=settings.n_sd,
-            backend=CPU(),
-            environment=Box(dv=settings.dv, dt=settings.dt),
-            dynamics=(
-                Coalescence(
-                    collision_kernel=settings.kernel,
-                    coalescence_efficiency=settings.coal_eff,
-                    adaptive=settings.adaptive,
-                ),
-            ),
-        )
-        builder.particulator.environment["rhod"] = settings.rhod
+        environment = Box(dv=settings.dv, dt=settings.dt, backend=CPU())
+        environment["rhod"] = settings.rhod
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
@@ -35,7 +24,19 @@ class Simulation(BasicSimulation):
             ),
             Time(name="t"),
         )
-        particulator = builder.build(attributes, products)
+        particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=environment,
+            dynamics=(
+                Coalescence(
+                    collision_kernel=settings.kernel,
+                    coalescence_efficiency=settings.coal_eff,
+                    adaptive=settings.adaptive,
+                ),
+            ),
+            attributes=attributes,
+            products=products,
+        )
         self.settings = settings
         super().__init__(particulator=particulator)
 

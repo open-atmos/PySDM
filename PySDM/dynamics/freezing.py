@@ -38,30 +38,30 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         self.rng = None
         self.particulator = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
         assert (
             self.particulator.formulae.particle_shape_and_density.supports_mixed_phase()
         )
 
-        builder.request_attribute("signed water mass")
+        particulator.request_attribute("signed water mass")
         if self.immersion_freezing == "singular":
-            builder.request_attribute("freezing temperature")
+            particulator.request_attribute("freezing temperature")
 
         if self.immersion_freezing == "time-dependent":
             assert (
                 self.particulator.formulae.heterogeneous_ice_nucleation_rate.__name__
                 != "Null"
             )
-            builder.request_attribute("immersed surface area")
+            particulator.request_attribute("immersed surface area")
 
         if self.homogeneous_freezing == "time-dependent":
             assert (
                 self.particulator.formulae.homogeneous_ice_nucleation_rate.__name__
                 != "Null"
             )
-            builder.request_attribute("volume")
+            particulator.request_attribute("volume")
 
         if (
             self.homogeneous_freezing == "time-dependent"

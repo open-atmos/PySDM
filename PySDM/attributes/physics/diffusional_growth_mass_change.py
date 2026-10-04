@@ -8,18 +8,18 @@ from PySDM.attributes.impl import register_attribute, DerivedAttribute
 
 @register_attribute()
 class DiffusionalGrowthMassChange(DerivedAttribute):
-    def __init__(self, builder):
-        self.water_mass = builder.get_attribute("signed water mass")
+    def __init__(self, particulator):
+        self.water_mass = particulator.get_attribute("signed water mass")
         super().__init__(
-            builder,
+            particulator,
             name="diffusional growth mass change",
             dependencies=(self.water_mass,),
         )
         self.old = None
-        assert "Collision" not in builder.particulator.dynamics
+        assert "Collision" not in particulator.dynamics
         for triggers in (
-            builder.particulator.observers,
-            builder.particulator.initialisers,
+            particulator.observers,
+            particulator.initialisers,
         ):
             triggers.append(self)
 
