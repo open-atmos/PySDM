@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot
 from matplotlib.ticker import MultipleLocator
 
-from PySDM import Builder, Formulae
+from PySDM import Particulator, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
@@ -40,7 +40,8 @@ class Simulation:
             case = self.cases[key]
             assert case["cooling_rate"] != 0
             total_time = (
-                np.diff(np.asarray(self.temperature_range)) / case["cooling_rate"]
+                np.diff(np.asarray(self.temperature_range)).item()
+                / case["cooling_rate"]
             )
             time_step = self.temperature_step / case["cooling_rate"]
 
@@ -132,24 +133,23 @@ def simulation(
         particle_shape_and_density="MixedPhaseSpheres",
         saturation_vapour_pressure="MurphyKoop2005",
     )
-    builder = Builder(
-        n_sd=n_sd,
-        backend=CPU(formulae=formulae),
-        environment=Box(dt=time_step, dv=volume),
-        dynamics=(
-            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None),
-        ),
-    )
+    environment = Box(dt=time_step, dv=volume, backend=CPU(formulae=formulae))
 
-    builder.request_attribute("temperature of last freezing")
-    builder.request_attribute("volume")
     droplet_volume = formulae.trivia.volume(radius=droplet_radius)
 
     attributes = {
         "multiplicity": np.full(n_sd, multiplicity),
         "signed water mass": np.full(n_sd, droplet_volume * formulae.constants.rho_w),
     }
-    particulator = builder.build(attributes=attributes)
+    particulator = Particulator(
+        n_sd=n_sd,
+        dynamics=(
+            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None),
+        ),
+        environment=environment,
+        attributes=attributes,
+        requested_attributes=("temperature of last freezing", "volume"),
+    )
     env = particulator.environment
 
     env["T"] = initial_temperature

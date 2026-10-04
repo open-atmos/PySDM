@@ -22,17 +22,19 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         # Arrange
         n = np.ones(n_sd)
         v = np.ones_like(n)
-        env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
+        env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1], backend=backend_class())
         grid = (25, 25)
         env.mesh = Mesh(grid=grid, size=grid)
-        particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n), environment=env
-        )
         cell_id, _, _ = env.mesh.cellular_attributes(
-            Pseudorandom.sample(backend=particulator.backend, grid=grid, n_sd=len(n))
+            Pseudorandom.sample(backend=env.backend, grid=grid, n_sd=len(n))
         )
         attributes = {"multiplicity": n, "volume": v, "cell id": cell_id}
-        particulator.build(attributes)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_class,
+            len(n),
+            environment=env,
+            attributes=attributes,
+        )
         sut.actual_length = particulator.attributes._ParticleAttributes__idx.length
         sut.adaptive = adaptive
 
