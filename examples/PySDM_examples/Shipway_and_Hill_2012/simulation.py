@@ -5,7 +5,7 @@ import numpy as np
 from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
 
 import PySDM.products as PySDM_products
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -35,14 +35,6 @@ class Simulation:
             size=(settings.z_max + settings.particle_reservoir_depth,),
         )
 
-        env = Kinematic1D(
-            dt=settings.dt,
-            mesh=self.mesh,
-            thd_of_z=settings.thd,
-            rhod_of_z=settings.rhod,
-            z0=-settings.particle_reservoir_depth,
-        )
-
         def zZ_to_z_above_reservoir(zZ):
             z_above_reservoir = zZ * (settings.nz * settings.dz) + self.z0
             return z_above_reservoir
@@ -56,6 +48,16 @@ class Simulation:
                 zZ_to_z_above_reservoir(zZ)
             ),
             g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
+        )
+
+        env = Kinematic1D(
+            dt=settings.dt,
+            mesh=self.mesh,
+            thd_of_z=settings.thd,
+            rhod_of_z=settings.rhod,
+            z0=-settings.particle_reservoir_depth,
+            backend=backend(formulae=settings.formulae),
+            solvers=mpdata,
         )
 
         _extra_nz = settings.particle_reservoir_depth // settings.dz
@@ -75,7 +77,7 @@ class Simulation:
                     update_thd=settings.condensation_update_thd,
                 )
             )
-        dynamics.append(EulerianAdvection(mpdata))
+        dynamics.append(EulerianAdvection())
 
         self.products = []
         if settings.precip:
@@ -89,15 +91,7 @@ class Simulation:
                 ),
             )
         )
-
-        self.builder = Builder(
-            n_sd=settings.n_sd,
-            backend=backend(formulae=settings.formulae),
-            environment=env,
-            dynamics=dynamics,
-        )
-
-        self.attributes = self.builder.particulator.environment.init_attributes(
+        self.attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air
@@ -105,6 +99,7 @@ class Simulation:
             kappa=settings.kappa,
             collisions_only=not settings.enable_condensation,
             z_part=settings.z_part,
+            n_sd=settings.n_sd,
         )
         self.products += [
             PySDM_products.WaterMixingRatio(
@@ -176,8 +171,12 @@ class Simulation:
                     PySDM_products.SurfacePrecipitation(),
                 ]
             )
-        self.particulator = self.builder.build(
-            attributes=self.attributes, products=tuple(self.products)
+        self.particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=dynamics,
+            attributes=self.attributes,
+            products=tuple(self.products),
         )
 
         self.output_attributes = {
@@ -262,7 +261,7 @@ class Simulation:
 
         self.save(0)
         for step in range(self.nt):
-            mpdata = self.particulator.dynamics["EulerianAdvection"].solvers
+            mpdata = self.particulator.environment.solvers
             mpdata.update_advector_field()
             if "Displacement" in self.particulator.dynamics:
                 self.particulator.dynamics["Displacement"].upload_courant_field(

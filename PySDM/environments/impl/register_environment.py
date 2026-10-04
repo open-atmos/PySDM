@@ -1,12 +1,18 @@
 """decorator for environment classes
-ensuring that their instances can be re-used with multiple builders"""
+ensuring that their instances cannot be re-used in multiple particulators"""
 
 from copy import deepcopy
 
 
-def _instantiate(self, *, builder):
+def _instantiate(self, particulator):
+    """Creating a copy without backend as a workaround
+    for long execution times: see PR #1885"""  # to be addressed in TODO #1179
+    backend = self.backend
+    self.backend = None
     copy = deepcopy(self)
-    copy.register(builder=builder)
+    copy.backend = backend
+    self.backend = backend
+    copy.register(particulator=particulator)
     return copy
 
 

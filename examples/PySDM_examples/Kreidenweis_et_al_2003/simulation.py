@@ -2,7 +2,7 @@ import numpy as np
 from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, AqueousChemistry, Condensation
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
@@ -12,33 +12,18 @@ from PySDM.physics import si
 
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        builder = Builder(
-            n_sd=settings.n_sd,
+        environment = Parcel(
+            dt=settings.dt,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            p0=settings.p0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+            T0=settings.T0,
+            w=settings.w,
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=Parcel(
-                dt=settings.dt,
-                mass_of_dry_air=settings.mass_of_dry_air,
-                p0=settings.p0,
-                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                T0=settings.T0,
-                w=settings.w,
-            ),
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(),
-                AqueousChemistry(
-                    environment_mole_fractions=settings.ENVIRONMENT_MOLE_FRACTIONS,
-                    system_type=settings.system_type,
-                    n_substep=settings.n_substep,
-                    dry_rho=settings.DRY_RHO,
-                    dry_molar_mass=settings.dry_molar_mass,
-                ),
-            ),
         )
-
-        attributes = builder.particulator.environment.init_attributes(
+        attributes = environment.init_attributes(
             n_in_dv=settings.n_in_dv,
             kappa=settings.kappa,
             r_dry=settings.r_dry,
@@ -117,7 +102,23 @@ class Simulation(BasicSimulation):
             ),
         )
 
-        particulator = builder.build(attributes=attributes, products=products)
+        particulator = Particulator(
+            n_sd=settings.n_sd,
+            environment=environment,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+                AqueousChemistry(
+                    environment_mole_fractions=settings.ENVIRONMENT_MOLE_FRACTIONS,
+                    system_type=settings.system_type,
+                    n_substep=settings.n_substep,
+                    dry_rho=settings.DRY_RHO,
+                    dry_molar_mass=settings.dry_molar_mass,
+                ),
+            ),
+            attributes=attributes,
+            products=products,
+        )
         self.settings = settings
         super().__init__(particulator=particulator)
 

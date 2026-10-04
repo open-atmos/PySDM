@@ -1,7 +1,7 @@
 import numpy as np
 
 import PySDM.products as PySDM_products
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -30,6 +30,9 @@ class Simulation:
             T0=settings.T0,
             w=settings.w,
             z0=settings.z0,
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
         )
 
         condensation = Condensation(
@@ -38,20 +41,6 @@ class Simulation:
             rtol_thd=settings.rtol_thd,
             dt_cond_range=settings.dt_cond_range,
         )
-
-        builder = Builder(
-            backend=backend(
-                formulae=self.formulae, override_jit_flags={"parallel": False}
-            ),
-            n_sd=settings.n_sd,
-            environment=env,
-            dynamics=(
-                AmbientThermodynamics(),
-                condensation,
-            ),
-        )
-
-        environment = builder.particulator.environment
 
         products = [
             PySDM_products.ParticleSizeSpectrumPerVolume(
@@ -70,11 +59,20 @@ class Simulation:
             PySDM_products.Time(name="t"),
         ]
 
-        attributes = environment.init_attributes(
+        attributes = env.init_attributes(
             n_in_dv=settings.n, kappa=settings.kappa, r_dry=settings.r_dry
         )
 
-        self.particulator = builder.build(attributes, products)
+        self.particulator = Particulator(
+            attributes=attributes,
+            products=products,
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                condensation,
+            ),
+        )
 
         self.n_steps = settings.n_steps
 
