@@ -631,7 +631,7 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _normalize_body(self):
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
+        def body(prob, cell_start, norm_factor, timestep, dv):
             n_cell = cell_start.shape[0] - 1
             for i in range(n_cell):
                 sd_num = cell_start[i + 1] - cell_start[i]
@@ -641,18 +641,17 @@ class CollisionsMethods(BackendMethods):
                     norm_factor[i] = (
                         timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
                     )
-            for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
-                prob[d] *= norm_factor[cell_idx[cell_id[d]]]
+            for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable
+                for pair_start in range(cell_start[i], cell_start[i + 1] - 1, 2):
+                    prob[pair_start // 2] *= norm_factor[i]
 
         return body
 
     def normalize(
         self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv
-    ):  # pylint: disable=too-many-positional-arguments
+    ):  # pylint: disable=too-many-positional-arguments,unused-argument
         return self._normalize_body(
             prob.data,
-            cell_id.data,
-            cell_idx.data,
             cell_start.data,
             norm_factor.data,
             timestep,
