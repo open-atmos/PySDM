@@ -18,8 +18,8 @@ from PySDM.attributes.impl import (
     #       from terminal velocity instead when no RelaxedVelocity dynamic is present
 )
 class RelativeFallMomentum(ExtensiveAttribute):
-    def __init__(self, builder):
-        super().__init__(builder, name="relative fall momentum", dtype=float)
+    def __init__(self, particulator):
+        super().__init__(particulator, name="relative fall momentum", dtype=float)
 
 
 @register_attribute(
@@ -27,12 +27,12 @@ class RelativeFallMomentum(ExtensiveAttribute):
     variant=lambda dynamics, _: "RelaxedVelocity" in dynamics,
 )
 class RelativeFallVelocity(DerivedAttribute):
-    def __init__(self, builder):
-        self.momentum = builder.get_attribute("relative fall momentum")
-        self.signed_water_mass = builder.get_attribute("signed water mass")
+    def __init__(self, particulator):
+        self.momentum = particulator.get_attribute("relative fall momentum")
+        self.signed_water_mass = particulator.get_attribute("signed water mass")
 
         super().__init__(
-            builder,
+            particulator,
             name="relative fall velocity",
             dependencies=(self.momentum, self.signed_water_mass),
         )

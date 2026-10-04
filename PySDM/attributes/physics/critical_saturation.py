@@ -11,19 +11,19 @@ from PySDM.attributes.impl import (
 
 @register_attribute()
 class CriticalSaturation(DerivedAttribute, TemperatureVariationOptionAttribute):
-    def __init__(self, builder, neglect_temperature_variations=False):
-        assert builder.particulator.mesh.dimension == 0
+    def __init__(self, particulator, neglect_temperature_variations=False):
+        assert particulator.mesh.dimension == 0
 
-        self.v_crit = builder.get_attribute("critical volume")
-        self.v_dry = builder.get_attribute("dry volume")
-        self.kappa = builder.get_attribute("kappa")
-        self.f_org = builder.get_attribute("dry volume organic fraction")
+        self.v_crit = particulator.get_attribute("critical volume")
+        self.v_dry = particulator.get_attribute("dry volume")
+        self.kappa = particulator.get_attribute("kappa")
+        self.f_org = particulator.get_attribute("dry volume organic fraction")
         TemperatureVariationOptionAttribute.__init__(
-            self, builder, neglect_temperature_variations
+            self, particulator, neglect_temperature_variations
         )
         DerivedAttribute.__init__(
             self,
-            builder=builder,
+            particulator=particulator,
             name="critical saturation",
             dependencies=(self.v_crit, self.kappa, self.v_dry, self.f_org),
         )
@@ -50,5 +50,5 @@ class CriticalSaturation(DerivedAttribute, TemperatureVariationOptionAttribute):
 
 @register_attribute()
 class CriticalSaturationNeglectingTemperatureVariations(CriticalSaturation):
-    def __init__(self, builder):
-        super().__init__(builder, neglect_temperature_variations=True)
+    def __init__(self, particulator):
+        super().__init__(particulator, neglect_temperature_variations=True)

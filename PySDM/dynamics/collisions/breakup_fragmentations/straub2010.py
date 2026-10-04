@@ -19,24 +19,24 @@ class Straub2010Nf(VolumeBasedFragmentationFunction):
         self.sum_of_volumes = None
         self.const = None
 
-    def register(self, builder):
-        super().register(builder)
-        self.max_size = self.particulator.PairwiseStorage.empty(
+    def register(self, particulator):
+        super().register(particulator)
+        self.max_size = particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
+        self.sum_of_volumes = particulator.PairwiseStorage.empty(
+            particulator.n_sd // 2, dtype=float
         )
-        self.const = self.particulator.formulae.constants
-        builder.request_attribute("radius")
-        builder.request_attribute("relative fall velocity")
+        self.const = particulator.formulae.constants
+        particulator.request_attribute("radius")
+        particulator.request_attribute("relative fall velocity")
         for key in ("Sc", "tmp", "tmp2", "CKE", "We", "gam", "CW", "ds"):
-            self.arrays[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float
+            self.arrays[key] = particulator.PairwiseStorage.empty(
+                particulator.n_sd // 2, dtype=float
             )
         for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt", "d34"):
-            self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float
+            self.straub_tmp[key] = particulator.PairwiseStorage.empty(
+                particulator.n_sd // 2, dtype=float
             )
 
     def compute_fragment_number_and_volumes(

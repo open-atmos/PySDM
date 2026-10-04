@@ -10,7 +10,7 @@ from PySDM.products import (
 )
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.physics import si
 
 
@@ -23,26 +23,26 @@ def test_parcel_liquid_water_path(
     dz = 5 * si.m
     dt = 1 * si.s
 
-    builder = Builder(
-        n_sd=n_sd,
+    env = Parcel(
+        dt=dt,
+        mass_of_dry_air=1 * si.mg,
+        p0=1000 * si.hPa,
+        initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
+        T0=300 * si.K,
+        w=dz / dt,
         backend=backend_class(double_precision=True),
-        environment=Parcel(
-            dt=dt,
-            mass_of_dry_air=1 * si.mg,
-            p0=1000 * si.hPa,
-            initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
-            T0=300 * si.K,
-            w=dz / dt,
-        ),
+    )
+    attributes = env.init_attributes(
+        n_in_dv=np.asarray([1000]), kappa=0.666, r_dry=np.asarray([0.01 * si.um])
+    )
+
+    particulator = Particulator(
+        n_sd=n_sd,
         dynamics=(
             AmbientThermodynamics(),
             Condensation(),
         ),
-    )
-    particulator = builder.build(
-        attributes=builder.particulator.environment.init_attributes(
-            n_in_dv=np.asarray([1000]), kappa=0.666, r_dry=np.asarray([0.01 * si.um])
-        ),
+        attributes=attributes,
         products=(
             ParcelLiquidWaterPath(
                 name="LWP", count_unactivated=True, count_activated=True
@@ -50,6 +50,7 @@ def test_parcel_liquid_water_path(
             LiquidWaterContent(name="LWC"),
             AmbientRelativeHumidity(name="RH"),
         ),
+        environment=env,
     )
 
     # act

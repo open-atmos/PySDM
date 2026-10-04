@@ -32,9 +32,8 @@ def _solve_equilibrium_radii(
 ):
     T = environment["T"].to_ndarray()
     RH = environment["RH"].to_ndarray()
-    formulae = environment.particulator.formulae
-    within_tolerance = formulae.trivia.within_tolerance
-    jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath}}
+    within_tolerance = environment.backend.formulae.trivia.within_tolerance
+    jit_flags = {**JIT_FLAGS, **{"fastmath": environment.backend.formulae.fastmath}}
 
     if cell_id is None:
         cell_id = np.zeros_like(radii_in, dtype=int)
@@ -118,12 +117,11 @@ def equilibrate_dry_radii(
     rtol=default_rtol,
     max_iters=default_max_iters,
 ):
-    formulae = environment.particulator.formulae
-    sigma = formulae.surface_tension.sigma
-    phys_volume = formulae.trivia.volume
-    const = environment.particulator.formulae.constants
-    RH_eq = formulae.hygroscopicity.RH_eq
-    jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath}}
+    sigma = environment.backend.formulae.surface_tension.sigma
+    phys_volume = environment.backend.formulae.trivia.volume
+    const = environment.backend.formulae.constants
+    RH_eq = environment.backend.formulae.hygroscopicity.RH_eq
+    jit_flags = {**JIT_FLAGS, **{"fastmath": environment.backend.formulae.fastmath}}
 
     @numba.njit(**{**jit_flags, "parallel": False})
     def get_args(T_i, RH_i, kappa, r_wet, f_org):
@@ -167,13 +165,12 @@ def equilibrate_wet_radii(
     rtol=default_rtol,
     max_iters=default_max_iters,
 ):
-    formulae = environment.particulator.formulae
-    sigma = formulae.surface_tension.sigma
-    phys_volume = formulae.trivia.volume
-    const = environment.particulator.formulae.constants
-    RH_eq = formulae.hygroscopicity.RH_eq
-    r_cr = formulae.hygroscopicity.r_cr
-    jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath}}
+    sigma = environment.backend.formulae.surface_tension.sigma
+    phys_volume = environment.backend.formulae.trivia.volume
+    const = environment.backend.formulae.constants
+    RH_eq = environment.backend.formulae.hygroscopicity.RH_eq
+    r_cr = environment.backend.formulae.hygroscopicity.r_cr
+    jit_flags = {**JIT_FLAGS, **{"fastmath": environment.backend.formulae.fastmath}}
 
     @numba.njit(**{**jit_flags, "parallel": False})
     def get_args(T_i, RH_i, kappa, r_dry, f_org):

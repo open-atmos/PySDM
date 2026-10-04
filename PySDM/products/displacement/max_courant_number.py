@@ -14,9 +14,9 @@ class MaxCourantNumber(Product):
         super().__init__(unit=unit, name=name)
         self.displacement = None
 
-    def register(self, builder):
-        super().register(builder)
-        self.displacement = self.particulator.dynamics["Displacement"]
+    def register(self, particulator):
+        super().register(particulator)
+        self.displacement = particulator.dynamics["Displacement"]
 
     def _impl(self, **kwargs):
         self.buffer[:] = 0
