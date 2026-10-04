@@ -147,9 +147,9 @@ with weighting either by number or volume</p>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius_range</span> <span class="o">=</span> <span class="n">radius_range</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
@@ -211,9 +211,9 @@ with weighting either by number or volume</p>
 </span><span id="Acidity-33"><a href="#Acidity-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius_range</span> <span class="o">=</span> <span class="n">radius_range</span>
 </span><span id="Acidity-34"><a href="#Acidity-34"><span class="linenos">34</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 </span><span id="Acidity-35"><a href="#Acidity-35"><span class="linenos">35</span></a>
-</span><span id="Acidity-36"><a href="#Acidity-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Acidity-37"><a href="#Acidity-37"><span class="linenos">37</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
-</span><span id="Acidity-38"><a href="#Acidity-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="Acidity-36"><a href="#Acidity-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="Acidity-37"><a href="#Acidity-37"><span class="linenos">37</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
+</span><span id="Acidity-38"><a href="#Acidity-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="Acidity-39"><a href="#Acidity-39"><span class="linenos">39</span></a>
 </span><span id="Acidity-40"><a href="#Acidity-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="Acidity-41"><a href="#Acidity-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
@@ -307,15 +307,15 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">builder</span></span><span class="return-annotation">):</span></span>
+        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">particulator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Acidity.register-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Acidity.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Acidity.register-36"><a href="#Acidity.register-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Acidity.register-37"><a href="#Acidity.register-37"><span class="linenos">37</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
-</span><span id="Acidity.register-38"><a href="#Acidity.register-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Acidity.register-36"><a href="#Acidity.register-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="Acidity.register-37"><a href="#Acidity.register-37"><span class="linenos">37</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"conc_H"</span><span class="p">)</span>
+</span><span id="Acidity.register-38"><a href="#Acidity.register-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -331,16 +331,16 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">builder</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
+        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">particulator</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Acidity.instantiate-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Acidity.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Acidity.instantiate-8"><a href="#Acidity.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Acidity.instantiate-8"><a href="#Acidity.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
 </span><span id="Acidity.instantiate-9"><a href="#Acidity.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Acidity.instantiate-10"><a href="#Acidity.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
-</span><span id="Acidity.instantiate-11"><a href="#Acidity.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="Acidity.instantiate-11"><a href="#Acidity.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="Acidity.instantiate-12"><a href="#Acidity.instantiate-12"><span class="linenos">12</span></a>    <span class="k">return</span> <span class="n">copy</span>
 </span></pre></div>
 

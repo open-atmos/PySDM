@@ -129,9 +129,9 @@
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius_range</span> <span class="o">=</span> <span class="n">radius_range</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
@@ -176,9 +176,9 @@
 </span><span id="MeanRadius-19"><a href="#MeanRadius-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius_range</span> <span class="o">=</span> <span class="n">radius_range</span>
 </span><span id="MeanRadius-20"><a href="#MeanRadius-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 </span><span id="MeanRadius-21"><a href="#MeanRadius-21"><span class="linenos">21</span></a>
-</span><span id="MeanRadius-22"><a href="#MeanRadius-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="MeanRadius-23"><a href="#MeanRadius-23"><span class="linenos">23</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
-</span><span id="MeanRadius-24"><a href="#MeanRadius-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="MeanRadius-22"><a href="#MeanRadius-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="MeanRadius-23"><a href="#MeanRadius-23"><span class="linenos">23</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+</span><span id="MeanRadius-24"><a href="#MeanRadius-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="MeanRadius-25"><a href="#MeanRadius-25"><span class="linenos">25</span></a>
 </span><span id="MeanRadius-26"><a href="#MeanRadius-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="MeanRadius-27"><a href="#MeanRadius-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
@@ -244,15 +244,15 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">builder</span></span><span class="return-annotation">):</span></span>
+        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">particulator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MeanRadius.register-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MeanRadius.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanRadius.register-22"><a href="#MeanRadius.register-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="MeanRadius.register-23"><a href="#MeanRadius.register-23"><span class="linenos">23</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
-</span><span id="MeanRadius.register-24"><a href="#MeanRadius.register-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanRadius.register-22"><a href="#MeanRadius.register-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="MeanRadius.register-23"><a href="#MeanRadius.register-23"><span class="linenos">23</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+</span><span id="MeanRadius.register-24"><a href="#MeanRadius.register-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -268,16 +268,16 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">builder</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
+        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">particulator</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MeanRadius.instantiate-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MeanRadius.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanRadius.instantiate-8"><a href="#MeanRadius.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanRadius.instantiate-8"><a href="#MeanRadius.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
 </span><span id="MeanRadius.instantiate-9"><a href="#MeanRadius.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="MeanRadius.instantiate-10"><a href="#MeanRadius.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
-</span><span id="MeanRadius.instantiate-11"><a href="#MeanRadius.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="MeanRadius.instantiate-11"><a href="#MeanRadius.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="MeanRadius.instantiate-12"><a href="#MeanRadius.instantiate-12"><span class="linenos">12</span></a>    <span class="k">return</span> <span class="n">copy</span>
 </span></pre></div>
 

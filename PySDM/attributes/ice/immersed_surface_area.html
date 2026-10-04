@@ -111,8 +111,8 @@
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImmersedSurfaceArea</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles_builder</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particles_builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -131,8 +131,8 @@
     <a class="headerlink" href="#ImmersedSurfaceArea"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ImmersedSurfaceArea-10"><a href="#ImmersedSurfaceArea-10"><span class="linenos">10</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
 </span><span id="ImmersedSurfaceArea-11"><a href="#ImmersedSurfaceArea-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImmersedSurfaceArea</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
-</span><span id="ImmersedSurfaceArea-12"><a href="#ImmersedSurfaceArea-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles_builder</span><span class="p">):</span>
-</span><span id="ImmersedSurfaceArea-13"><a href="#ImmersedSurfaceArea-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particles_builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
+</span><span id="ImmersedSurfaceArea-12"><a href="#ImmersedSurfaceArea-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="ImmersedSurfaceArea-13"><a href="#ImmersedSurfaceArea-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -142,14 +142,14 @@
                                         <input id="ImmersedSurfaceArea.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">ImmersedSurfaceArea</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">particles_builder</span></span>)</span>
+        <span class="name">ImmersedSurfaceArea</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">particulator</span></span>)</span>
 
                 <label class="view-source-button" for="ImmersedSurfaceArea.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ImmersedSurfaceArea.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ImmersedSurfaceArea.__init__-12"><a href="#ImmersedSurfaceArea.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles_builder</span><span class="p">):</span>
-</span><span id="ImmersedSurfaceArea.__init__-13"><a href="#ImmersedSurfaceArea.__init__-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particles_builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ImmersedSurfaceArea.__init__-12"><a href="#ImmersedSurfaceArea.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="ImmersedSurfaceArea.__init__-13"><a href="#ImmersedSurfaceArea.__init__-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"immersed surface area"</span><span class="p">)</span>
 </span></pre></div>
 
 

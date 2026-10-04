@@ -128,9 +128,9 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="n">output</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="n">output</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -157,9 +157,9 @@
 </span><span id="Linear-15"><a href="#Linear-15"><span class="linenos">15</span></a>        <span class="n">output</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
 </span><span id="Linear-16"><a href="#Linear-16"><span class="linenos">16</span></a>        <span class="n">output</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
 </span><span id="Linear-17"><a href="#Linear-17"><span class="linenos">17</span></a>
-</span><span id="Linear-18"><a href="#Linear-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Linear-19"><a href="#Linear-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="Linear-20"><a href="#Linear-20"><span class="linenos">20</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+</span><span id="Linear-18"><a href="#Linear-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="Linear-19"><a href="#Linear-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+</span><span id="Linear-20"><a href="#Linear-20"><span class="linenos">20</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -223,15 +223,15 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">builder</span></span><span class="return-annotation">):</span></span>
+        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">particulator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Linear.register-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Linear.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Linear.register-18"><a href="#Linear.register-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Linear.register-19"><a href="#Linear.register-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="Linear.register-20"><a href="#Linear.register-20"><span class="linenos">20</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Linear.register-18"><a href="#Linear.register-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="Linear.register-19"><a href="#Linear.register-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+</span><span id="Linear.register-20"><a href="#Linear.register-20"><span class="linenos">20</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">"volume"</span><span class="p">)</span>
 </span></pre></div>
 
 

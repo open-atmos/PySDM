@@ -116,8 +116,8 @@ for do-nothing attributes</p>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">DummyAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -141,8 +141,8 @@ for do-nothing attributes</p>
     </div>
     <a class="headerlink" href="#DummyAttribute"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="DummyAttribute-10"><a href="#DummyAttribute-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">DummyAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">):</span>
-</span><span id="DummyAttribute-11"><a href="#DummyAttribute-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span id="DummyAttribute-12"><a href="#DummyAttribute-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</span><span id="DummyAttribute-11"><a href="#DummyAttribute-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span id="DummyAttribute-12"><a href="#DummyAttribute-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </span><span id="DummyAttribute-13"><a href="#DummyAttribute-13"><span class="linenos">13</span></a>
 </span><span id="DummyAttribute-14"><a href="#DummyAttribute-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
 </span><span id="DummyAttribute-15"><a href="#DummyAttribute-15"><span class="linenos">15</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -159,14 +159,14 @@ for do-nothing attributes</p>
                                         <input id="DummyAttribute.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">DummyAttribute</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span>, </span><span class="param"><span class="n">name</span></span>)</span>
+        <span class="name">DummyAttribute</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">particulator</span>, </span><span class="param"><span class="n">name</span></span>)</span>
 
                 <label class="view-source-button" for="DummyAttribute.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DummyAttribute.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DummyAttribute.__init__-11"><a href="#DummyAttribute.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span id="DummyAttribute.__init__-12"><a href="#DummyAttribute.__init__-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DummyAttribute.__init__-11"><a href="#DummyAttribute.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span id="DummyAttribute.__init__-12"><a href="#DummyAttribute.__init__-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </span></pre></div>
 
 

@@ -110,8 +110,8 @@
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="c1"># pylint: disable=import-outside-toplevel</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.attributes.impl.dummy_attribute</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyAttribute</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_factory</span><span class="p">(</span><span class="n">builder</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">DummyAttribute</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_factory</span><span class="p">(</span><span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">DummyAttribute</span><span class="p">(</span><span class="n">particulator</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">return</span> <span class="n">_factory</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>

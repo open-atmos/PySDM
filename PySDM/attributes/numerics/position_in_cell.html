@@ -109,11 +109,11 @@
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PositionInCell</span><span class="p">(</span><span class="n">CellAttribute</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>            <span class="n">particulator</span><span class="p">,</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">"position in cell"</span><span class="p">,</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="p">)</span>
 </span></pre></div>
 
@@ -133,11 +133,11 @@
     <a class="headerlink" href="#PositionInCell"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PositionInCell-9"><a href="#PositionInCell-9"><span class="linenos"> 9</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
 </span><span id="PositionInCell-10"><a href="#PositionInCell-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PositionInCell</span><span class="p">(</span><span class="n">CellAttribute</span><span class="p">):</span>
-</span><span id="PositionInCell-11"><a href="#PositionInCell-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="PositionInCell-11"><a href="#PositionInCell-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="PositionInCell-12"><a href="#PositionInCell-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="PositionInCell-13"><a href="#PositionInCell-13"><span class="linenos">13</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="PositionInCell-13"><a href="#PositionInCell-13"><span class="linenos">13</span></a>            <span class="n">particulator</span><span class="p">,</span>
 </span><span id="PositionInCell-14"><a href="#PositionInCell-14"><span class="linenos">14</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">"position in cell"</span><span class="p">,</span>
-</span><span id="PositionInCell-15"><a href="#PositionInCell-15"><span class="linenos">15</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
+</span><span id="PositionInCell-15"><a href="#PositionInCell-15"><span class="linenos">15</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
 </span><span id="PositionInCell-16"><a href="#PositionInCell-16"><span class="linenos">16</span></a>        <span class="p">)</span>
 </span></pre></div>
 
@@ -148,17 +148,17 @@
                                         <input id="PositionInCell.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">PositionInCell</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+        <span class="name">PositionInCell</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">particulator</span></span>)</span>
 
                 <label class="view-source-button" for="PositionInCell.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#PositionInCell.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PositionInCell.__init__-11"><a href="#PositionInCell.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PositionInCell.__init__-11"><a href="#PositionInCell.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="PositionInCell.__init__-12"><a href="#PositionInCell.__init__-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="PositionInCell.__init__-13"><a href="#PositionInCell.__init__-13"><span class="linenos">13</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="PositionInCell.__init__-13"><a href="#PositionInCell.__init__-13"><span class="linenos">13</span></a>            <span class="n">particulator</span><span class="p">,</span>
 </span><span id="PositionInCell.__init__-14"><a href="#PositionInCell.__init__-14"><span class="linenos">14</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">"position in cell"</span><span class="p">,</span>
-</span><span id="PositionInCell.__init__-15"><a href="#PositionInCell.__init__-15"><span class="linenos">15</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
+</span><span id="PositionInCell.__init__-15"><a href="#PositionInCell.__init__-15"><span class="linenos">15</span></a>            <span class="n">n_vector_components</span><span class="o">=</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
 </span><span id="PositionInCell.__init__-16"><a href="#PositionInCell.__init__-16"><span class="linenos">16</span></a>        <span class="p">)</span>
 </span></pre></div>
 

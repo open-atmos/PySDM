@@ -127,9 +127,9 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">count_activated</span><span class="o">=</span><span class="n">count_activated</span><span class="p">,</span> <span class="n">count_unactivated</span><span class="o">=</span><span class="n">count_unactivated</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="p">)</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ActivationFilteredProduct</span><span class="p">,</span> <span class="n">MomentProduct</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">)</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">ActivationFilteredProduct</span><span class="o">.</span><span class="n">impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s2">"volume"</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -160,9 +160,9 @@
 </span><span id="MeanVolumeRadius-20"><a href="#MeanVolumeRadius-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">count_activated</span><span class="o">=</span><span class="n">count_activated</span><span class="p">,</span> <span class="n">count_unactivated</span><span class="o">=</span><span class="n">count_unactivated</span>
 </span><span id="MeanVolumeRadius-21"><a href="#MeanVolumeRadius-21"><span class="linenos">21</span></a>        <span class="p">)</span>
 </span><span id="MeanVolumeRadius-22"><a href="#MeanVolumeRadius-22"><span class="linenos">22</span></a>
-</span><span id="MeanVolumeRadius-23"><a href="#MeanVolumeRadius-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="MeanVolumeRadius-23"><a href="#MeanVolumeRadius-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="MeanVolumeRadius-24"><a href="#MeanVolumeRadius-24"><span class="linenos">24</span></a>        <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ActivationFilteredProduct</span><span class="p">,</span> <span class="n">MomentProduct</span><span class="p">):</span>
-</span><span id="MeanVolumeRadius-25"><a href="#MeanVolumeRadius-25"><span class="linenos">25</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>
+</span><span id="MeanVolumeRadius-25"><a href="#MeanVolumeRadius-25"><span class="linenos">25</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">)</span>
 </span><span id="MeanVolumeRadius-26"><a href="#MeanVolumeRadius-26"><span class="linenos">26</span></a>
 </span><span id="MeanVolumeRadius-27"><a href="#MeanVolumeRadius-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="MeanVolumeRadius-28"><a href="#MeanVolumeRadius-28"><span class="linenos">28</span></a>        <span class="n">ActivationFilteredProduct</span><span class="o">.</span><span class="n">impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s2">"volume"</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -203,15 +203,15 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">builder</span></span><span class="return-annotation">):</span></span>
+        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">particulator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MeanVolumeRadius.register-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MeanVolumeRadius.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanVolumeRadius.register-23"><a href="#MeanVolumeRadius.register-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanVolumeRadius.register-23"><a href="#MeanVolumeRadius.register-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
 </span><span id="MeanVolumeRadius.register-24"><a href="#MeanVolumeRadius.register-24"><span class="linenos">24</span></a>        <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ActivationFilteredProduct</span><span class="p">,</span> <span class="n">MomentProduct</span><span class="p">):</span>
-</span><span id="MeanVolumeRadius.register-25"><a href="#MeanVolumeRadius.register-25"><span class="linenos">25</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>
+</span><span id="MeanVolumeRadius.register-25"><a href="#MeanVolumeRadius.register-25"><span class="linenos">25</span></a>            <span class="n">base_class</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -227,16 +227,16 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">builder</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
+        <span class="name">instantiate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">particulator</span>, </span><span class="param"><span class="n">buffer</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MeanVolumeRadius.instantiate-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MeanVolumeRadius.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanVolumeRadius.instantiate-8"><a href="#MeanVolumeRadius.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MeanVolumeRadius.instantiate-8"><a href="#MeanVolumeRadius.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">particulator</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
 </span><span id="MeanVolumeRadius.instantiate-9"><a href="#MeanVolumeRadius.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="MeanVolumeRadius.instantiate-10"><a href="#MeanVolumeRadius.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
-</span><span id="MeanVolumeRadius.instantiate-11"><a href="#MeanVolumeRadius.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="MeanVolumeRadius.instantiate-11"><a href="#MeanVolumeRadius.instantiate-11"><span class="linenos">11</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
 </span><span id="MeanVolumeRadius.instantiate-12"><a href="#MeanVolumeRadius.instantiate-12"><span class="linenos">12</span></a>    <span class="k">return</span> <span class="n">copy</span>
 </span></pre></div>
 

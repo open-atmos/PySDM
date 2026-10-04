@@ -135,8 +135,8 @@
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_range</span><span class="p">,</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="p">)</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -174,8 +174,8 @@
 </span><span id="ActivationFilteredProduct-28"><a href="#ActivationFilteredProduct-28"><span class="linenos">28</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_range</span><span class="p">,</span>
 </span><span id="ActivationFilteredProduct-29"><a href="#ActivationFilteredProduct-29"><span class="linenos">29</span></a>        <span class="p">)</span>
 </span><span id="ActivationFilteredProduct-30"><a href="#ActivationFilteredProduct-30"><span class="linenos">30</span></a>
-</span><span id="ActivationFilteredProduct-31"><a href="#ActivationFilteredProduct-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="ActivationFilteredProduct-32"><a href="#ActivationFilteredProduct-32"><span class="linenos">32</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
+</span><span id="ActivationFilteredProduct-31"><a href="#ActivationFilteredProduct-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="ActivationFilteredProduct-32"><a href="#ActivationFilteredProduct-32"><span class="linenos">32</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -238,14 +238,14 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">builder</span></span><span class="return-annotation">):</span></span>
+        <span class="name">register</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">particulator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="ActivationFilteredProduct.register-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ActivationFilteredProduct.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivationFilteredProduct.register-31"><a href="#ActivationFilteredProduct.register-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="ActivationFilteredProduct.register-32"><a href="#ActivationFilteredProduct.register-32"><span class="linenos">32</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivationFilteredProduct.register-31"><a href="#ActivationFilteredProduct.register-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
+</span><span id="ActivationFilteredProduct.register-32"><a href="#ActivationFilteredProduct.register-32"><span class="linenos">32</span></a>        <span class="n">particulator</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filter_attr</span><span class="p">)</span>
 </span></pre></div>
 
 
