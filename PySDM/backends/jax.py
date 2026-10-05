@@ -26,6 +26,7 @@ class Jax(
         self,
         formulae=None,
         *,
+        n_dims=0,
         double_precision=True,
         override_jit_flags=None,  # pylint: disable=unused-argument
         # TODO #1913: investigate if there are any jit/jax flags we can add configuration for
@@ -35,6 +36,7 @@ class Jax(
         if not double_precision:
             raise NotImplementedError()
 
+        self.n_dims = n_dims
         self.block_until_ready = (
             block_until_ready  # TODO #1913: implement switch in jit code
         )

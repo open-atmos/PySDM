@@ -40,13 +40,18 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     default_croupier = "local"
 
     def __init__(
-        self, formulae=None, *, double_precision=True, override_jit_flags=None
+        self,
+        formulae=None,
+        *,
+        n_dims=0,
+        double_precision=True,
+        override_jit_flags=None,
     ):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
-
+        self.n_dims = n_dims
         parallel_default = True
 
         if override_jit_flags is not None and "parallel" in override_jit_flags:
