@@ -7,6 +7,7 @@ import numpy as np
 
 from PySDM.dynamics.terminal_velocity import GunnKinzer1949
 from PySDM.particulator import Particulator
+from PySDM.environments import Box
 
 
 def init_fall_momenta(
@@ -31,7 +32,11 @@ def init_fall_momenta(
 
     from PySDM.backends import CPU  # pylint: disable=import-outside-toplevel
 
-    particulator = Particulator(0, CPU())  # TODO #1155
+    particulator = Particulator(
+        n_sd=0,
+        environment=Box(dt=np.nan, dv=np.nan, backend=CPU()),
+        attributes={"multiplicity": np.empty(0), "water mass": np.empty(0)},
+    )  # TODO #1155
 
     approximation = terminal_velocity_approx(particulator=particulator)
 

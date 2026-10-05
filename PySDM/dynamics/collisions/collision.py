@@ -99,12 +99,12 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
         self.collision_kernel = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         rnd_args = {
             "optimized_random": self.optimized_random,
             "dt_min": self.dt_coal_range[0],
-            "seed": builder.formulae.seed,
+            "seed": particulator.formulae.seed,
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:
@@ -136,12 +136,12 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_dt_min = self.particulator.Storage.empty(**empty_args_cellwise)
         self.stats_dt_min.fill(np.nan)
 
-        self.rnd_opt_coll.register(builder)
+        self.rnd_opt_coll.register(particulator)
         self.collision_kernel = getattr(
             collision_kernels,
             self.particulator.formulae.collision_kernel_liquid_liquid.__name__,
         )()
-        self.collision_kernel.register(builder)
+        self.collision_kernel.register(particulator)
 
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
@@ -166,15 +166,15 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.Eb_temp = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
-            self.rnd_opt_proc.register(builder)
-            self.rnd_opt_frag.register(builder)
-            self.compute_coalescence_efficiency.register(builder)
-            self.compute_breakup_efficiency.register(builder)
-            self.compute_number_of_fragments.register(builder)
+            self.rnd_opt_proc.register(particulator)
+            self.rnd_opt_frag.register(particulator)
+            self.compute_breakup_efficiency.register(particulator)
+            self.compute_number_of_fragments.register(particulator)
             self.breakup_rate = self.particulator.Storage.from_ndarray(*counter_args)
             self.breakup_rate_deficit = self.particulator.Storage.from_ndarray(
                 *counter_args
             )
+        self.compute_coalescence_efficiency.register(particulator)
 
     def __call__(self):
         if self.enable:

@@ -1,10 +1,8 @@
 import numpy as np
 
 
-def update_thermo(particulator, T):
-    env = particulator.environment
-    svp = particulator.formulae.saturation_vapour_pressure
-
+def update_thermo(env, T):
+    svp = env.backend.formulae.saturation_vapour_pressure
     env["T"] = T
     env["a_w_ice"] = svp.pvs_ice(T) / svp.pvs_water(T)
 
@@ -17,10 +15,13 @@ def run_simulation(particulator, temperature_profile, n_steps):
     for step in range(n_steps + 1):
         if step != 0:
             update_thermo(
-                particulator, T=temperature_profile((step - 0.5) * particulator.dt)
+                particulator.environment,
+                T=temperature_profile((step - 0.5) * particulator.dt),
             )
             particulator.run(step - particulator.n_steps)
-            update_thermo(particulator, T=temperature_profile(step * particulator.dt))
+            update_thermo(
+                particulator.environment, T=temperature_profile(step * particulator.dt)
+            )
             output["frozen"].append(particulator.attributes["volume"].to_ndarray() < 0)
         else:
             output["spectrum"] = {}

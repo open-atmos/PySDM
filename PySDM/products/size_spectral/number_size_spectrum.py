@@ -17,19 +17,17 @@ class NumberSizeSpectrum(SpectrumMomentProduct):
         self.moments = None
         self.attr = "volume"
 
-    def register(self, builder):
-        builder.request_attribute("volume")
+    def register(self, particulator):
+        particulator.request_attribute("volume")
 
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(
-            self.radius_bins_edges
-        )
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+        volume_bins_edges = particulator.formulae.trivia.volume(self.radius_bins_edges)
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
             volume_bins_edges
         )
 
-        super().register(builder)
+        super().register(particulator)
 
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])

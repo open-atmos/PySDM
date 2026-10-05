@@ -10,5 +10,5 @@ class ConstantK:
     def __call__(self, output, is_first_in_pair):
         output.fill(self.particulator.formulae.constants.CONSTANTK_a)
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
