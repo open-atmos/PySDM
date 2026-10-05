@@ -68,13 +68,13 @@ class TestMesh:
 
         # assert
         assert cell_id.shape == (n_sd,)
-        assert cell_origin.shape == (mesh.dimension, n_sd)
-        assert position_in_cell.shape == (mesh.dimension, n_sd)
+        assert cell_origin.shape == (mesh.n_dims, n_sd)
+        assert position_in_cell.shape == (mesh.n_dims, n_sd)
 
         assert 0 <= min(cell_id) <= max(cell_id) < mesh.n_cell
         assert cell_id.dtype == np.int64
 
-        for dim in range(mesh.dimension):
+        for dim in range(mesh.n_dims):
             assert (
                 0
                 <= min(cell_origin[dim, :])
@@ -83,7 +83,7 @@ class TestMesh:
             )
         assert cell_origin.dtype == np.int64
 
-        for dim in range(mesh.dimension):
+        for dim in range(mesh.n_dims):
             assert (
                 0 <= min(position_in_cell[dim, :]) <= max(position_in_cell[dim, :]) < 1
             )

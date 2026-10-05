@@ -11,5 +11,5 @@ class PositionInCell(CellAttribute):
         super().__init__(
             particulator,
             name="position in cell",
-            n_vector_components=particulator.mesh.dim,
+            n_vector_components=particulator.mesh.n_dims,
         )

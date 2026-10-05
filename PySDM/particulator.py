@@ -725,7 +725,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 **self.condensation_params,
             )
         attributes["multiplicity"] = int_caster(attributes["multiplicity"])
-        if self.mesh.dimension == 0:
+        if self.mesh.n_dims == 0:
             attributes["cell id"] = np.zeros_like(
                 attributes["multiplicity"], dtype=np.int64
             )

@@ -22,14 +22,6 @@ class Mesh:
         return self.size[-1] / self.grid[-1]
 
     @property
-    def dimension(self):
-        return self.n_dims
-
-    @property
-    def dim(self):
-        return self.n_dims
-
-    @property
     def domain_bottom_surface_area(self):
         assert self.n_dims > 0
         return {
