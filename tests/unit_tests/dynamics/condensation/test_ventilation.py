@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 
-from PySDM import Formulae, Builder
+from PySDM import Formulae, Particulator
 from PySDM.environments import Parcel
 from PySDM.formulae import _choices
 from PySDM.physics import drop_growth, ventilation, si
@@ -16,8 +16,14 @@ DRY_VOLUME = 1 * si.nm**3
 
 
 def _make_particulator(backend):
-    builder = Builder(
-        backend=backend,
+    return Particulator(
+        attributes={
+            "multiplicity": np.ones(1),
+            "signed water mass": np.asarray([INITIAL_DROPLET_MASS]),
+            "dry volume": np.asarray([DRY_VOLUME]),
+            "kappa times dry volume": 0.5 * np.asarray([DRY_VOLUME]),
+        },
+        products=(AmbientRelativeHumidity(name="RH"),),
         n_sd=1,
         environment=Parcel(
             dt=1 * si.s,
@@ -26,20 +32,12 @@ def _make_particulator(backend):
             initial_water_vapour_mixing_ratio=6.66 * si.g / si.kg,
             T0=285 * si.K,
             w=1 * si.m / si.s,
+            backend=backend,
         ),
         dynamics=(
             AmbientThermodynamics(),
             Condensation(),
         ),
-    )
-    return builder.build(
-        attributes={
-            "multiplicity": np.ones(1),
-            "signed water mass": np.asarray([INITIAL_DROPLET_MASS]),
-            "dry volume": np.asarray([DRY_VOLUME]),
-            "kappa times dry volume": 0.5 * np.asarray([DRY_VOLUME]),
-        },
-        products=(AmbientRelativeHumidity(name="RH"),),
     )
 
 

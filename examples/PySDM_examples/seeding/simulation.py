@@ -2,7 +2,7 @@ import numpy as np
 
 from PySDM_examples.seeding.settings import Settings
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
@@ -14,19 +14,26 @@ from PySDM.physics import si
 
 class Simulation:
     def __init__(self, settings: Settings):
-        builder = Builder(
-            n_sd=settings.n_sd_seeding + settings.n_sd_initial,
+        environment = Parcel(
+            dt=settings.timestep,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            w=settings.updraft,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+            p0=settings.initial_total_pressure,
+            T0=settings.initial_temperature,
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=Parcel(
-                dt=settings.timestep,
-                mass_of_dry_air=settings.mass_of_dry_air,
-                w=settings.updraft,
-                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                p0=settings.initial_total_pressure,
-                T0=settings.initial_temperature,
-            ),
+        )
+        r_dry, n_in_dv = ConstantMultiplicity(
+            settings.initial_aerosol_dry_radii
+        ).sample_deterministic(n_sd=settings.n_sd_initial, backend=environment.backend)
+        attributes = environment.init_attributes(
+            n_in_dv=n_in_dv, kappa=settings.initial_aerosol_kappa, r_dry=r_dry
+        )
+        self.particulator = Particulator(
+            environment=environment,
+            n_sd=settings.n_sd_seeding + settings.n_sd_initial,
             dynamics=[
                 AmbientThermodynamics(),
                 Condensation(),
@@ -50,17 +57,6 @@ class Simulation:
                     }
                 ),
             ],
-        )
-
-        r_dry, n_in_dv = ConstantMultiplicity(
-            settings.initial_aerosol_dry_radii
-        ).sample_deterministic(
-            n_sd=settings.n_sd_initial, backend=builder.particulator.backend
-        )
-        attributes = builder.particulator.environment.init_attributes(
-            n_in_dv=n_in_dv, kappa=settings.initial_aerosol_kappa, r_dry=r_dry
-        )
-        self.particulator = builder.build(
             attributes={
                 k: np.pad(
                     array=v,

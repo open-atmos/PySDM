@@ -9,7 +9,7 @@ version_scheme = "post-release"
 include = ["PySDM", "PySDM*"]
 
 [build-system]
-requires = ['setuptools==83.0.0', 'setuptools-scm==10.2.1']
+requires = ['setuptools==84.0', 'setuptools-scm==10.2.3']
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -64,7 +64,7 @@ nonunit-tests = [
 ]
 
 CI_version_pins = [
-  "PyPartMC==2.1.0",
+  "PyPartMC==2.1.2",
   "numba==0.66.0",
   "numpy==2.0.2",
   "scipy==1.15.3",
@@ -72,7 +72,7 @@ CI_version_pins = [
   "CURandRTC==0.1.7",
   "jax==0.8.0",
   "Pint==0.24.4",
-  "chempy==0.10.1",
+  "chempy==0.10.2",
   "pyevtk==1.7.0",
   "pyparsing==3.2.5",
 ]
