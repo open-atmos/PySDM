@@ -18,10 +18,10 @@ class Long1974:
         self.largeR = None
         self.arrays = {}
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute("volume")
-        builder.request_attribute("radius")
+    def register(self, particulator):
+        self.particulator = particulator
+        particulator.request_attribute("volume")
+        particulator.request_attribute("radius")
         for key in (
             "r_lg",
             "v_lg",

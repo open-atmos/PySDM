@@ -6,7 +6,7 @@ import matplotlib
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.products import (
@@ -212,15 +212,8 @@ class SpectrumPlotter:
 
 
 def run(settings, backend, observers=(), sampling_method="deterministic"):
-    builder = Builder(
-        n_sd=settings.n_sd,
-        backend=backend,
-        environment=Box(dv=settings.dv, dt=settings.dt),
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
-    )
-    builder.particulator.environment["rhod"] = 1.0
+    env = Box(dv=settings.dv, dt=settings.dt, backend=backend)
+    env["rhod"] = 1.0
     attributes = {}
     sampling = settings.sampling
     attributes["volume"], attributes["multiplicity"] = getattr(
@@ -233,7 +226,15 @@ def run(settings, backend, observers=(), sampling_method="deterministic"):
         WallTime(),
         CollisionRateDeficitPerGridbox(name="deficit"),
     )
-    particulator = builder.build(attributes, products)
+    particulator = Particulator(
+        attributes=attributes,
+        products=products,
+        n_sd=settings.n_sd,
+        environment=env,
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
+    )
 
     for observer in observers:
         particulator.observers.append(observer)

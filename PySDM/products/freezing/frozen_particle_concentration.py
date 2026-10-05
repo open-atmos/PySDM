@@ -26,9 +26,9 @@ class FrozenParticleConcentration(ConcentrationProduct):
         if not count_unactivated:
             self.__filter_range[1] = -1
 
-    def register(self, builder):
-        super().register(builder)
-        builder.request_attribute("wet to critical volume ratio")
+    def register(self, particulator):
+        super().register(particulator)
+        particulator.request_attribute("wet to critical volume ratio")
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(

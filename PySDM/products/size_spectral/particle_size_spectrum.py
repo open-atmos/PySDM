@@ -32,20 +32,20 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
         self.rho_stp = None
         super().__init__(name=name, unit=unit, attr_unit="m^3")
 
-    def register(self, builder):
-        builder.request_attribute(self.volume_attr)
+    def register(self, particulator):
+        particulator.request_attribute(self.volume_attr)
 
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(
+        volume_bins_edges = particulator.formulae.trivia.volume(
             np.asarray(self.radius_bins_edges)
         )
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
             volume_bins_edges
         )
 
-        super().register(builder)
+        super().register(particulator)
 
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
-        self.rho_stp = builder.formulae.constants.rho_STP
+        self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.rho_stp = particulator.formulae.constants.rho_STP
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])

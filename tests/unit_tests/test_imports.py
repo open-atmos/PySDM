@@ -5,7 +5,6 @@ import pytest
 import PySDM
 
 CLASSES = (
-    "Builder",
     "Formulae",
     "Particulator",
     "attributes.chemistry.Acidity",

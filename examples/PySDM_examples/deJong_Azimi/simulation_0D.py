@@ -3,7 +3,7 @@ from collections import namedtuple
 import numpy as np
 
 from PySDM.backends import CPU
-from PySDM.builder import Builder
+from PySDM.particulator import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -16,19 +16,13 @@ from PySDM.products.size_spectral import (
 
 
 def run_box(settings, backend_class=CPU):
-    builder = Builder(
-        n_sd=settings.n_sd,
+    environment = Box(
+        dv=settings.dv,
+        dt=settings.dt,
         backend=backend_class(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt),
-        dynamics=[
-            Coalescence(
-                collision_kernel=settings.kernel,
-                coalescence_efficiency=settings.coal_eff,
-                adaptive=settings.adaptive,
-            )
-        ],
     )
-    builder.particulator.environment["rhod"] = settings.rhod
+
+    environment["rhod"] = settings.rhod
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
@@ -41,7 +35,19 @@ def run_box(settings, backend_class=CPU):
         VolumeFirstMoment(name="M1"),
         VolumeSecondMoment(name="M2"),
     )
-    particulator = builder.build(attributes, products)
+    particulator = Particulator(
+        n_sd=settings.n_sd,
+        environment=environment,
+        dynamics=[
+            Coalescence(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                adaptive=settings.adaptive,
+            )
+        ],
+        attributes=attributes,
+        products=products,
+    )
 
     y = np.ndarray((len(settings.steps), len(settings.radius_bins_edges) - 1))
     mom = np.ndarray((len(settings.steps), 3))

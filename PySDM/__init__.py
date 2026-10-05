@@ -9,7 +9,6 @@ from PySDM.attributes.impl.attribute_registry import register_attribute
 
 from . import attributes
 from . import environments, exporters, products
-from .builder import Builder
 from .formulae import Formulae
 from .particulator import Particulator
 
