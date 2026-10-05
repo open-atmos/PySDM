@@ -16,6 +16,8 @@ class Box:
         self.particulator = None
         self._ambient_air = {}
         self.backend = backend
+        if backend is not None:
+            assert backend.n_dims == self.mesh.n_dims
 
     def __getitem__(self, item):
         return self._ambient_air[item]

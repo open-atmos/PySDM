@@ -39,7 +39,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         super().__init__(
             dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase, backend=backend
         )
-
+        assert backend.n_dims == self.mesh.n_dims
         self.mass_of_dry_air = mass_of_dry_air
         self.w = w if callable(w) else lambda _: w
         self.delta_liquid_water_mixing_ratio = np.nan
