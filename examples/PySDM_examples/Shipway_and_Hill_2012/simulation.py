@@ -93,7 +93,7 @@ class Simulation:
         )
         self.attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
-            spectral_discretisation=spectral_sampling.ConstantMultiplicity(
+            spectral_discretisation=spectral_sampling.Logarithmic(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air
             ),
             kappa=settings.kappa,
@@ -141,6 +141,7 @@ class Simulation:
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="water_vapour_mixing_ratio"
             ),
+            PySDM_products.LiquidWaterContent(name="LWC"),
         ]
         if settings.enable_condensation:
             self.products.extend(
