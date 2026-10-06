@@ -91,11 +91,11 @@ jobs:
         with:
           release: R2024b
           cache: true
-      - uses: matlab-actions/run-command@v3.2
+      - uses: matlab-actions/run-command@v3.3
         with:
           command: docs_code
       - run: sed -i -e 's/CPU/GPU/g' docs_code.m
-      - uses: matlab-actions/run-command@v3.2
+      - uses: matlab-actions/run-command@v3.3
         with:
           command: docs_code
 
