@@ -1,8 +1,6 @@
 """tests ensuring values on plots match those in the paper"""
 
-import sys
 from pathlib import Path
-import platform
 
 import numpy as np
 import pytest
@@ -44,6 +42,7 @@ class TestFigs456:
             delta_vapour_at_the_cloud_top_per_mille[-1], -460, significant=2
         )
 
+    @staticmethod
     def test_fig_5_rain_at_the_cloud_base(variables):
         delta_rain_at_the_cloud_base_per_mille = in_unit(
             variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
