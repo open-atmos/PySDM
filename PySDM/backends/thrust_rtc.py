@@ -50,7 +50,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         self,
         formulae=None,
         *,
-        n_dims=0,
+        n_dims=None,
         double_precision=False,
         debug=False,
         verbose=False,

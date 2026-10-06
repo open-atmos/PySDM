@@ -26,7 +26,7 @@ class Jax(
         self,
         formulae=None,
         *,
-        n_dims=0,
+        n_dims=None,
         double_precision=True,
         override_jit_flags=None,  # pylint: disable=unused-argument
         # TODO #1913: investigate if there are any jit/jax flags we can add configuration for

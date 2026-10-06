@@ -17,7 +17,7 @@ class Env:  # pylint: disable=too-few-public-methods
         self.particulator = None
         self.backend = backend
         self.mesh = namedtuple("MeshMock", ("grid", "n_dims", "n_cell"))(
-            grid=(1, 1), n_dims=0, n_cell=1
+            grid=(1, 1), n_dims=2, n_cell=1
         )
 
     def register(self, *, particulator):
