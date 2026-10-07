@@ -513,8 +513,8 @@ handled by <a href="http://github.com/open-atmos/PyMPDATA/">PyMPDATA</a></p>
     </div>
     <a class="headerlink" href="#Kinematic2D.instantiate"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Kinematic2D.instantiate-8"><a href="#Kinematic2D.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
-</span><span id="Kinematic2D.instantiate-9"><a href="#Kinematic2D.instantiate-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">"""Creating a copy without backend as a workaround</span>
-</span><span id="Kinematic2D.instantiate-10"><a href="#Kinematic2D.instantiate-10"><span class="linenos">10</span></a><span class="sd">    for long execution times: see PR #1885"""</span>  <span class="c1"># to be addressed in TODO #1179</span>
+</span><span id="Kinematic2D.instantiate-9"><a href="#Kinematic2D.instantiate-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">"""Creating a deep copy to facilitate environment reuse in user code,</span>
+</span><span id="Kinematic2D.instantiate-10"><a href="#Kinematic2D.instantiate-10"><span class="linenos">10</span></a><span class="sd">    but exluding backend (and the formulae within) to avoid re-JIT-compilations"""</span>
 </span><span id="Kinematic2D.instantiate-11"><a href="#Kinematic2D.instantiate-11"><span class="linenos">11</span></a>    <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span>
 </span><span id="Kinematic2D.instantiate-12"><a href="#Kinematic2D.instantiate-12"><span class="linenos">12</span></a>    <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Kinematic2D.instantiate-13"><a href="#Kinematic2D.instantiate-13"><span class="linenos">13</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -525,8 +525,8 @@ handled by <a href="http://github.com/open-atmos/PyMPDATA/">PyMPDATA</a></p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Creating a copy without backend as a workaround
-for long execution times: see PR #1885</p>
+            <div class="docstring"><p>Creating a deep copy to facilitate environment reuse in user code,
+but exluding backend (and the formulae within) to avoid re-JIT-compilations</p>
 </div>
 
 

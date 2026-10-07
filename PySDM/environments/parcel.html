@@ -174,7 +174,7 @@
 </span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="n">dt</span><span class="p">,</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">mesh_0d</span><span class="p">(),</span> <span class="n">variables</span><span class="p">,</span> <span class="n">mixed_phase</span><span class="o">=</span><span class="n">mixed_phase</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="k">assert</span> <span class="n">backend</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_dims</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span> <span class="o">=</span> <span class="n">mass_of_dry_air</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">w</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -333,7 +333,7 @@
 </span><span id="Parcel-40"><a href="#Parcel-40"><span class="linenos"> 40</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Parcel-41"><a href="#Parcel-41"><span class="linenos"> 41</span></a>            <span class="n">dt</span><span class="p">,</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">mesh_0d</span><span class="p">(),</span> <span class="n">variables</span><span class="p">,</span> <span class="n">mixed_phase</span><span class="o">=</span><span class="n">mixed_phase</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
 </span><span id="Parcel-42"><a href="#Parcel-42"><span class="linenos"> 42</span></a>        <span class="p">)</span>
-</span><span id="Parcel-43"><a href="#Parcel-43"><span class="linenos"> 43</span></a>
+</span><span id="Parcel-43"><a href="#Parcel-43"><span class="linenos"> 43</span></a>        <span class="k">assert</span> <span class="n">backend</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_dims</span>
 </span><span id="Parcel-44"><a href="#Parcel-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span> <span class="o">=</span> <span class="n">mass_of_dry_air</span>
 </span><span id="Parcel-45"><a href="#Parcel-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">w</span>
 </span><span id="Parcel-46"><a href="#Parcel-46"><span class="linenos"> 46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -489,7 +489,7 @@
 </span><span id="Parcel.__init__-40"><a href="#Parcel.__init__-40"><span class="linenos">40</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Parcel.__init__-41"><a href="#Parcel.__init__-41"><span class="linenos">41</span></a>            <span class="n">dt</span><span class="p">,</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">mesh_0d</span><span class="p">(),</span> <span class="n">variables</span><span class="p">,</span> <span class="n">mixed_phase</span><span class="o">=</span><span class="n">mixed_phase</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
 </span><span id="Parcel.__init__-42"><a href="#Parcel.__init__-42"><span class="linenos">42</span></a>        <span class="p">)</span>
-</span><span id="Parcel.__init__-43"><a href="#Parcel.__init__-43"><span class="linenos">43</span></a>
+</span><span id="Parcel.__init__-43"><a href="#Parcel.__init__-43"><span class="linenos">43</span></a>        <span class="k">assert</span> <span class="n">backend</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_dims</span>
 </span><span id="Parcel.__init__-44"><a href="#Parcel.__init__-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span> <span class="o">=</span> <span class="n">mass_of_dry_air</span>
 </span><span id="Parcel.__init__-45"><a href="#Parcel.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">w</span>
 </span><span id="Parcel.__init__-46"><a href="#Parcel.__init__-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -772,8 +772,8 @@ and write them to self._tmp and self.mesh.dv</p>
     </div>
     <a class="headerlink" href="#Parcel.instantiate"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.instantiate-8"><a href="#Parcel.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
-</span><span id="Parcel.instantiate-9"><a href="#Parcel.instantiate-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">"""Creating a copy without backend as a workaround</span>
-</span><span id="Parcel.instantiate-10"><a href="#Parcel.instantiate-10"><span class="linenos">10</span></a><span class="sd">    for long execution times: see PR #1885"""</span>  <span class="c1"># to be addressed in TODO #1179</span>
+</span><span id="Parcel.instantiate-9"><a href="#Parcel.instantiate-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">"""Creating a deep copy to facilitate environment reuse in user code,</span>
+</span><span id="Parcel.instantiate-10"><a href="#Parcel.instantiate-10"><span class="linenos">10</span></a><span class="sd">    but exluding backend (and the formulae within) to avoid re-JIT-compilations"""</span>
 </span><span id="Parcel.instantiate-11"><a href="#Parcel.instantiate-11"><span class="linenos">11</span></a>    <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span>
 </span><span id="Parcel.instantiate-12"><a href="#Parcel.instantiate-12"><span class="linenos">12</span></a>    <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Parcel.instantiate-13"><a href="#Parcel.instantiate-13"><span class="linenos">13</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -784,8 +784,8 @@ and write them to self._tmp and self.mesh.dv</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Creating a copy without backend as a workaround
-for long execution times: see PR #1885</p>
+            <div class="docstring"><p>Creating a deep copy to facilitate environment reuse in user code,
+but exluding backend (and the formulae within) to avoid re-JIT-compilations</p>
 </div>
 
 
