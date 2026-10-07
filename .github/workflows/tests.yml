@@ -166,6 +166,9 @@ jobs:
           - platform: "macos-14"
             python-version: "3.12"
             test-suite: "tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
+          - platform: "macos-14"
+            python-version: "3.12"
+            test-suite: "tests/smoke_tests/box"
         exclude:
           # TODO #1406
           - platform: "macos-14"
