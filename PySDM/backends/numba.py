@@ -43,7 +43,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         self,
         formulae=None,
         *,
-        n_dims=None,
+        n_dims=0,
         double_precision=True,
         override_jit_flags=None,
     ):
