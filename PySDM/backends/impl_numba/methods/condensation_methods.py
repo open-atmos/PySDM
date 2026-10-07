@@ -360,11 +360,11 @@ class CondensationMethods(BackendMethods):
     def make_calculate_ml_old(jit_flags):
         @numba.njit(**jit_flags)
         def calculate_ml_old(signed_water_mass, multiplicity, cell_idx):
-            result = 0
+            mass = 0
             for drop in cell_idx:
                 if signed_water_mass[drop] > 0:
-                    result += multiplicity[drop] * signed_water_mass[drop]
-            return result
+                    mass += multiplicity[drop] * signed_water_mass[drop]
+            return mass
 
         return calculate_ml_old
 
@@ -422,7 +422,7 @@ class CondensationMethods(BackendMethods):
             KTp,
             rtol_x,
         ):
-            result = 0
+            mass = 0
             n_activating = 0
             n_deactivating = 0
             n_activated_and_growing = 0
@@ -560,7 +560,7 @@ class CondensationMethods(BackendMethods):
                 mass_cr = formulae.particle_shape_and_density__volume_to_mass(
                     attributes.v_cr[drop]
                 )
-                result += attributes.multiplicity[drop] * mass_new
+                mass += attributes.multiplicity[drop] * mass_new
                 if not fake:
                     if (
                         mass_new > mass_cr
@@ -573,7 +573,7 @@ class CondensationMethods(BackendMethods):
                         n_deactivating += attributes.multiplicity[drop]
                     attributes.signed_water_mass[drop] = mass_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
-            return result, success, n_activating, n_deactivating, n_ripening
+            return mass, success, n_activating, n_deactivating, n_ripening
 
         return calculate_ml_new
 
