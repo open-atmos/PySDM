@@ -16,14 +16,16 @@ from PySDM import Formulae
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
 
-def test_export(backend_instance, tmp_path):
+def test_export(backend_class, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
     settings.output_interval = settings.dt
 
     storage = Storage()
-    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_instance)
+    simulator = Simulation(
+        settings, storage, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+    )
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix=".nc")
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 

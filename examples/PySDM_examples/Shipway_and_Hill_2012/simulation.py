@@ -56,7 +56,7 @@ class Simulation:
             thd_of_z=settings.thd,
             rhod_of_z=settings.rhod,
             z0=-settings.particle_reservoir_depth,
-            backend=backend(formulae=settings.formulae),
+            backend=backend(formulae=settings.formulae, n_dims=1),
             solvers=mpdata,
         )
 

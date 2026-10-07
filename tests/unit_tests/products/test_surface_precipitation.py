@@ -54,18 +54,18 @@ class TestSurfacePrecipitation:
     @pytest.mark.parametrize("n_sd", (1, 44, 666))
     # TODO #1418 add tests for counting_level
     def test_surface_precipitation(
-        *, env_class, env_ctor_args, backend_instance, dt, drop_mass, multiplicity, n_sd
+        *, env_class, env_ctor_args, backend_class, dt, drop_mass, multiplicity, n_sd
     ):
         """uses a monodisperse super-droplet setup to check if reported precip
         matches drop and flow params, the droplet is initialised at position z=0,
         so any downward movement triggers counting as precip
         """
-
-        if isinstance(backend_instance, ThrustRTC):
+        if backend_class.__name__ == ThrustRTC.__name__:
             pytest.skip("TODO #1418")
 
         # arrange
         n_cell = 1
+        backend = backend_class(n_dims=1)
         particulator = Particulator(
             attributes={
                 "multiplicity": np.asarray([multiplicity] * n_sd),
@@ -76,7 +76,7 @@ class TestSurfacePrecipitation:
             },
             products=(SurfacePrecipitation(),),
             n_sd=n_sd,
-            environment=env_class(**env_ctor_args, dt=dt, backend=backend_instance),
+            environment=env_class(**env_ctor_args, dt=dt, backend=backend),
             dynamics=(Displacement(enable_sedimentation=True),),
         )
         particulator.dynamics[Displacement.__name__].upload_courant_field(

@@ -25,7 +25,7 @@ class Simulation:
         self.settings = settings
         self.storage = storage
         self.particulator = None
-        self.backend = backend or CPU(settings.formulae)
+        self.backend = backend or CPU(settings.formulae, n_dims=2)
         self.SpinUp = SpinUp
 
     @property

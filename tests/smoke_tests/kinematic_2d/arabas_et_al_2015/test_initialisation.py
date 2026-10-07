@@ -8,13 +8,15 @@ from PySDM.physics.constants import si
 
 
 # pylint: disable=too-many-locals
-def test_initialisation(backend_instance, plot=False):
+def test_initialisation(backend_class, plot=False):
     settings = Settings()
     settings.simulation_time = -1 * settings.dt
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None, SpinUp=SpinUp, backend=backend_instance)
+    simulation = Simulation(
+        settings, None, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+    )
 
     n_levels = settings.grid[1]
     n_cell = int(np.prod(np.array(settings.grid)))
