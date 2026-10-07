@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 
-from PySDM.backends import CPU, GPU, JAX, ThrustRTC, Numba, Jax
+from PySDM.backends import CPU, GPU, JAX_CPU, JAC_GPU, ThrustRTC, Numba
 
 
 @pytest.fixture(params=(Numba, ThrustRTC))
@@ -9,7 +9,7 @@ def backend_class(request):
     return request.param
 
 
-@pytest.fixture(params=(Numba, ThrustRTC, Jax))
+@pytest.fixture(params=(Numba, ThrustRTC, JAX_CPU, JAX_GPU))
 def backend_class_with_jax(request):
     return request.param
 
@@ -26,7 +26,8 @@ def backend_instance(request):
     params=(
         pytest.param(CPU(), id="CPU"),
         pytest.param(GPU(), id="GPU"),
-        pytest.param(JAX(), id="JAX"),
+        pytest.param(JAX_CPU(), id="JAX_CPU"),
+        pytest.param(JAX_GPU(), id="JAX_GPU"),
     ),
     scope="session",
 )

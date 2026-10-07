@@ -2,6 +2,8 @@
 CPU/GPU Backend using the JAX library
 """
 
+from functools import wraps
+
 import jax
 
 from PySDM.backends.impl_jax import methods
@@ -10,12 +12,27 @@ from PySDM.backends.impl_jax.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
 
 
+def with_default_device(cls):
+    for name, method in cls.__dict__.items():
+        if name.startswith("__") or not callable(method):
+            continue
+
+        @wraps(method)
+        def wrapper(self, *args, __method=method, **kwargs):
+            with jax.default_device(self.default_device):
+                return __method(self, *args, **kwargs)
+
+        setattr(cls, name, wrapper)
+
+    return cls
+
+
 class Jax(
-    methods.CollisionsMethods,
-    methods.PairMethods,
-    methods.IndexMethods,
-    methods.PhysicsMethods,
-    methods.MomentsMethods,
+    with_default_device(methods.CollisionsMethods),
+    with_default_device(methods.PairMethods),
+    with_default_device(methods.IndexMethods),
+    with_default_device(methods.PhysicsMethods),
+    with_default_device(methods.MomentsMethods),
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -25,6 +42,7 @@ class Jax(
     def __init__(
         self,
         formulae=None,
+        jax_backend=None,
         *,
         double_precision=True,
         override_jit_flags=None,  # pylint: disable=unused-argument
@@ -35,16 +53,19 @@ class Jax(
         if not double_precision:
             raise NotImplementedError()
 
+        self.default_device = jax.devices(backend=jax_backend)[0]
+
         self.block_until_ready = (
             block_until_ready  # TODO #1913: implement switch in jit code
         )
-        self.formulae = formulae or Formulae()
-        self.formulae_flattened = self.formulae.flatten
-
         self.default_jit_flags = {"parallel": False}
 
-        methods.CollisionsMethods.__init__(self)
-        methods.PairMethods.__init__(self)
-        methods.IndexMethods.__init__(self)
-        methods.PhysicsMethods.__init__(self)
-        methods.MomentsMethods.__init__(self)
+        with jax.default_device(self.default_device):
+            self.formulae = formulae or Formulae()
+            self.formulae_flattened = self.formulae.flatten
+
+            methods.CollisionsMethods.__init__(self)
+            methods.PairMethods.__init__(self)
+            methods.IndexMethods.__init__(self)
+            methods.PhysicsMethods.__init__(self)
+            methods.MomentsMethods.__init__(self)
