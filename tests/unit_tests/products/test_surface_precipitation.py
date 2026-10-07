@@ -65,7 +65,7 @@ class TestSurfacePrecipitation:
 
         # arrange
         n_cell = 1
-        backend = backend_class(n_dims=env_ctor_args["mesh"].n_dims)
+        backend = backend_class(n_dims=1)
         particulator = Particulator(
             attributes={
                 "multiplicity": np.asarray([multiplicity] * n_sd),

@@ -30,7 +30,7 @@ def test_courant_product(courant_field):
             grid=GRID,
             size=(100, 100),
             rhod_of=lambda x: x * 0 + 1,
-            backend=CPU(n_dims=len(GRID)),
+            backend=CPU(n_dims=2),
         ),
         dynamics=(Displacement(),),
         attributes={

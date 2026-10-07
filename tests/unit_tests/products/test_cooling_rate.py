@@ -101,13 +101,12 @@ class TestCoolingRate:
             def __call__(self):
                 pass
 
-        mesh = Mesh(grid=(nz,), size=(z_max,))
         env = Kinematic1D(
             dt=timestep,
-            mesh=mesh,
+            mesh=Mesh(grid=(nz,), size=(z_max,)),
             thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
             rhod_of_z=lambda z: 0 * z + constant_rhod,
-            backend=CPU(n_dims=mesh.n_dims),
+            backend=CPU(n_dims=1),
             solvers=namedtuple(typename="_", field_names=("advectee",))(
                 advectee=namedtuple(typename="__", field_names=("ravel", "shape"))(
                     ravel=lambda: None, shape=(nz,)
