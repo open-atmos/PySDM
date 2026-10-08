@@ -1,8 +1,6 @@
 """tests ensuring values on plots match those in the paper"""
 
-import sys
 from pathlib import Path
-import platform
 
 import numpy as np
 import pytest
@@ -22,19 +20,8 @@ def variables_fixture():
     )
 
 
-@pytest.mark.xfail(
-    platform.system() == "Darwin" and platform.machine() == "x86_64",
-    strict=True,
-    reason="TODO #1207",
-)
 class TestFigs456:
     @staticmethod
-    @pytest.mark.xfail(
-        sys.platform != "win32",
-        reason="bug TODO #1207",
-        raises=AssertionError,
-        strict=True,
-    )
     def test_fig_5_vapour_asymptote(variables):
         delta_vapour_at_the_cloud_top_per_mille = in_unit(
             variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
@@ -56,12 +43,6 @@ class TestFigs456:
         )
 
     @staticmethod
-    @pytest.mark.xfail(
-        sys.platform != "win32",
-        reason="bug TODO #1207",
-        raises=AssertionError,
-        strict=True,
-    )
     def test_fig_5_rain_at_the_cloud_base(variables):
         delta_rain_at_the_cloud_base_per_mille = in_unit(
             variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
