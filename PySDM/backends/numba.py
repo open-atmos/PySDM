@@ -52,7 +52,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
         self.n_dims = n_dims
-        parallel_default = True
+        parallel_default = n_dims != 0
 
         if override_jit_flags is not None and "parallel" in override_jit_flags:
             parallel_default = override_jit_flags["parallel"]

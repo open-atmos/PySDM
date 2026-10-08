@@ -23,7 +23,7 @@ from PySDM.initialisation.sampling import spectral_sampling
     "backend",
     (
         pytest.param(GPU(), marks=pytest.mark.xfail(strict=True)),
-        CPU(override_jit_flags={"parallel": False}),
+        CPU(),
     ),
 )
 def test_activation_criteria(backend, plot=False):

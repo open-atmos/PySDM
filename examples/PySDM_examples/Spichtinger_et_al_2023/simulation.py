@@ -31,14 +31,7 @@ class Simulation(BasicSimulation):
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.w_updraft,
-            backend=backend(
-                formulae=settings.formulae,
-                **(
-                    {"override_jit_flags": {"parallel": False}}
-                    if backend is Numba
-                    else {}
-                ),
-            ),
+            backend=backend(formulae=settings.formulae),
         )
 
         self.n_sd = settings.n_sd

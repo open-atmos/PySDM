@@ -30,9 +30,7 @@ class Simulation:
             T0=settings.T0,
             w=settings.w,
             z0=settings.z0,
-            backend=backend(
-                formulae=self.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=backend(formulae=self.formulae),
         )
 
         condensation = Condensation(

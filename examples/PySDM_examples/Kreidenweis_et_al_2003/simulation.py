@@ -19,9 +19,7 @@ class Simulation(BasicSimulation):
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.T0,
             w=settings.w,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=CPU(formulae=settings.formulae),
         )
         attributes = environment.init_attributes(
             n_in_dv=settings.n_in_dv,
