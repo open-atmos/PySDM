@@ -5,15 +5,16 @@ of droplets
 
 import numpy as np
 
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949
 from PySDM.particulator import Particulator
 from PySDM.environments import Box
 
 
 def init_fall_momenta(
+    *,
+    terminal_velocity_approx,
+    backend,
     water_mass: np.ndarray,
     zero: bool = False,
-    terminal_velocity_approx=GunnKinzer1949,  # TODO #1155
 ):
     """
     Calculate default values of the
@@ -30,23 +31,13 @@ def init_fall_momenta(
     if zero:
         return np.zeros_like(water_mass)
 
-    from PySDM.backends import CPU  # pylint: disable=import-outside-toplevel
+    approximation = terminal_velocity_approx(backend=backend)
 
-    particulator = Particulator(
-        n_sd=0,
-        environment=Box(dt=np.nan, dv=np.nan, backend=CPU()),
-        attributes={"multiplicity": np.empty(0), "water mass": np.empty(0)},
-    )  # TODO #1155
+    volume_arr = backend.formulae.particle_shape_and_density.mass_to_volume(water_mass)
+    radii_arr = backend.formulae.trivia.radius(volume=volume_arr)
+    radii = backend.Storage.from_ndarray(radii_arr)
 
-    approximation = terminal_velocity_approx(particulator=particulator)
-
-    volume_arr = particulator.formulae.particle_shape_and_density.mass_to_volume(
-        water_mass
-    )
-    radii_arr = particulator.formulae.trivia.radius(volume=volume_arr)
-    radii = particulator.Storage.from_ndarray(radii_arr)
-
-    output = particulator.Storage.empty((len(water_mass),), dtype=float)
+    output = backend.Storage.empty((len(water_mass),), dtype=float)
 
     approximation(output=output, radius=radii)
 
