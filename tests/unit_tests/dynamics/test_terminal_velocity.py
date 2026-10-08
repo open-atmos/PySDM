@@ -37,7 +37,7 @@ def test_approximation(backend_class, plot=False):
     RogersYau(backend=particulator.backend)(u_term_ry, r)
 
     u_term_inter = particulator.backend.Storage.from_ndarray(u_term_ry.to_ndarray())
-    GunnKinzer1949(particulator)(u_term_inter, r)
+    GunnKinzer1949(backend=particulator.backend)(u_term_inter, r)
 
     assert np.mean((u - u_term_ry) ** 2) < 2e-2
     assert np.mean((u - u_term_inter) ** 2) < 1e-6
