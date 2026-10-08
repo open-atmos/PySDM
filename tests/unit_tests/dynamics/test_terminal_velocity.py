@@ -34,7 +34,7 @@ def test_approximation(backend_class, plot=False):
         / 100
     )
     u_term_ry = particulator.backend.Storage.empty((len(u),), float)
-    RogersYau(particulator=particulator)(u_term_ry, r)
+    RogersYau(backend=particulator.backend)(u_term_ry, r)
 
     u_term_inter = particulator.backend.Storage.from_ndarray(u_term_ry.to_ndarray())
     GunnKinzer1949(particulator)(u_term_inter, r)
@@ -107,7 +107,7 @@ def test_power_series(backend_class, prefactors, powers):
     r = particulator.backend.Storage.from_ndarray(r)
 
     u_term_ps = particulator.backend.Storage.empty((len(u),), float)
-    PowerSeries(particulator=particulator, prefactors=prefactors, powers=powers)(
+    PowerSeries(backend=particulator.backend, prefactors=prefactors, powers=powers)(
         u_term_ps, r
     )
 

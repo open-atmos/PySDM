@@ -5,9 +5,6 @@ of droplets
 
 import numpy as np
 
-from PySDM.particulator import Particulator
-from PySDM.environments import Box
-
 
 def init_fall_momenta(
     *,
