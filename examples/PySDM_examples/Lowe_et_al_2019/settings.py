@@ -23,7 +23,6 @@ def backend(model):
             optical_albedo="Bohren1987",
             optical_depth="Stephens1978",
         ),
-        override_jit_flags={"parallel": False},
     )
 
 

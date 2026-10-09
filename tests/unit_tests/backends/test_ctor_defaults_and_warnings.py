@@ -16,11 +16,19 @@ class TestCtorDefaultsAndWarnings:
         assert signature.parameters["debug"].default is False
         assert signature.parameters["double_precision"].default is False
         assert signature.parameters["formulae"].default is None
+        assert signature.parameters["n_dims"].default == 0
 
     @staticmethod
     def test_cpu_ctor_defaults():
         signature = inspect.signature(Numba.__init__)
         assert signature.parameters["formulae"].default is None
+        assert signature.parameters["n_dims"].default == 0
+
+    @staticmethod
+    def test_jax_ctor_defaults():
+        signature = inspect.signature(Numba.__init__)
+        assert signature.parameters["formulae"].default is None
+        assert signature.parameters["n_dims"].default == 0
 
     @staticmethod
     @mock.patch("PySDM.backends.numba.prange", new=range)
@@ -31,5 +39,5 @@ class TestCtorDefaultsAndWarnings:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             with pytest.raises(ValueError) as exc_info:
-                Numba()
+                Numba(n_dims=1)
             assert exc_info.match(r"^Numba threading enabled but does not work")

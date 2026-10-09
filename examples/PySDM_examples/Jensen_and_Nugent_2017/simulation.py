@@ -38,10 +38,7 @@ class Simulation(BasicSimulation):
             T0=settings.T0,
             w=settings.vertical_velocity,
             z0=settings.z0,
-            backend=CPU(
-                formulae=settings.formulae,
-                override_jit_flags={"parallel": False},
-            ),
+            backend=CPU(formulae=settings.formulae),
         )
 
         self.r_dry, n_in_unit_volume = Logarithmic(

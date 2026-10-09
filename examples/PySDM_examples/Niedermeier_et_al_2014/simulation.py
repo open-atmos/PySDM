@@ -24,10 +24,7 @@ class Simulation(BasicSimulation):
             mass_of_dry_air=settings.mass_of_dry_air,
             w=settings.vertical_velocity,
             mixed_phase=True,
-            backend=CPU(
-                settings.formulae,
-                override_jit_flags={"parallel": False},
-            ),
+            backend=CPU(settings.formulae),
         )
 
         air_volume = settings.mass_of_dry_air / settings.rhod0

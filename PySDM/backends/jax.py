@@ -43,8 +43,6 @@ class Jax(
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
-        self.default_jit_flags = {"parallel": False}
-
         methods.CollisionsMethods.__init__(self)
         methods.PairMethods.__init__(self)
         methods.IndexMethods.__init__(self)
