@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 from packaging import version
-from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
+from PySDM_examples.featured.Shima_et_al_2009.error_measure import error_measure
 
 from PySDM.physics.constants import si
 

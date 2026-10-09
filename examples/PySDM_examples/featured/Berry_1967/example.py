@@ -1,9 +1,9 @@
 import os
 
 import numpy as np
-from PySDM_examples.Berry_1967.settings import Settings
-from PySDM_examples.Berry_1967.spectrum_plotter import SpectrumPlotter
-from PySDM_examples.Shima_et_al_2009.example import run
+from PySDM_examples.featured.Berry_1967.settings import Settings
+from PySDM_examples.featured.Berry_1967.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.featured.Shima_et_al_2009.example import run
 
 from PySDM.dynamics.collisions.collision_kernels import (
     Electric,

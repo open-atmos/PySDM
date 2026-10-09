@@ -1,5 +1,7 @@
 import numpy as np
-from PySDM_examples.Shipway_and_Hill_2012.simulation import Simulation as SimulationSH
+from PySDM_examples.featured.Shipway_and_Hill_2012.simulation import (
+    Simulation as SimulationSH,
+)
 
 import PySDM.products as PySDM_products
 from PySDM.dynamics import Collision

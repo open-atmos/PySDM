@@ -4,8 +4,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.collections import LineCollection
-from PySDM_examples.Arabas_and_Shima_2017.settings import setups
-from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM_examples.featured.Arabas_and_Shima_2017 import setups
+from PySDM_examples.featured.Arabas_and_Shima_2017.simulation import Simulation
 
 from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver

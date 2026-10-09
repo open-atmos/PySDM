@@ -1,6 +1,6 @@
 import numpy as np
 
-from PySDM_examples.seeding.settings import Settings
+from PySDM_examples.sandbox.seeding.settings import Settings
 
 from PySDM import Particulator
 from PySDM.backends import CPU

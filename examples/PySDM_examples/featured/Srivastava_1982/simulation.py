@@ -1,5 +1,5 @@
 import numpy as np
-from PySDM_examples.Srivastava_1982.settings import SimProducts
+from PySDM_examples.featured.Srivastava_1982.settings import SimProducts
 
 from PySDM import Particulator, Formulae
 from PySDM.environments import Box

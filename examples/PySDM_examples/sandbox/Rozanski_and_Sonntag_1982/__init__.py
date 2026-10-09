@@ -7,4 +7,4 @@ figs_4_5_6.ipynb:
 """
 
 # pylint: disable=invalid-name
-from PySDM_examples.Rozanski_and_Sonntag_1982.multibox import MultiBox
+from PySDM_examples.sandbox.Rozanski_and_Sonntag_1982.multibox import MultiBox

@@ -2,8 +2,8 @@ import os
 from typing import Optional
 
 import numpy as np
-from PySDM_examples.Shima_et_al_2009.settings import Settings
-from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
+from PySDM_examples.featured.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 
 from PySDM.backends import CPU
 from PySDM import Particulator

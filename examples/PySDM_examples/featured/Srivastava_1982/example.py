@@ -2,9 +2,12 @@ from collections import namedtuple
 
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982.equations import Equations, EquationsHelpers
-from PySDM_examples.Srivastava_1982.settings import SimProducts
-from PySDM_examples.Srivastava_1982.simulation import Simulation
+from PySDM_examples.featured.Srivastava_1982.equations import (
+    Equations,
+    EquationsHelpers,
+)
+from PySDM_examples.featured.Srivastava_1982.settings import SimProducts
+from PySDM_examples.featured.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb

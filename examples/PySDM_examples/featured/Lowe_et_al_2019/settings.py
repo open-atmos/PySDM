@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 import numpy as np
-from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
+from PySDM_examples.featured.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from pystrict import strict
 
 from PySDM import Formulae

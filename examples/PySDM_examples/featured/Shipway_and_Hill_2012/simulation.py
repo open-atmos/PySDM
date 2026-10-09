@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import List, Any
 
 import numpy as np
-from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+from PySDM_examples.featured.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
 
 import PySDM.products as PySDM_products
 from PySDM import Particulator
