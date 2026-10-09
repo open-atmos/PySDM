@@ -6,10 +6,10 @@ and `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attri
 import numpy as np
 import pytest
 
+from PySDM import Formulae
 from PySDM.attributes.physics import RelativeFallVelocity, TerminalVelocity
 from PySDM import Particulator
 from PySDM.dynamics import Coalescence, RelaxedVelocity
-from PySDM.dynamics.collisions.collision_kernels.constantK import ConstantK
 from PySDM.environments.box import Box
 from PySDM.physics import si
 
@@ -79,11 +79,20 @@ class TestFallVelocity:
         )
 
     @staticmethod
-    def test_conservation_of_momentum(default_attributes, backend_instance):
+    def test_conservation_of_momentum(default_attributes, backend_class):
         """
         Test that conservation of momentum holds when many super-droplets coalesce
         """
-        env = Box(dt=1, dv=1, backend=backend_instance)
+        env = Box(
+            dt=1,
+            dv=1,
+            backend=backend_class(
+                Formulae(
+                    collision_kernel_liquid_liquid="ConstantK",
+                    constants={"CONSTANTK_a": 1},
+                )
+            ),
+        )
 
         particulator = Particulator(
             n_sd=len(default_attributes["multiplicity"]),
@@ -93,7 +102,7 @@ class TestFallVelocity:
             products=(),
             dynamics=(
                 RelaxedVelocity(),
-                Coalescence(collision_kernel=ConstantK(a=1), adaptive=False),
+                Coalescence(adaptive=False),
             ),
         )
 

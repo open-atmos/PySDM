@@ -145,39 +145,41 @@ Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM
 <summary>Julia (click to expand)</summary>
 
 ```Julia
+Formulae = pyimport("PySDM").Formulae
 Particulator = pyimport("PySDM").Particulator
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
-Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
+formulae = Formulae(collision_kernel_liquid_liquid="Golovin", constants=Dict("GOLOVIN_b" => 1.5e3 / si.s))
 env = Box(dt=1 * si.s, dv=1e6 * si.m^3, backend=CPU())
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
-particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
+particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(),))
 ```
 </details>
 <details>
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
+Formulae = py.importlib.import_module('PySDM').Formulae;
 Particulator = py.importlib.import_module('PySDM').Particulator;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
-Golovin = py.importlib.import_module('PySDM.dynamics.collisions.collision_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
+formulae = Formulae(pyargs('collision_kernel_liquid_liquid', 'Golovin', 'constants', py.dict(pyargs('GOLOVIN_b', 1.5e3 / si.s))));
 env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3, 'backend', CPU()));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
 )) });
-particulator = Particulator(pyargs('attributes', attributes, 'products', products, 'n_sd', int32(n_sd), 'environment', env, 'dynamics', py.tuple({Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s)))})));
+particulator = Particulator(pyargs('attributes', attributes, 'products', products, 'n_sd', int32(n_sd), 'environment', env, 'dynamics', py.tuple({Coalescence()})));
 ```
 </details>
 <details open>
@@ -185,18 +187,19 @@ particulator = Particulator(pyargs('attributes', attributes, 'products', product
 
 ```Python
 import numpy as np
+from PySDM import Formulae
 from PySDM import Particulator
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
+formulae = Formulae(collision_kernel_liquid_liquid='Golovin', constants={'GOLOVIN_b': 1.5e3 / si.s})
 env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3, backend=CPU())
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
-particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
+particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(),))
 ```
 </details>
 
@@ -303,9 +306,6 @@ The component submodules used to create this simulation are visualized below:
     DT[dt :float] -->|passed as arg to| ENV_INIT
     DV[dv :float] -->|passed as arg to| ENV_INIT
     ENV[":Box"] -->|passed as arg to| PARTICULATOR_INIT
-    B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
-    KERNEL_INIT -->|instantiates| KERNEL
-    KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
     COAL_INIT -->|instantiates| COAL
     PRODUCTS[products: list] ----->|passed as arg to| PARTICULATOR_INIT
     NORM_FACTOR[norm_factor: float]-->|passed as arg to| EXP_INIT

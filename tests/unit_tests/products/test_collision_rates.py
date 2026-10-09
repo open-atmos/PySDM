@@ -8,7 +8,6 @@ from PySDM.dynamics import Breakup, Coalescence, Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.products import (
@@ -69,21 +68,18 @@ class TestCollisionProducts:
             },
         ],
     )
-    def test_individual_dynamics_rates_nonadaptive(params, backend_instance):
-        if (
-            backend_instance.__class__.__name__ == "ThrustRTC"
-            and params["enable_breakup"]
-        ):
+    def test_individual_dynamics_rates_nonadaptive(params, backend_class):
+        if backend_class.__name__ == "ThrustRTC" and params["enable_breakup"]:
             pytest.skip("# TODO #744")
 
         # Arrange
         n_init = [5, 2]
         n_sd = len(n_init)
 
-        env = Box(**ENV_ARGS, backend=backend_instance)
-
-        dynamic, products = _get_dynamics_and_products(params, adaptive=False)
-
+        formulae, dynamic, products = _get_formulae_dynamics_and_products(
+            params, adaptive=False
+        )
+        env = Box(**ENV_ARGS, backend=backend_class(formulae))
         particulator = Particulator(
             n_sd,
             environment=env,
@@ -138,12 +134,11 @@ class TestCollisionProducts:
     def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
         # Arrange
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
 
-        dynamic, _ = _get_dynamics_and_products(
+        formulae, dynamic, _ = _get_formulae_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
         )
-
+        env = Box(**ENV_ARGS, backend=backend_class(formulae))
         particulator = Particulator(
             n_sd,
             environment=env,
@@ -186,10 +181,11 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
 
-        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
-
+        formulae, dynamic, _ = _get_formulae_dynamics_and_products(
+            params, adaptive=True
+        )
+        env = Box(**ENV_ARGS, backend=backend_class(formulae))
         particulator = Particulator(
             n_sd,
             environment=env,
@@ -235,12 +231,15 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class(Formulae(handle_all_breakups=True)))
 
-        dynamic, _ = _get_dynamics_and_products(
-            params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
+        formulae, dynamic, _ = _get_formulae_dynamics_and_products(
+            params,
+            adaptive=True,
+            kernel_a=1e4 * si.cm**3 / si.s,
+            handle_all_breakups=True,
         )
-
+        formulae.handle_all_breakups = True
+        env = Box(**ENV_ARGS, backend=backend_class(formulae))
         particulator = Particulator(
             n_sd,
             environment=env,
@@ -292,8 +291,11 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
 
+        formulae, dynamic, products = _get_formulae_dynamics_and_products(
+            params, adaptive=False
+        )
+        env = Box(**ENV_ARGS, backend=backend_class(formulae))
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
 
         particulator = Particulator(
@@ -316,12 +318,17 @@ class TestCollisionProducts:
         assert (particulator.products["cr"].get()[0] == rhs_sum).all()
 
 
-def _get_dynamics_and_products(params, adaptive, kernel_a=1e6 * si.cm**3 / si.s):
-    kernel = ConstantK(a=kernel_a)
+def _get_formulae_dynamics_and_products(
+    params, adaptive, kernel_a=1e6 * si.cm**3 / si.s, handle_all_breakups=False
+):
+    formulae = Formulae(
+        collision_kernel_liquid_liquid="ConstantK",
+        handle_all_breakups=handle_all_breakups,
+        constants={"CONSTANTK_a": kernel_a},
+    )
     if params["enable_breakup"]:
         if params["enable_coalescence"]:
             dynamic = Collision(
-                collision_kernel=kernel,
                 coalescence_efficiency=ConstEc(Ec=params["Ec"]),
                 breakup_efficiency=ConstEb(Eb=params["Eb"]),
                 fragmentation_function=AlwaysN(n=params["nf"]),
@@ -336,7 +343,6 @@ def _get_dynamics_and_products(params, adaptive, kernel_a=1e6 * si.cm**3 / si.s)
             )
         else:
             dynamic = Breakup(
-                collision_kernel=kernel,
                 fragmentation_function=AlwaysN(n=params["nf"]),
                 adaptive=adaptive,
             )
@@ -348,7 +354,6 @@ def _get_dynamics_and_products(params, adaptive, kernel_a=1e6 * si.cm**3 / si.s)
             )
     else:
         dynamic = Coalescence(
-            collision_kernel=kernel,
             coalescence_efficiency=ConstEc(Ec=1.0),
             adaptive=adaptive,
         )
@@ -357,7 +362,7 @@ def _get_dynamics_and_products(params, adaptive, kernel_a=1e6 * si.cm**3 / si.s)
             CollisionRateDeficitPerGridbox(name="crd"),
             CoalescenceRatePerGridbox(name="cor"),
         )
-    return (dynamic, products)
+    return formulae, dynamic, products
 
 
 def _get_product_component_sums(params, products):

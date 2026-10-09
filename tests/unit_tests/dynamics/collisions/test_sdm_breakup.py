@@ -12,7 +12,6 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision import DEFAULTS, Collision
-from PySDM.dynamics.collisions.collision_kernels import ConstantK, Geometric
 from PySDM.environments import Box
 from PySDM.initialisation import spectra
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -46,7 +45,6 @@ class TestSDMBreakup:
             "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
         }
         breakup = Breakup(
-            collision_kernel=ConstantK(1 * si.cm**3 / si.s),
             fragmentation_function=AlwaysN(4),
             adaptive=False,
             warn_overflows=False,
@@ -57,7 +55,13 @@ class TestSDMBreakup:
             environment=Box(
                 dv=1 * si.cm**3,
                 dt=dt,
-                backend=backend_class(Formulae(fragmentation_function="AlwaysN")),
+                backend=backend_class(
+                    Formulae(
+                        fragmentation_function="AlwaysN",
+                        collision_kernel_liquid_liquid="ConstantK",
+                        constants={"CONSTANTK_a": 1 * si.cm**3 / si.s},
+                    )
+                ),
             ),
             dynamics=(breakup,),
             attributes=attributes,
@@ -780,14 +784,16 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    def test_nonnegative_even_if_overflow(
-        backend=CPU(),
-    ):  # pylint: disable=too-many-locals
+    def test_nonnegative_even_if_overflow():  # pylint: disable=too-many-locals
         n_sd = 2**5
 
         dv = 1 * si.m**3
         dt = 1 * si.s
-        env = Box(dv=dv, dt=dt, backend=backend)
+        env = Box(
+            dv=dv,
+            dt=dt,
+            backend=CPU(Formulae(collision_kernel_liquid_liquid="Geometric")),
+        )
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -799,11 +805,9 @@ class TestSDMBreakup:
 
         mu = Trivia.volume(const, radius=100 * si.um)
         fragmentation = breakup_fragmentations.Exponential(scale=mu)
-        kernel = Geometric()
         coal_eff = ConstEc(Ec=0.01)
         break_eff = ConstEb(Eb=1.0)
         breakup = Collision(
-            collision_kernel=kernel,
             breakup_efficiency=break_eff,
             coalescence_efficiency=coal_eff,
             fragmentation_function=fragmentation,
