@@ -356,8 +356,8 @@
   },
   "https://doi.org/10.1029/2022MS002994": {
     "usages": [
-      "examples/PySDM_examples/Bieli_et_al_2022/__init__.py",
-      "PySDM_examples/featured/Bieli_et_al_2022/fig_3a.ipynb"
+      "examples/PySDM_examples/featured/Bieli_et_al_2022/__init__.py",
+      "examples/PySDM_examples/featured/Bieli_et_al_2022/fig_3a.ipynb"
     ],
     "label": "Bieli et al. 2022 (J. Adv. Model. Earth Sys. 14)",
     "title": "An Efficient Bayesian Approach to Learning Droplet Collision Kernels: Proof of Concept Using “Cloudy,” a New n-Moment Bulk Microphysics Scheme"
@@ -930,8 +930,8 @@
   },
   "https://doi.org/10.3402/tellusb.v43i5.15414": {
     "usages": [
-      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb",
-      "examples/PySDM_examples/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/misc/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/misc/Fisher_1991/__init__.py"
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
@@ -939,7 +939,7 @@
   "https://doi.org/10.1029/JC080i036p05015": {
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
-      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+      "examples/PySDM_examples/isotopes/timescales_comparison.ipynb"
     ],
     "title": "Isotopic study of hail",
     "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
@@ -950,9 +950,9 @@
       "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_murray_dwa_adaption.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/fig_B1.ipynb",
+      "examples/PySDM_examples/misc/Spichtinger_et_al_2023/__init__.py",
+      "examples/PySDM_examples/misc/Spichtinger_et_al_2023/data/reference_bulk.py",
+      "examples/PySDM_examples/misc/Spichtinger_et_al_2023/fig_B1.ipynb",
       "tests/unit_tests/physics/test_homogeneous_nucleation_rates.py"
     ],
     "title": "Impact of formulations of the homogeneous nucleation rate on ice nucleation events in cirrus",
@@ -979,18 +979,18 @@
     "label": "Matsushima et al. 2023 (Geosci. Model Dev. 16)",
     "usages": [
       "PySDM/initialisation/sampling/spectral_sampling.py",
-      "examples/PySDM_examples/Matsushima_et_al_2023/figure_1.ipynb",
-      "examples/PySDM_examples/Matsushima_et_al_2023/__init__.py"
+      "examples/PySDM_examples/misc/Matsushima_et_al_2023/figure_1.ipynb",
+      "examples/PySDM_examples/misc/Matsushima_et_al_2023/__init__.py"
     ]
   },
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
-      "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_1.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_3_4.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_5.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_6_7_8.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_A1.ipynb"
+      "examples/PySDM_examples/featured/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_3_4.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_5.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_6_7_8.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_A1.ipynb"
     ],
     "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",
     "label": "Ware et al. 2025 (arXiv)"
@@ -1029,8 +1029,8 @@
   },
   "https://doi.org/10.1039/c003297b": {
     "usages": [
-      "examples/PySDM_examples/Murray_et_al_2010/fig_3.ipynb",
-      "examples/PySDM_examples/Murray_et_al_2010/__init__.py"
+      "examples/PySDM_examples/misc/Murray_et_al_2010/fig_3.ipynb",
+      "examples/PySDM_examples/misc/Murray_et_al_2010/__init__.py"
     ],
     "title": "Kinetics of the homogeneous freezing of water",
     "label": "Murray et al. 2010 (Phys. Chem. Chem. Phys. 12)"
@@ -1038,17 +1038,17 @@
   "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/long1974.py",
-      "examples/PySDM_examples/Long_1974/__init__.py",
-      "examples/PySDM_examples/Long_1974/fig10_11_13_14.ipynb"
+      "examples/PySDM_examples/featured/Long_1974/__init__.py",
+      "examples/PySDM_examples/featured/Long_1974/fig10_11_13_14.ipynb"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   },
   "https://doi.org/10.5194/gmd-4-15-2011" : {
     "usages": [
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/__init__.py",
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_1.ipynb",
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_2.ipynb"
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/__init__.py",
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/fig_1.ipynb",
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/fig_2.ipynb"
     ],
     "label": "Arabas & Pawlowska 2011",
     "title": "Adaptive method of lines for multi-component aerosol condensational growth and CCN activation"
