@@ -75,7 +75,7 @@
                                 <a class="function" href="#IceSphere.__init__">IceSphere</a>
                         </li>
                         <li>
-                                <a class="variable" href="#IceSphere.particulator">particulator</a>
+                                <a class="variable" href="#IceSphere.backend">backend</a>
                         </li>
                 </ul>
 
@@ -109,11 +109,11 @@
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">IceSphere</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods,too-many-arguments</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">terminal_velocity_ice_spheres</span><span class="p">(</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">terminal_velocity_ice_spheres</span><span class="p">(</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>            <span class="n">values</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -136,11 +136,11 @@
     </div>
     <a class="headerlink" href="#IceSphere"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="IceSphere-7"><a href="#IceSphere-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">IceSphere</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods,too-many-arguments</span>
-</span><span id="IceSphere-8"><a href="#IceSphere-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
-</span><span id="IceSphere-9"><a href="#IceSphere-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+</span><span id="IceSphere-8"><a href="#IceSphere-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+</span><span id="IceSphere-9"><a href="#IceSphere-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
 </span><span id="IceSphere-10"><a href="#IceSphere-10"><span class="linenos">10</span></a>
 </span><span id="IceSphere-11"><a href="#IceSphere-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
-</span><span id="IceSphere-12"><a href="#IceSphere-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">terminal_velocity_ice_spheres</span><span class="p">(</span>
+</span><span id="IceSphere-12"><a href="#IceSphere-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">terminal_velocity_ice_spheres</span><span class="p">(</span>
 </span><span id="IceSphere-13"><a href="#IceSphere-13"><span class="linenos">13</span></a>            <span class="n">values</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="IceSphere-14"><a href="#IceSphere-14"><span class="linenos">14</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="IceSphere-15"><a href="#IceSphere-15"><span class="linenos">15</span></a>            <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -156,27 +156,27 @@
                                         <input id="IceSphere.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">IceSphere</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">particulator</span></span>)</span>
+        <span class="name">IceSphere</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">backend</span></span>)</span>
 
                 <label class="view-source-button" for="IceSphere.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#IceSphere.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IceSphere.__init__-8"><a href="#IceSphere.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particulator</span><span class="p">):</span>
-</span><span id="IceSphere.__init__-9"><a href="#IceSphere.__init__-9"><span class="linenos">9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">particulator</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IceSphere.__init__-8"><a href="#IceSphere.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+</span><span id="IceSphere.__init__-9"><a href="#IceSphere.__init__-9"><span class="linenos">9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="IceSphere.particulator" class="classattr">
+                            <div id="IceSphere.backend" class="classattr">
                                 <div class="attr variable">
-            <span class="name">particulator</span>
+            <span class="name">backend</span>
 
         
     </div>
-    <a class="headerlink" href="#IceSphere.particulator"></a>
+    <a class="headerlink" href="#IceSphere.backend"></a>
     
     
 
