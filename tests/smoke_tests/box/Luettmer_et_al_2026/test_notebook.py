@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Luettmer_et_al_2026
+from PySDM_examples.featured import Luettmer_et_al_2026
 from PySDM.physics.constants_defaults import HOMOGENEOUS_FREEZING_THRESHOLD
 
 PLOT = False

@@ -9,7 +9,7 @@ import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
 
-from PySDM_examples import Zaba_et_al
+from PySDM_examples.sandbox.isotopes import Zaba_et_al
 
 PLOT = False
 

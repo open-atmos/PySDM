@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from PySDM_examples.Morrison_and_Grabowski_2007.strato_cumulus import StratoCumulus
+from .strato_cumulus import StratoCumulus
 
 from PySDM import Formulae
 from PySDM.physics import si

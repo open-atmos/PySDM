@@ -1,16 +1,19 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982.equations import Equations, EquationsHelpers
-from PySDM_examples.Srivastava_1982.example import (
+from PySDM_examples.featured.Srivastava_1982.equations import (
+    Equations,
+    EquationsHelpers,
+)
+from PySDM_examples.featured.Srivastava_1982.example import (
     add_to_plot_simulation_results,
     compute_log_space,
     get_coalescence_analytic_results,
     get_processed_results,
     get_pysdm_secondary_products,
 )
-from PySDM_examples.Srivastava_1982.settings import Settings, SimProducts
-from PySDM_examples.Srivastava_1982.simulation import Simulation
+from PySDM_examples.featured.Srivastava_1982.settings import Settings, SimProducts
+from PySDM_examples.featured.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
