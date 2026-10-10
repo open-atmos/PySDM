@@ -57,18 +57,11 @@ class SpectrumPlotter:
             ): self.log_base
         }
         if self.title is not None:
-            try:
-                self.ax.title(self.title)
-            except TypeError:
-                self.ax.set_title(self.title)
-        try:
-            self.ax.xscale("log", **base_arg)
-            self.ax.xlabel(self.xlabel)
-            self.ax.ylabel(self.ylabel)
-        except AttributeError:
-            self.ax.set_xscale("log", **base_arg)
-            self.ax.set_xlabel(self.xlabel)
-            self.ax.set_ylabel(self.ylabel)
+            self.ax.title(self.title)
+        self.ax.xscale("log", **base_arg)
+        self.ax.xlabel(self.xlabel)
+        self.ax.ylabel(self.ylabel)
+
         if self.legend:
             self.ax.legend()
 
