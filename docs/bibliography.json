@@ -81,7 +81,7 @@
       "examples/PySDM_examples/misc/Gedzelman_and_Arnold_1994/__init__.py",
       "PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py",
       "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py",
-      "examples/PySDM_examples/isotopes/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)",
     "title": "Modeling the isotopic composition of precipitation"
@@ -121,8 +121,8 @@
       "examples/PySDM_examples/featured/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/featured/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
-      "tutorials/collisions/collisions_playground.ipynb",
-      "tutorials/wikipedia/sdm.ipynb",
+      "examples/PySDM_examples/tutorials/collisions/collisions_playground.ipynb",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb",
       "tests/smoke_tests/box/shima_et_al_2009/test_convergence.py"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
@@ -130,7 +130,7 @@
   },
   "https://doi.org/10.5194/acp-11-12945-2011": {
     "usages": [
-      "examples/PySDM_examples/featured/Arabas_et_al_2025/aida.ipynb"
+      "examples/PySDM_examples/sandbox/Steinke_et_al_2011/aida.ipynb"
     ],
     "label": "Steinke et al. 2011 (Atmos. Chem. Phys. 11)",
     "title": "Ice nucleation properties of fine ash particles from the Eyjafjallajökull eruption in April 2010 "
@@ -161,7 +161,7 @@
     "usages": [
       "examples/PySDM_examples/misc/Miyake_et_al_1968/fig_19.ipynb",
       "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
-      "examples/PySDM_examples/isotopes/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Miyake et al. 1968 (Pap. Meteorol. Geophys. 19)",
     "title": "An Isotopic Study on Meteoric Precipitation"
@@ -641,7 +641,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "examples/PySDM_examples/isotopes/global_meteoric_water_line.ipynb",
+      "examples/PySDM_examples/sandbox/isotopes/global_meteoric_water_line.ipynb",
       "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
@@ -691,7 +691,7 @@
       "PySDM/physics/trivia.py",
       "examples/PySDM_examples/misc/Bolin_1958/__init__.py",
       "examples/PySDM_examples/misc/Bolin_1958/table_1.ipynb",
-      "examples/PySDM_examples/isotopes/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
@@ -699,8 +699,8 @@
   "http://mi.mathnet.ru/dan27630": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/golovin.py",
-      "tutorials/README.md",
-      "tutorials/wikipedia/sdm.ipynb"
+      "examples/PySDM_examples/tutorials/README.md",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
@@ -708,8 +708,8 @@
   "http://mi.mathnet.ru/dan27172": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/golovin.py",
-      "tutorials/README.md",
-      "tutorials/wikipedia/sdm.ipynb"
+      "examples/PySDM_examples/tutorials/README.md",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Safranov 1962 (Dokl. Akad. Nauk SSSR 147)",
     "title": "Частный случай решения уравнения коагуляции (A particular solution of the coagulation equation)"
@@ -909,7 +909,7 @@
       "examples/PySDM_examples/misc/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
       "examples/PySDM_examples/misc/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
       "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
-      "examples/PySDM_examples/misc/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/sandbox/Fisher_1991/__init__.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
@@ -930,8 +930,8 @@
   },
   "https://doi.org/10.3402/tellusb.v43i5.15414": {
     "usages": [
-      "examples/PySDM_examples/misc/Fisher_1991/fig_2.ipynb",
-      "examples/PySDM_examples/misc/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/sandbox/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/sandbox/Fisher_1991/__init__.py"
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
@@ -939,7 +939,7 @@
   "https://doi.org/10.1029/JC080i036p05015": {
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
-      "examples/PySDM_examples/isotopes/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "title": "Isotopic study of hail",
     "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
