@@ -5,8 +5,6 @@ import tempfile
 from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 from PySDM_examples.utils.kinematic_2d import Storage
 from PySDM_examples.utils import DummyController
-from PySDM_examples.utils.widgets import IntSlider
-
 
 from PySDM.exporters import NetCDFExporter, VTKExporter
 

@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Pruppacher_and_Rasmussen_1979
+from PySDM_examples.misc import Pruppacher_and_Rasmussen_1979
 
 PLOT = False
 
