@@ -1,6 +1,8 @@
 import numpy as np
 from pystrict import strict
 
+import PySDM_examples
+
 from PySDM.backends import CPU
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra

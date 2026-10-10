@@ -1,9 +1,10 @@
 from typing import Iterable
 
-from .strato_cumulus import StratoCumulus
 
 from PySDM import Formulae
 from PySDM.physics import si
+
+from .strato_cumulus import StratoCumulus
 
 
 class Settings(StratoCumulus):
