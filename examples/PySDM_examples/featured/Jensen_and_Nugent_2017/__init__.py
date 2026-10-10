@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """
 Fig_1.ipynb:
 .. include:: ./Fig_1.ipynb.badges.md

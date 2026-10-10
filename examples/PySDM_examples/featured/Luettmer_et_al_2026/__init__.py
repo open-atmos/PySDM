@@ -1,10 +1,18 @@
+# pylint: disable=invalid-name
 """
 Homogeneous freezing example
 
-.. include:: ./fig_1_2_3.ipynb
-.. include:: ./fig_4_5_6_S3_S4.ipynb
-.. include:: ./fig_S1_S2.ipynb
-.. include:: ./simple_homogenous_freezing_example.ipynb
+fig_1_2_3.ipynb:
+.. include:: ./fig_1_2_3.ipynb.badges.md
+
+fig_4_5_6_S3_S4.ipynb:
+.. include:: ./fig_4_5_6_S3_S4.ipynb.badges.md
+
+fig_S1_S2.ipynb:
+.. include:: ./fig_S1_S2.ipynb.badges.md
+
+simple_homogenous_freezing_example.ipynb:
+.. include:: ./simple_homogenous_freezing_example.ipynb.badges.md
 """
 
 from .settings import Settings

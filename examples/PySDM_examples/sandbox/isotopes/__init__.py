@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """
 global_meteoric_water_line.ipynb:
 .. include:: ./global_meteoric_water_line.ipynb.badges.md

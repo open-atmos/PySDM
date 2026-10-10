@@ -825,6 +825,7 @@
   "https://doi.org/10.1016/0019-1035(80)90173-6": {
     "usages": [
       "examples/PySDM_examples/misc/Toon_et_al_1980/fig_1.ipynb",
+      "examples/PySDM_examples/misc/Toon_et_al_1980/__init__.py",
       "PySDM/physics/hydrostatics/variable_g_isothermal.py"
     ],
     "title": "A physical model of Titan’s clouds",

@@ -4,4 +4,7 @@ paraview_hello_world.ipynb:
 
 dimensional_analysis.ipynb:
 .. include:: ./dimensional_analysis.ipynb.badges.md
+
+pyvista_animation.ipynb:
+.. include:: ./pyvista_animation.ipynb.badges.md
 """
