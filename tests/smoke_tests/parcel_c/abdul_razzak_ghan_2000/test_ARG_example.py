@@ -1,8 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Abdul_Razzak_Ghan_2000 import data_from_ARG2000_paper as ARG_paper
-from PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel import run_parcel
+from PySDM_examples.featured.Abdul_Razzak_Ghan_2000 import (
+    data_from_ARG2000_paper as ARG_paper,
+)
+from PySDM_examples.featured.Abdul_Razzak_Ghan_2000.run_ARG_parcel import run_parcel
 
 from PySDM.physics import si
 

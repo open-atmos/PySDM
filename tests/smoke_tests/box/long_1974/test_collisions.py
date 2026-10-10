@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Long_1974
+from PySDM_examples.featured import Long_1974
 
 from PySDM.physics import si
 

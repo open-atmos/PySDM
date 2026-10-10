@@ -47,10 +47,7 @@ The 2D prescribed-flow framework used here can be traced back to the work of
 </center>
 
 Example notebooks:
-- `PySDM_examples.Arabas_et_al_2015`
-  - in-notebook GUI for setting up, running and interactively visualising the 2D kinematic simulations (with an option to export raw data to <mark>VTK</mark> and <mark>netCDF</mark> files, as well as to save plots to SVG or PDF):
-  - "hello world" notebook depicting how to automate using Python the process of loading data and creating animations in <mark>Paraview</mark>
-- `PySDM_examples.Arabas_et_al_2025`: adaptation of the 2D kinematic setup for studying <mark>glaciation</mark> of the cloud deck by <mark>immersion freezing</mark>
+- `PySDM_examples.featured.Arabas_et_al_2025`: adaptation of the 2D kinematic setup for studying <mark>glaciation</mark> of the cloud deck by <mark>immersion freezing</mark>
 
 ## 1D kinematic environment (prescribed-flow, single-column)
 
@@ -62,8 +59,8 @@ As in the 2D kinematic framework above, the Eulerian advection is handled by
   <a href="https://open-atmos.github.io/PyMPDATA/">PyMPDATA</a>.
 
 Example notebooks:
-- `PySDM_examples.Shipway_and_Hill_2012`: reproducing figures from the <a href="https://doi.org/10.1002/qj.1913">Shipway & Hill 2012</a> paper;
-- `PySDM_examples.deJong_Mackay_et_al_2023`: reproducing figures from the <a href="https://doi.org/10.5194/gmd-16-4193-2023">de Jong et al. 2023</a> paper where the single-column
+- `PySDM_examples.featured.Shipway_and_Hill_2012`: reproducing figures from the <a href="https://doi.org/10.1002/qj.1913">Shipway & Hill 2012</a> paper;
+- `PySDM_examples.featured.deJong_Mackay_et_al_2023`: reproducing figures from the <a href="https://doi.org/10.5194/gmd-16-4193-2023">de Jong et al. 2023</a> paper where the single-column
    framework was used to exemplify operation of the <mark>Monte-Carlo collisional breakup scheme</mark> in PySDM (scheme introduced in that paper).
 
 ## OD/1D iterative parcel/column environment mimicking removal of precipitation
@@ -72,7 +69,7 @@ This framework uses a parcel model with removal of precipitation for analysis,
 iterative equilibration, the isotopic composition of the water vapour and
 rain water in a column of air (no Eulerian transport, only iterative passage of a parcel through the column).
 
-`PySDM_examples.Rozanski_and_Sonntag_1982`: bulk microphysics example (i.e. single super droplet) with
+`PySDM_examples.sandbox.Rozanski_and_Sonntag_1982`: bulk microphysics example (i.e. single super droplet) with
 deuterium and heavy-oxygen <mark>water isotopologues</mark> featured.
 
 ## 0D parcel environment
@@ -82,19 +79,18 @@ The parcel framework implemented in PySDM uses a hydrostatic profile and adiabat
 
 Example notebooks include:
 - condensation only
-  - `PySDM_examples.Arabas_and_Shima_2017`: monodisperse particle spectrum, activation/deactivation cycle
-  - `PySDM_examples.Yang_et_al_2018`: polydisperse particle spectrum, activation/deactivation cycles
-  - `PySDM_examples.Abdul_Razzak_Ghan_2000`: polydisperse activation, comparison against <mark>GCM parameterisation</mark>
-  - `PySDM_examples.Pyrcel`: polydisperse activation, mimicking example test case from <mark>Pyrcel</mark> documentation
-  - `PySDM_examples.Strzabala_2025_BEng`: ParaView visualisation example
-  - `PySDM_examples.Lowe_et_al_2019`: externally mixed polydisperse size spectrum with <mark>surface-active organics</mark> case
-  - `PySDM_examples.Grabowski_and_Pawlowska_2023`: polydisperse activation, focus on <mark>ripening</mark>
-  - `PySDM_examples.Jensen_and_Nugent_2017`: polydisperse activation featuring <mark>giant CCN</mark>
+  - `PySDM_examples.featured.Arabas_and_Shima_2017`: monodisperse particle spectrum, activation/deactivation cycle
+  - `PySDM_examples.featured.Yang_et_al_2018`: polydisperse particle spectrum, activation/deactivation cycles
+  - `PySDM_examples.featured.Abdul_Razzak_Ghan_2000`: polydisperse activation, comparison against <mark>GCM parameterisation</mark>
+  - `PySDM_examples.featured.pyrcel_docs_testcase`: polydisperse activation, mimicking example test case from <mark>Pyrcel</mark> documentation
+  - `PySDM_examples.featured.Lowe_et_al_2019`: externally mixed polydisperse size spectrum with <mark>surface-active organics</mark> case
+  - `PySDM_examples.featured.Grabowski_and_Pawlowska_2023`: polydisperse activation, focus on <mark>ripening</mark>
+  - `PySDM_examples.featured.Jensen_and_Nugent_2017`: polydisperse activation featuring <mark>giant CCN</mark>
 - condensation and aqueous-chemistry
-  - `PySDM_examples.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
-  - `PySDM_examples.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
+  - `PySDM_examples.featured.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
+  - `PySDM_examples.featured.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
 - freezing
-  - `PySDM_examples.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
+  - `PySDM_examples.misc.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 
@@ -109,33 +105,33 @@ The box environment is void of any spatial or thermodynamic context, it constitu
 Example notebooks include:
 
 - coalescence only:
-  - `PySDM_examples.Shima_et_al_2009`: using <mark>Golovin additive kernel</mark> for comparison against analytic solution, featuring interactive in-notebook interface for selecting simulation parameters
-  - `PySDM_examples.Berry_1967`: examples using geometric, hydrodynamic and electric-field collision kernels
+  - `PySDM_examples.featured.Shima_et_al_2009`: using <mark>Golovin additive kernel</mark> for comparison against analytic solution, featuring interactive in-notebook interface for selecting simulation parameters
+  - `PySDM_examples.featured.Berry_1967`: examples using geometric, hydrodynamic and electric-field collision kernels
 - coalescence and breakup:
-  - `PySDM_examples.Bieli_et_al_2022`: evolution of moments under collisional growth and breakage
-  - `PySDM_examples.deJong_Mackay_et_al_2023`: validation of the breakup scheme against analytical solutions from <a href="https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2">Srivastava 1982</a>
+  - `PySDM_examples.featured.Bieli_et_al_2022`: evolution of moments under collisional growth and breakage
+  - `PySDM_examples.featured.deJong_Mackay_et_al_2023`: validation of the breakup scheme against analytical solutions from <a href="https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2">Srivastava 1982</a>
 - immersion freezing only:
-  - `PySDM_examples.Alpert_and_Knopf_2016`: stochastic immersion freezing with monodisperse vs. lognormal immersed surface areas
-  - `PySDM_examples.Arabas_et_al_2025`: comparison of time-dependent and singular immersion freezing schemes
+  - `PySDM_examples.featured.Alpert_and_Knopf_2016`: stochastic immersion freezing with monodisperse vs. lognormal immersed surface areas
+  - `PySDM_examples.featured.Arabas_et_al_2025`: comparison of time-dependent and singular immersion freezing schemes
 
 The box environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 
 ## examples depicting isotope-related formulae (without any simulation context)
 - <mark>equilibrium isotopic fractionation</mark> formulae:
-  - `PySDM_examples.Lamb_et_al_2017`
-  - `PySDM_examples.Bolot_et_al_2013`
-  - `PySDM_examples.Merlivat_and_Nief_1967`
-  - `PySDM_examples.Van_Hook_1968`
-  - `PySDM_examples.Graf_et_al_2019`
+  - `PySDM_examples.misc.Lamb_et_al_2017`
+  - `PySDM_examples.misc.Bolot_et_al_2013`
+  - `PySDM_examples.misc.Merlivat_and_Nief_1967`
+  - `PySDM_examples.misc.Van_Hook_1968`
+  - `PySDM_examples.sandbox.isotopes.Graf_et_al_2019`
 - <mark>Rayleigh fractionation</mark>:
-  - `PySDM_examples.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
-  - `PySDM_examples.Gonfiantini_1986`: flat-surface evaporation at different humidities for D and <sup>18</sup>O
+  - `PySDM_examples.featured.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
+  - `PySDM_examples.misc.Gonfiantini_1986`: flat-surface evaporation at different humidities for D and <sup>18</sup>O
 - isotopic relaxation timescale:
-  - `PySDM_examples.Miyake_et_al_1968`: incl. comparison of different <mark>ventilation</mark> parameterisations
-  - `PySDM_examples.Bolin_1958`
+  - `PySDM_examples.misc.Miyake_et_al_1968`: incl. comparison of different <mark>ventilation</mark> parameterisations
+  - `PySDM_examples.misc.Bolin_1958`
 - below-cloud <mark>kinetic fractionation</mark>:
-  - `PySDM_examples.Gedzelman_and_Arnold_1994`
+  - `PySDM_examples.misc.Gedzelman_and_Arnold_1994`
 
 ## examples depicting extraterrestrial clouds (formulae-only, no simulations yet)
 - Titan (methane clouds):
-  - `PySDM_examples.Toon_et_al_1980`
+  - `PySDM_examples.misc.Toon_et_al_1980`

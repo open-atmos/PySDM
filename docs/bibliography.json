@@ -25,11 +25,11 @@
   },
   "https://doi.org/10.1038/s41467-019-12982-0": {
     "usages": [
-      "examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb",
-      "examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb",
-      "examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb",
-      "examples/PySDM_examples/Lowe_et_al_2019/fig_s2.ipynb",
-      "examples/PySDM_examples/Lowe_et_al_2019/__init__.py",
+      "examples/PySDM_examples/featured/Lowe_et_al_2019/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Lowe_et_al_2019/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Lowe_et_al_2019/fig_3.ipynb",
+      "examples/PySDM_examples/featured/Lowe_et_al_2019/fig_s2.ipynb",
+      "examples/PySDM_examples/featured/Lowe_et_al_2019/__init__.py",
       "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
       "PySDM/physics/diffusion_thermics/lowe_et_al_2019.py",
       "PySDM/physics/constants_defaults.py"
@@ -77,11 +77,11 @@
   },
   "https://doi.org/10.1029/93JD03518": {
     "usages": [
-      "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb",
-      "examples/PySDM_examples/Gedzelman_and_Arnold_1994/__init__.py",
+      "examples/PySDM_examples/misc/Gedzelman_and_Arnold_1994/fig_2.ipynb",
+      "examples/PySDM_examples/misc/Gedzelman_and_Arnold_1994/__init__.py",
       "PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py",
       "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py",
-      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)",
     "title": "Modeling the isotopic composition of precipitation"
@@ -90,24 +90,24 @@
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_1.ipynb"
+      "examples/PySDM_examples/misc/Morrison_and_Grabowski_2007/__init__.py",
+      "examples/PySDM_examples/misc/Morrison_and_Grabowski_2007/fig_1.ipynb"
     ],
     "label": "Morrison & Grabowski 2007 (J. Atmos. Sci. 64)",
     "title": "Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework"
   },
   "https://doi.org/10.1002/qj.4775": {
     "usages": [
-      "examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb",
-      "examples/PySDM_examples/Abade_and_Albuquerque_2024/__init__.py"
+      "examples/PySDM_examples/sandbox/Abade_and_Albuquerque_2024/fig_2.ipynb",
+      "examples/PySDM_examples/sandbox/Abade_and_Albuquerque_2024/__init__.py"
     ],
     "label": "Abade & Albuquerque 2024 (Q. J. R. Meteorol. Soc. 150)",
     "title": "Persistent mixed-phase states in adiabatic cloud parcels under idealised conditions"
   },
   "https://doi.org/10.1073/pnas.1618374114": {
     "usages": [
-      "examples/PySDM_examples/Lamb_et_al_2017/fig_4.ipynb",
-      "examples/PySDM_examples/Lamb_et_al_2017/__init__.py",
+      "examples/PySDM_examples/misc/Lamb_et_al_2017/fig_4.ipynb",
+      "examples/PySDM_examples/misc/Lamb_et_al_2017/__init__.py",
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/isotope_equilibrium_fractionation_factors/lamb_et_al_2017.py"
     ],
@@ -118,11 +118,11 @@
     "usages": [
       "README.md",
       "docs/markdown/pysdm_landing.md",
-      "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
-      "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
+      "examples/PySDM_examples/featured/Shima_et_al_2009/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
-      "tutorials/collisions/collisions_playground.ipynb",
-      "tutorials/wikipedia/sdm.ipynb",
+      "examples/PySDM_examples/tutorials/collisions/collisions_playground.ipynb",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb",
       "tests/smoke_tests/box/shima_et_al_2009/test_convergence.py"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
@@ -130,7 +130,7 @@
   },
   "https://doi.org/10.5194/acp-11-12945-2011": {
     "usages": [
-      "examples/PySDM_examples/Arabas_et_al_2025/aida.ipynb"
+      "examples/PySDM_examples/sandbox/Steinke_et_al_2011/aida.ipynb"
     ],
     "label": "Steinke et al. 2011 (Atmos. Chem. Phys. 11)",
     "title": "Ice nucleation properties of fine ash particles from the Eyjafjallajökull eruption in April 2010 "
@@ -159,9 +159,9 @@
   },
   "https://doi.org/10.2467/mripapers1950.19.2_243": {
     "usages": [
-      "examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb",
+      "examples/PySDM_examples/misc/Miyake_et_al_1968/fig_19.ipynb",
       "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
-      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Miyake et al. 1968 (Pap. Meteorol. Geophys. 19)",
     "title": "An Isotopic Study on Meteoric Precipitation"
@@ -170,7 +170,7 @@
     "usages": [
       "PySDM/physics/hygroscopicity/kappa_koehler.py",
       "PySDM/physics/constants_defaults.py",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/settings.py"
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/settings.py"
     ],
     "label": "Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7)",
     "title": "A single parameter representation of hygroscopic growth and cloud condensation nucleus activity"
@@ -200,10 +200,10 @@
   },
   "https://doi.org/10.1016/j.gca.2022.01.020": {
     "usages": [
-      "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
-      "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
-      "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
-      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py",
+      "examples/PySDM_examples/featured/Pierchala_et_al_2022/fig_3.ipynb",
+      "examples/PySDM_examples/featured/Pierchala_et_al_2022/fig_4.ipynb",
+      "examples/PySDM_examples/featured/Pierchala_et_al_2022/__init__.py",
+      "examples/PySDM_examples/featured/Pierchala_et_al_2022/commons.py",
       "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
@@ -219,8 +219,8 @@
   },
   "https://doi.org/10.5194/npg-24-535-2017": {
     "usages": [
-      "examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb",
-      "examples/PySDM_examples/Arabas_and_Shima_2017/__init__.py"
+      "examples/PySDM_examples/featured/Arabas_and_Shima_2017/fig_5.ipynb",
+      "examples/PySDM_examples/featured/Arabas_and_Shima_2017/__init__.py"
     ],
     "label": "Arabas & Shima 2017 (Nonlin. Proc. Geophys. 24)",
     "title": "On the CCN (de)activation nonlinearities"
@@ -234,17 +234,17 @@
   },
   "https://doi.org/10.3402/tellusa.v34i2.10795": {
     "usages": [
-      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb",
-      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py",
-      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/multibox.py"
+      "examples/PySDM_examples/sandbox/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb",
+      "examples/PySDM_examples/sandbox/Rozanski_and_Sonntag_1982/__init__.py",
+      "examples/PySDM_examples/sandbox/Rozanski_and_Sonntag_1982/multibox.py"
     ],
     "label": "Rozanski & Sonntag 1982 (Tellus A 34)",
     "title": "Vertical distribution of deuterium in atmospheric water vapour"
   },
   "https://doi.org/10.5194/acp-18-7313-2018": {
     "usages": [
-      "examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb",
-      "examples/PySDM_examples/Yang_et_al_2018/__init__.py"
+      "examples/PySDM_examples/featured/Yang_et_al_2018/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Yang_et_al_2018/__init__.py"
     ],
     "label": "Yang et al. 2018 (Atmos. Chem. Phys. 18)",
     "title": "Cloud droplet size distribution broadening during diffusional growth: ripening amplified by deactivation and reactivation"
@@ -259,7 +259,6 @@
   "https://doi.org/10.5194/gmd-8-1677-2015": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb",
       "PySDM/dynamics/displacement.py",
       "PySDM/physics/particle_advection/implicit_in_space.py",
       "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
@@ -291,7 +290,7 @@
   },
   "https://doi.org/10.1175/2009JAS3175.1": {
     "usages": [
-      "examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb",
+      "examples/PySDM_examples/featured/deJong_Mackay_et_al_2023/fig_9.ipynb",
       "PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py",
       "PySDM/dynamics/collisions/coalescence_efficiencies/straub2010.py",
       "PySDM/physics/constants_defaults.py"
@@ -301,9 +300,9 @@
   },
   "https://doi.org/10.1029/1999JD901161": {
     "usages": [
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py",
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb",
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/fig_4_kinetic_limitations.ipynb"
+      "examples/PySDM_examples/featured/Abdul_Razzak_Ghan_2000/__init__.py",
+      "examples/PySDM_examples/featured/Abdul_Razzak_Ghan_2000/figs1-5.ipynb",
+      "examples/PySDM_examples/featured/Abdul_Razzak_Ghan_2000/fig_4_kinetic_limitations.ipynb"
 
     ],
     "label": "Abdul-Razzak & Ghan 2000 (J. Geophys. Res. Atmos. 105)",
@@ -311,13 +310,13 @@
   },
   "https://doi.org/10.5194/acp-16-2083-2016": {
     "usages": [
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py",
-      "examples/PySDM_examples/Arabas_et_al_2025/commons.py"
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/fig_3.ipynb",
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/fig_4.ipynb",
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/fig_5.ipynb",
+      "examples/PySDM_examples/featured/Alpert_and_Knopf_2016/__init__.py",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/commons.py"
     ],
     "label": "Alpert & Knopf 16 (Atmos. Chem. Phys. 16)",
     "title": "Analysis of isothermal and cooling-rate-dependent immersion freezing by a unifying stochastic ice nucleation model"
@@ -340,8 +339,8 @@
   },
   "https://doi.org/10.3402/tellusa.v19i1.9756": {
     "usages": [
-      "examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb",
-      "examples/PySDM_examples/Merlivat_and_Nief_1967/__init__.py",
+      "examples/PySDM_examples/misc/Merlivat_and_Nief_1967/fig_2.ipynb",
+      "examples/PySDM_examples/misc/Merlivat_and_Nief_1967/__init__.py",
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/isotope_equilibrium_fractionation_factors/merlivat_and_nief_1967.py"
     ],
@@ -357,7 +356,8 @@
   },
   "https://doi.org/10.1029/2022MS002994": {
     "usages": [
-      "examples/PySDM_examples/Bieli_et_al_2022/__init__.py"
+      "examples/PySDM_examples/featured/Bieli_et_al_2022/__init__.py",
+      "examples/PySDM_examples/featured/Bieli_et_al_2022/fig_3a.ipynb"
     ],
     "label": "Bieli et al. 2022 (J. Adv. Model. Earth Sys. 14)",
     "title": "An Efficient Bayesian Approach to Learning Droplet Collision Kernels: Proof of Concept Using “Cloudy,” a New n-Moment Bulk Microphysics Scheme"
@@ -375,7 +375,7 @@
     "usages": [
       "README.md",
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/deJong_Mackay_et_al_2023/__init__.py"
+      "examples/PySDM_examples/featured/deJong_Mackay_et_al_2023/__init__.py"
     ],
     "label": "de Jong et al. 2023 (Geosci. Model Dev. 16)",
     "title": "Breakups are complicated: an efficient representation of collisional breakup in the superdroplet method"
@@ -405,8 +405,8 @@
   },
   "https://doi.org/10.1021/j100850a028": {
     "usages": [
-      "examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb",
-      "examples/PySDM_examples/Van_Hook_1968/__init__.py",
+      "examples/PySDM_examples/misc/Van_Hook_1968/fig_1.ipynb",
+      "examples/PySDM_examples/misc/Van_Hook_1968/__init__.py",
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/isotope_equilibrium_fractionation_factors/van_hook_1968.py"
     ],
@@ -423,24 +423,24 @@
   },
   "https://doi.org/10.1175/JAS-D-15-0370.1": {
     "usages": [
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_1.ipynb",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_3_and_Tab_4_upper_rows.ipynb",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_4_and_7_and_Tab_4_bottom_rows.ipynb",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_5.ipynb",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_6.ipynb",
-      "examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_8.ipynb"
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_1.ipynb",
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_3_and_Tab_4_upper_rows.ipynb",
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_4_and_7_and_Tab_4_bottom_rows.ipynb",
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_5.ipynb",
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_6.ipynb",
+      "examples/PySDM_examples/featured/Jensen_and_Nugent_2017/Fig_8.ipynb"
     ],
     "label": "Jensen & Nugent 2017 (J. Atmos. Sci. 74)",
     "title": "Condensational Growth of Drops Formed on Giant Sea-Salt Aerosol Particles"
   },
   "https://doi.org/10.1029/2022GL101917": {
     "usages": [
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_1.ipynb",
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_2.ipynb",
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_3.ipynb",
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_4.ipynb",
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_ripening_rate.ipynb",
-      "examples/PySDM_examples/Grabowski_and_Pawlowska_2023/__init__.py",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_1.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_2.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_3.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_4.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_ripening_rate.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/__init__.py",
       "tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_1_and_2.py",
       "tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_3.py",
       "tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_4.py"
@@ -466,24 +466,24 @@
   },
   "https://doi.org/10.5194/acp-19-747-2019": {
     "usages": [
-      "examples/PySDM_examples/Graf_et_al_2019/figure_4.ipynb",
-      "examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb",
-      "examples/PySDM_examples/Graf_et_al_2019/__init__.py"
+      "examples/PySDM_examples/sandbox/Graf_et_al_2019/figure_4.ipynb",
+      "examples/PySDM_examples/sandbox/Graf_et_al_2019/Table_1.ipynb",
+      "examples/PySDM_examples/sandbox/Graf_et_al_2019/__init__.py"
     ],
     "label": "Graf et al. 2019 (Atmos. Chem. Phys. 19)",
     "title": "A new interpretative framework for below-cloud effects on stable water isotopes in vapour and rain"
   },
   "https://doi.org/10.1029/2002JD002697": {
     "usages": [
-      "examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb",
-      "examples/PySDM_examples/Kreidenweis_et_al_2003/__init__.py"
+      "examples/PySDM_examples/featured/Kreidenweis_et_al_2003/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Kreidenweis_et_al_2003/__init__.py"
     ],
     "label": "Kreidenweis et al. 2003 (J. Geophys. Res. 108)",
     "title": "Modification of aerosol mass and size distribution due to aqueous-phase SO<sub>2</sub> oxidation in clouds: Comparisons of several models"
   },
   "https://doi.org/10.5194/acp-12-5807-2012": {
     "usages": [
-      "examples/PySDM_examples/Ervens_and_Feingold_2012/__init__.py"
+      "examples/PySDM_examples/sandbox/Ervens_and_Feingold_2012/__init__.py"
     ],
     "label": "Ervens & Feingold 2012 (Atmos. Chem. Phys. 12)",
     "title": "On the representation of immersion and condensation freezing in cloud models using different nucleation schemes "
@@ -516,17 +516,17 @@
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb",
-      "examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb",
-      "examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py"
+      "examples/PySDM_examples/featured/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb",
+      "examples/PySDM_examples/featured/Shipway_and_Hill_2012/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Shipway_and_Hill_2012/__init__.py"
     ],
     "label": "Shipway & Hill 2012 (Q. J. R. Meteorol. Soc. 138)",
     "title": "Diagnosis of systematic differences between multiple parametrizations of warm rain microphysics using a kinematic framework"
   },
   "https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2": {
     "usages": [
-      "examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb",
-      "examples/PySDM_examples/Berry_1967/__init__.py",
+      "examples/PySDM_examples/featured/Berry_1967/figs_5_8_10.ipynb",
+      "examples/PySDM_examples/featured/Berry_1967/__init__.py",
       "PySDM/dynamics/collisions/collision_kernels/electric.py",
       "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py",
       "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py"
@@ -536,7 +536,7 @@
   },
   "https://doi.org/10.5194/acp-13-7903-2013": {
     "usages": [
-      "examples/PySDM_examples/Bolot_et_al_2013/__init__.py",
+      "examples/PySDM_examples/misc/Bolot_et_al_2013/__init__.py",
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
       "tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py"
     ],
@@ -545,9 +545,9 @@
   },
   "https://doi.org/10.5194/gmd-11-3623-2018": {
     "usages": [
-      "examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb",
-      "examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb",
-      "examples/PySDM_examples/Jaruga_and_Pawlowska_2018/__init__.py"
+      "examples/PySDM_examples/featured/Jaruga_and_Pawlowska_2018/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Jaruga_and_Pawlowska_2018/fig_3.ipynb",
+      "examples/PySDM_examples/featured/Jaruga_and_Pawlowska_2018/__init__.py"
     ],
     "label": "Jaruga & Pawlowska 2018 (Geosci. Model Dev. 11)",
     "title": "libcloudph++ 2.0: aqueous-phase chemistry extension of the particle-based cloud microphysics scheme"
@@ -586,8 +586,8 @@
   "https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/Srivastava_1982/equations.py",
-      "examples/PySDM_examples/Srivastava_1982/__init__.py"
+      "examples/PySDM_examples/featured/Srivastava_1982/equations.py",
+      "examples/PySDM_examples/featured/Srivastava_1982/__init__.py"
     ],
     "label": "Srivastava 1982 (J. Atmos. Sci. 39)",
     "title": "A Simple Model of Particle Coalescence and Breakup"
@@ -608,8 +608,8 @@
   },
   "https://doi.org/10.1002/2013GL058684": {
     "usages": [
-      "examples/PySDM_examples/Niedermeier_et_al_2014/fig_2.ipynb",
-      "examples/PySDM_examples/Niedermeier_et_al_2014/__init__.py"
+      "examples/PySDM_examples/sandbox/Niedermeier_et_al_2014/fig_2.ipynb",
+      "examples/PySDM_examples/sandbox/Niedermeier_et_al_2014/__init__.py"
     ],
     "label": "Niedermeier et al. 2014 (Geophys. Res. Lett. 41)",
     "title": "A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model"
@@ -632,8 +632,8 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
-      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/__init__.py",
-      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
+      "examples/PySDM_examples/misc/Pruppacher_and_Rasmussen_1979/__init__.py",
+      "examples/PySDM_examples/misc/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
       "tests/smoke_tests/no_env/pruppacher_and_rasmussen_1979/test_fig_1.py"
     ],
     "label": "Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36)",
@@ -641,7 +641,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "examples/PySDM_examples/Zaba_et_al/global_meteoric_water_line.ipynb",
+      "examples/PySDM_examples/sandbox/isotopes/global_meteoric_water_line.ipynb",
       "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
@@ -666,7 +666,7 @@
   },
   "https://doi.org/10.1029/JZ067i007p02761": {
     "usages": [
-      "examples/PySDM_examples/Miyake_et_al_1968/__init__.py"
+      "examples/PySDM_examples/misc/Miyake_et_al_1968/__init__.py"
     ],
     "label": "Friedman et al. 1962 (J. Geophys. Res. 67)",
     "title": "Water-vapor exchange between a water droplet and its environment"
@@ -689,9 +689,9 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/trivia.py",
-      "examples/PySDM_examples/Bolin_1958/__init__.py",
-      "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
-      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+      "examples/PySDM_examples/misc/Bolin_1958/__init__.py",
+      "examples/PySDM_examples/misc/Bolin_1958/table_1.ipynb",
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
@@ -699,8 +699,8 @@
   "http://mi.mathnet.ru/dan27630": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/golovin.py",
-      "tutorials/README.md",
-      "tutorials/wikipedia/sdm.ipynb"
+      "examples/PySDM_examples/tutorials/README.md",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
@@ -708,8 +708,8 @@
   "http://mi.mathnet.ru/dan27172": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/golovin.py",
-      "tutorials/README.md",
-      "tutorials/wikipedia/sdm.ipynb"
+      "examples/PySDM_examples/tutorials/README.md",
+      "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Safranov 1962 (Dokl. Akad. Nauk SSSR 147)",
     "title": "Частный случай решения уравнения коагуляции (A particular solution of the coagulation equation)"
@@ -721,12 +721,12 @@
   },
   "https://doi.org/10.1029/2024MS004770": {
     "usages": [
-      "examples/PySDM_examples/Arabas_et_al_2025/__init__.py",
-      "examples/PySDM_examples/Arabas_et_al_2025/fig_2.ipynb",
-      "examples/PySDM_examples/Arabas_et_al_2025/fig_A2.ipynb",
-      "examples/PySDM_examples/Arabas_et_al_2025/figs_10_and_11_and_animations.ipynb",
-      "examples/PySDM_examples/Arabas_et_al_2025/figs_3_and_7_and_8.ipynb",
-      "examples/PySDM_examples/Arabas_et_al_2025/figs_5_and_6.ipynb"
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/__init__.py",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/fig_A2.ipynb",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/figs_10_and_11_and_animations.ipynb",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/figs_3_and_7_and_8.ipynb",
+      "examples/PySDM_examples/featured/Arabas_et_al_2025/figs_5_and_6.ipynb"
     ],
     "label": "Arabas et al. 2025 (JAMES)",
     "title": "Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models"
@@ -758,15 +758,15 @@
       "PySDM/physics/drop_growth/mason_1971.py",
       "PySDM/dynamics/terminal_velocity/rogers_and_yau.py",
       "PySDM/dynamics/terminal_velocity/power_series.py",
-      "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb"
+      "examples/PySDM_examples/misc/Gedzelman_and_Arnold_1994/fig_2.ipynb"
     ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
   },
   "https://doi.org/10.1080/00046973.1975.9648397": {
     "usages": [
-      "examples/PySDM_examples/Rogers_1975/__init__.py",
-      "examples/PySDM_examples/Rogers_1975/fig_1.ipynb"
+      "examples/PySDM_examples/misc/Rogers_1975/__init__.py",
+      "examples/PySDM_examples/misc/Rogers_1975/fig_1.ipynb"
     ],
     "title": "An Elementary Parcel Model with Explicit Condensation and Supersaturation",
     "label": "Rogers 1975"
@@ -824,7 +824,8 @@
   },
   "https://doi.org/10.1016/0019-1035(80)90173-6": {
     "usages": [
-      "examples/PySDM_examples/Toon_et_al_1980/fig_1.ipynb",
+      "examples/PySDM_examples/misc/Toon_et_al_1980/fig_1.ipynb",
+      "examples/PySDM_examples/misc/Toon_et_al_1980/__init__.py",
       "PySDM/physics/hydrostatics/variable_g_isothermal.py"
     ],
     "title": "A physical model of Titan’s clouds",
@@ -832,8 +833,8 @@
   },
   "https://doi.org/10.1016/B978-0-444-42225-5.50008-5": {
     "usages": [
-      "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
-      "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
+      "examples/PySDM_examples/misc/Gonfiantini_1986/fig_3_1.ipynb",
+      "examples/PySDM_examples/misc/Gonfiantini_1986/__init__.py"
     ],
     "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
@@ -849,8 +850,8 @@
     "usages": [
       "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "examples/PySDM_examples/Stewart_1975/__init__.py",
-      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
+      "examples/PySDM_examples/misc/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/misc/Stewart_1975/fig_1.ipynb"
     ],
     "title": "Stable Isotope Fractionation Due to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
     "label": "Stewart 1975 (J. Geophys. Res.)"
@@ -859,8 +860,8 @@
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
       "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
-      "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
-      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
+      "examples/PySDM_examples/misc/Kinzer_And_Gunn_1951/table_1_and_2.py",
+      "examples/PySDM_examples/misc/Kinzer_And_Gunn_1951/__init__.py"
     ],
     "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
     "label": "Kinzer & Gunn 1951 (J. Meteor.)"
@@ -905,11 +906,11 @@
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/__init__.py",
-      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
-      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
+      "examples/PySDM_examples/misc/Jouzel_and_Merlivat_1984/__init__.py",
+      "examples/PySDM_examples/misc/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
+      "examples/PySDM_examples/misc/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
       "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
-      "examples/PySDM_examples/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/sandbox/Fisher_1991/__init__.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
@@ -930,8 +931,8 @@
   },
   "https://doi.org/10.3402/tellusb.v43i5.15414": {
     "usages": [
-      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb",
-      "examples/PySDM_examples/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/sandbox/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/sandbox/Fisher_1991/__init__.py"
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
@@ -939,7 +940,7 @@
   "https://doi.org/10.1029/JC080i036p05015": {
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
-      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+      "examples/PySDM_examples/sandbox/isotopes/timescales_comparison.ipynb"
     ],
     "title": "Isotopic study of hail",
     "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
@@ -950,9 +951,9 @@
       "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_murray_dwa_adaption.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",
-      "examples/PySDM_examples/Spichtinger_et_al_2023/fig_B1.ipynb",
+      "examples/PySDM_examples/sandbox/Spichtinger_et_al_2023/__init__.py",
+      "examples/PySDM_examples/sandbox/Spichtinger_et_al_2023/data/reference_bulk.py",
+      "examples/PySDM_examples/sandbox/Spichtinger_et_al_2023/fig_B1.ipynb",
       "tests/unit_tests/physics/test_homogeneous_nucleation_rates.py"
     ],
     "title": "Impact of formulations of the homogeneous nucleation rate on ice nucleation events in cirrus",
@@ -979,18 +980,18 @@
     "label": "Matsushima et al. 2023 (Geosci. Model Dev. 16)",
     "usages": [
       "PySDM/initialisation/sampling/spectral_sampling.py",
-      "examples/PySDM_examples/Matsushima_et_al_2023/figure_1.ipynb",
-      "examples/PySDM_examples/Matsushima_et_al_2023/__init__.py"
+      "examples/PySDM_examples/misc/Matsushima_et_al_2023/figure_1.ipynb",
+      "examples/PySDM_examples/misc/Matsushima_et_al_2023/__init__.py"
     ]
   },
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
-      "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_1.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_3_4.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_5.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_6_7_8.ipynb",
-      "examples/PySDM_examples/Ware_et_al_2025/fig_A1.ipynb"
+      "examples/PySDM_examples/featured/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_3_4.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_5.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_6_7_8.ipynb",
+      "examples/PySDM_examples/featured/Ware_et_al_2025/fig_A1.ipynb"
     ],
     "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",
     "label": "Ware et al. 2025 (arXiv)"
@@ -1029,8 +1030,8 @@
   },
   "https://doi.org/10.1039/c003297b": {
     "usages": [
-      "examples/PySDM_examples/Murray_et_al_2010/fig_3.ipynb",
-      "examples/PySDM_examples/Murray_et_al_2010/__init__.py"
+      "examples/PySDM_examples/misc/Murray_et_al_2010/fig_3.ipynb",
+      "examples/PySDM_examples/misc/Murray_et_al_2010/__init__.py"
     ],
     "title": "Kinetics of the homogeneous freezing of water",
     "label": "Murray et al. 2010 (Phys. Chem. Chem. Phys. 12)"
@@ -1038,17 +1039,17 @@
   "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/long1974.py",
-      "examples/PySDM_examples/Long_1974/__init__.py",
-      "examples/PySDM_examples/Long_1974/fig10_11_13_14.ipynb"
+      "examples/PySDM_examples/featured/Long_1974/__init__.py",
+      "examples/PySDM_examples/featured/Long_1974/fig10_11_13_14.ipynb"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   },
   "https://doi.org/10.5194/gmd-4-15-2011" : {
     "usages": [
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/__init__.py",
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_1.ipynb",
-      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_2.ipynb"
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/__init__.py",
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/fig_1.ipynb",
+      "examples/PySDM_examples/sandbox/Arabas_and_Pawlowska_2011/fig_2.ipynb"
     ],
     "label": "Arabas & Pawlowska 2011",
     "title": "Adaptive method of lines for multi-component aerosol condensational growth and CCN activation"

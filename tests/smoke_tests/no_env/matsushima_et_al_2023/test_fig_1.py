@@ -4,7 +4,7 @@ from scipy.interpolate import interp1d
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Matsushima_et_al_2023
+from PySDM_examples.misc import Matsushima_et_al_2023
 
 from PySDM.physics import si
 
