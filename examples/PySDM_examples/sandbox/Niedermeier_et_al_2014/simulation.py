@@ -3,7 +3,7 @@ from PySDM_examples.sandbox.Ervens_and_Feingold_2012.settings import (
     sampled_ccn_diameter_number_concentration_spectrum,
 )
 from PySDM_examples.sandbox.Niedermeier_et_al_2014.settings import Settings
-from PySDM_examples.tutorials.utils import BasicSimulation
+from PySDM_examples.utils import BasicSimulation
 
 from PySDM import Particulator
 from PySDM.backends import CPU

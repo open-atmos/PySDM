@@ -1,5 +1,5 @@
 import numpy as np
-from PySDM_examples.tutorials.utils import BasicSimulation
+from PySDM_examples.utils import BasicSimulation
 from PySDM_examples.featured.Jensen_and_Nugent_2017.settings import Settings
 from PySDM_examples.featured.Jensen_and_Nugent_2017 import table_3
 from PySDM import Particulator

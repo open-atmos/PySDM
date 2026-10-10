@@ -1,4 +1,4 @@
-from PySDM_examples.tutorials.utils import BasicSimulation
+from PySDM_examples.utils import BasicSimulation
 
 from PySDM.backends import CPU
 from PySDM import Particulator

@@ -1,5 +1,5 @@
 import numpy as np
-from PySDM_examples.tutorials.utils import BasicSimulation
+from PySDM_examples.utils import BasicSimulation
 
 from PySDM import Particulator
 from PySDM.backends import CPU
