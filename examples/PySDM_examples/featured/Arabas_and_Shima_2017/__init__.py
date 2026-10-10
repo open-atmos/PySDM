@@ -6,4 +6,7 @@ fig_5.ipynb:
 .. include:: ./fig_5.ipynb.badges.md
 """
 
+from .simulation import Simulation
+from .settings import Settings
+
 # pylint: disable=invalid-name
