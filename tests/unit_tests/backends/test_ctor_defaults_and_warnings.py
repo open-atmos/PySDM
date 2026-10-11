@@ -1,4 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from contextlib import nullcontext
 from unittest import mock
 import warnings
 import inspect
@@ -41,3 +42,32 @@ class TestCtorDefaultsAndWarnings:
             with pytest.raises(ValueError) as exc_info:
                 Numba(n_dims=1)
             assert exc_info.match(r"^Numba threading enabled but does not work")
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "setting, outcome, context",
+        (
+            (True, True, nullcontext()),
+            (False, False, nullcontext()),
+            (
+                True,
+                False,
+                mock.patch(
+                    "numba.parfors.parfor.ensure_parallel_support",
+                    side_effect=numba.core.errors.UnsupportedParforsError("Mock"),
+                ),
+            ),
+            (
+                False,
+                False,
+                mock.patch(
+                    "numba.parfors.parfor.ensure_parallel_support",
+                    side_effect=numba.core.errors.UnsupportedParforsError("Mock"),
+                ),
+            ),
+        ),
+    )
+    def test_numba_override_jit_flags_parallel(setting, outcome, context):
+        with context:
+            backend = Numba(override_jit_flags={"parallel": setting})
+        assert backend.default_jit_flags["parallel"] == outcome
