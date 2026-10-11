@@ -1,10 +1,9 @@
 from typing import Iterable
 
+from PySDM_examples.utils.kinematic_2d.strato_cumulus import StratoCumulus
 
 from PySDM import Formulae
 from PySDM.physics import si
-
-from PySDM_examples.utils.kinematic_2d.strato_cumulus import StratoCumulus
 
 
 class Settings(StratoCumulus):
