@@ -127,12 +127,12 @@ TEST_SUITES = {
         "Arabas_and_Shima_2017",
         "pyrcel_docs_testcase",
         "Yang_et_al_2018",
-        "condensation_adaptivity",
     ],
     "condensation_c": [
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
+        "condensation_adaptivity",
     ],
     "coagulation": [
         "Berry_1967",
