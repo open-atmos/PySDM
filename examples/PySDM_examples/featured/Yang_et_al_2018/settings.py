@@ -1,7 +1,7 @@
 import numpy as np
 from pystrict import strict
 
-import PySDM_examples
+from PySDM_examples.featured import Jensen_and_Nugent_2017
 
 from PySDM.backends import CPU
 from PySDM.dynamics import condensation
@@ -47,18 +47,10 @@ class Settings:
         self.rtol_thd = condensation.DEFAULTS.rtol_thd
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 
-        self.T0 = (
-            PySDM_examples.featured.Jensen_and_Nugent_2017.settings.INITIAL_TEMPERATURE
-        )
-        self.RH0 = (
-            PySDM_examples.featured.Jensen_and_Nugent_2017.settings.INITIAL_RELATIVE_HUMIDITY
-        )
-        self.p0 = (
-            PySDM_examples.featured.Jensen_and_Nugent_2017.settings.INITIAL_PRESSURE
-        )
-        self.z0 = (
-            PySDM_examples.featured.Jensen_and_Nugent_2017.settings.INITIAL_ALTITUDE
-        )
+        self.T0 = Jensen_and_Nugent_2017.settings.INITIAL_TEMPERATURE
+        self.RH0 = Jensen_and_Nugent_2017.settings.INITIAL_RELATIVE_HUMIDITY
+        self.p0 = Jensen_and_Nugent_2017.settings.INITIAL_PRESSURE
+        self.z0 = Jensen_and_Nugent_2017.settings.INITIAL_ALTITUDE
         self.kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
 
         self.t0 = 1200 * si.second
