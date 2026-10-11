@@ -63,15 +63,6 @@ Example notebooks:
 - `PySDM_examples.featured.deJong_Mackay_et_al_2023`: reproducing figures from the <a href="https://doi.org/10.5194/gmd-16-4193-2023">de Jong et al. 2023</a> paper where the single-column
    framework was used to exemplify operation of the <mark>Monte-Carlo collisional breakup scheme</mark> in PySDM (scheme introduced in that paper).
 
-## OD/1D iterative parcel/column environment mimicking removal of precipitation
-
-This framework uses a parcel model with removal of precipitation for analysis,
-iterative equilibration, the isotopic composition of the water vapour and
-rain water in a column of air (no Eulerian transport, only iterative passage of a parcel through the column).
-
-`PySDM_examples.sandbox.Rozanski_and_Sonntag_1982`: bulk microphysics example (i.e. single super droplet) with
-deuterium and heavy-oxygen <mark>water isotopologues</mark> featured.
-
 ## 0D parcel environment
 
 The parcel framework implemented in PySDM uses a hydrostatic profile and adiabatic mass and energy conservation
@@ -90,7 +81,6 @@ Example notebooks include:
   - `PySDM_examples.featured.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
   - `PySDM_examples.featured.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
 - freezing
-  - `PySDM_examples.misc.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 
@@ -122,7 +112,6 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.misc.Bolot_et_al_2013`
   - `PySDM_examples.misc.Merlivat_and_Nief_1967`
   - `PySDM_examples.misc.Van_Hook_1968`
-  - `PySDM_examples.sandbox.isotopes.Graf_et_al_2019`
 - <mark>Rayleigh fractionation</mark>:
   - `PySDM_examples.featured.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
   - `PySDM_examples.misc.Gonfiantini_1986`: flat-surface evaporation at different humidities for D and <sup>18</sup>O
