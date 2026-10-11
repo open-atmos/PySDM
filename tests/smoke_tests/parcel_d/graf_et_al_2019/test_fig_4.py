@@ -17,7 +17,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Graf_et_al_2019.__file__).parent / "fig_4.ipynb", plot=PLOT
+        file=Path(Graf_et_al_2019.__file__).parent / "figure_4.ipynb", plot=PLOT
     )
 
 
