@@ -1,8 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from contextlib import nullcontext
 from unittest import mock
+import platform
 import warnings
 import inspect
+
 import pytest
 import numba
 
@@ -47,7 +49,7 @@ class TestCtorDefaultsAndWarnings:
     @pytest.mark.parametrize(
         "setting, outcome, context",
         (
-            (True, True, nullcontext()),
+            (True, platform.machine() != "arm64", nullcontext()),
             (False, False, nullcontext()),
             (
                 True,
