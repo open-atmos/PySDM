@@ -138,7 +138,7 @@
                                 <a class="variable" href="#Particulator.condensation_params">condensation_params</a>
                         </li>
                         <li>
-                                <a class="function" href="#Particulator.run">run</a>
+                                <a class="function" href="#Particulator.advance">advance</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Particulator.Storage">Storage</a>
@@ -255,7 +255,7 @@
                     <h1 class="modulename">
 <a href="./../PySDM.html">PySDM</a><wbr>.particulator    </h1>
 
-                        <div class="docstring"><p>The very class exposing <code><a href="#Particulator.run">PySDM.particulator.Particulator.run()</a></code> method for launching simulations</p>
+                        <div class="docstring"><p>The very class exposing <code><a href="#Particulator.advance">PySDM.particulator.Particulator.advance()</a></code> method for launching simulations</p>
 </div>
 
                         <input id="mod-particulator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -263,7 +263,7 @@
                         <label class="view-source-button" for="mod-particulator-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">"""</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">The very class exposing `PySDM.particulator.Particulator.advance()` method for launching simulations</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">"""</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
@@ -351,10 +351,10 @@
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">products</span><span class="p">,</span> <span class="n">int_caster</span><span class="p">)</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">):</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_initialisers</span><span class="p">()</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dynamic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>                    <span class="n">dynamic</span><span class="p">()</span>
@@ -1097,10 +1097,10 @@
 </span><span id="Particulator-88"><a href="#Particulator-88"><span class="linenos"> 88</span></a>
 </span><span id="Particulator-89"><a href="#Particulator-89"><span class="linenos"> 89</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">products</span><span class="p">,</span> <span class="n">int_caster</span><span class="p">)</span>
 </span><span id="Particulator-90"><a href="#Particulator-90"><span class="linenos"> 90</span></a>
-</span><span id="Particulator-91"><a href="#Particulator-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
+</span><span id="Particulator-91"><a href="#Particulator-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">):</span>
 </span><span id="Particulator-92"><a href="#Particulator-92"><span class="linenos"> 92</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Particulator-93"><a href="#Particulator-93"><span class="linenos"> 93</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_initialisers</span><span class="p">()</span>
-</span><span id="Particulator-94"><a href="#Particulator-94"><span class="linenos"> 94</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+</span><span id="Particulator-94"><a href="#Particulator-94"><span class="linenos"> 94</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
 </span><span id="Particulator-95"><a href="#Particulator-95"><span class="linenos"> 95</span></a>            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dynamic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span><span id="Particulator-96"><a href="#Particulator-96"><span class="linenos"> 96</span></a>                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
 </span><span id="Particulator-97"><a href="#Particulator-97"><span class="linenos"> 97</span></a>                    <span class="n">dynamic</span><span class="p">()</span>
@@ -2078,26 +2078,26 @@
     
 
                             </div>
-                            <div id="Particulator.run" class="classattr">
-                                        <input id="Particulator.run-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Particulator.advance" class="classattr">
+                                        <input id="Particulator.advance-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">run</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">steps</span></span><span class="return-annotation">):</span></span>
+        <span class="name">advance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n_steps</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Particulator.run-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Particulator.advance-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Particulator.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.run-91"><a href="#Particulator.run-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
-</span><span id="Particulator.run-92"><a href="#Particulator.run-92"><span class="linenos">92</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Particulator.run-93"><a href="#Particulator.run-93"><span class="linenos">93</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_initialisers</span><span class="p">()</span>
-</span><span id="Particulator.run-94"><a href="#Particulator.run-94"><span class="linenos">94</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
-</span><span id="Particulator.run-95"><a href="#Particulator.run-95"><span class="linenos">95</span></a>            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dynamic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="Particulator.run-96"><a href="#Particulator.run-96"><span class="linenos">96</span></a>                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
-</span><span id="Particulator.run-97"><a href="#Particulator.run-97"><span class="linenos">97</span></a>                    <span class="n">dynamic</span><span class="p">()</span>
-</span><span id="Particulator.run-98"><a href="#Particulator.run-98"><span class="linenos">98</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="Particulator.run-99"><a href="#Particulator.run-99"><span class="linenos">99</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_observers</span><span class="p">()</span>
+    <a class="headerlink" href="#Particulator.advance"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.advance-91"><a href="#Particulator.advance-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">):</span>
+</span><span id="Particulator.advance-92"><a href="#Particulator.advance-92"><span class="linenos">92</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Particulator.advance-93"><a href="#Particulator.advance-93"><span class="linenos">93</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_initialisers</span><span class="p">()</span>
+</span><span id="Particulator.advance-94"><a href="#Particulator.advance-94"><span class="linenos">94</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+</span><span id="Particulator.advance-95"><a href="#Particulator.advance-95"><span class="linenos">95</span></a>            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dynamic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Particulator.advance-96"><a href="#Particulator.advance-96"><span class="linenos">96</span></a>                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+</span><span id="Particulator.advance-97"><a href="#Particulator.advance-97"><span class="linenos">97</span></a>                    <span class="n">dynamic</span><span class="p">()</span>
+</span><span id="Particulator.advance-98"><a href="#Particulator.advance-98"><span class="linenos">98</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="Particulator.advance-99"><a href="#Particulator.advance-99"><span class="linenos">99</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_notify_observers</span><span class="p">()</span>
 </span></pre></div>
 
 

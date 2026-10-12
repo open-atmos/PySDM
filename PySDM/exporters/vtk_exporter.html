@@ -150,7 +150,7 @@
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    exporter = VTKExporter()</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    for step in range(settings.n_steps):</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        simulation.particulator.run(1)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        simulation.particulator.advance(1)</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        exporter.export_attributes(simulation.particulator)</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        exporter.export_products(simulation.particulator)</span>
@@ -319,7 +319,7 @@
 </span><span id="VTKExporter-19"><a href="#VTKExporter-19"><span class="linenos"> 19</span></a><span class="sd">    exporter = VTKExporter()</span>
 </span><span id="VTKExporter-20"><a href="#VTKExporter-20"><span class="linenos"> 20</span></a>
 </span><span id="VTKExporter-21"><a href="#VTKExporter-21"><span class="linenos"> 21</span></a><span class="sd">    for step in range(settings.n_steps):</span>
-</span><span id="VTKExporter-22"><a href="#VTKExporter-22"><span class="linenos"> 22</span></a><span class="sd">        simulation.particulator.run(1)</span>
+</span><span id="VTKExporter-22"><a href="#VTKExporter-22"><span class="linenos"> 22</span></a><span class="sd">        simulation.particulator.advance(1)</span>
 </span><span id="VTKExporter-23"><a href="#VTKExporter-23"><span class="linenos"> 23</span></a>
 </span><span id="VTKExporter-24"><a href="#VTKExporter-24"><span class="linenos"> 24</span></a><span class="sd">        exporter.export_attributes(simulation.particulator)</span>
 </span><span id="VTKExporter-25"><a href="#VTKExporter-25"><span class="linenos"> 25</span></a><span class="sd">        exporter.export_products(simulation.particulator)</span>
@@ -474,7 +474,7 @@
 <p>exporter = VTKExporter()</p>
 
 <p>for step in range(settings.n_steps):
-    simulation.particulator.run(1)</p>
+    simulation.particulator.advance(1)</p>
 
 <pre><code>exporter.export_attributes(simulation.particulator)
 exporter.export_products(simulation.particulator)
