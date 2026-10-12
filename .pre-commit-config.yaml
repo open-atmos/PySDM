@@ -33,4 +33,4 @@ repos:
     hooks:
       - id: check-badges
         name: check badges
-        args: [--fix-header, --repo-name=PySDM]
+        args: [--repo-name=PySDM]
