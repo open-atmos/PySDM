@@ -106,8 +106,8 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             },
         )
 
-    def advance(self, steps):
-        self.particulator.advance(steps)
+    def advance(self, n_steps):
+        self.particulator.advance(n_steps)
 
 
 def _try(particulator, capsys):
