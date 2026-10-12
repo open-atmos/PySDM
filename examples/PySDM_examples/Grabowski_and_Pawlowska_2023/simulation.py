@@ -26,9 +26,7 @@ class Simulation(BasicSimulation):
             T0=settings.initial_temperature,
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=CPU(formulae=settings.formulae),
         )
         volume = environment.mass_of_dry_air / settings.initial_air_density
         attributes = {

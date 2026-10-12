@@ -30,14 +30,7 @@ class Simulation:
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.T0,
             w=settings.w,
-            backend=backend(
-                formulae=settings.formulae,
-                **(
-                    {"override_jit_flags": {"parallel": False}}
-                    if backend is Numba
-                    else {}
-                ),
-            ),
+            backend=backend(formulae=settings.formulae),
         )
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,

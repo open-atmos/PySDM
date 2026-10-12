@@ -35,7 +35,7 @@ def make_particulator(
         "particle_shape_and_density": "MixedPhaseSpheres",
     }
     formulae = Formulae(**formulae_ctor_args)
-    backend = CPU(formulae, override_jit_flags={"parallel": False})
+    backend = CPU(formulae)
 
     attributes = {
         "signed water mass": np.ones(n_sd) * droplet_volume * formulae.constants.rho_w
