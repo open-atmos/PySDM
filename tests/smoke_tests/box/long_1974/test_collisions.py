@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Long_1974
+from PySDM_examples.featured import Long_1974
 
 from PySDM.physics import si
 
@@ -13,7 +13,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="notebook_local_variables")
 def notebook_local_variables_fixture():
     return notebook_vars(
-        Path(Long_1974.__file__).parent / "fig10_11_13_14.ipynb", plot=PLOT
+        Path(Long_1974.__file__).parent / "figs_10_11_13_14.ipynb", plot=PLOT
     )
 
 

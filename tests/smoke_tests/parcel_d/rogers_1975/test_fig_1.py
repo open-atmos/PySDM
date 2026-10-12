@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Rogers_1975
+from PySDM_examples.misc import Rogers_1975
 from PySDM.physics.constants import PER_CENT
 
 

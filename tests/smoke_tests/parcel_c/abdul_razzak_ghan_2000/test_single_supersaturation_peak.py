@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
+from PySDM_examples.featured.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
 from scipy import signal
 
 from PySDM import Formulae, Particulator
