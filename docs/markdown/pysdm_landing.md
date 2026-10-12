@@ -225,7 +225,7 @@ In the listing below, its usage is interleaved with plotting logic
 using Plots; gr()
 
 for step = 0:1200:3600
-    particulator.run(step - particulator.n_steps)
+    particulator.advance(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
         particulator.formulae.particle_shape_and_density.volume_to_mass(
@@ -246,7 +246,7 @@ savefig("plot.svg")
 
 ```Matlab
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps));
+    particulator.advance(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.formulae.particle_shape_and_density.volume_to_mass( ...
         particulator.products{"dv/dlnr"}.get() ...
@@ -272,14 +272,14 @@ legend()
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
-    particulator.run(step - particulator.n_steps)
-    pyplot.step(
-        x=radius_bins_edges[:-1] / si.um,
-        y=particulator.formulae.particle_shape_and_density.volume_to_mass(
-            particulator.products['dv/dlnr'].get()[0]
-        ) / si.g,
-        where='post', label=f"t = {step}s"
-    )
+  particulator.advance(step - particulator.n_steps)
+  pyplot.step(
+    x=radius_bins_edges[:-1] / si.um,
+    y=particulator.formulae.particle_shape_and_density.volume_to_mass(
+      particulator.products['dv/dlnr'].get()[0]
+    ) / si.g,
+    where='post', label=f"t = {step}s"
+  )
 
 pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
@@ -317,7 +317,7 @@ The component submodules used to create this simulation are visualized below:
     SAMPLE(["ConstantMultiplicity.sample_deterministic()"]) -->|returns| n
     SAMPLE -->|returns| volume
     n -->|added as element of| ATTRIBUTES
-    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
+    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_ADVANCE(["Particulator.advance()"])
     volume -->|added as element of| ATTRIBUTES
     PARTICULATOR_INIT -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
@@ -433,7 +433,7 @@ for (_, product) in particulator.products
 end
 
 for step = 2:output_points+1
-    particulator.run(steps=output_interval)
+    particulator.advance(n_steps=output_interval)
     for (_, product) in particulator.products
         output[product.name][step] = product.get()[cell_id]
     end
@@ -532,7 +532,7 @@ for pykey = py.list(keys(particulator.products))
 end
 
 for i=2:output_points+1
-    particulator.run(pyargs('steps', int32(output_interval)));
+    particulator.advance(pyargs('n_steps', int32(output_interval)));
     for pykey = py.list(keys(particulator.products))
         get = py.getattr(particulator.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
@@ -621,7 +621,7 @@ cell_id = 0
 output = {product.name: [product.get()[cell_id]] for product in particulator.products.values()}
 
 for step in range(output_points):
-  particulator.run(steps=output_interval)
+  particulator.advance(n_steps=output_interval)
   for product in particulator.products.values():
     output[product.name].append(product.get()[cell_id])
 

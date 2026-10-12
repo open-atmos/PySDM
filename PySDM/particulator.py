@@ -1,5 +1,5 @@
 """
-The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
+The very class exposing `PySDM.particulator.Particulator.advance()` method for launching simulations
 """
 
 import inspect
@@ -87,10 +87,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         self._build(attributes, products, int_caster)
 
-    def run(self, steps):
+    def advance(self, n_steps):
         if len(self.initialisers) > 0:
             self._notify_initialisers()
-        for _ in range(steps):
+        for _ in range(n_steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
                     dynamic()

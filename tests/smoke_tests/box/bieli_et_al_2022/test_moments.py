@@ -29,7 +29,7 @@ def test_moments(plot=False):
 
         j = 0
         for step in settings.output_steps:
-            particulator.run(step - particulator.n_steps)
+            particulator.advance(step - particulator.n_steps)
             moments[i][:, j] = [
                 particulator.products["M0"].get()[0],
                 particulator.products["M1"].get()[0],
