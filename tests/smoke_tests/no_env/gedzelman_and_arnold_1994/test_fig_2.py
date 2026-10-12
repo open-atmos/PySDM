@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Gedzelman_and_Arnold_1994
+from PySDM_examples.misc import Gedzelman_and_Arnold_1994
 
 PLOT = False
 

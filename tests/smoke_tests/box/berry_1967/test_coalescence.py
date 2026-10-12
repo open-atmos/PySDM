@@ -3,7 +3,7 @@ import struct
 
 import numpy as np
 import pytest
-from PySDM_examples.Berry_1967.settings import Settings
+from PySDM_examples.featured.Berry_1967.settings import Settings
 
 from PySDM.backends import ThrustRTC
 from PySDM import Particulator

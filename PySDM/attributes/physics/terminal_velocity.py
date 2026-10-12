@@ -21,10 +21,10 @@ class TerminalVelocity(DerivedAttribute):
         )
 
         self.approximation_liquid = particulator.formulae.terminal_velocity_class(
-            particulator
+            particulator.backend
         )
         self.approximation_ice = particulator.formulae.terminal_velocity_ice_class(
-            particulator
+            particulator.backend
         )
 
     def recalculate(self):

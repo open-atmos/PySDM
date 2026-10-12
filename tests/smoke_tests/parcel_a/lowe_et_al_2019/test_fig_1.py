@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
-from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
+from PySDM_examples.featured.Lowe_et_al_2019 import aerosol as paper_aerosol
+from PySDM_examples.featured.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from scipy import signal
 
 from PySDM import Formulae
