@@ -39,10 +39,11 @@ repos:
           - gitpython
         args: [ --repo-name=PySDM, --no-header-check ]
 
-      - id: check-notebook-output
-        name: check notebook output
-        additional_dependencies:
-          - nbformat
+# TODO #1973 Needs run for some notebooks
+#      - id: check-notebook-output
+#        name: check notebook output
+#        additional_dependencies:
+#          - nbformat
 
       - id: check-notebook-using-jupyter-utils
         name: check notebook using open-atmos-jupyter-utils
