@@ -214,7 +214,7 @@ An instance
   of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) is created to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.run) method advances the simulation by ``nt`` timesteps.
+The [`advance(n_steps)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.advance) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution
   at selected timesteps:

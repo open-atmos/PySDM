@@ -256,7 +256,7 @@ def simulation(
         if cooling_rate != 0:
             env["T"] -= np.full((1,), cooling_rate * time_step / 2)
             env["a_w_ice"] = svp.pvs_ice(env["T"][0]) / svp.pvs_water(env["T"][0])
-        particulator.run(0 if i == 0 else 1)
+        particulator.advance(0 if i == 0 else 1)
         if cooling_rate != 0:
             env["T"] -= np.full((1,), cooling_rate * time_step / 2)
 

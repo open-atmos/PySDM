@@ -46,7 +46,7 @@ def run(settings, backend=CPU, observers=()):
     vals = {}
     particulator.products["wall time"].reset()
     for step in settings.output_steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         vals[step] = particulator.products["dv/dlnr"].get()[0]
         vals[step][:] *= settings.rho
 
