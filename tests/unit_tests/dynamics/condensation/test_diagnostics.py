@@ -106,7 +106,7 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             },
         )
 
-    def run(self, steps):
+    def advance(self, steps):
         self.particulator.advance(steps)
 
 
