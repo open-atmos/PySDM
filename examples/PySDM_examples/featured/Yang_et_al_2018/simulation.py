@@ -116,7 +116,7 @@ class Simulation:
 
         self.save(output)
         for _ in range(self.n_steps):
-            self.particulator.run(self.n_substeps)
+            self.particulator.advance(self.n_substeps)
             self.save(output)
         for k, v in output.items():
             output[k] = np.asarray(v)

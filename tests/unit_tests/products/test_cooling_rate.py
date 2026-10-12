@@ -51,7 +51,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
 
@@ -63,7 +63,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.environment["T"] += dT
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
@@ -138,7 +138,7 @@ class TestCoolingRate:
         )
 
         # act
-        particulator.run(steps=n_steps)
+        particulator.advance(n_steps=n_steps)
 
         cooling_rates = particulator.products["cooling rate"].get()
 

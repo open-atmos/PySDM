@@ -154,7 +154,7 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
         particulator.attributes.mark_updated("signed water mass")
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         if terminal_velocity is not None:

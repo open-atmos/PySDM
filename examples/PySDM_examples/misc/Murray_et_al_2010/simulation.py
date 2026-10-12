@@ -166,7 +166,7 @@ def simulation(
             env["T"][cell_id]
         )
         env["T"] -= np.full((1,), cooling_rate * time_step)
-        particulator.run(0 if i == 0 else 1)
+        particulator.advance(0 if i == 0 else 1)
 
     assert all(particulator.attributes["signed water mass"].data < 0)
     T_frz = particulator.attributes["temperature of last freezing"].data.tolist()

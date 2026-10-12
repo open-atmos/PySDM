@@ -84,7 +84,7 @@ class TestSurfacePrecipitation:
         )
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         water_volume = (
@@ -98,7 +98,7 @@ class TestSurfacePrecipitation:
         )
 
         # act again
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert again
         assert particulator.products["surface precipitation"].get() == 0

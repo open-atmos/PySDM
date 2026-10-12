@@ -135,7 +135,7 @@ class Simulation(BasicSimulation):
     def run(self):
         output = {k: [] for k in self.particulator.products}
         for step in self.settings.output_steps:
-            self.particulator.run(step - self.particulator.n_steps)
+            self.particulator.advance(step - self.particulator.n_steps)
             self._save_scalars(output)
         self._save_final_timestep_products(output)
         return output
