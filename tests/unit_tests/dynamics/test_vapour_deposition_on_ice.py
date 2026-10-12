@@ -76,7 +76,6 @@ def make_particulator(
             dt=dt,
             dv=1 * si.m**3,
             backend=CPU(
-                override_jit_flags={"parallel": False},
                 formulae=Formulae(
                     particle_shape_and_density="MixedPhaseSpheres",
                     diffusion_coordinate=diffusion_coordinate,

@@ -30,9 +30,7 @@ class Simulation(BasicSimulation):
             T0=settings.initial_temperature,
             w=settings.vertical_velocity,
             mass_of_dry_air=mass_of_dry_air,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=CPU(formulae=settings.formulae),
         )
         n_sd = sum(settings.n_sd_per_mode)
         volume = environment.mass_of_dry_air / settings.initial_air_density

@@ -1,5 +1,6 @@
 """
-Multi-threaded CPU backend using LLVM-powered just-in-time compilation
+CPU backend using LLVM-powered just-in-time compilation
+with multi-threading for multi-cell simulations (i.e., if n_dims>0)
 """
 
 import os
@@ -49,13 +50,15 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     ):
         if not double_precision:
             raise NotImplementedError()
+
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
         self.n_dims = n_dims
-        parallel_default = True
 
+        parallel_default = n_dims > 0
         if override_jit_flags is not None and "parallel" in override_jit_flags:
             parallel_default = override_jit_flags["parallel"]
+            del override_jit_flags["parallel"]
 
         if parallel_default:
             if platform.machine() == "arm64":

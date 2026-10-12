@@ -21,9 +21,7 @@ class Simulation:
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             p0=settings.initial_total_pressure,
             T0=settings.initial_temperature,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=CPU(formulae=settings.formulae),
         )
         r_dry, n_in_dv = ConstantMultiplicity(
             settings.initial_aerosol_dry_radii
