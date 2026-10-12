@@ -45,7 +45,8 @@ repos:
 #        additional_dependencies:
 #          - nbformat
 
-      - id: check-notebook-using-jupyter-utils
-        name: check notebook using open-atmos-jupyter-utils
-        additional_dependencies:
-          - nbformat
+# TODO #1973 use show_plot and show_anim
+#      - id: check-notebook-using-jupyter-utils
+#        name: check notebook using open-atmos-jupyter-utils
+#        additional_dependencies:
+#          - nbformat
