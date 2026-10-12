@@ -33,9 +33,7 @@ Currently, the development is focused on atmospheric cloud physics
   using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
 PySDM supports a range of cloud microphysical processes, including condensational growth,
-  collisional coalescence and breakup, and freezing. 
-It also enables the study of isotopic fractionation and cloud seeding,
-  broadening its applicability to a range of problems in atmospheric cloud physics.
+  collisional coalescence and breakup, and freezing.
 
 The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
