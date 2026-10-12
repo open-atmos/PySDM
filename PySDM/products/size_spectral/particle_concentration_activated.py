@@ -30,9 +30,9 @@ class ActivatedParticleConcentration(ConcentrationProduct, ActivationFilteredPro
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
 
-    def register(self, builder):
+    def register(self, particulator):
         for base_class in (ActivationFilteredProduct, ConcentrationProduct):
-            base_class.register(self, builder)
+            base_class.register(self, particulator)
 
     def _impl(self, **kwargs):
         ActivationFilteredProduct.impl(self, attr="volume", rank=0)

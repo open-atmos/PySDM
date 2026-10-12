@@ -474,7 +474,7 @@ class CollisionsMethods(
                 norm_factor[i] = 0;
             }
             else {
-                auto half_sd_num = sd_num / 2;
+                auto half_sd_num = (int64_t)(sd_num / 2);
                 norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;
             }
             """,
@@ -483,10 +483,12 @@ class CollisionsMethods(
     @cached_property
     def __normalize_body_1(self):
         return trtc.For(
-            param_names=("prob", "cell_id", "norm_factor"),
+            param_names=("prob", "cell_start", "norm_factor"),
             name_iter="i",
             body="""
-            prob[i] *= norm_factor[cell_id[i]];
+            for (auto pair_start = cell_start[i]; pair_start < cell_start[i + 1] - 1; pair_start += 2) {
+                prob[(int64_t)(pair_start / 2)] *= norm_factor[i];
+            }
             """,
         )
 
@@ -918,7 +920,7 @@ class CollisionsMethods(
             n=n_cell, args=(cell_start.data, norm_factor.data, device_dt_div_dv)
         )
         self.__normalize_body_1.launch_n(
-            prob.shape[0], (prob.data, cell_id.data, norm_factor.data)
+            n_cell, (prob.data, cell_start.data, norm_factor.data)
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

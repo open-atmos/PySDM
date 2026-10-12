@@ -7,12 +7,12 @@ from .attribute import Attribute
 
 
 class DummyAttribute(Attribute):
-    def __init__(self, builder, name):
-        super().__init__(builder, name)
+    def __init__(self, particulator, name):
+        super().__init__(particulator, name)
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = np.nan
+        self.data.fill(np.nan)
 
     def get(self):
         return self.data

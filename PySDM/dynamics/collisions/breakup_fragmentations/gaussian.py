@@ -16,9 +16,9 @@ class Gaussian(
         self.nfmax = nfmax
         self.sum_of_volumes = None
 
-    def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+    def register(self, particulator):
+        super().register(particulator)
+        self.sum_of_volumes = particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
 

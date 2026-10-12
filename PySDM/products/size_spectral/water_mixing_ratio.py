@@ -15,8 +15,8 @@ class WaterMixingRatio(MomentProduct):
         self.signed_mass_range = None
         super().__init__(unit=unit, name=name)
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.signed_mass_range = (
             self.formulae.particle_shape_and_density.radius_to_mass(
                 np.asarray(self.radius_range)

@@ -3,6 +3,13 @@ from collections import namedtuple
 
 import pytest
 
+import numpy as np
+
+from PySDM.dynamics import Condensation, Displacement, RelaxedVelocity
+from PySDM import Particulator
+from PySDM.environments import Box
+from PySDM.backends import CPU
+
 from .dummy_particulator import DummyParticulator
 
 
@@ -129,3 +136,77 @@ class TestParticulator:
                 seeded_particle_extensive_attributes=storage,
                 number_of_super_particles_to_inject=0,
             )
+
+    @staticmethod
+    def test_request_attribute():
+        env = Box(dt=-1, dv=np.nan, backend=CPU())
+
+        particulator = Particulator(
+            n_sd=1,
+            environment=env,
+            attributes={
+                k: np.asarray([1])
+                for k in (
+                    "multiplicity",
+                    "volume",
+                    "dry volume",
+                    "kappa times dry volume",
+                )
+            },
+            products=(),
+            dynamics=(Condensation(),),
+            requested_attributes=("critical saturation",),
+        )
+
+        particulator.environment["T"] = np.nan
+        _ = particulator.attributes["critical saturation"].to_ndarray()
+
+    @staticmethod
+    def test_ctor_minimal():
+        # arrange
+        env = Box(dt=np.nan, dv=np.nan, backend=CPU())
+
+        # act
+        particulator = Particulator(
+            products=(),
+            attributes={k: np.asarray([0]) for k in ("multiplicity", "volume")},
+            n_sd=1,
+            environment=env,
+        )
+
+        # assert
+        _ = particulator.attributes
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "dynamics",
+        (
+            (RelaxedVelocity(), Displacement()),
+            (Displacement(), RelaxedVelocity()),
+        ),
+    )
+    def test_order_of_dynamic_registration_does_not_matter_for_attribute_mappings(
+        dynamics,
+    ):
+        # arrange
+
+        particulator = Particulator(
+            products=(),
+            attributes={
+                k: np.asarray([0])
+                for k in ("multiplicity", "volume", "relative fall momentum")
+            },
+            n_sd=1,
+            environment=Box(dt=-1, dv=np.nan, backend=CPU()),
+            dynamics=dynamics,
+        )
+
+        # act
+        assert (
+            particulator.get_attribute(
+                attribute_name="relative fall velocity"
+            ).__class__.__name__
+            == "RelativeFallVelocity"
+        )
+
+        # assert

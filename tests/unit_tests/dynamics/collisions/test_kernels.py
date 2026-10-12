@@ -2,8 +2,9 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
+from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import (
     Golovin,
     SimpleGeometric,
@@ -38,19 +39,19 @@ class TestKernels:
         # arrange
         volume = np.asarray([44.0, 666.0])
 
-        env = Box(dv=None, dt=None)
-        builder = Builder(backend=CPU(), n_sd=volume.size, environment=env)
-        sut = SimpleGeometric(C=C)
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        particulator = Particulator(
+            n_sd=volume.size,
+            environment=Box(dv=None, dt=np.nan, backend=CPU()),
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            dynamics=(Coalescence(collision_kernel=SimpleGeometric(C=C)),),
         )
+        sut = particulator.dynamics["Collision"].collision_kernel
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
         # act
@@ -66,19 +67,19 @@ class TestKernels:
     @pytest.mark.parametrize("volume", (np.array([1.0, 2.0]), np.array([1.0, 1.0])))
     def test_simple_geometric_same_size(volume):
         # arrange
-        env = Box(dv=None, dt=None)
-        builder = Builder(backend=CPU(), n_sd=volume.size, environment=env)
-        sut = SimpleGeometric(C=1.0)
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        particulator = Particulator(
+            n_sd=volume.size,
+            environment=Box(dv=None, dt=np.nan, backend=CPU()),
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            dynamics=(Coalescence(collision_kernel=SimpleGeometric(C=1.0)),),
         )
+        sut = particulator.dynamics["Collision"].collision_kernel
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
 
@@ -97,20 +98,20 @@ class TestKernels:
     )
     def test_long1974_regimes(radius, backend_class):
         # arrange
-        env = Box(dv=None, dt=None)
-        builder = Builder(backend=backend_class(), n_sd=radius.size, environment=env)
-        sut = Long1974()
-        sut.register(builder)
         volume = 4 / 3 * np.pi * radius**3
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        particulator = Particulator(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            n_sd=radius.size,
+            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
+            dynamics=(Coalescence(collision_kernel=Long1974()),),
         )
+        sut = particulator.dynamics["Collision"].collision_kernel
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.array([0.0]))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
 

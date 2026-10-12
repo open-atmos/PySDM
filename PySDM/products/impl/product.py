@@ -27,8 +27,8 @@ class Product:
         self.particulator = None
         self.formulae = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
 

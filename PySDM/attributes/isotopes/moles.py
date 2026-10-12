@@ -27,10 +27,10 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 
 class Helper(DerivedAttribute):
-    def __init__(self, builder, name, attrs_to_multiplier):
+    def __init__(self, particulator, name, attrs_to_multiplier):
         self.attrs_to_multiplier = attrs_to_multiplier
         super().__init__(
-            builder=builder,
+            particulator=particulator,
             name=name,
             dependencies=attrs_to_multiplier.keys(),
         )
@@ -43,47 +43,51 @@ class Helper(DerivedAttribute):
 
 @register_attribute()
 class MolesLightWater(Helper):
-    def __init__(self, builder):
-        const = builder.formulae.constants
+    def __init__(self, particulator):
+        const = particulator.formulae.constants
         super().__init__(
-            builder=builder,
+            particulator=particulator,
             name="moles light water",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): -const.M_2H_1H_16O / const.M_1H2_16O,
-                builder.get_attribute("moles_3H"): -const.M_3H_1H_16O / const.M_1H2_16O,
-                builder.get_attribute("moles_17O"): -const.M_1H2_17O / const.M_1H2_16O,
-                builder.get_attribute("moles_18O"): -const.M_1H2_18O / const.M_1H2_16O,
-                builder.get_attribute("signed water mass"): 1 / const.M_1H2_16O,
+                particulator.get_attribute("moles_2H"): -const.M_2H_1H_16O
+                / const.M_1H2_16O,
+                particulator.get_attribute("moles_3H"): -const.M_3H_1H_16O
+                / const.M_1H2_16O,
+                particulator.get_attribute("moles_17O"): -const.M_1H2_17O
+                / const.M_1H2_16O,
+                particulator.get_attribute("moles_18O"): -const.M_1H2_18O
+                / const.M_1H2_16O,
+                particulator.get_attribute("signed water mass"): 1 / const.M_1H2_16O,
             },
         )
 
 
 @register_attribute(name="moles_1H")
 class Moles1H(Helper):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         super().__init__(
-            builder=builder,
+            particulator=particulator,
             name="moles_1H",
             attrs_to_multiplier={
-                builder.get_attribute("moles_17O"): 2.0,
-                builder.get_attribute("moles_18O"): 2.0,
-                builder.get_attribute("moles_2H"): 1.0,
-                builder.get_attribute("moles_3H"): 1.0,
-                builder.get_attribute("moles light water"): 2.0,
+                particulator.get_attribute("moles_17O"): 2.0,
+                particulator.get_attribute("moles_18O"): 2.0,
+                particulator.get_attribute("moles_2H"): 1.0,
+                particulator.get_attribute("moles_3H"): 1.0,
+                particulator.get_attribute("moles light water"): 2.0,
             },
         )
 
 
 @register_attribute(name="moles_16O")
 class Moles16O(Helper):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         super().__init__(
-            builder=builder,
+            particulator=particulator,
             name="moles_16O",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): 1.0,
-                builder.get_attribute("moles_3H"): 1.0,
-                builder.get_attribute("moles light water"): 1.0,
+                particulator.get_attribute("moles_2H"): 1.0,
+                particulator.get_attribute("moles_3H"): 1.0,
+                particulator.get_attribute("moles light water"): 1.0,
             },
         )
 
