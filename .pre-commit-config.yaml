@@ -29,8 +29,22 @@ repos:
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
   - repo: https://github.com/AgnieszkaZaba/devops_tests
-    rev: b0ca6c66b52a07481870dbc2163d1a676aafd0db
+    rev: badges-hook
     hooks:
-      - id: check-badges
-        name: check badges
-        args: [--repo-name=PySDM]
+      - id: check-notebook-open-atmos-structure
+        name: check notebook has open-atmos structure
+        additional_dependencies:
+          - nbformat
+          - pytest
+          - gitpython
+        args: [ --repo-name=PySDM, --no-header-check ]
+
+#      - id: check-notebook-output
+#        name: check notebook output
+#        additional_dependencies:
+#          - nbformat
+
+      - id: check-notebook-using-jupyter-utils
+        name: check notebook using open-atmos-jupyter-utils
+        additional_dependencies:
+          - nbformat
