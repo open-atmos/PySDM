@@ -1,0 +1,106 @@
+name: 'Run Slurm Job on Bowie'
+description: 'Submit a job to Slurm on Bowie, wait for job to complete and check exit code'
+
+inputs:
+  python-version:
+    required: true
+  command:
+    required: true
+  stdout-path:
+    required: false
+    default: ${{ github.workspace }}/_stdout.txt
+  stderr-path:
+    required: false
+    default: ${{ github.workspace }}/_stderr.txt
+
+runs:
+  using: "composite"
+  steps:
+    - name: Submit job on bowie
+      shell: bash
+      run: |
+        EXIT_CODE_FILE=./.test_exit_code.txt
+        JOB_ID=$(sbatch --parsable -w major-tom \
+          --output="${{ inputs.stdout-path }}" \
+          --error="${{ inputs.stderr-path }}" \
+          ./.github/scripts/run-bowie-tests.sh ${{ inputs.python-version }} "${{ inputs.command }}" ${EXIT_CODE_FILE})
+        echo "SLURM_JOB_ID=$JOB_ID" >> "$GITHUB_ENV"
+        echo "SLURM_JOB_EXIT_CODE_FILE=$EXIT_CODE_FILE" >> "$GITHUB_ENV"
+        echo "Submitted Slurm job $JOB_ID"
+
+    - name: Wait for job to complete
+      shell: bash
+      run: |
+          set -euo pipefail
+          timeout_seconds=3600
+
+          if [[ -z "${SLURM_JOB_ID:-}" ]]; then
+            echo "SLURM_JOB_ID is not set"
+            exit 1
+          fi
+
+          echo "Waiting for Slurm job $SLURM_JOB_ID"
+          squeue -j "$SLURM_JOB_ID"
+          
+          poll_interval=10
+          tail -n +1 -F "${{ inputs.stdout-path }}" &
+          TAIL_PID=$!
+
+          cleanup() {
+            if kill -0 "$TAIL_PID" 2>/dev/null; then
+              kill "$TAIL_PID" 2>/dev/null || true
+              wait "$TAIL_PID" 2>/dev/null || true
+            fi
+          }
+          trap cleanup EXIT
+
+          SECONDS=0
+          while squeue -h -j "$SLURM_JOB_ID" | grep -q .; do
+            if (( SECONDS >= timeout_seconds )); then
+              echo "Timed out waiting for Slurm job $SLURM_JOB_ID after ${timeout_seconds}s"
+              scancel -f "$SLURM_JOB_ID" || true
+              break
+            fi
+            sleep "$poll_interval"
+          done
+
+          cleanup
+          
+          echo "\n=======SLURM STDERR:=======\n"
+          cat "${{ inputs.stderr-path }}"
+
+    - name: Archive logs
+      uses: actions/upload-artifact@v7
+      with:
+        name: STDOUT and STDERR logs
+        include-hidden-files: true
+        path: |
+          ${{ inputs.stdout-path }}
+          ${{ inputs.stderr-path }}
+
+    - name: Check job exit code
+      shell: bash
+      run: |
+          set -euo pipefail
+
+          if [[ ! -f "$SLURM_JOB_EXIT_CODE_FILE" ]]; then
+            echo "Exit code file not found: $SLURM_JOB_EXIT_CODE_FILE"
+            exit 1
+          fi
+
+          exit_code=$(tr -d '[:space:]' < "$SLURM_JOB_EXIT_CODE_FILE")
+          echo "Recorded test exit code: ${exit_code:-<empty>}"
+
+          if [[ "$exit_code" != "0" ]]; then
+            echo "Tests failed"
+            exit 1
+          fi
+
+    - name: Cleanup resources
+      shell: bash
+      if: cancelled()
+      run: |
+        echo "Workflow was cancelled. Cleaning up Slurm job."
+        if [[ -n "${SLURM_JOB_ID:-}" ]]; then
+          scancel -f "$SLURM_JOB_ID" || true
+        fi
