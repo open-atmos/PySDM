@@ -98,18 +98,17 @@ For development purposes, we suggest cloning the repository and installing it in
 ```
 pip install -e .
 ```
-
 Development and test dependencies can be installed using the following optional dependency groups:
 ```
 pip install -e .[unit-tests]
 pip install -e .[nonunit-tests]
 ```
-The unit-tests group installs dependencies required to run the unit tests,
-  while the nonunit-tests group installs dependencies required for the remaining tests.
+The ``unit-tests`` group installs dependencies required to run the unit tests,
+while the ``nonunit-tests`` group installs dependencies required for the remaining tests.
 Both groups can be installed together if needed.
 
 To pin the base dependencies to the versions used by the GitHub Actions
-  CI workflows, install the `CI_version_pins` group:
+CI workflows, install the ``CI_version_pins`` group:
 ```
 pip install -e .[CI_version_pins]
 ```
