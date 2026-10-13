@@ -94,10 +94,27 @@ beyond the latest release).
 
 Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
-For development purposes, we suggest cloning the repository and installing the package using ``pip -e``.
-Test-time dependencies can be installed with ``pip -e .[unit-tests]`` and/or ``pip -e .[nonunit-tests]`` for 
-  dependencies required when executing unit tests, and other tests, respectively.
-To pin the versions of base dependencies to the same ones as used on GitHub Actions CI, use ``pip -e .[CI_version_pins]``.
+For development purposes, we suggest cloning the repository and installing it in editable mode:
+```
+pip install -e .
+```
+
+Development and test dependencies can be installed using the following optional dependency groups:
+```
+pip install -e .[unit-tests]
+pip install -e .[nonunit-tests]
+```
+The unit-tests group installs dependencies required to run the unit tests,
+  while the nonunit-tests group installs dependencies required for the remaining tests.
+Both groups can be installed together if needed.
+
+To pin the base dependencies to the versions used by the GitHub Actions
+  CI workflows, install the `CI_version_pins` group:
+```
+pip install -e .[CI_version_pins]
+```
+These version pins are intended to reproduce the CI dependency environment,
+  not to replace the project's declared dependency requirements.
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
