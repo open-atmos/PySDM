@@ -10,11 +10,11 @@ class VapourDepositionOnIce:
         self.particulator = None
         self.adaptive = adaptive
 
-    def register(self, *, builder):
+    def register(self, *, particulator):
         """called by the builder"""
-        self.particulator = builder.particulator
-        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
-        builder.request_attribute("Reynolds number")
+        self.particulator = particulator
+        assert particulator.formulae.particle_shape_and_density.supports_mixed_phase()
+        particulator.request_attribute("Reynolds number")
 
     def __call__(self):
         """called by the particulator during simulation"""

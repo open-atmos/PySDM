@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982 import (
+from PySDM_examples.featured.Srivastava_1982 import (
     Settings,
     SimProducts,
     coalescence_and_breakup_eq13,

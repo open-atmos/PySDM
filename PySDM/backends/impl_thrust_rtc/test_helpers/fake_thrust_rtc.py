@@ -18,10 +18,12 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     class DVRange:
         def __init__(self, ndarray):
             self.ndarray = ndarray
-            self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(
-                self.ndarray[start:stop]
-            )
+
+        def size(self):
+            return len(self.ndarray)
+
+        def range(self, start, stop):
+            return FakeThrustRTC.DVRange(self.ndarray[start:stop])
 
         def __setitem__(self, key, value):
             if isinstance(value, FakeThrustRTC.Number):
@@ -39,11 +41,15 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             FakeThrustRTC.DVVector.DVVector = FakeThrustRTC.DVVector
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
             self.ndarray: np.ndarray = ndarray
-            self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(
-                self.ndarray[start:stop]
-            )
-            self.to_host = lambda: np.copy(self.ndarray)
+
+        def size(self):
+            return len(self.ndarray)
+
+        def range(self, start, stop):
+            return FakeThrustRTC.DVRange(self.ndarray[start:stop])
+
+        def to_host(self):
+            return np.copy(self.ndarray)
 
         def __setitem__(self, key, value):
             if isinstance(value, FakeThrustRTC.Number):

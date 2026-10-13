@@ -5,7 +5,6 @@ towards the terminal velocity
 """
 
 from PySDM.attributes.impl.attribute import Attribute
-from PySDM.particulator import Particulator
 from PySDM.dynamics.impl import register_dynamic
 
 
@@ -56,15 +55,19 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     def create_storage(self, n):
         return self.particulator.Storage.empty((n,), dtype=float)
 
-    def register(self, builder):
-        self.particulator: Particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
-        self.fall_momentum_attr: Attribute = builder.get_attribute(
+        self.fall_momentum_attr: Attribute = particulator.get_attribute(
             "relative fall momentum"
         )
-        self.terminal_vel_attr: Attribute = builder.get_attribute("terminal velocity")
-        self.water_mass_attr: Attribute = builder.get_attribute("signed water mass")
-        self.sqrt_radius_attr: Attribute = builder.get_attribute(
+        self.terminal_vel_attr: Attribute = particulator.get_attribute(
+            "terminal velocity"
+        )
+        self.water_mass_attr: Attribute = particulator.get_attribute(
+            "signed water mass"
+        )
+        self.sqrt_radius_attr: Attribute = particulator.get_attribute(
             "square root of radius"
         )
 

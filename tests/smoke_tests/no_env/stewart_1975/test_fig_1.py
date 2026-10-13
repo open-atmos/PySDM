@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Stewart_1975
+from PySDM_examples.misc import Stewart_1975
 
 PLOT = False
 

@@ -43,17 +43,36 @@ def insert_zeros(array):
 
 
 def get_dummy_particulator_and_coalescence(
-    backend, n_length, optimized_random=False, environment=None, substeps=1
+    backend,
+    n_length,
+    optimized_random=False,
+    environment=None,
+    substeps=1,
+    attributes: dict | None = None,
+    requested_attributes: tuple = (),
 ):
-    particulator = DummyParticulator(backend, n_sd=n_length)
-    particulator.environment = environment or Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
+    backend = backend(None, double_precision=True)
+    env = environment or Box(
+        backend=backend,
+        dv=1,
+        dt=DEFAULTS.dt_coal_range[1],
+    )
+
     coalescence = Coalescence(
-        collision_kernel=StubKernel(particulator.backend),
+        collision_kernel=StubKernel(backend),
         optimized_random=optimized_random,
         substeps=substeps,
         adaptive=False,
     )
-    coalescence.register(particulator)
+
+    particulator = DummyParticulator(
+        n_sd=n_length,
+        environment=env,
+        attributes=attributes,
+        requested_attributes=requested_attributes,
+        dynamics=(coalescence,),
+    )
+    coalescence = particulator.dynamics["Collision"]
     return particulator, coalescence
 
 

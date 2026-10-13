@@ -13,8 +13,8 @@ from PySDM.attributes.impl import (
 
 @register_attribute()
 class SignedWaterMass(ExtensiveAttribute):
-    def __init__(self, builder):
-        super().__init__(builder, name="signed water mass")
+    def __init__(self, particulator):
+        super().__init__(particulator, name="signed water mass")
 
 
 @register_attribute(
@@ -22,11 +22,11 @@ class SignedWaterMass(ExtensiveAttribute):
     variant=lambda _, formulae: not formulae.particle_shape_and_density.supports_mixed_phase(),
 )
 class ViewWaterMass(DerivedAttribute):
-    def __init__(self, builder):
-        self.signed_water_mass = builder.get_attribute("signed water mass")
+    def __init__(self, particulator):
+        self.signed_water_mass = particulator.get_attribute("signed water mass")
 
         super().__init__(
-            builder,
+            particulator,
             name="water mass",
             dependencies=(self.signed_water_mass,),
         )
@@ -49,11 +49,11 @@ class ViewWaterMass(DerivedAttribute):
     variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase(),
 )
 class AbsWaterMass(DerivedAttribute):
-    def __init__(self, builder):
-        self.signed_water_mass = builder.get_attribute("signed water mass")
+    def __init__(self, particulator):
+        self.signed_water_mass = particulator.get_attribute("signed water mass")
 
         super().__init__(
-            builder,
+            particulator,
             name="water mass",
             dependencies=(self.signed_water_mass,),
         )

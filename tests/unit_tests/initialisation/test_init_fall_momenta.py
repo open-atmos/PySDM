@@ -6,10 +6,11 @@ Test initialization of
 import numpy as np
 import pytest
 
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.environments.box import Box
 from PySDM.initialisation import init_fall_momenta
 from PySDM.physics import si
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949
 
 
 @pytest.fixture(
@@ -40,12 +41,11 @@ class TestInitFallMomenta:
         """
         Fall momenta correctly initialized to the terminal velocity * mass.
         """
-        env = Box(dt=1, dv=1)
-        builder = Builder(
-            n_sd=len(params["multiplicity"]), backend=backend_instance, environment=env
-        )
-        builder.request_attribute("terminal velocity")
-        particulator = builder.build(
+        env = Box(dt=1, dv=1, backend=backend_instance)
+        particulator = Particulator(
+            n_sd=len(params["multiplicity"]),
+            environment=env,
+            requested_attributes=("terminal velocity",),
             attributes={
                 "multiplicity": params["multiplicity"],
                 "water mass": params["water mass"],
@@ -58,14 +58,26 @@ class TestInitFallMomenta:
             * params["water mass"]
         )
 
-        assert np.allclose(init_fall_momenta(params["water mass"]), terminal_momentum)
+        assert np.allclose(
+            init_fall_momenta(
+                water_mass=params["water mass"],
+                backend=backend_instance,
+                terminal_velocity_approx=GunnKinzer1949,
+            ),
+            terminal_momentum,
+        )
 
     @staticmethod
-    def test_init_to_zero(params):
+    def test_init_to_zero(params, backend_instance):
         """
         Fall momenta correctly initialized to zero.
         """
 
-        fall_momenta = init_fall_momenta(params["water mass"], zero=True)
+        fall_momenta = init_fall_momenta(
+            water_mass=params["water mass"],
+            zero=True,
+            terminal_velocity_approx=GunnKinzer1949,
+            backend=backend_instance,
+        )
 
         assert (fall_momenta == np.zeros_like(fall_momenta)).all()

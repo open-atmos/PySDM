@@ -2,9 +2,6 @@
 spatial sampling logic (i.e., physical x-y-z coordinates)
 """
 
-# TODO #305 QUASIRANDOM & GRID
-#  https://slayoo.github.io/workshop_2019/files/talk_Shima.pdf
-
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod

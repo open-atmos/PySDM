@@ -2,18 +2,18 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.environments import Box
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
 def test_radius(volume, backend_instance):
     # arrange
-    env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
-    builder.request_attribute("radius")
-    particulator = builder.build(
-        attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+    particulator = Particulator(
+        n_sd=volume.size,
+        environment=Box(dt=None, dv=None, backend=backend_instance),
+        attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+        requested_attributes=("radius",),
     )
 
     # act
@@ -27,12 +27,14 @@ def test_radius(volume, backend_instance):
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
 def test_sqrt_radius(volume, backend_instance):
     # arrange
-    env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
-    builder.request_attribute("radius")
-    builder.request_attribute("square root of radius")
-    particulator = builder.build(
-        attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+    particulator = Particulator(
+        n_sd=volume.size,
+        environment=Box(dt=None, dv=None, backend=backend_instance),
+        requested_attributes=(
+            "radius",
+            "square root of radius",
+        ),
+        attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
     )
 
     # act
@@ -47,11 +49,11 @@ def test_sqrt_radius(volume, backend_instance):
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
 def test_area(volume, backend_instance):
     # arrange
-    env = Box(dv=None, dt=None)
-    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
-    builder.request_attribute("area")
-    particulator = builder.build(
-        attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+    particulator = Particulator(
+        n_sd=volume.size,
+        environment=Box(dv=None, dt=None, backend=backend_instance),
+        requested_attributes=("area",),
+        attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
     )
 
     # act
