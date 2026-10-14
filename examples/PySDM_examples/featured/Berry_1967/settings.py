@@ -21,7 +21,7 @@ class Settings:
 
         self.formulae = Formulae(
             terminal_velocity=terminal_velocity_variant,
-            collision_kernel_liquid_liquid=kernel,
+            collision_kernel=kernel,
             constants=constants or {},
         )
         self.init_x_min = self.formulae.trivia.volume(radius=3.94 * si.micrometre)

@@ -39,7 +39,7 @@ class Simulation:
                 formulae=Formulae(
                     constants={"rho_w": self.settings.rho, **self.constants_overrides},
                     fragmentation_function="ConstantMass",
-                    collision_kernel_liquid_liquid=self.collision_kernel,
+                    collision_kernel=self.collision_kernel,
                     seed=seed,
                 ),
                 double_precision=self.double_precision,

@@ -421,7 +421,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 dv=None,
                 dt=np.nan,
                 backend=backend_class(
-                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                    Formulae(
+                        fragmentation_function=fragmentation_fn.__class__.__name__,
+                        collision_kernel="Geometric",
+                    )
                 ),
             ),
             attributes={
@@ -431,7 +434,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )

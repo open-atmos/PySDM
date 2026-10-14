@@ -22,10 +22,10 @@ import numpy as np
 #         output *= self.pair_tmp
 
 
-class SimpleGeometric:
+class SimpleGeometric:  # pylint:disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.KERNEL_SIMPLE_GEOMETRIC_c)
 
     @staticmethod
     def liquid_liquid(const, v1, v2):
-        return const.KERNEL_SIMPLE_GEOMETRIC_c
+        return const.KERNEL_SIMPLE_GEOMETRIC_c  # TODO

@@ -787,9 +787,9 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**self.default_jit_flags)
             def body(idx, volume, signed_water_mass, output, is_first_in_pair):
-                for i in numba.prange(
+                for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(is_first_in_pair) - 1
-                ):  # pylint: disable=not-an-iterable
+                ):
                     if is_first_in_pair[i]:
                         if unfrozen(signed_water_mass[idx[i]]):
                             if unfrozen(signed_water_mass[idx[i + 1]]):
@@ -813,10 +813,11 @@ class CollisionsMethods(BackendMethods):
         else:
 
             @numba.njit(**self.default_jit_flags)
+            # pylint: disable=unused-argument
             def body(idx, volume, signed_water_mass, output, is_first_in_pair):
-                for i in numba.prange(
+                for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(is_first_in_pair) - 1
-                ):  # pylint: disable=not-an-iterable
+                ):
                     if is_first_in_pair[i]:
                         output[i // 2] = liquid_liquid(
                             volume[idx[i]], volume[idx[i + 1]]

@@ -8,7 +8,7 @@ import numpy as np
 from scipy import special
 
 
-class Golovin:
+class Golovin:  # pylint:disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.KERNEL_GOLOVIN_b)
 

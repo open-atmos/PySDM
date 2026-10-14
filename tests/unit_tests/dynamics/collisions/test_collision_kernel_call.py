@@ -48,7 +48,7 @@ class TestCollisionKernel:  # pylint: disable=too-few-public-methods
 
         # act
         nc_initial = particulator.products["nc"].get()
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         qc, nc = (particulator.products[k].get() for k in ("qc", "nc"))

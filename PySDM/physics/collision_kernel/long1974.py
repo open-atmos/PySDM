@@ -73,6 +73,6 @@ Default parameters are:
 #     )
 
 
-class Long1974:
+class Long1974:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass

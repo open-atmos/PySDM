@@ -10,6 +10,6 @@ TODO #744
 #         output += self.particulator.formulae.constants.LINEAR_a
 
 
-class Linear:
+class Linear:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass

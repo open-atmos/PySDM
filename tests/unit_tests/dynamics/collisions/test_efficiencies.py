@@ -3,7 +3,7 @@ from matplotlib import pyplot
 import numpy as np
 import pytest
 
-from PySDM import Particulator
+from PySDM import Particulator, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.coalescence_efficiencies import (
@@ -36,12 +36,19 @@ class TestEfficiencies:
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         particulator = Particulator(
             n_sd=volume.size,
-            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(
+                        collision_kernel="Geometric",
+                    )
+                ),
+            ),
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
             dynamics=(
                 Coalescence(
                     coalescence_efficiency=efficiency,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -76,7 +83,15 @@ class TestEfficiencies:
 
         particulator = Particulator(
             n_sd=n_sd,
-            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(
+                        collision_kernel="Geometric",
+                    )
+                ),
+            ),
             attributes={
                 "volume": np.full(shape=n_sd, fill_value=np.nan),
                 "multiplicity": np.ones(n_sd),
@@ -84,7 +99,6 @@ class TestEfficiencies:
             dynamics=(
                 Coalescence(
                     coalescence_efficiency=efficiency,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )

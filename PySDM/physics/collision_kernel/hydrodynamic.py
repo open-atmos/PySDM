@@ -11,6 +11,6 @@ hydrodynamic kernel using
 #         )
 
 
-class Hydrodynamic:
+class Hydrodynamic:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass

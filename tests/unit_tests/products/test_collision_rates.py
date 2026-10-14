@@ -296,7 +296,6 @@ class TestCollisionProducts:
             params, adaptive=False
         )
         env = Box(**ENV_ARGS, backend=backend_class(formulae))
-        dynamic, products = _get_dynamics_and_products(params, adaptive=False)
 
         particulator = Particulator(
             n_sd=n_sd,
@@ -322,9 +321,9 @@ def _get_formulae_dynamics_and_products(
     params, adaptive, kernel_a=1e6 * si.cm**3 / si.s, handle_all_breakups=False
 ):
     formulae = Formulae(
-        collision_kernel_liquid_liquid="ConstantK",
+        collision_kernel="ConstantK",
         handle_all_breakups=handle_all_breakups,
-        constants={"CONSTANTK_a": kernel_a},
+        constants={"KERNEL_CONSTANTK_a": kernel_a},
     )
     if params["enable_breakup"]:
         if params["enable_coalescence"]:

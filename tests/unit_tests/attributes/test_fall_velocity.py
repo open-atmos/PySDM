@@ -88,7 +88,7 @@ class TestFallVelocity:
             dv=1,
             backend=backend_class(
                 Formulae(
-                    collision_kernel_liquid_liquid="ConstantK",
+                    collision_kernel="ConstantK",
                     constants={"CONSTANTK_a": 1},
                 )
             ),

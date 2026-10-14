@@ -42,7 +42,7 @@ class TestKernels:
                 backend=CPU(
                     Formulae(
                         collision_kernel="SimpleGeometric",
-                        constants={"KERNEL_SIMPLE_GEOMETRIC_C": C},
+                        constants={"KERNEL_SIMPLE_GEOMETRIC_c": C},
                     )
                 ),
             ),
@@ -73,9 +73,18 @@ class TestKernels:
         # arrange
         particulator = Particulator(
             n_sd=volume.size,
-            environment=Box(dv=None, dt=np.nan, backend=CPU()),
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=CPU(
+                    Formulae(
+                        collision_kernel="SimpleGeometric",
+                        constants={"KERNEL_SIMPLE_GEOMETRIC_c": 1.0},
+                    )
+                ),
+            ),
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
-            dynamics=(Coalescence(collision_kernel=SimpleGeometric(C=1.0)),),
+            dynamics=(Coalescence(),),
         )
         sut = particulator.dynamics["Collision"].collision_kernel
 

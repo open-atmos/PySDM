@@ -17,6 +17,6 @@ basic geometric kernel
 #         output *= self.pair_tmp
 
 
-class Geometric:
+class Geometric:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass

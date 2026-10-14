@@ -18,15 +18,12 @@ from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.collisions import collision_kernels
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
     RandomGeneratorOptimizerNoPair,
 )
 from PySDM.physics import si
 from PySDM.dynamics.impl import register_dynamic
-
-# pylint: disable=too-many-lines
 
 DEFAULTS = namedtuple(
     "_", ("dt_coal_range", "adaptive", "substeps", "max_multiplicity")
@@ -96,8 +93,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.coalescence_rate = None
         self.breakup_rate = None
         self.breakup_rate_deficit = None
-
-        self.collision_kernel = None
 
     def register(self, particulator):
         assert particulator.backend.formulae.collision_kernel.__name__ != "Null"
