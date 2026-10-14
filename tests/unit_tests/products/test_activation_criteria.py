@@ -23,7 +23,7 @@ from PySDM.initialisation.sampling import spectral_sampling
     "backend",
     (
         pytest.param(GPU(), marks=pytest.mark.xfail(strict=True)),
-        CPU(override_jit_flags={"parallel": False}),
+        CPU(),
     ),
 )
 def test_activation_criteria(backend, plot=False):
@@ -80,7 +80,7 @@ def test_activation_criteria(backend, plot=False):
     data = {product: [] for product in particulator.products}
     s_max = np.nan
     for i in range(50):
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
         for key, product in particulator.products.items():
             if (
                 key == "S_max"

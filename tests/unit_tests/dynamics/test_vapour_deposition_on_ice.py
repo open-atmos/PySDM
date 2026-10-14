@@ -76,7 +76,6 @@ def make_particulator(
             dt=dt,
             dv=1 * si.m**3,
             backend=CPU(
-                override_jit_flags={"parallel": False},
                 formulae=Formulae(
                     particle_shape_and_density="MixedPhaseSpheres",
                     diffusion_coordinate=diffusion_coordinate,
@@ -156,7 +155,7 @@ class TestVapourDepositionOnIce:
 
         # act
         iwc_old = particulator.products["ice water content"].get()[0]
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         if water_mass < 0 and RHi != 1:
@@ -208,7 +207,7 @@ class TestVapourDepositionOnIce:
                 dt=dt,
                 adaptive=adaptive,
             )
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
             dm_dt[temperature] = (
                 particulator.attributes["water mass"].to_ndarray()
                 - initial_water_masses
@@ -264,7 +263,7 @@ class TestVapourDepositionOnIce:
         )
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         water_mass_new = particulator.attributes["water mass"].to_ndarray()
@@ -337,7 +336,7 @@ class TestVapourDepositionOnIce:
         m0 = total_water_mass_in_the_system(
             particulator.attributes, particulator.environment
         )
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
         m1 = total_water_mass_in_the_system(
             particulator.attributes, particulator.environment
         )

@@ -26,7 +26,11 @@ def test_courant_product(courant_field):
     particulator = Particulator(
         n_sd=n_sd,
         environment=Kinematic2D(
-            dt=1, grid=GRID, size=(100, 100), rhod_of=lambda x: x * 0 + 1, backend=CPU()
+            dt=1,
+            grid=GRID,
+            size=(100, 100),
+            rhod_of=lambda x: x * 0 + 1,
+            backend=CPU(n_dims=2),
         ),
         dynamics=(Displacement(),),
         attributes={

@@ -57,7 +57,7 @@ class TestSeeding:
             products = {"sd_count": [], "time": []}
             for step in range(int(t_max // timestep) + 1):
                 if step != 0:
-                    particulator.run(steps=1)
+                    particulator.advance(n_steps=1)
                 for key, val in products.items():
                     value = particulator.products[key].get()
                     if not isinstance(value, float):

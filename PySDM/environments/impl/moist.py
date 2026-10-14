@@ -18,6 +18,7 @@ class Moist:  # pylint: disable=too-many-instance-attributes
         self.dt = dt
         self.mesh = mesh
         self.variables = variables
+        assert backend.n_dims == self.mesh.n_dims
 
         if backend.formulae.ventilation.__name__ != "Neglect":
             for var in ("air density", "air dynamic viscosity"):
