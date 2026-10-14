@@ -96,12 +96,13 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 
 For development purposes, we suggest cloning the repository and installing it in editable mode:
 ```
-pip install -e .
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM
 ```
 Development and test dependencies can be installed using the following optional dependency groups:
 ```
-pip install -e .[unit-tests]
-pip install -e .[nonunit-tests]
+pip install -e PySDM[unit-tests]
+pip install -e PySDM[nonunit-tests]
 ```
 The ``unit-tests`` group installs dependencies required to run the unit tests,
 while the ``nonunit-tests`` group installs dependencies required for the remaining tests.
@@ -110,7 +111,7 @@ Both groups can be installed together if needed.
 To pin the base dependencies to the versions used by the GitHub Actions
 CI workflows, install the ``CI_version_pins`` group:
 ```
-pip install -e .[CI_version_pins]
+pip install -e PySDM[CI_version_pins]
 ```
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
@@ -118,13 +119,12 @@ The examples have additional dependencies listed in [``PySDM_examples`` package 
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
 ```
-git clone https://github.com/open-atmos/PySDM.git
-pip install -e PySDM
-pip install -e PySDM/examples
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM -e PySDM/examples
 jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+using ``pip install PySDM-examples`` (note that the package does not include the Jupyter notebooks,
 only the supporting .py files).
 
 ## Contributing, reporting issues, seeking support 
