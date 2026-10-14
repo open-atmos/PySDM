@@ -299,27 +299,26 @@ jobs:
           python -m pip install pytest-timeout
           python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1200 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
-      - if: (!startsWith(matrix.platform, 'windows-')) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        name: Collect notebook PDFs
-        shell: bash
+      - if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         run: |
-          mkdir -p figures
-          find /tmp/pytest/test_run_notebooks_* -maxdepth 4 -type f -iname '*.pdf' \
-            -printf '%T@ %p\n' 2>/dev/null \
-            | sort -nr \
-            | head -n 5 \
-            | cut -d' ' -f2- \
-            | while IFS= read -r file; do
-                cp -- "$file" figures/
-              done
-
-      - name: Upload notebook PDFs
-        if: (!startsWith(matrix.platform, 'windows-')) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
-        with:
-          name: notebook-pdfs-${{ matrix.platform }}-py${{ matrix.python-version }}
-          path: figures/*.pdf
-          if-no-files-found: warn
+          set -x
+          mkdir -p $HOME/work/_temp/_github_home/figures
+          rm /tmp/pytest/test_run_notebooks_*current
+          ls /tmp/pytest/test_run_notebooks_*/
+          ls /tmp/pytest/test_run_notebooks_*/output/
+          mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
+          for anim_name in docs_intro_animation; do
+              ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/${anim_name}.ogv -loop 0 -vf "fps=10,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
+          done
+          for anim_name in parcel_animation; do
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}.gif $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00000.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00000.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00010.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00010.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00020.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00020.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00030.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00030.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00040.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00040.pdf
+          done
+          ls $HOME/work/_temp/_github_home/figures
 
       - name: animation movie upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
@@ -327,8 +326,14 @@ jobs:
         with:
           name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
-          path: ${{ env.HOME }}/work/_temp/_github_home/figures/*.gif
-      
+          path: ~/work/_temp/_github_home/figures/*.gif
+      - name: animation frame upload
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
+        uses: actions/upload-artifact@v7
+        with:
+          name: animation-frame-${{ matrix.platform }}
+          if-no-files-found: error
+          path: ~/work/_temp/_github_home/figures/*.pdf
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
