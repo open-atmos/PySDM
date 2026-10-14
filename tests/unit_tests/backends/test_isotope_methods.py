@@ -9,11 +9,11 @@ from PySDM.backends import CPU
 
 from PySDM import Formulae
 from PySDM.environments import Parcel
-from PySDM import Builder
 from PySDM.physics import si
 from PySDM.dynamics import Condensation, IsotopicFractionation, AmbientThermodynamics
 
 
+# FIXME
 class TestIsotopeMethods:
     @staticmethod
     @pytest.mark.parametrize("initial_moles_heavy", (0.5, 1.1))
@@ -65,7 +65,6 @@ class TestIsotopeMethods:
             dm_total=arr2storage(np.array([dm_total])),
             signed_water_mass=arr2storage(np.array([signed_water_mass])),
             dry_air_density=arr2storage(np.array([dry_air_density])),
-            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             moles_heavy_molecule=moles_heavy,
             bolin_number=arr2storage(np.array([bolin_number])),
             molality_in_dry_air=molality_in_dry_air,

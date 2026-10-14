@@ -304,58 +304,56 @@ class TestIsotopicFractionation:
     ):
         # arrange
         ambient_var = f"molality {isotope} in dry air"
-        # FIXME: there is no builder
-        builder = Builder(
-            environment=Parcel(
-                dt=1 * si.s,
-                mass_of_dry_air=1 * si.kg,
-                p0=1000 * si.hPa,
-                T0=300 * si.K,
-                initial_relative_humidity=0.7,
-                w=1 * si.m / si.s,
-                variables=[
-                    ambient_var,
-                ],
-            ),
-            dynamics=[
-                AmbientThermodynamics(),
-                Condensation(),
-                IsotopicFractionation((isotope,)),
-            ],
-            backend=backend_class(
-                formulae=Formulae(
-                    isotope_relaxation_timescale="ZabaEtAl",
-                    isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
-                    isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
-                ),
-            ),
-            n_sd=(n_sd := 1),
+
+        formulae = Formulae(
+            isotope_relaxation_timescale="ZabaEtAl",
+            isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
+            isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
         )
-        particulator = builder.build(
+        environment = Parcel(
+            dt=1 * si.s,
+            mass_of_dry_air=1 * si.kg,
+            p0=1000 * si.hPa,
+            T0=300 * si.K,
+            initial_relative_humidity=0.7,
+            w=1 * si.m / si.s,
+            variables=[
+                ambient_var,
+            ],
+            backend=backend_class(formulae),
+        )
+
+        n_sd = 1
+        particulator = Particulator(
+            n_sd=n_sd,
+            environment=environment,
             attributes={
                 "moles_2H": np.ones(n_sd) / 1e10,
                 "moles_3H": np.zeros(n_sd),
                 "moles_17O": np.zeros(n_sd),
                 "moles_18O": np.zeros(n_sd),
-                **builder.particulator.environment.init_attributes(
+                **environment.init_attributes(
                     n_in_dv=ksi,
                     kappa=1,
                     r_dry=0.01 * si.micrometre,
                 ),
             },
             products=(),
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+                IsotopicFractionation((isotope,)),
+            ),
         )
-        print("1")
+
         initial_v_wet = particulator.attributes["volume"].to_ndarray()[0]
-        particulator.environment[ambient_var][:] = initial_molality_in_dry_air
+        environment[ambient_var][:] = initial_molality_in_dry_air
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
-        new_molality_in_dry_air = float(
-            particulator.environment[ambient_var].to_ndarray()[0]
-        )
+        new_molality_in_dry_air = float(environment[ambient_var].to_ndarray()[0])
         assert (
             particulator.attributes["volume"].to_ndarray()[0] != initial_v_wet
         ), "wet volume did not change"
