@@ -5,21 +5,15 @@ from PySDM_examples.featured.Berry_1967.settings import Settings
 from PySDM_examples.featured.Berry_1967.spectrum_plotter import SpectrumPlotter
 from PySDM_examples.featured.Shima_et_al_2009.example import run
 
-from PySDM.dynamics.collisions.collision_kernels import (
-    Electric,
-    Geometric,
-    Hydrodynamic,
-)
-
 
 def main(plot: bool, save):
     with np.errstate(all="ignore"):
         u_term_approxs = ("GunnKinzer1949",)
         dts = (1, 10, "adaptive")
         setup_prop = {
-            Geometric: (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
-            Electric: (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
-            Hydrodynamic: (0, 1600, 1800, 2000, 2200),
+            "Geometric": (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
+            "Electric": (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
+            "Hydrodynamic": (0, 1600, 1800, 2000, 2200),
         }
         setups = {}
 
@@ -32,7 +26,7 @@ def main(plot: bool, save):
                     s = Settings(terminal_velocity_variant=u_term_approx)
                     s.dt = 10 if dt == "adaptive" else dt
                     s.adaptive = dt == "adaptive"
-                    s.kernel = kernel_type()
+                    s.kernel = kernel_type
                     s._steps = steps
                     setups[u_term_approx][dt][kernel_type] = s
 

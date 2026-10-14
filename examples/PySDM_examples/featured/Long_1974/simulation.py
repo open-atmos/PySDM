@@ -11,7 +11,9 @@ from PySDM.products import Time
 
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        environment = Box(dv=settings.dv, dt=settings.dt, backend=CPU())
+        environment = Box(
+            dv=settings.dv, dt=settings.dt, backend=CPU(settings.formulae)
+        )
         environment["rhod"] = settings.rhod
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(

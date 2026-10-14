@@ -6,7 +6,6 @@ from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM import products
 from PySDM.physics import si
@@ -40,7 +39,7 @@ class Simulation:
                 []
                 if not settings.enable_collisions
                 else [
-                    Coalescence(collision_kernel=Geometric()),
+                    Coalescence(),
                 ]
             )
             + [

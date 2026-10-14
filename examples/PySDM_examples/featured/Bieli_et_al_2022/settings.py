@@ -3,7 +3,6 @@ from pystrict import strict
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import Feingold1988
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.formulae import Formulae
 from PySDM.initialisation.spectra import Gamma
 from PySDM.physics import si
@@ -23,7 +22,6 @@ class Settings:
         self.adaptive = False
         self.seed = 44
         self._steps = list(range(60))
-        self.kernel = Golovin(b=2000 * si.cm**3 / si.g / si.s * rho_w)
         self.coal_effs = [ConstEc(Ec=0.8), ConstEc(Ec=0.9), ConstEc(Ec=1.0)]
         self.vmin = 1.0 * si.um**3
         self.nfmax = 10
@@ -38,7 +36,9 @@ class Settings:
         self.spectrum = Gamma(norm_factor=self.norm_factor, k=self.k, theta=self.theta)
         self.rho = rho_w
         self.formulae = formulae or Formulae(
-            fragmentation_function=self.fragmentation.__class__.__name__
+            fragmentation_function=self.fragmentation.__class__.__name__,
+            collision_kernel="Golovin",
+            constants={"KERNEL_GOLOVIN_b": 2000 * si.cm**3 / si.g / si.s * rho_w},
         )
 
     @property

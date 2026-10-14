@@ -43,7 +43,7 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
         settings=settings,
         collision_dynamic=Coalescence(),
         collision_kernel="ConstantK",
-        constants_overrides={"CONSTANTK_a": settings.srivastava_c},
+        constants_overrides={"KERNEL_CONSTANTK_a": settings.srivastava_c},
     )
 
     x = np.arange(N_STEPS + 1, dtype=float)
