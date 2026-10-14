@@ -18,7 +18,7 @@ class VTKExporter:
     exporter = VTKExporter()
 
     for step in range(settings.n_steps):
-        simulation.particulator.run(1)
+        simulation.particulator.advance(1)
 
         exporter.export_attributes(simulation.particulator)
         exporter.export_products(simulation.particulator)

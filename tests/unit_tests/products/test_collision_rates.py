@@ -93,7 +93,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.run(1)
+        particulator.advance(1)
 
         # Assert
         assert particulator.products["cr"].get()[0] == params["cr"]
@@ -152,7 +152,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.run(1)
+        particulator.advance(1)
 
         # Assert
         np.testing.assert_equal(
@@ -202,7 +202,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.run(1)
+        particulator.advance(1)
 
         # Assert
         assert (
@@ -256,7 +256,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.run(1)
+        particulator.advance(1)
 
         # Assert
         assert (
@@ -311,7 +311,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.run(1)
+        particulator.advance(1)
         rhs_sum = _get_product_component_sums(params, particulator.products)
 
         # Assert

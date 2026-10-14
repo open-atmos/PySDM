@@ -86,7 +86,7 @@ def test_lwc_constant(backend_class_with_jax, croupier, adaptive):
 
     # Act
     for step in steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         check(
             n_part=n_part,
             dv=dv,

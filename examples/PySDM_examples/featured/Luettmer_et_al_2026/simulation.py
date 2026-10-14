@@ -170,7 +170,7 @@ class Simulation:
 
         while True:
 
-            self.particulator.run(self.n_substeps)
+            self.particulator.advance(self.n_substeps)
             self.save(output)
 
             w_cr_v_ratio = self.particulator.attributes[

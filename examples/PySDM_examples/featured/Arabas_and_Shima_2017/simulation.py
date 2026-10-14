@@ -100,7 +100,7 @@ class Simulation:
 
         self.save(output)
         for _ in range(self.n_output):
-            self.particulator.run(self.n_substeps)
+            self.particulator.advance(self.n_substeps)
             self.save(output)
 
         return output

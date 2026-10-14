@@ -52,7 +52,7 @@ def run_box_breakup(
         CoalescenceRatePerGridbox(name="cor"),
         BreakupRatePerGridbox(name="br"),
     )
-    core = Particulator(
+    particulator = Particulator(
         n_sd=settings.n_sd,
         environment=environment,
         dynamics=(
@@ -80,14 +80,14 @@ def run_box_breakup(
     rates = np.zeros((len(steps), 4))
     # run
     for i, step in enumerate(steps):
-        core.run(step - core.n_steps)
-        y[i] = core.products["dv/dlnr"].get()[0]
+        particulator.advance(step - particulator.n_steps)
+        y[i] = particulator.products["dv/dlnr"].get()[0]
         if return_nv:
-            (y2[i],) = core.products["N(v)"].get()
-        (rates[i, 0],) = core.products["cr"].get()
-        (rates[i, 1],) = core.products["crd"].get()
-        (rates[i, 2],) = core.products["cor"].get()
-        (rates[i, 3],) = core.products["br"].get()
+            (y2[i],) = particulator.products["N(v)"].get()
+        (rates[i, 0],) = particulator.products["cr"].get()
+        (rates[i, 1],) = particulator.products["crd"].get()
+        (rates[i, 2],) = particulator.products["cor"].get()
+        (rates[i, 3],) = particulator.products["br"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 
@@ -111,7 +111,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         CollisionRateDeficitPerGridbox(name="crd"),
         CoalescenceRatePerGridbox(name="cor"),
     )
-    core = Particulator(
+    particulator = Particulator(
         n_sd=settings.n_sd,
         environment=environment,
         dynamics=(
@@ -131,11 +131,11 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     rates = np.zeros((len(steps), 4))
     # run
     for i, step in enumerate(steps):
-        core.run(step - core.n_steps)
-        (y[i],) = core.products["dv/dlnr"].get()
-        (rates[i, 0],) = core.products["cr"].get()
-        (rates[i, 1],) = core.products["crd"].get()
-        (rates[i, 2],) = core.products["cor"].get()
+        particulator.advance(step - particulator.n_steps)
+        (y[i],) = particulator.products["dv/dlnr"].get()
+        (rates[i, 0],) = particulator.products["cr"].get()
+        (rates[i, 1],) = particulator.products["crd"].get()
+        (rates[i, 2],) = particulator.products["cor"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 

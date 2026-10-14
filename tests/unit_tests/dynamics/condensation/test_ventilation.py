@@ -70,7 +70,7 @@ def test_ventilation(backend_class, var_ventilation, var_drop_growth, scipy_solv
 
     # act
     for particulator in particulators.values():
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
         assert 0.75 < particulator.products["RH"].get()[0] < 0.8
 
     # assert

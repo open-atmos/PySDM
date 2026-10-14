@@ -102,7 +102,7 @@ class Simulation(BasicSimulation):
         RHi_old = self.particulator.products["RH_ice"].get()[0].copy()
         for _ in range(self.n_output):
 
-            self.particulator.run(self.n_substeps)
+            self.particulator.advance(self.n_substeps)
 
             self.save(output)
 

@@ -41,7 +41,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
 
     # Act
     for step in steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert
@@ -75,7 +75,7 @@ def test_coalescence_2_sd(backend_class):
 
     # Act
     for step in steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert

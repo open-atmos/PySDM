@@ -18,7 +18,7 @@ def run(settings, backend):
     attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
         settings.n_sd
     )
-    particles = Particulator(
+    particulator = Particulator(
         n_sd=settings.n_sd,
         environment=env,
         dynamics=(Coalescence(collision_kernel=settings.kernel),),
@@ -29,8 +29,8 @@ def run(settings, backend):
     states = {}
     last_wall_time = None
     for step in settings.output_steps:
-        particles.run(step - particles.n_steps)
-        last_wall_time = particles.products["wall time"].get()
+        particulator.advance(step - particulator.n_steps)
+        last_wall_time = particulator.products["wall time"].get()
 
     return states, last_wall_time
 
