@@ -95,7 +95,7 @@ class SpectrumPlotter:
                     t=t,
                     x_0=settings.X0,
                     N_0=settings.n_part,
-                    b=self.settings.formulae.constants.GOLOVIN_b,
+                    b=self.settings.formulae.constants.KERNEL_GOLOVIN_b,
                 )
 
         volume_bins_edges = self.settings.formulae.trivia.volume(

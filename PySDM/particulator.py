@@ -758,3 +758,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 length_scale=length_scale,
                 timestep=self.dt,
             )
+
+    def collision_kernel(self, *, output, is_first_in_pair):
+        self.backend.collision_kernel(
+            volume=self.attributes["volume"],
+            signed_water_mass=self.attributes["signed water mass"],
+            output=output,
+            is_first_in_pair=is_first_in_pair,
+        )

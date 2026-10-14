@@ -58,8 +58,8 @@ class TestSDMBreakup:
                 backend=backend_class(
                     Formulae(
                         fragmentation_function="AlwaysN",
-                        collision_kernel_liquid_liquid="ConstantK",
-                        constants={"CONSTANTK_a": 1 * si.cm**3 / si.s},
+                        collision_kernel="ConstantK",
+                        constants={"KERNEL_CONSTANTK_a": 1 * si.cm**3 / si.s},
                     )
                 ),
             ),
@@ -792,7 +792,7 @@ class TestSDMBreakup:
         env = Box(
             dv=dv,
             dt=dt,
-            backend=CPU(Formulae(collision_kernel_liquid_liquid="Geometric")),
+            backend=CPU(Formulae(collision_kernel="Geometric")),
         )
 
         norm_factor = 100 / si.cm**3 * si.m**3

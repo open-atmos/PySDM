@@ -54,7 +54,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
 @pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=False)
 def test_coalescence_2_sd(backend_class):
     # Arrange
-    s = Settings(kernel="Golovin", constants={"GOLOVIN_b": 1.5e12})
+    s = Settings(kernel="Golovin", constants={"KERNEL_GOLOVIN_b": 1.5e12})
     s.formulae.seed = 0
     steps = [0, 200]
     s.n_sd = 2

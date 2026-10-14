@@ -1123,3 +1123,36 @@ class CollisionsMethods(
                 trtc.DVBool(nfmax is not None),
             ),
         )
+
+    @cached_property
+    def _collision_kernel(self):
+        if self.formulae.particle_shape_and_density.supports_mixed_phase():
+            raise NotImplementedError()
+        liquid_liquid = self.formulae.collision_kernel.liquid_liquid
+        return trtc.For(
+            param_names=(
+                "idx",
+                "volume",
+                "singed_water_mass",
+                "output",
+                "is_first_in_pair",
+            ),
+            name_iter="i",
+            body=f"""
+                if is_first_in_pair[i]:
+                    output[(int64_t)(i / 2)] = {liquid_liquid.c_inline(v1="volume[idx[i]]", v2="volume[idx[i + 1]]")};
+            """.replace("real_type", self._get_c_type()),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def collision_kernel(self, *, volume, signed_water_mass, output, is_first_in_pair):
+        self._collision_kernel.launch_n(
+            n=len(volume),
+            args=(
+                volume.idx.data,
+                volume.data,
+                signed_water_mass.data,
+                output.data,
+                is_first_in_pair.indicator.data,
+            ),
+        )

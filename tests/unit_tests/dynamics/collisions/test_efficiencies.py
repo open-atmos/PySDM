@@ -13,7 +13,6 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import (
     SpecifiedEff,
     Straub2010Ec,
 )
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.physics import si

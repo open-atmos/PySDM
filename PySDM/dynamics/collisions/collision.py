@@ -100,6 +100,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.collision_kernel = None
 
     def register(self, particulator):
+        assert particulator.backend.formulae.collision_kernel.__name__ != "Null"
         self.particulator = particulator
         rnd_args = {
             "optimized_random": self.optimized_random,
@@ -137,11 +138,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_dt_min.fill(np.nan)
 
         self.rnd_opt_coll.register(particulator)
-        self.collision_kernel = getattr(
-            collision_kernels,
-            self.particulator.formulae.collision_kernel_liquid_liquid.__name__,
-        )()
-        self.collision_kernel.register(particulator)
 
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
@@ -253,7 +249,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
-        self.collision_kernel(self.kernel_temp, is_first_in_pair)
+        self.particulator.collision_kernel(
+            output=self.kernel_temp, is_first_in_pair=is_first_in_pair
+        )
         out.max(self.particulator.attributes["multiplicity"], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)

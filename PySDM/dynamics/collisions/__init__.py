@@ -8,5 +8,3 @@ breakup fragmentations `PySDM.dynamics.collisions.breakup_fragmentations`
 """
 
 from PySDM.dynamics.collisions.collision import Breakup, Coalescence, Collision
-
-from . import collision_kernels

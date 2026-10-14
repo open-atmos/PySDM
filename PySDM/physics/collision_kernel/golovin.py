@@ -1,5 +1,7 @@
 """
-Formulae supporting `PySDM.dynamics.collisions.collision_kernels.golovin`
+Safranov-Golovin kernel with analytic solution
+(see [Safranov 1962](http://mi.mathnet.ru/dan27172),
+[Golovin 1963](http://mi.mathnet.ru/dan27630))
 """
 
 import numpy as np
@@ -7,11 +9,14 @@ from scipy import special
 
 
 class Golovin:
-    def __init__(self, _):
-        pass
+    def __init__(self, const):
+        assert np.isfinite(const.KERNEL_GOLOVIN_b)
+
+    @staticmethod
+    def liquid_liquid(const, v1, v2):
+        return const.KERNEL_GOLOVIN_b * (v1 + v2)
 
 
-@staticmethod
 def analytic_solution(b, x, t, x_0, N_0):
 
     def analytic_solution_helper(x, tau, x_0):

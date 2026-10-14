@@ -13,8 +13,8 @@ class Settings:
     def __init__(self, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
         self.formulae = Formulae(
-            collision_kernel_liquid_liquid="Golovin",
-            constants={"GOLOVIN_b": 1.5e3 / si.s},
+            collision_kernel="Golovin",
+            constants={"KERNEL_GOLOVIN_b": 1.5e3 / si.s},
         )
         self.n_sd = 2**13
         self.n_part = 2**23 / si.metre**3

@@ -5,13 +5,9 @@ import pytest
 from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import (
-    SimpleGeometric,
-    Long1974,
-)
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
-from PySDM.physics.collision_kernel.golovin import analytic_solution
+from PySDM.physics.collision_kernel import golovin
 
 
 class TestKernels:
@@ -21,13 +17,13 @@ class TestKernels:
     )
     def test_golovin_analytic_solution_underflow(x):
         # Arrange
-        formulae = Formulae(collision_kernel_liquid_liquid="Golovin")
+        formulae = Formulae()
         b = 1.5e3
         x_0 = formulae.trivia.volume(radius=30.531e-6)
         N_0 = 2**23
 
         # Act
-        value = analytic_solution(b=b, x=x, t=1200, x_0=x_0, N_0=N_0)
+        value = golovin.analytic_solution(b=b, x=x, t=1200, x_0=x_0, N_0=N_0)
 
         # Assert
         assert np.all(np.isfinite(value))
@@ -40,9 +36,18 @@ class TestKernels:
 
         particulator = Particulator(
             n_sd=volume.size,
-            environment=Box(dv=None, dt=np.nan, backend=CPU()),
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=CPU(
+                    Formulae(
+                        collision_kernel="SimpleGeometric",
+                        constants={"KERNEL_SIMPLE_GEOMETRIC_C": C},
+                    )
+                ),
+            ),
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
-            dynamics=(Coalescence(collision_kernel=SimpleGeometric(C=C)),),
+            dynamics=(Coalescence(),),
         )
         sut = particulator.dynamics["Collision"].collision_kernel
 
@@ -101,8 +106,16 @@ class TestKernels:
         particulator = Particulator(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
             n_sd=radius.size,
-            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
-            dynamics=(Coalescence(collision_kernel=Long1974()),),
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(
+                        collision_kernel="Long1974",
+                    )
+                ),
+            ),
+            dynamics=(Coalescence(),),
         )
         sut = particulator.dynamics["Collision"].collision_kernel
 

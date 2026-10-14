@@ -1,6 +1,13 @@
 """
-Formulae supporting `PySDM.dynamics.collisions.collision_kernels.Linear`
+TODO #744
 """
+
+# TODO
+# class Linear:
+#     def __call__(self, output, is_first_in_pair):
+#         output.sum_pair(self.particulator.attributes["volume"], is_first_in_pair)
+#         output *= self.particulator.formulae.constants.LINEAR_b
+#         output += self.particulator.formulae.constants.LINEAR_a
 
 
 class Linear:
