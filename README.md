@@ -112,8 +112,6 @@ CI workflows, install the ``CI_version_pins`` group:
 ```
 pip install -e .[CI_version_pins]
 ```
-These version pins are intended to reproduce the CI dependency environment,
-  not to replace the project's declared dependency requirements.
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
