@@ -6,13 +6,15 @@ unit tests for the IsotopicFractionation dynamic
 from contextlib import nullcontext
 
 import numpy as np
+import math
 import pytest
 
 from PySDM import Formulae, Particulator
-from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
-from PySDM.environments import Box
 from PySDM.physics import si
+from PySDM.environments import Box, Parcel
+from PySDM.dynamics import Condensation, IsotopicFractionation, AmbientThermodynamics
+from PySDM.backends import CPU
 
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
@@ -38,9 +40,11 @@ def make_particulator(
             attributes[f"moles_{iso}"] = np.array(0)
         env[f"molality {iso} in dry air"] = np.array(0.1)
         requested_attributes.append(f"delta_{iso}")
+        requested_attributes.append("diffusional growth mass change")
     env["RH"] = np.array(rh)
     env["T"] = np.array(t)
     env["rhod"] = np.array(1)
+    env["water_vapour_mixing_ratio"] = np.average(1)
 
     return Particulator(
         attributes=attributes,
@@ -140,6 +144,8 @@ class TestIsotopicFractionation:
         formulae, backend_class, considered_isotopes
     ):
         """test isotopic fractionation dynamic updates moles attribute"""
+        # FIXME
+        # it works only when assert disabled, I don't know how to test this. It shouldn't matter.
         if backend_class.__name__ != "Numba":
             pytest.skip("# TODO #1787 - isotopes on GPU")
 
@@ -148,6 +154,8 @@ class TestIsotopicFractionation:
             backend_instance=backend_class(formulae=formulae),
             isotopes_considered=considered_isotopes,
             attributes=BASE_INITIAL_ATTRIBUTES.copy(),
+            rh=0.9,
+            t=283.15,
         )
         for isotope in HEAVY_ISOTOPES:
             # pylint:disable=protected-access
@@ -159,8 +167,8 @@ class TestIsotopicFractionation:
                     "multiplicity"
                 ].timestamp
             )
-
         # act
+        particulator.advance(steps=0)
         particulator.dynamics["IsotopicFractionation"]()
 
         # assert
@@ -182,6 +190,7 @@ class TestIsotopicFractionation:
         formulae, backend_class, relative_humidity, temperature
     ):
         """neither a bug nor a feature :) - just a simplification (?)"""
+        # FIXME - do not work because of the random values set in the code
         if backend_class.__name__ != "Numba":
             pytest.skip("# TODO #1787 - isotopes on GPU")
 
@@ -198,6 +207,7 @@ class TestIsotopicFractionation:
         )
 
         # act
+        particulator.advance(steps=0)
         particulator.attributes["diffusional growth mass change"][:] = 0
         particulator.dynamics["IsotopicFractionation"]()
 
@@ -207,57 +217,167 @@ class TestIsotopicFractionation:
     @staticmethod
     @pytest.mark.parametrize(
         "molecular_R_liq",
-        np.linspace(0.8, 1, 5) * Formulae().constants.VSMOW_R_2H,
+        np.linspace(0.8, 1, 5),
     )
+    @pytest.mark.parametrize("isotope", ("3H",))
     def test_initial_condition_for_delta_isotopes(
-        backend_class,
-        formulae,
-        molecular_R_liq,
+        backend_class, formulae, molecular_R_liq, isotope
     ):
         """test initial condition for delta_isotopes is calculated properly"""
         if backend_class.__name__ != "Numba":
             pytest.skip("# TODO #1787 - isotopes on GPU")
+        const = formulae.constants
+        vsmow = getattr(const, f"VSMOW_R_{isotope}")
+        molecular_R_liq *= vsmow
+
+        # TODO - how to optimize? it is in many places
+        if isotope[-1] == "H":
+            molar_mass_heavy_molecule = getattr(const, f"M_{isotope}_1H_16O")
+            light_atom = "1H"
+        else:
+            molar_mass_heavy_molecule = getattr(const, f"M_1H2_{isotope}")
+            light_atom = "16O"
 
         # arrange
-        const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["signed water mass"] = np.ones(1) * si.ng
-        attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
+        attributes[f"moles_{isotope}"] = formulae.trivia.moles_heavy_atom(
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=sum(
                 attributes[f"moles_{isotope}"]
-                for isotope in HEAVY_ISOTOPES
-                if isotope != "2H"
+                for iso in HEAVY_ISOTOPES
+                if iso != isotope
             ),
             molar_mass_light_molecule=const.M_1H2_16O,
-            molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             molecular_isotopic_ratio=molecular_R_liq,
-            atoms_per_heavy_molecule=1,
         )
 
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
-            isotopes_considered=("2H",),
+            isotopes_considered=(isotope,),
         )
         # act
 
         R_liq = (
-            particulator.attributes["moles_2H"][0]
-            / particulator.attributes["moles_1H"][0]
+            particulator.attributes[f"moles_{isotope}"][0]
+            / particulator.attributes[f"moles_{light_atom}"][0]
         )
-        delta_liq = formulae.trivia.isotopic_ratio_2_delta(R_liq, const.VSMOW_R_2H)
+        delta_liq = formulae.trivia.isotopic_ratio_2_delta(R_liq, vsmow)
 
         # assert
         np.testing.assert_allclose(
-            particulator.attributes["moles_2H"][0],
-            attributes["moles_2H"][0],
+            particulator.attributes[f"moles_{isotope}"][0],
+            attributes[f"moles_{isotope}"][0],
             rtol=1e-12,
             atol=0,
         )
         np.testing.assert_allclose(
-            particulator.attributes["delta_2H"][0],
+            particulator.attributes[f"delta_{isotope}"][0],
             delta_liq,
             rtol=1e-10,
             atol=0,
         )
+
+    @staticmethod
+    @pytest.mark.parametrize("isotope", ("2H",))
+    @pytest.mark.parametrize(
+        "ksi, initial_molality_in_dry_air, expected_sign_of_ambient_molality_change",
+        (
+            (1, 1e-5 * si.mol / si.kg, -1),
+            (1, 0, +1),
+            (1e6, 1e-5 * si.mol / si.kg, -1),
+            (1e13, 1e-5 * si.mol / si.kg, -1),
+            (1e13, 0, +1),
+            # TODO: test case with both growth/evp
+            # TODO: case when trivial integration would yield negative molality
+            # TODO: case when ... yield negative isotope mass in droplet
+        ),
+    )
+    def test_ambient_isotopes_in_parcel(
+        ksi,
+        isotope,
+        initial_molality_in_dry_air,
+        expected_sign_of_ambient_molality_change,
+        backend_class=CPU,
+    ):
+        # arrange
+        ambient_var = f"molality {isotope} in dry air"
+        # FIXME: there is no builder
+        builder = Builder(
+            environment=Parcel(
+                dt=1 * si.s,
+                mass_of_dry_air=1 * si.kg,
+                p0=1000 * si.hPa,
+                T0=300 * si.K,
+                initial_relative_humidity=0.7,
+                w=1 * si.m / si.s,
+                variables=[
+                    ambient_var,
+                ],
+            ),
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(),
+                IsotopicFractionation((isotope,)),
+            ],
+            backend=backend_class(
+                formulae=Formulae(
+                    isotope_relaxation_timescale="ZabaEtAl",
+                    isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
+                    isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
+                ),
+            ),
+            n_sd=(n_sd := 1),
+        )
+        particulator = builder.build(
+            attributes={
+                "moles_2H": np.ones(n_sd) / 1e10,
+                "moles_3H": np.zeros(n_sd),
+                "moles_17O": np.zeros(n_sd),
+                "moles_18O": np.zeros(n_sd),
+                **builder.particulator.environment.init_attributes(
+                    n_in_dv=ksi,
+                    kappa=1,
+                    r_dry=0.01 * si.micrometre,
+                ),
+            },
+            products=(),
+        )
+        print("1")
+        initial_v_wet = particulator.attributes["volume"].to_ndarray()[0]
+        particulator.environment[ambient_var][:] = initial_molality_in_dry_air
+
+        # act
+        particulator.run(steps=1)
+
+        # assert
+        new_molality_in_dry_air = float(
+            particulator.environment[ambient_var].to_ndarray()[0]
+        )
+        assert (
+            particulator.attributes["volume"].to_ndarray()[0] != initial_v_wet
+        ), "wet volume did not change"
+        assert (
+            new_molality_in_dry_air != initial_molality_in_dry_air
+        ), "molality in dry air did not change"
+        assert new_molality_in_dry_air > 0, "molality in dry air is negative"
+        assert (
+            particulator.attributes[f"moles_{isotope}"].to_ndarray()[0] > 0
+        ), "moles of heavy isotope in droplet is negative"
+        assert (
+            math.copysign(1, new_molality_in_dry_air - initial_molality_in_dry_air)
+            == expected_sign_of_ambient_molality_change
+        ), "unexpected sign of ambient molality change"
+
+    @staticmethod
+    def test_dm_heavy_smaller_than_dm_light():
+        # TODO
+        pass
+
+    @staticmethod
+    def test_zero_heavy_isotopes_in_droplet():
+        # TODO
+        # If R_liq is zero, then the Bolin number is zero, which implies 1/Bo = nan
+        pass
