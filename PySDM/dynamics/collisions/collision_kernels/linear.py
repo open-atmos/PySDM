@@ -14,6 +14,6 @@ class Linear:
         output *= self.b
         output += self.a
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute("volume")
+    def register(self, particulator):
+        self.particulator = particulator
+        particulator.request_attribute("volume")

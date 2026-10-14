@@ -7,10 +7,10 @@ from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 @register_attribute()
 class Radius(DerivedAttribute):
-    def __init__(self, builder):
-        self.volume = builder.get_attribute("volume")
+    def __init__(self, particulator):
+        self.volume = particulator.get_attribute("volume")
         dependencies = [self.volume]
-        super().__init__(builder, name="radius", dependencies=dependencies)
+        super().__init__(particulator, name="radius", dependencies=dependencies)
 
     def recalculate(self):
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
@@ -19,11 +19,11 @@ class Radius(DerivedAttribute):
 
 @register_attribute()
 class SquareRootOfRadius(DerivedAttribute):
-    def __init__(self, builder):
-        self.radius = builder.get_attribute("radius")
+    def __init__(self, particulator):
+        self.radius = particulator.get_attribute("radius")
 
         super().__init__(
-            builder,
+            particulator,
             name="square root of radius",
             dependencies=(self.radius,),
         )

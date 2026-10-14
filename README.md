@@ -3,6 +3,7 @@
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
 [![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
+[![JAX](https://img.shields.io/badge/Google-JAX-blue?style=flat&logo=google)](https://docs.jax.dev/en/latest/index.html)
 [![Linux OK](https://img.shields.io/static/v1?label=Linux&logo=Linux&color=yellow&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Linux)
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
@@ -31,34 +32,47 @@ Currently, the development is focused on atmospheric cloud physics
   applications, in particular on modelling the dynamics of particles immersed in moist air 
   using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
+PySDM supports a range of cloud microphysical processes, including condensational growth,
+  collisional coalescence and breakup, and freezing.
+
 The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://doi.org/10.1002/qj.441)), hence the name. 
 
+
+
 PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
-There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
+There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) 
+  exemplifying how to perform 
   various types of calculations and simulations using PySDM.
 Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
 
-There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
-These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
-  concepts paired with widgets for running interactive simulations using PySDM.
-Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Among the examples, there is also a growing collection of 
+  [tutorials](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/tutorials),
+  also in the form of Jupyter notebooks.
+The collection includes practical howtos covering specific aspects of using PySDM
+  and its supporting tools, as well as teaching-oriented tutorials designed for use in classes.
+The howtos cover topics such as dimensional analysis and visualisation with PyVista,
+  while the teaching-oriented tutorials introduce cloud microphysical concepts through 
+  short explanations and interactive simulation widgets,
+  with questions that can be used as homework problems.
 Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
   easy way for students to get started.
 
-PySDM has two alternative parallel number-crunching backends 
+PySDM has three alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+  Additionally, a new hybrid backend built with [Jax](https://docs.jax.dev/en/latest/index.html) is being developed.
 The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
   multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
 The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrust_rtc.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
+The [`Jax`](https://docs.jax.dev/en/latest/index.html) backend (aliased ``JAX``) is flexible and works with any device configurations (CPU/GPU/TPU), utilising the same backend API. As It is in early development, only simple coagulation cases in single-cell simulations are supported. 
 
 For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
@@ -69,7 +83,7 @@ For a list of talks and other materials on PySDM as well as a list of published 
 
 ## Dependencies and Installation
 
-PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
+PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [Jax](https://docs.jax.dev/en/latest/index.html), [SciPy](https://scipy.org/), 
 [Pint](https://pint.readthedocs.io/), [chempy](https://pypi.org/project/chempy/), 
 [pyevtk](https://pypi.org/project/pyevtk/),
 [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
@@ -80,21 +94,37 @@ beyond the latest release).
 
 Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
-For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
-Test-time dependencies can be installed with ``pip -e .[tests]``.
+For development purposes, we suggest cloning the repository and installing it in editable mode:
+```
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM
+```
+Development and test dependencies can be installed using the following optional dependency groups:
+```
+pip install -e PySDM[unit-tests]
+pip install -e PySDM[nonunit-tests]
+```
+The ``unit-tests`` group installs dependencies required to run the unit tests,
+while the ``nonunit-tests`` group installs dependencies required for the remaining tests.
+Both groups can be installed together if needed.
+
+To pin the base dependencies to the versions used by the GitHub Actions
+CI workflows, install the ``CI_version_pins`` group:
+```
+pip install -e PySDM[CI_version_pins]
+```
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
 ```
-git clone https://github.com/open-atmos/PySDM.git
-pip install -e PySDM
-pip install -e PySDM/examples
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM -e PySDM/examples
 jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+using ``pip install PySDM-examples`` (note that the package does not include the Jupyter notebooks,
 only the supporting .py files).
 
 ## Contributing, reporting issues, seeking support 
@@ -104,6 +134,7 @@ only the supporting .py files).
 [![Numba](https://img.shields.io/static/v1?label=+&logo=Numba&color=orange&message=Numba)](https://numba.pydata.org)
 [![LLVM](https://img.shields.io/static/v1?label=+&logo=LLVM&color=gold&message=LLVM)](https://llvm.org)
 [![CUDA](https://img.shields.io/static/v1?label=+&logo=nVidia&color=darkgreen&message=ThrustRTC/CUDA)](https://pypi.org/project/ThrustRTC/)
+[![JAX](https://img.shields.io/badge/Google-JAX-blue?style=flat&logo=google)](https://docs.jax.dev/en/latest/index.html)
 [![NumPy](https://img.shields.io/static/v1?label=+&logo=numpy&color=blue&message=NumPy)](https://numpy.org/)
 [![pytest](https://img.shields.io/static/v1?label=+&logo=pytest&color=purple&message=pytest)](https://pytest.org/)   
 [![Colab](https://img.shields.io/static/v1?label=+&logo=googlecolab&color=darkred&message=Colab)](https://colab.research.google.com/)
@@ -138,8 +169,8 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
-Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
-  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOs).
+Further hints addressed at PySDM developers are maintained in the 
+  [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).

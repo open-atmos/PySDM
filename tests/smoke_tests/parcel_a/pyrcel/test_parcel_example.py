@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Pyrcel import Settings, Simulation
+from PySDM_examples.featured.pyrcel_docs_testcase import Settings, Simulation
 
 from PySDM import Formulae
 from PySDM.initialisation.spectra import Lognormal

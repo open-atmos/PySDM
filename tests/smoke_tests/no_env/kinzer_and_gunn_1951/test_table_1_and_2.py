@@ -5,7 +5,7 @@ test if values in table1 (table2) are increasing (decreasing) in each column
 import numpy as np
 import pytest
 
-from PySDM_examples.Kinzer_And_Gunn_1951.table_1_and_2 import table1, table2
+from PySDM_examples.misc.Kinzer_And_Gunn_1951.table_1_and_2 import table1, table2
 
 
 @pytest.mark.parametrize("temperature", (0, 20, 30, 40))

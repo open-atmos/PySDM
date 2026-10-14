@@ -15,3 +15,7 @@ class BackendMethods:
             self.Storage = None
         if not hasattr(self, "default_jit_flags"):
             self.default_jit_flags = {}
+        if not hasattr(self, "block_until_ready"):
+            self.block_until_ready = False
+        if not hasattr(self, "n_dims"):
+            self.n_dims = None

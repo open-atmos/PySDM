@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
@@ -15,9 +15,10 @@ def test_critical_saturation():
     S_max = 1.000101
     vdry = np.linspace(0.001, 1, n_sd) * si.um**3
 
-    env = Box(dt=np.nan, dv=np.nan)
-    builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-    particulator = builder.build(
+    env = Box(dt=np.nan, dv=np.nan, backend=CPU())
+    particulator = Particulator(
+        n_sd=n_sd,
+        environment=env,
         attributes={
             "multiplicity": np.ones(n_sd),
             "volume": np.linspace(0.01, 10, n_sd) * si.um**3,

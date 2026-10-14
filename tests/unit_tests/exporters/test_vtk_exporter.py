@@ -36,8 +36,8 @@ def test_vtk_exporter_copies_product_data(tmp_path):
             "b": prod,
         },
         dt=0,
-        mesh=namedtuple(typename="MockMesh", field_names=("dimension", "grid", "size"))(
-            dimension=2,
+        mesh=namedtuple(typename="MockMesh", field_names=("n_dims", "grid", "size"))(
+            n_dims=2,
             grid=grid,
             size=(1, 1),
         ),

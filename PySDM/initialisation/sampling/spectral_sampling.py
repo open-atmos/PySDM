@@ -66,7 +66,7 @@ class SpectralSampling:
     def sample_quasirandom(self, n_sd, *, backend):
         num_elements = n_sd
         storage = backend.Storage.empty(num_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
+        backend.Random(seed=backend.formulae.seed, size=num_elements).u01(storage)
         u01 = storage.to_ndarray()
 
         frac_values = np.linspace(
@@ -83,7 +83,7 @@ class SpectralSampling:
     def sample_pseudorandom(self, n_sd, *, backend):
         num_elements = 2 * n_sd + 1
         storage = backend.Storage.empty(num_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
+        backend.Random(seed=backend.formulae.seed, size=num_elements).u01(storage)
         u01 = storage.to_ndarray()
 
         frac_values = np.sort(

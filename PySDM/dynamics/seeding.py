@@ -29,8 +29,8 @@ class Seeding:
         self.u01 = None
         self.index = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
     def post_register_setup_when_attributes_are_known(self):
         if tuple(self.particulator.attributes.get_extensive_attribute_keys()) != tuple(
