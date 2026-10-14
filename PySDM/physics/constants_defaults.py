@@ -376,6 +376,10 @@ KERNEL_GOLOVIN_b = np.nan / si.s
 KERNEL_CONSTANTK_a = np.nan
 """ CONSTANTK collision kernel constant """
 
+KERNEL_CONSTANT_ICE_a = np.nan
+KERNEL_CONSTANT_ICE_b = np.nan
+""" CONSTANT_ICE collision kernel constants """
+
 KERNEL_LINEAR_a = np.nan
 KERNEL_LINEAR_b = np.nan
 """ LINEAR collision kernel constants """

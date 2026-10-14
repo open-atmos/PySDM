@@ -214,7 +214,7 @@ class CollisionsMethods(BackendMethods):
         return jax.jit(jax.vmap(body, in_axes=(None, None, None, None, 0)))
 
     def collision_kernel(self, *, volume, signed_water_mass, output, is_first_in_pair):
-        output.fill(0)
+        output.fill(0)  # TODO: this might not be safe with parallel execution
         self._collision_kernel(
             volume.idx.data,
             volume.data,
