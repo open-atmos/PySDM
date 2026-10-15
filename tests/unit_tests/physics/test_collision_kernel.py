@@ -14,6 +14,15 @@ from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 
+from PySDM.formulae import _choices
+from PySDM.physics import collision_kernel
+from PySDM.products import (
+    LiquidWaterContent,
+    ParticleConcentration,
+)
+from PySDM.physics import si, constants_defaults
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+
 
 class TestKernels:
     @staticmethod
@@ -202,3 +211,49 @@ class TestKernels:
 
         # assert
         assert (output.to_ndarray() == [1, 2, 3]).all()
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", _choices(collision_kernel))
+    def test_collision_kernel_call(backend_class, variant):
+        if variant == "Null":
+            pytest.skip()
+
+        formulae = Formulae(
+            collision_kernel=variant,
+            seed=666,
+            constants={
+                "KERNEL_GOLOVIN_b": 0,
+                "KERNEL_CONSTANTK_a": 1,
+                "KERNEL_LINEAR_a": 1,
+                "KERNEL_LINEAR_b": 1,
+                "KERNEL_SIMPLE_GEOMETRIC_c": 1,
+            },
+        )
+        env = Box(dt=1 * si.s, dv=1 * si.m**3, backend=backend_class(formulae=formulae))
+        particulator = Particulator(
+            n_sd=(n_sd := 2),
+            environment=env,
+            dynamics=([Coalescence()]),
+            products=(LiquidWaterContent(name="qc"), ParticleConcentration(name="nc")),
+            attributes={
+                "multiplicity": np.ones(n_sd),
+                "volume": np.ones(n_sd) * si.mm**3,
+            },
+        )
+
+        # act
+        nc_initial = particulator.products["nc"].get()
+        particulator.advance(n_steps=1)
+
+        # assert
+        qc, nc = (particulator.products[k].get() for k in ("qc", "nc"))
+        assert np.isfinite([qc, nc]).all() and qc > 0 and nc > 0
+        assert nc <= nc_initial
+
+    @staticmethod
+    def test_golovin_units():
+        with DimensionalAnalysis():
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            vol = 0 * si.m**3
+            prob = golovin.Golovin.liquid_liquid(constants_defaults, vol, vol)
+        assert prob.check("[volume] / [time]")

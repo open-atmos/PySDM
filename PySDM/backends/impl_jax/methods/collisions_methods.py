@@ -206,7 +206,9 @@ class CollisionsMethods(BackendMethods):
         liquid_liquid = self.formulae.collision_kernel.liquid_liquid.jax
 
         def body(idx, volume, output, is_first_in_pair, i):
-            output.at[i // 2].add(
+            output.at[
+                i // 2
+            ].add(  # TODO: this might not be safe with parallel execution
                 is_first_in_pair[i] * liquid_liquid(volume[idx[i]], volume[idx[i + 1]])
             )
             return output
@@ -214,7 +216,7 @@ class CollisionsMethods(BackendMethods):
         return jax.jit(jax.vmap(body, in_axes=(None, None, None, None, 0)))
 
     def collision_kernel(self, *, volume, signed_water_mass, output, is_first_in_pair):
-        output.fill(0)  # TODO: this might not be safe with parallel execution
+        output.fill(0)
         self._collision_kernel(
             volume.idx.data,
             volume.data,
