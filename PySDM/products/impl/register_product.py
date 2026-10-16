@@ -1,13 +1,13 @@
 """decorator for product classes
-ensuring that their instances can be re-used with multiple builders"""
+ensuring that their instances can be re-used with multiple particulators"""
 
 from copy import deepcopy
 
 
-def _instantiate(self, *, builder, buffer):
+def _instantiate(self, *, particulator, buffer):
     copy = deepcopy(self)
     copy.set_buffer(buffer)
-    copy.register(builder)
+    copy.register(particulator=particulator)
     return copy
 
 

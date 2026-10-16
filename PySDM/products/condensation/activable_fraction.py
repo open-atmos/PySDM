@@ -15,9 +15,9 @@ class ActivableFraction(MomentProduct):
         super().__init__(name=name, unit=unit)
         self.filter_attr = filter_attr
 
-    def register(self, builder):
-        super().register(builder)
-        builder.request_attribute(self.filter_attr)
+    def register(self, particulator):
+        super().register(particulator)
+        particulator.request_attribute(self.filter_attr)
 
     def _impl(self, **kwargs):
         if self.filter_attr.startswith("critical saturation"):

@@ -24,10 +24,13 @@ class TestMoments:
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class_with_jax, n_sd)
         attribute = {"multiplicity": n, "volume": v, "heat": T * v}
-        particulator.request_attribute("temperature")
-        particulator.build(attribute)
+        particulator = DummyParticulator(
+            backend_class_with_jax,
+            n_sd,
+            requested_attributes=("temperature",),
+            attributes=attribute,
+        )
 
         true_mean, true_var = spectrum.stats(moments="mv")
 
@@ -89,10 +92,14 @@ class TestMoments:
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class_with_jax, n_sd)
         attribute = {"multiplicity": n, "volume": v, "heat": T * v}
-        particulator.request_attribute("temperature")
-        particulator.build(attribute)
+
+        particulator = DummyParticulator(
+            backend_class_with_jax,
+            n_sd,
+            requested_attributes=("temperature",),
+            attributes=attribute,
+        )
 
         v_bins = np.linspace(0, 4e-6, num=5, endpoint=True)
 
@@ -151,12 +158,15 @@ class TestMoments:
         backend_class_with_jax, skip_division_by_m0
     ):
         # Arrange
-        particulator = DummyParticulator(backend_class_with_jax, n_sd=1)
         attribute = {
             "multiplicity": np.ones(1),
             "volume": np.ones(1),
         }
-        particulator.build(attribute)
+        particulator = DummyParticulator(
+            backend_class_with_jax,
+            n_sd=1,
+            attributes=attribute,
+        )
 
         v_bins = np.linspace(0, 0.5, num=2, endpoint=True)
 
@@ -190,14 +200,15 @@ class TestMoments:
             pytest.skip()  # TODO #684
         # Arrange
         grid = (2,)
-        particulator = DummyParticulator(backend_class_with_jax, n_sd=1, grid=grid)
 
         attribute = {
             "multiplicity": np.ones(1),
             "volume": np.ones(1),
             "cell id": np.ones(1, dtype=int),
         }
-        particulator.build(attribute)
+        particulator = DummyParticulator(
+            backend_class_with_jax, n_sd=1, grid=grid, attributes=attribute
+        )
 
         v_bins = np.linspace(0, 2, num=2, endpoint=True)
 

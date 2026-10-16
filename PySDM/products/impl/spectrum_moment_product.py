@@ -16,8 +16,8 @@ class SpectrumMomentProduct(ABC, Product):
         self.moment_0 = None
         self.moments = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.moment_0 = self.particulator.Storage.empty(
             (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float
         )

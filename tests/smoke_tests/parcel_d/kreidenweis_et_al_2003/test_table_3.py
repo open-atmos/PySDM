@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from chempy import Substance
-from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
+from PySDM_examples.featured.Kreidenweis_et_al_2003 import Settings, Simulation
 
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS, SpecificGravities
 from PySDM.physics import si

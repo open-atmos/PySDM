@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.products import (
@@ -87,16 +87,14 @@ def test_particle_size_product(
     validation_fun,
 ):
     # arrange
-    builder = Builder(
-        n_sd=len(n),
-        backend=backend_class(double_precision=True),
-        environment=Box(dt=np.nan, dv=np.nan),
-    )
-    volume = builder.formulae.trivia.volume(np.asarray(r))
+    backend = backend_class(double_precision=True)
+    volume = backend.formulae.trivia.volume(np.asarray(r))
     dry_volume = np.full_like(volume, (0.01 * si.um) ** 3)
 
-    builder.request_attribute("critical volume")
-    particulator = builder.build(
+    particulator = Particulator(
+        requested_attributes=("critical volume",),
+        n_sd=len(n),
+        environment=Box(dt=np.nan, dv=np.nan, backend=backend),
         attributes={
             "multiplicity": np.asarray(n),
             "volume": volume,
@@ -136,20 +134,20 @@ def test_particle_size_product(
 def test_size_standard_deviation_allocates_once(backend_instance):
     """checks if calling get() does not allocate new memory"""
     # arrange
-    builder = Builder(
-        backend=backend_instance, environment=Box(dt=np.nan, dv=np.nan), n_sd=10
-    )
-    particulator = builder.build(
+    n_sd = 10
+    particulator = Particulator(
+        environment=Box(dt=np.nan, dv=np.nan, backend=backend_instance),
+        n_sd=n_sd,
         products=(
             AreaStandardDeviation(
                 name="sut", count_activated=True, count_unactivated=True
             ),
         ),
         attributes={
-            "multiplicity": np.arange(1, builder.particulator.n_sd + 1),
-            "water mass": np.arange(1, builder.particulator.n_sd + 1),
-            "dry volume": np.arange(1, builder.particulator.n_sd + 1),
-            "kappa times dry volume": np.arange(1, builder.particulator.n_sd + 1),
+            "multiplicity": np.arange(1, n_sd + 1),
+            "water mass": np.arange(1, n_sd + 1),
+            "dry volume": np.arange(1, n_sd + 1),
+            "kappa times dry volume": np.arange(1, n_sd + 1),
         },
     )
     particulator.environment["T"] = 300 * si.K

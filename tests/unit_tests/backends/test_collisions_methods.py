@@ -248,7 +248,7 @@ class TestCollisionMethods:
     @pytest.mark.parametrize(
         "gamma, permutation, multiplicity, cell_id, dt_left, dt, dt_max, is_first_in_pair, ",
         (
-            (  # pylint: disable=undefined-variable,unused-variable
+            (  # pylint: disable=undefined-variable,unused-variable,used-before-assignment
                 [2, 2, 2] + [3, 3] + [1, 1, 1],
                 tuple(range(n_part := 16)),
                 [1] * 2 + [100] * (n_part - 2),
@@ -373,4 +373,48 @@ class TestCollisionMethods:
         mult = 0 if n_sd < 2 else (timestep / dv * n_sd * (n_sd - 1) / 2 / (n_sd // 2))
         np.testing.assert_allclose(
             actual=prob.to_ndarray(), desired=[1 * mult] * (n_sd // 2)
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "cell_start, expected",
+        (
+            ([0, 4, 8], [3, 3, 3, 3]),
+            ([0, 5, 7], [5, 5, 1]),
+            ([0, 3, 9], [3, 5, 5, 5]),
+            ([0, 1, 5], [3, 3]),
+        ),
+    )
+    def test_normalize_multiple_cells(backend_instance, cell_start, expected):
+        backend = backend_instance
+
+        # Arrange
+        n_sd = cell_start[-1]
+        n_cell = len(cell_start) - 1
+        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
+        cell_id = backend.Storage.from_ndarray(
+            np.repeat(np.arange(n_cell), np.diff(cell_start.to_ndarray()))
+        )
+        cell_idx = backend.Storage.from_ndarray(np.arange(n_cell))
+        norm_factor = backend.Storage.from_ndarray(np.full(n_cell, np.nan))
+        prob = backend.Storage.from_ndarray(np.ones(n_sd // 2))
+
+        timestep = 44
+        dv = 666
+
+        # Act
+        backend.normalize(
+            prob=prob,
+            cell_id=cell_id,
+            cell_idx=cell_idx,
+            cell_start=cell_start,
+            norm_factor=norm_factor,
+            timestep=timestep,
+            dv=dv,
+        )
+
+        # Assert
+        np.testing.assert_allclose(
+            actual=prob.to_ndarray(),
+            desired=np.asarray(expected) * timestep / dv,
         )

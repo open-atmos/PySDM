@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.deJong_Azimi import Settings1D
-from PySDM_examples.Shipway_and_Hill_2012 import Simulation
+from PySDM_examples.sandbox.deJong_Azimi import Settings1D
+from PySDM_examples.featured.Shipway_and_Hill_2012 import Simulation
 
 from PySDM.physics import si
 

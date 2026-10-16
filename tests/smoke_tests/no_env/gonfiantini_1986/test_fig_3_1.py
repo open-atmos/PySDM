@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Gonfiantini_1986
+from PySDM_examples.misc import Gonfiantini_1986
 
 from PySDM.physics.constants_defaults import CRAIG_1961_SLOPE_COEFF
 
