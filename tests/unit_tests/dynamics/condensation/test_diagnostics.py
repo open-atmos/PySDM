@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 
-from PySDM import Particulator
+from PySDM import Particulator, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
@@ -91,7 +91,7 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             RH=RH,
             rho=rho,
             eta=eta,
-            backend=backend(),
+            backend=backend(Formulae(saturation_vapour_pressure="FlatauWalkoCotton")),
         )
 
         self.particulator = Particulator(
