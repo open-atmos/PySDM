@@ -5,8 +5,10 @@ checking if supersaturation has more than one local maximum
 
 import numpy as np
 import pytest
-from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
-from PySDM_examples.Grabowski_and_Pawlowska_2023.settings import condensation_tolerance
+from PySDM_examples.featured.Grabowski_and_Pawlowska_2023 import Settings, Simulation
+from PySDM_examples.featured.Grabowski_and_Pawlowska_2023.settings import (
+    condensation_tolerance,
+)
 from scipy import signal
 
 from PySDM.dynamics import condensation

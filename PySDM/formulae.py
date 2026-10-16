@@ -13,6 +13,7 @@ from types import SimpleNamespace
 from typing import Optional
 
 import numba
+import jax
 import numpy as np
 import pint
 from numba.core.errors import NumbaExperimentalFeatureWarning
@@ -30,7 +31,7 @@ from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
-    def __init__(  # pylint: disable=too-many-locals
+    def __init__(  # pylint: disable=too-many-locals,too-many-arguments
         self,
         *,
         constants: Optional[dict] = None,
@@ -271,8 +272,15 @@ def _formula(func, constants, dimensional_analysis, **kw):
     )
 
 
+def _jax(fun, constants):
+    # TODO #1913: add handling of methods without the constants argument
+    return jax.jit(partial(fun, constants))
+
+
 def _boost(obj, fastmath, constants, dimensional_analysis):
-    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
+    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached
+    additionally, adds `jax` attribute for jax.jit compiling of formulae
+    """
     formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
@@ -288,6 +296,7 @@ def _boost(obj, fastmath, constants, dimensional_analysis):
             setattr(
                 formula, "c_inline", partial(_c_inline, constants=constants, fun=attr)
             )
+            setattr(formula, "jax", _jax(fun=attr, constants=constants))
             formulae[attr.__name__] = formula
     return SimpleNamespace(**formulae)
 

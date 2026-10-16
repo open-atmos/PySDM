@@ -8,9 +8,8 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Toon_et_al_1980
+from PySDM_examples.misc import Toon_et_al_1980
 from PySDM.physics import si
-
 
 PLOT = False
 

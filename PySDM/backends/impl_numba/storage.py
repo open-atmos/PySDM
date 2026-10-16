@@ -1,3 +1,4 @@
+# pylint: disable=too-many-public-methods
 """
 CPU Numpy-based implementation of Storage class
 """
@@ -181,6 +182,13 @@ class Storage(StorageBase):
         impl.divide_if_not_zero(self.data, divisor.data)
         return self
 
+    def where(self, condition, true_value, false_value):
+        impl.where(self.data, condition.data, true_value.data, false_value.data)
+        return self
+
+    def isless(self, comparison, value):
+        impl.isless(self.data, comparison.data, value)
+
     def sum(self, arg_a, arg_b):
         impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
         return self
@@ -192,7 +200,7 @@ class Storage(StorageBase):
             self.data[:] = other.ravel()
 
     def urand(self, generator):
-        generator(self)
+        generator.u01(self)
 
     def to_ndarray(self):
         return self.data.copy()
@@ -206,8 +214,17 @@ class Storage(StorageBase):
         else:
             self.data[:] = other
 
+    def row_view(self, i):
+        return Storage(StorageSignature(self.data[i], (*self.shape[1:],), self.dtype))
+
     def exp(self):
         self.data[:] = np.exp(self.data)
 
     def abs(self):
         self.data[:] = np.abs(self.data)
+
+    def at(self, index):
+        assert self.shape == (
+            1,
+        ), "Cannot call at() on Storage of shape other than (1,)"
+        return self.data[index]

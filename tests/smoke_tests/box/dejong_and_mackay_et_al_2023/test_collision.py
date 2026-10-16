@@ -2,7 +2,7 @@
 import os
 
 from matplotlib import pyplot
-from PySDM_examples.deJong_Mackay_et_al_2023 import (
+from PySDM_examples.featured.deJong_Mackay_et_al_2023 import (
     Settings0D,
     run_box_breakup,
     run_box_NObreakup,
@@ -17,7 +17,7 @@ def test_collision(backend_class, plot=False):
     else:
         settings.n_sd = 100
 
-    (x1, y1, __) = run_box_NObreakup(settings, t_steps, backend_class)
+    x1, y1, __ = run_box_NObreakup(settings, t_steps, backend_class)
     res2 = run_box_breakup(settings, t_steps, backend_class)
     x2, y2 = res2.x, res2.y
 

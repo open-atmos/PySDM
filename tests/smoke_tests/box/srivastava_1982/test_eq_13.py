@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982 import (
+from PySDM_examples.featured.Srivastava_1982 import (
     Settings,
     SimProducts,
     coalescence_and_breakup_eq13,
@@ -64,7 +64,7 @@ def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_brea
     if plot:
         pyplot.show()
     else:
-        pyplot.close("all")  # TODO #1717
+        pyplot.close("all")  # TODO #1764
 
     # assert
     assert_prod = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name

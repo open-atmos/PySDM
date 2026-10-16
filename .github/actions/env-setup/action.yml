@@ -43,6 +43,10 @@ runs:
             exit(0)
         EOF
       shell: bash
+    
+    - name: set NUMBA_THREADING_LAYER
+      run: echo NUMBA_THREADING_LAYER=workqueue >> $GITHUB_ENV
+      shell: bash
 
     - uses: actions/cache/save@v4
       if: steps.cache.outputs.cache-hit != 'true'

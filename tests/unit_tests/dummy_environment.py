@@ -10,6 +10,7 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
+        backend,
         timestep=None,
         grid=None,
         size=None,
@@ -17,6 +18,7 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
         courant_field_data=None,
         halo=None,
     ):
+        self.backend = backend
         self.particulator = None
         self.dt = timestep
         if grid is None:
@@ -24,7 +26,7 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
         else:
             if size is None:
                 size = tuple(1 for _ in range(len(grid)))
-            self.mesh = Mesh(grid, size)
+            self.mesh = Mesh(grid=grid, size=size)
             if halo is not None:
                 self.halo = halo
                 self.water_vapour_mixing_ratio = np.empty(
@@ -35,13 +37,12 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
                 self.step_counter = 0
         self.courant_field_data = courant_field_data
 
-    def register(self, *, builder):
-        self.particulator = builder.particulator
+    def register(self, *, particulator):
         if hasattr(self, "halo"):
-            self.pred["water_vapour_mixing_ratio"] = (
-                self.particulator.backend.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred["water_vapour_mixing_ratio"] = particulator.backend.Storage.empty(
+                self.mesh.n_cell, dtype=float
             )
-            self.pred["thd"] = self.particulator.backend.Storage.empty(
+            self.pred["thd"] = particulator.backend.Storage.empty(
                 self.mesh.n_cell, dtype=float
             )
 

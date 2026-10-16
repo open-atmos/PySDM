@@ -11,11 +11,14 @@ import warnings
 from numba import cuda
 
 from . import numba as _numba
+from . import jax as _jax
 
 # for pdoc
 CPU = None
 GPU = None
+JAX = None
 Numba = _numba.Numba
+Jax = _jax.Jax
 ThrustRTC = None
 
 
@@ -72,7 +75,7 @@ else:
             super().__init__(size, seed)
             self.generator = np.random.default_rng(seed)
 
-        def __call__(self, storage):
+        def u01(self, storage):
             # pylint: disable=unsupported-assignment-operation
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
@@ -81,10 +84,18 @@ else:
 _BACKEND_CACHE = {}
 
 
-def _cached_backend(formulae=None, backend_class=None, **kwargs):
-    key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
+def _cached_backend(formulae=None, n_dims=0, backend_class=None, **kwargs):
+    key = (
+        backend_class.__name__
+        + ":"
+        + str(n_dims)
+        + ":"
+        + str(formulae)
+        + ":"
+        + str(kwargs)
+    )
     if key not in _BACKEND_CACHE:
-        _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
+        _BACKEND_CACHE[key] = backend_class(formulae=formulae, n_dims=n_dims, **kwargs)
     return _BACKEND_CACHE[key]
 
 
@@ -93,3 +104,5 @@ CPU = partial(_cached_backend, backend_class=Numba)
 
 GPU = partial(_cached_backend, backend_class=ThrustRTC)
 """ returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) """
+
+JAX = partial(_cached_backend, backend_class=Jax)

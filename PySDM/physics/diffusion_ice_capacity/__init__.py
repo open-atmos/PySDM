@@ -1,5 +1,5 @@
 """
-Formulae for capacity in diffusional growh/evaporation of ice
+Formulae for capacity in diffusional growth/evaporation of ice
 """
 
 from .spherical import Spherical

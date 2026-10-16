@@ -28,11 +28,11 @@ class ParcelLiquidWaterPath(MomentProduct, ActivationFilteredProduct):
         self.previous = {"z": 0.0, "cwc": 0.0}
         self.cwp = 0.0
 
-    def register(self, builder):
-        if not isinstance(builder.particulator.environment, Parcel):
+    def register(self, particulator):
+        if not isinstance(particulator.environment, Parcel):
             raise NotImplementedError()
-        ActivationFilteredProduct.register(self, builder)
-        MomentProduct.register(self, builder)
+        ActivationFilteredProduct.register(self, particulator)
+        MomentProduct.register(self, particulator)
         self.particulator.observers.append(self)
 
     def notify(self):

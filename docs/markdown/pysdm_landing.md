@@ -71,7 +71,7 @@ In these cases, non-SI units should be always indicated in variable names,
   - `pressure_hPa` to use hectopascals.
 
 However, such conversions are best to be done
-  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`.
+  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`).
 
 ### Dimensional Analysis
 By default, the `si` object contains bare multipliers corresponding to SI prefixes.
@@ -103,7 +103,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 <details>
@@ -119,7 +119,7 @@ initial_spectrum = Exponential(pyargs(...
     'norm_factor', 8.39e12, ...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
-tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
+tmp = ConstantMultiplicity(initial_spectrum).sample_deterministic(int32(n_sd));
 attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
@@ -133,19 +133,19 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 
 The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator)
   class instances of which are used to manage the system state and control the simulation.
-Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html#Builder)
-  as exemplified below:
+Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) class is
+  exemplified below:
 <details>
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-Builder = pyimport("PySDM").Builder
+Particulator = pyimport("PySDM").Particulator
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
 Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
@@ -154,18 +154,16 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
-env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
-builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+env = Box(dt=1 * si.s, dv=1e6 * si.m^3, backend=CPU())
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
-particulator = builder.build(attributes, products)
+particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
 ```
 </details>
 <details>
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-Builder = py.importlib.import_module('PySDM').Builder;
+Particulator = py.importlib.import_module('PySDM').Particulator;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
 Golovin = py.importlib.import_module('PySDM.dynamics.collisions.collision_kernels').Golovin;
@@ -174,14 +172,12 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
-builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
+env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3, 'backend', CPU()));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
 )) });
-particulator = builder.build(attributes, products);
+particulator = Particulator(pyargs('attributes', attributes, 'products', products, 'n_sd', int32(n_sd), 'environment', env, 'dynamics', py.tuple({Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s)))})));
 ```
 </details>
 <details open>
@@ -189,7 +185,7 @@ particulator = builder.build(attributes, products);
 
 ```Python
 import numpy as np
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Golovin
@@ -198,17 +194,15 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
-builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3, backend=CPU())
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
-particulator = builder.build(attributes, products)
+particulator = Particulator(attributes=attributes, products=products, n_sd=n_sd, environment=env, dynamics=(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)),))
 ```
 </details>
 
-The ``backend`` argument may be set to ``CPU`` or ``GPU``
-  what translates to choosing the multi-threaded backend or the
-  GPU-resident computation mode, respectively.
+The ``backend`` argument may be set to ``CPU``, ``GPU`` or ``JAX``
+  what translates to choosing the multi-threaded backend, the
+  GPU-resident computation mode, respectively or the early-in-development [`JAX`](https://docs.jax.dev/en/latest/index.html#) backend flexible to different device configurations.
 The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html#Box) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
@@ -216,11 +210,11 @@ The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
 The [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence)
   Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system.
-Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#Builder.build) method is used to obtain an instance
-  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) which can then be used to control time-stepping and
+An instance
+  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) is created to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.run) method advances the simulation by ``nt`` timesteps.
+The [`advance(n_steps)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.advance) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution
   at selected timesteps:
@@ -231,7 +225,7 @@ In the listing below, its usage is interleaved with plotting logic
 using Plots; gr()
 
 for step = 0:1200:3600
-    particulator.run(step - particulator.n_steps)
+    particulator.advance(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
         particulator.formulae.particle_shape_and_density.volume_to_mass(
@@ -252,7 +246,7 @@ savefig("plot.svg")
 
 ```Matlab
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps));
+    particulator.advance(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.formulae.particle_shape_and_density.volume_to_mass( ...
         particulator.products{"dv/dlnr"}.get() ...
@@ -278,14 +272,14 @@ legend()
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
-    particulator.run(step - particulator.n_steps)
-    pyplot.step(
-        x=radius_bins_edges[:-1] / si.um,
-        y=particulator.formulae.particle_shape_and_density.volume_to_mass(
-            particulator.products['dv/dlnr'].get()[0]
-        ) / si.g,
-        where='post', label=f"t = {step}s"
-    )
+  particulator.advance(step - particulator.n_steps)
+  pyplot.step(
+    x=radius_bins_edges[:-1] / si.um,
+    y=particulator.formulae.particle_shape_and_density.volume_to_mass(
+      particulator.products['dv/dlnr'].get()[0]
+    ) / si.g,
+    where='post', label=f"t = {step}s"
+  )
 
 pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
@@ -302,35 +296,32 @@ The resultant plot (generated with the Python code) looks as follows:
 The component submodules used to create this simulation are visualized below:
 ```mermaid
  graph
-    COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
-    BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
-    ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
-    N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
-    BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
-    BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    COAL[":Coalescence"] --->|passed as arg to| PARTICULATOR_INIT(["Particulator.__init__()"])
+    ATTRIBUTES[attributes: dict] -->|passed as arg to| PARTICULATOR_INIT
+    N_SD["n_sd :int"] ---->|passed as arg to| PARTICULATOR_INIT
     ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
     DT[dt :float] -->|passed as arg to| ENV_INIT
     DV[dv :float] -->|passed as arg to| ENV_INIT
-    ENV[":Box"] -->|passed as arg to| BUILDER_INIT
+    ENV[":Box"] -->|passed as arg to| PARTICULATOR_INIT
     B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
     KERNEL_INIT -->|instantiates| KERNEL
     KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
     COAL_INIT -->|instantiates| COAL
-    PRODUCTS[products: list] ----->|passed as arg to| BUILDER_BUILD
+    PRODUCTS[products: list] ----->|passed as arg to| PARTICULATOR_INIT
     NORM_FACTOR[norm_factor: float]-->|passed as arg to| EXP_INIT
     SCALE[scale: float]-->|passed as arg to| EXP_INIT
     EXP_INIT(["Exponential.__init__()"]) -->|instantiates| IS
     IS["initial_spectrum :Exponential"] -->|passed as arg to| CM_INIT
     CM_INIT(["ConstantMultiplicity.__init__()"]) -->|instantiates| CM_INSTANCE
     CM_INSTANCE[":ConstantMultiplicity"] -.-|has a method| SAMPLE
-    SAMPLE(["ConstantMultiplicity.sample()"]) -->|returns| n
+    SAMPLE(["ConstantMultiplicity.sample_deterministic()"]) -->|returns| n
     SAMPLE -->|returns| volume
     n -->|added as element of| ATTRIBUTES
-    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
+    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_ADVANCE(["Particulator.advance()"])
     volume -->|added as element of| ATTRIBUTES
-    BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
+    PARTICULATOR_INIT -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
-    BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| BUILDER_INIT
+    BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| ENV_INIT
     PRODUCTS -.-|accessible via| PARTICULATOR_PROD
     NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES
     EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
@@ -338,9 +329,7 @@ The component submodules used to create this simulation are visualized below:
     SPECTRUM[":ParticleVolumeVersusRadiusLogarithmSpectrum"] -->|added as element of| PRODUCTS
 
     click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence"
-    click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click PARTICULATOR_INIT "https://open-atmos.github.io/PySDM/PySDM/particulator.html"
     click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click ENV "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels.html"
@@ -352,7 +341,6 @@ The component submodules used to create this simulation are visualized below:
     click SAMPLE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
     click PARTICULATOR_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/particulator.html"
     click BACKEND_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/backends/numba.html"
-    click BUILDER_BUILD "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click NP_LOGSPACE "https://numpy.org/doc/stable/reference/generated/numpy.logspace.html"
     click SPECTRUM_INIT "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
     click SPECTRUM "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
@@ -390,17 +378,19 @@ CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
 Condensation = pyimport("PySDM.dynamics").Condensation
 Parcel = pyimport("PySDM.environments").Parcel
-Builder = pyimport("PySDM").Builder
+Particulator = pyimport("PySDM").Particulator
 Formulae = pyimport("PySDM").Formulae
 products = pyimport("PySDM.products")
 
+formulae = Formulae()
 env = Parcel(
     dt=.25 * si.s,
     mass_of_dry_air=1e3 * si.kg,
     p0=1122 * si.hPa,
     initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
     T0=300 * si.K,
-    w= 2.5 * si.m / si.s
+    w= 2.5 * si.m / si.s,
+    backend=CPU(formulae)
 )
 spectrum = Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
 kappa = .5 * si.dimensionless
@@ -409,14 +399,9 @@ output_interval = 4
 output_points = 40
 n_sd = 256
 
-formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
-
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
 attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
@@ -424,13 +409,21 @@ attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet)
 
-particulator = builder.build(attributes, products=[
-    products.PeakSaturation(name="S_max_percent", unit="%"),
-    products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
-    products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
-    products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
-    products.ParcelDisplacement(name="z")
-])
+particulator = Particulator(
+    attributes=attributes,
+    products=[
+        products.PeakSaturation(name="S_max_percent", unit="%"),
+        products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
+        products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
+        products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
+        products.ParcelDisplacement(name="z")
+    ],
+    n_sd=n_sd,
+    environment=env, dynamics=(
+        AmbientThermodynamics(),
+        Condensation(),
+    )
+)
 
 cell_id=1
 output = Dict()
@@ -440,7 +433,7 @@ for (_, product) in particulator.products
 end
 
 for step = 2:output_points+1
-    particulator.run(steps=output_interval)
+    particulator.advance(n_steps=output_interval)
     for (_, product) in particulator.products
         output[product.name][step] = product.get()[cell_id]
     end
@@ -471,17 +464,19 @@ CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
 Condensation = py.importlib.import_module('PySDM.dynamics').Condensation;
 Parcel = py.importlib.import_module('PySDM.environments').Parcel;
-Builder = py.importlib.import_module('PySDM').Builder;
+Particulator = py.importlib.import_module('PySDM').Particulator;
 Formulae = py.importlib.import_module('PySDM').Formulae;
 products = py.importlib.import_module('PySDM.products');
 
+formulae = Formulae();
 env = Parcel(pyargs( ...
     'dt', .25 * si.s, ...
     'mass_of_dry_air', 1e3 * si.kg, ...
     'p0', 1122 * si.hPa, ...
     'initial_water_vapour_mixing_ratio', 20 * si.g / si.kg, ...
     'T0', 300 * si.K, ...
-    'w', 2.5 * si.m / si.s ...
+    'w', 2.5 * si.m / si.s, ...
+    'backend', CPU(formulae) ...
 ));
 spectrum = Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
 kappa = .5;
@@ -490,18 +485,13 @@ output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
-builder.add_dynamic(AmbientThermodynamics());
-builder.add_dynamic(Condensation());
-
-tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
+tmp = spectral_sampling.Logarithmic(spectrum).sample_deterministic(int32(n_sd));
 r_dry = tmp{1};
 v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(pyargs(...
     'r_dry', r_dry, ...
-    'environment', builder.particulator.environment, ...
+    'environment', env, ...
     'kappa_times_dry_volume', kappa * v_dry...
 ));
 
@@ -512,13 +502,19 @@ attributes = py.dict(pyargs( ...
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
-particulator = builder.build(attributes, py.list({ ...
-    products.PeakSaturation(pyargs('name', 'S_max_percent', 'unit', '%')), ...
-    products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
-    products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
-    products.ParcelDisplacement(pyargs('name', 'z')) ...
-}));
+particulator = Particulator(pyargs( ...
+    'attributes', attributes, ...
+    'products', py.list({ ...
+        products.PeakSaturation(pyargs('name', 'S_max_percent', 'unit', '%')), ...
+        products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
+        products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
+        products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+        products.ParcelDisplacement(pyargs('name', 'z')) ...
+    }), ...
+    'n_sd', int32(n_sd), ...
+    'environment', env, ...
+    'dynamics', py.tuple({AmbientThermodynamics(), Condensation()}) ...
+));
 
 cell_id = int32(0);
 output_size = [output_points+1, length(py.list(particulator.products.keys()))];
@@ -536,7 +532,7 @@ for pykey = py.list(keys(particulator.products))
 end
 
 for i=2:output_points+1
-    particulator.run(pyargs('steps', int32(output_interval)));
+    particulator.advance(pyargs('n_steps', int32(output_interval)));
     for pykey = py.list(keys(particulator.products))
         get = py.getattr(particulator.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
@@ -574,15 +570,17 @@ from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM import Builder, Formulae, products
+from PySDM import Particulator, Formulae, products
 
+formulae = Formulae()
 env = Parcel(
   dt=.25 * si.s,
   mass_of_dry_air=1e3 * si.kg,
   p0=1122 * si.hPa,
   initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
   T0=300 * si.K,
-  w=2.5 * si.m / si.s
+  w=2.5 * si.m / si.s,
+  backend=CPU(formulae)
 )
 spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
@@ -591,14 +589,9 @@ output_interval = 4
 output_points = 40
 n_sd = 256
 
-formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
-
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
   'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
@@ -607,19 +600,28 @@ attributes = {
   'volume': formulae.trivia.volume(radius=r_wet)
 }
 
-particulator = builder.build(attributes, products=[
-  products.PeakSaturation(name='S_max_percent', unit='%'),
-  products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
-  products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
-  products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
-  products.ParcelDisplacement(name='z')
-])
+particulator = Particulator(
+  attributes=attributes,
+  products=(
+    products.PeakSaturation(name='S_max_percent', unit='%'),
+    products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
+    products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
+    products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
+    products.ParcelDisplacement(name='z')
+  ),
+  n_sd=n_sd,
+  environment=env,
+  dynamics=(
+    AmbientThermodynamics(),
+    Condensation(),
+  )
+)
 
 cell_id = 0
 output = {product.name: [product.get()[cell_id]] for product in particulator.products.values()}
 
 for step in range(output_points):
-  particulator.run(steps=output_interval)
+  particulator.advance(n_steps=output_interval)
   for product in particulator.products.values():
     output[product.name].append(product.get()[cell_id])
 
@@ -649,7 +651,6 @@ There are currently two tutorial notebooks from the Caltech course on Cloud Micr
 ```mermaid
 mindmap
   root((PySDM))
-    Builder
     Formulae
     Particulator
     ((attributes))
@@ -664,6 +665,7 @@ mindmap
     ((backends))
       Numba
       ThrustRTC
+      Jax
     ((dynamics))
       AqueousChemistry
       Collision
@@ -726,7 +728,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - PALM LES (Fortran):
   https://gitlab.palm-model.org/releases/palm_model_system/-/blob/master/packages/palm/model/src/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):
-  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
+  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/coalescence/particles_impl_coal.ipp
 - LCM1D (Python)
   https://github.com/SimonUnterstrasser/ColumnModel
 - superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)
@@ -743,6 +745,8 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
   https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 - Particula (Python)
   https://github.com/uncscode/particula/blob/main/particula/dynamics/coagulation/particle_resolved_step/super_droplet_method.py
+- CM1-SDM (FORTRAN)
+  https://zenodo.org/records/18896134
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -759,3 +763,4 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 
 - DustPy: https://stammler.github.io/dustpy
 - Cloudy.jl: https://github.com/CliMA/Cloudy.jl
+- BinMod1D-PARS: https://github.com/NOAA-National-Severe-Storms-Laboratory/BinMod1D-PARS

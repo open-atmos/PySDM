@@ -48,15 +48,15 @@ class StorageBase:
         raise NotImplementedError()
 
     @abstractmethod
-    def urand(self, generator):
-        raise NotImplementedError()
-
-    @abstractmethod
     def upload(self, data):
         raise NotImplementedError()
 
     @abstractmethod
     def fill(self, other):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def row_view(self, i):
         raise NotImplementedError()
 
 

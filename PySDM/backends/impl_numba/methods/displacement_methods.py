@@ -1,3 +1,4 @@
+# pylint: disable=too-many-positional-arguments
 """
 CPU implementation of backend methods for particle displacement (advection and sedimentation)
 """
@@ -12,7 +13,6 @@ from ...impl_common.backend_methods import BackendMethods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-# pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
     dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, n_substeps
 ):
@@ -26,7 +26,6 @@ def calculate_displacement_body_common(
 class DisplacementMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    # pylint: disable=too-many-arguments
     def calculate_displacement_body_1d(
         dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
@@ -49,7 +48,6 @@ class DisplacementMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    # pylint: disable=too-many-arguments
     def calculate_displacement_body_2d(
         dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
@@ -78,7 +76,6 @@ class DisplacementMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    # pylint: disable=too-many-arguments
     def calculate_displacement_body_3d(
         dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
@@ -110,9 +107,8 @@ class DisplacementMethods(BackendMethods):
     def calculate_displacement(
         self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
-        n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
-        if n_dims == 1:
+        if self.n_dims == 1:
             DisplacementMethods.calculate_displacement_body_1d(
                 dim,
                 scheme,
@@ -122,7 +118,7 @@ class DisplacementMethods(BackendMethods):
                 position_in_cell.data,
                 n_substeps,
             )
-        elif n_dims == 2:
+        elif self.n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
                 dim,
                 scheme,
@@ -132,7 +128,7 @@ class DisplacementMethods(BackendMethods):
                 position_in_cell.data,
                 n_substeps,
             )
-        elif n_dims == 3:
+        elif self.n_dims == 3:
             DisplacementMethods.calculate_displacement_body_3d(
                 dim,
                 scheme,
@@ -148,7 +144,6 @@ class DisplacementMethods(BackendMethods):
     @cached_property
     def _flag_precipitated_body(self):
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        # pylint: disable=too-many-arguments
         def body(
             cell_origin,
             position_in_cell,
@@ -183,7 +178,6 @@ class DisplacementMethods(BackendMethods):
     @cached_property
     def _flag_out_of_column_body(self):
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        # pylint: disable=too-many-arguments
         def body(
             cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
         ):
@@ -201,7 +195,6 @@ class DisplacementMethods(BackendMethods):
 
         return body
 
-    # pylint: disable=too-many-arguments
     def flag_precipitated(
         self,
         *,
@@ -229,7 +222,6 @@ class DisplacementMethods(BackendMethods):
             displacement.data,
         )
 
-    # pylint: disable=too-many-arguments
     def flag_out_of_column(
         self,
         cell_origin,

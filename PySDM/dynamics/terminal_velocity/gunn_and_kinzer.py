@@ -1,7 +1,7 @@
 """
 [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
- terminal velocities used for things like coalescence kernel evaluation, particle displacement,
- ventilation factor, etc
+terminal velocities used for things like coalescence kernel evaluation, particle
+displacement, ventilation factor, etc
 """
 
 import numba
@@ -13,11 +13,12 @@ from PySDM.physics import constants as const
 
 
 class GunnKinzer1949:  # pylint: disable=too-few-public-methods
-    def __init__(self, particulator, small_r_limit=None):
-        self.particulator = particulator
+    def __init__(self, backend, small_r_limit=None):
+        self.backend = backend
 
         """
-        Gunn & Kinzer 1949, Table 2
+        Table 2 in
+        [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
         """
         ir = (
             np.array(
@@ -120,9 +121,9 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
         approximation_small = TpDependent.make(only_small=True)
         small_r_limit = small_r_limit or 40 * const.si.um
         approximation_small(u[1:], space[1:], small_r_limit)
-        self.a = particulator.backend.Storage.from_ndarray(u)
+        self.a = backend.Storage.from_ndarray(u)
         b = np.append(np.diff(u), [u[-1] - u[-2]]) / step
-        self.b = particulator.backend.Storage.from_ndarray(b)
+        self.b = backend.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
         r_max = radius.amax()
@@ -131,7 +132,7 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
                 f"Radii can be interpolated up to {self.maximum_radius} m"
                 + f" (max value of {r_max} m within input data)"
             )
-        self.particulator.backend.gunn_and_kinzer_interpolation(
+        self.backend.gunn_and_kinzer_interpolation(
             output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 

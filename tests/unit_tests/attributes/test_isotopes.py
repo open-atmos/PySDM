@@ -5,7 +5,7 @@ unit tests for isotope-related attributes
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Formulae, Particulator
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults, si
@@ -25,16 +25,13 @@ class TestIsotopes:
     def test_heavy_isotope_moles_attributes(backend_instance, isotope):
         # arrange
         values = [1, 2, 3]
-        builder = Builder(
+        particulator = Particulator(
             n_sd=len(values),
-            backend=backend_instance,
-            environment=Box(dt=np.nan, dv=np.nan),
-        )
-        particulator = builder.build(
+            environment=Box(dt=np.nan, dv=np.nan, backend=backend_instance),
             attributes={
                 f"moles_{isotope}": np.asarray(values),
                 **dummy_attrs(len(values)),
-            }
+            },
         )
 
         # act
@@ -54,13 +51,6 @@ class TestIsotopes:
     )
     def test_delta_attribute(backend_class, isotope, heavier_water_specific_content):
         # arrange
-        builder = Builder(
-            n_sd=1,
-            backend=backend_class(double_precision=True),
-            environment=Box(dt=np.nan, dv=np.nan),
-        )
-        builder.request_attribute(f"delta_{isotope}")
-
         attributes = {
             **dummy_attrs(1),
             **{f"moles_{k}": np.zeros(1) for k in HEAVY_ISOTOPES if k != isotope},
@@ -82,7 +72,14 @@ class TestIsotopes:
                 / heavier_water_molar_mass
             ]
         )
-        particulator = builder.build(attributes=attributes)
+        particulator = Particulator(
+            attributes=attributes,
+            n_sd=1,
+            environment=Box(
+                dt=np.nan, dv=np.nan, backend=backend_class(double_precision=True)
+            ),
+            requested_attributes=(f"delta_{isotope}",),
+        )
 
         # act
         (delta,) = particulator.attributes[f"delta_{isotope}"].to_ndarray()
@@ -94,7 +91,6 @@ class TestIsotopes:
             * attributes["signed water mass"]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
-        print(delta, n_heavy_isotope, n_light_water)
         if isotope[-1] == "O":
             n_light_isotope = n_light_water
         elif isotope[-1] == "H":
@@ -107,5 +103,101 @@ class TestIsotopes:
                 reference_ratio=getattr(constants_defaults, f"VSMOW_R_{isotope}"),
                 ratio=n_heavy_isotope / n_light_isotope,
             ),
+            significant=5,
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize("heavy_isotope", HEAVY_ISOTOPES)
+    @pytest.mark.parametrize(
+        "moles_heavy, relative_humidity, expected_sign_of_tau",
+        (
+            (1, 0.99, -1),
+            (1, 1.01, 1),
+        ),
+    )
+    @pytest.mark.parametrize("variant", ("ZabaEtAl",))
+    def test_bolin_number_attribute(
+        backend_class,
+        heavy_isotope: str,
+        moles_heavy: float,
+        relative_humidity: float,
+        expected_sign_of_tau: float,
+        variant: str,
+    ):  # pylint: disable=too-many-arguments
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
+        # arrange
+        any_positive_number = 44.0
+        ff = Formulae(
+            isotope_relaxation_timescale=variant,
+            isotope_diffusivity_ratios="HellmannAndHarvey2020+GrahamsLaw",
+            isotope_equilibrium_fractionation_factors="VanHook1968",
+        )
+        n_sd = 1
+        attribute_name = f"Bolin number for {heavy_isotope}"
+
+        env = Box(dt=np.nan, dv=np.nan, backend=backend_class(formulae=ff))
+
+        for iso in HEAVY_ISOTOPES:
+            env[f"molality {iso} in dry air"] = 0
+        env[f"molality {heavy_isotope} in dry air"] = 0.44
+
+        attr = {
+            "multiplicity": np.ones(n_sd),
+            "signed water mass": np.full(n_sd, si.ng),
+            **{
+                f"moles_{iso}": np.full(
+                    n_sd, moles_heavy if iso == heavy_isotope else 0.0
+                )
+                for iso in HEAVY_ISOTOPES
+            },
+        }
+        particulator = Particulator(
+            attributes=attr,
+            n_sd=n_sd,
+            environment=env,
+            requested_attributes=(attribute_name, f"delta_{heavy_isotope}"),
+        )
+        particulator.environment["RH"] = relative_humidity
+        particulator.environment["T"] = any_positive_number
+        particulator.environment["rhod"] = any_positive_number
+
+        # act
+        value = particulator.attributes[attribute_name].data
+
+        # assert
+        np.testing.assert_equal(np.sign(value), expected_sign_of_tau)
+
+    @staticmethod
+    def test_moles(
+        backend_class,
+        m_t=1 * si.ng,
+    ):
+        # arrange
+        formulae = Formulae()
+        attributes = {
+            "multiplicity": np.asarray([0]),
+            "signed water mass": np.asarray([m_t]),
+        }
+        for isotope in HEAVY_ISOTOPES:
+            attributes[f"moles_{isotope}"] = np.asarray([44])
+
+        particulator = Particulator(
+            n_sd=1,
+            attributes=attributes,
+            products=(),
+            environment=Box(
+                dv=np.nan, dt=-1 * si.s, backend=backend_class(formulae=formulae)
+            ),
+            requested_attributes=("moles light water", "moles_16O"),
+        )
+
+        # assert
+        np.testing.assert_approx_equal(
+            particulator.attributes["moles light water"].data[0],
+            particulator.attributes["moles_16O"].data[0]
+            - particulator.attributes["moles_2H"].data[0]
+            - particulator.attributes["moles_3H"].data[0],
             significant=5,
         )

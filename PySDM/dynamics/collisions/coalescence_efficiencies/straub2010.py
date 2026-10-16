@@ -1,4 +1,5 @@
 """
+[Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1)
 TODO #744
 """
 
@@ -14,11 +15,11 @@ class Straub2010Ec:
         self.arrays = {}
         self.const = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         self.const = self.particulator.formulae.constants
-        builder.request_attribute("volume")
-        builder.request_attribute("relative fall velocity")
+        particulator.request_attribute("volume")
+        particulator.request_attribute("relative fall velocity")
         for key in ("Sc", "tmp", "tmp2", "We"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float

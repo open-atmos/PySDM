@@ -14,3 +14,4 @@ from .physics_methods import PhysicsMethods
 from .terminal_velocity_methods import TerminalVelocityMethods
 from .seeding_methods import SeedingMethods
 from .deposition_methods import DepositionMethods
+from .sedimentation_removal_0d_methods import SedimentationRemoval0DMethods

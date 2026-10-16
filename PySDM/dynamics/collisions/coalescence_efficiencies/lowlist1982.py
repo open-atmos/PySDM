@@ -1,5 +1,5 @@
 """
-See Low & List 1982
+See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2)
 """
 
 import numpy as np
@@ -17,8 +17,8 @@ class LowList1982Ec:
         self.sum_of_masses = None
         self.const = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -26,9 +26,9 @@ class LowList1982Ec:
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
-        builder.request_attribute("radius")
-        builder.request_attribute("water mass")
-        builder.request_attribute("relative fall velocity")
+        particulator.request_attribute("radius")
+        particulator.request_attribute("water mass")
+        particulator.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "dS", "tmp", "tmp2", "CKE", "Et", "ds", "dl"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float

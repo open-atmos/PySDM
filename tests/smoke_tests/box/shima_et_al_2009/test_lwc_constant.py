@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from PySDM.backends import ThrustRTC
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.environments import Box
@@ -54,25 +54,25 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
-    env = Box(dt=dt, dv=dv)
-    builder = Builder(
-        n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
-    )
-
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         spectrum
-    ).sample(n_sd)
-    builder.add_dynamic(
-        Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
+    ).sample_deterministic(n_sd)
+
+    particulator = Particulator(
+        attributes=attributes,
+        n_sd=n_sd,
+        environment=Box(dt=dt, dv=dv, backend=backend_class(formulae=formulae)),
+        dynamics=(
+            Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
+        ),
     )
-    particulator = builder.build(attributes)
 
     volumes = {}
 
     # Act
     for step in steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         check(
             n_part=n_part,
             dv=dv,

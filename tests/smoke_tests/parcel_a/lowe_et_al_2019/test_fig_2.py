@@ -1,12 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
-from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
-from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
+from PySDM_examples.featured.Lowe_et_al_2019 import Settings, Simulation
+from PySDM_examples.featured.Lowe_et_al_2019 import aerosol as paper_aerosol
+from PySDM_examples.featured.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
-from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
 
 FORMULAE = Formulae(constants=LOWE_CONSTS)
@@ -74,7 +73,6 @@ class TestFig2:  # pylint: disable=too-few-public-methods
             n_sd_per_mode=32,
             model=surface_tension,
             aerosol=aerosol,
-            spectral_sampling=spectral_sampling.ConstantMultiplicity,
         )
         settings.output_interval = 10 * settings.dt
         simulation = Simulation(settings)

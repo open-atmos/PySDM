@@ -4,7 +4,7 @@ default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.10.1
     hooks:
       - id: black
 
@@ -14,7 +14,7 @@ repos:
 #      - id: isort
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -23,8 +23,30 @@ repos:
         files: '.json'
 
   - repo: https://github.com/lk16/detect-missing-init
-    rev: v0.1.6
+    rev: v0.1.9
     hooks:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
+  - repo: https://github.com/open-atmos/devops_tests
+    rev: v0.0.3
+    hooks:
+      - id: check-notebook-open-atmos-structure
+        name: check notebook has open-atmos structure
+        additional_dependencies:
+          - nbformat
+          - pytest
+          - gitpython
+        args: [ --repo-name=PySDM, --no-header-check ]
+
+# TODO #1973 Needs run for some notebooks
+#      - id: check-notebook-output
+#        name: check notebook output
+#        additional_dependencies:
+#          - nbformat
+
+# TODO #1973 use show_plot and show_anim
+#      - id: check-notebook-using-jupyter-utils
+#        name: check notebook using open-atmos-jupyter-utils
+#        additional_dependencies:
+#          - nbformat

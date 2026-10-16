@@ -8,7 +8,6 @@ import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
-
 # TODO #1524
 # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
 
@@ -125,7 +124,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             multiplicity,
             sub_time_step,
             mass_of_dry_air,
-        ):
+        ):  # pylint: disable=too-many-positional-arguments
             latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
             delta_rv = 0
             for i, ksi in enumerate(multiplicity):

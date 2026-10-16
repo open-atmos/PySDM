@@ -4,8 +4,8 @@ logic around `PySDM.attributes.impl.attribute.Attribute` - the parent class for 
 
 
 class Attribute:
-    def __init__(self, builder, name, dtype=float, n_vector_components=0):
-        self.particulator = builder.particulator
+    def __init__(self, particulator, name, dtype=float, n_vector_components=0):
+        self.particulator = particulator
         self.timestamp: int = 0
         self.data = None
         self.dtype = dtype

@@ -63,8 +63,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            self.commons
-            + """
+            self.commons + """
             auto i = idx[fake_i];
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
                 atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(multiplicity[i]));
@@ -76,9 +75,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                }
             }
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -116,8 +113,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            self.commons
-            + """
+            self.commons + """
             auto i = idx[fake_i];
             for (auto k = 0; k < n_bins; k+=1) {
                 if (x_bins[k] <= x_attr[i] and x_attr[i] < x_bins[k + 1]) {
@@ -130,9 +126,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     break;
                 }
             }
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -216,7 +210,6 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
             )
 
-    # TODO #684
     # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def spectrum_moments(
@@ -234,6 +227,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
+        # TODO #684
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
