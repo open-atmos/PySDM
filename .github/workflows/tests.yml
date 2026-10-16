@@ -312,6 +312,11 @@ jobs:
           done
           for anim_name in parcel_animation; do
               mv /tmp/pytest/test_run_notebooks_*/${anim_name}.gif $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00000.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00000.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00010.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00010.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00020.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00020.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00030.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00030.pdf
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}_frame_00040.pdf $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}_frame_00040.pdf
           done
           ls $HOME/work/_temp/_github_home/figures
 
