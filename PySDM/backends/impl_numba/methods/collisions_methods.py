@@ -787,10 +787,11 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**self.default_jit_flags)
             def body(idx, volume, signed_water_mass, output, is_first_in_pair):
+                flag = len(volume)
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(is_first_in_pair) - 1
+                    len(volume) - 1
                 ):
-                    if is_first_in_pair[i]:
+                    if is_first_in_pair[i] and idx[i] != flag:
                         if unfrozen(signed_water_mass[idx[i]]):
                             if unfrozen(signed_water_mass[idx[i + 1]]):
                                 output[i // 2] = liquid_liquid(
@@ -815,10 +816,11 @@ class CollisionsMethods(BackendMethods):
             @numba.njit(**self.default_jit_flags)
             # pylint: disable=unused-argument
             def body(idx, volume, signed_water_mass, output, is_first_in_pair):
+                flag = len(volume)  # TODO: why is this not needed in other backends!
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(is_first_in_pair) - 1
+                    len(volume) - 1
                 ):
-                    if is_first_in_pair[i]:
+                    if is_first_in_pair[i] and idx[i] != flag:
                         output[i // 2] = liquid_liquid(
                             volume[idx[i]], volume[idx[i + 1]]
                         )
