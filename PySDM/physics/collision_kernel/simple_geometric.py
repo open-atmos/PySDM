@@ -1,0 +1,31 @@
+"""
+basic geometric kernel (not taking fall velocity into account)
+"""
+
+import numpy as np
+
+#
+#     def register(self, particulator):
+#         self.particulator = particulator
+#         particulator.request_attribute("radius")
+#         particulator.request_attribute("area")
+#         self.pair_tmp = self.particulator.PairwiseStorage.empty(
+#             self.particulator.n_sd // 2, dtype=float
+#         )
+#
+#     def __call__(self, output, is_first_in_pair):
+#         output[:] = self.particulator.formulae.constants.SIMPLE_GEOMETRIC_c
+#         self.pair_tmp.sum(self.particulator.attributes["radius"], is_first_in_pair)
+#         self.pair_tmp **= 2
+#         output *= self.pair_tmp
+#         self.pair_tmp.distance(self.particulator.attributes["area"], is_first_in_pair)
+#         output *= self.pair_tmp
+
+
+class SimpleGeometric:  # pylint:disable=too-few-public-methods
+    def __init__(self, const):
+        assert np.isfinite(const.KERNEL_SIMPLE_GEOMETRIC_c)
+
+    @staticmethod
+    def requested_attributes(_):
+        return "radius", "area", ""

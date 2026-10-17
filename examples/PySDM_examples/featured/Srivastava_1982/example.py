@@ -13,7 +13,6 @@ from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ConstantMass
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 
 NO_BOUNCE = ConstEb(1)
 
@@ -28,8 +27,9 @@ def coalescence_and_breakup_eq13(
     simulation = Simulation(
         n_steps=n_steps,
         settings=settings,
+        collision_kernel="ConstantK",
+        constants_overrides={"KERNEL_CONSTANTK_a": collision_rate},
         collision_dynamic=Collision(
-            collision_kernel=ConstantK(a=collision_rate),
             coalescence_efficiency=ConstEc(settings.srivastava_c / collision_rate),
             breakup_efficiency=NO_BOUNCE,
             fragmentation_function=ConstantMass(c=settings.frag_mass),

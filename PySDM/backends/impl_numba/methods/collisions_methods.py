@@ -389,7 +389,7 @@ class CollisionsMethods(BackendMethods):
         stats_n_substep,
         stats_dt_min,
     ):
-        return self._scale_prob_for_adaptive_sdm_gamma_body(
+        self._scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
             multiplicity.idx.data,
             len(multiplicity),
@@ -569,7 +569,7 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         out,
     ):
-        return self._compute_gamma_body(
+        self._compute_gamma_body(
             prob.data,
             rand.data,
             multiplicity.idx.data,
@@ -650,7 +650,7 @@ class CollisionsMethods(BackendMethods):
     def normalize(
         self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv
     ):  # pylint: disable=too-many-positional-arguments,unused-argument
-        return self._normalize_body(
+        self._normalize_body(
             prob.data,
             cell_start.data,
             norm_factor.data,
@@ -766,7 +766,7 @@ class CollisionsMethods(BackendMethods):
     def linear_collection_efficiency(
         self, *, params, output, radii, is_first_in_pair, unit
     ):
-        return self._linear_collection_efficiency_body(
+        self._linear_collection_efficiency_body(
             params,
             output.data,
             radii.data,
@@ -774,4 +774,106 @@ class CollisionsMethods(BackendMethods):
             radii.idx.data,
             len(is_first_in_pair),
             unit,
+        )
+
+    @cached_property
+    def _collision_kernel(self):
+        liquid_liquid = self.formulae.collision_kernel.liquid_liquid
+
+        if self.formulae.particle_shape_and_density.supports_mixed_phase():
+            liquid_ice = self.formulae.collision_kernel.liquid_ice
+            ice_ice = self.formulae.collision_kernel.ice_ice
+            unfrozen = self.formulae.trivia.unfrozen
+
+            @numba.njit(**self.default_jit_flags)
+            def body(
+                idx, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+            ):
+                flag = len(signed_water_mass)
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(signed_water_mass) - 1
+                ):
+                    if is_first_in_pair[i] and idx[i] != flag:
+                        if unfrozen(signed_water_mass[idx[i]]):
+                            if unfrozen(signed_water_mass[idx[i + 1]]):
+                                output[i // 2] = liquid_liquid(
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
+                                )
+                            else:
+                                output[i // 2] = liquid_ice(
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
+                                )
+                        else:
+                            if unfrozen(signed_water_mass[idx[i + 1]]):
+                                output[i // 2] = liquid_ice(
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
+                                )
+                            else:
+                                output[i // 2] = ice_ice(
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
+                                )
+
+        else:
+
+            @numba.njit(**self.default_jit_flags)
+            def body(
+                idx, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+            ):
+                flag = len(
+                    signed_water_mass
+                )  # TODO: why is this not needed in other backends!
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(signed_water_mass) - 1
+                ):
+                    if is_first_in_pair[i] and idx[i] != flag:
+                        output[i // 2] = liquid_liquid(
+                            attr0[idx[i]],
+                            attr0[idx[i + 1]],
+                            attr1[idx[i]],
+                            attr1[idx[i + 1]],
+                            attr2[idx[i]],
+                            attr2[idx[i + 1]],
+                        )
+
+        return body
+
+    def collision_kernel(
+        self,
+        *,
+        signed_water_mass,
+        output,
+        is_first_in_pair,
+        attr0,
+        attr1,
+        attr2,
+    ):
+        output.fill(0)
+        self._collision_kernel(
+            idx=signed_water_mass.idx.data,
+            attr0=attr0.data,
+            attr1=attr1.data,
+            attr2=attr2.data,
+            signed_water_mass=signed_water_mass.data,
+            output=output.data,
+            is_first_in_pair=is_first_in_pair.indicator.data,
         )

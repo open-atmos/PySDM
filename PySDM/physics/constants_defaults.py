@@ -370,6 +370,26 @@ J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
 
+KERNEL_GOLOVIN_b = np.nan / si.s
+""" Golovin collision kernel constant """
+
+KERNEL_CONSTANTK_a = np.nan
+""" CONSTANTK collision kernel constant """
+
+KERNEL_CONSTANT_ICE_a = np.nan
+KERNEL_CONSTANT_ICE_b = np.nan
+""" CONSTANT_ICE collision kernel constants """
+
+KERNEL_LINEAR_a = np.nan
+KERNEL_LINEAR_b = np.nan
+""" LINEAR collision kernel constants """
+
+KERNEL_GEOMETRIC_collection_efficiency = 1
+""" GEOMETRIC collision kernel constants """
+
+KERNEL_SIMPLE_GEOMETRIC_c = 1
+""" SIMPLE_GEOMETRIC collision kernel constants """
+
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
 STRAUB_MU2 = 0.095 * si.cm
