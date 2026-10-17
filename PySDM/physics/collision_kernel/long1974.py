@@ -74,5 +74,9 @@ Default parameters are:
 
 
 class Long1974:  # pylint:disable=too-few-public-methods
+    @staticmethod
+    def requested_attributes(_):
+        return "", "", ""
+
     def __init__(self, _):
         pass

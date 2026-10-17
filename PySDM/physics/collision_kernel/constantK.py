@@ -10,5 +10,10 @@ class ConstantK:  # pylint: disable=too-few-public-methods
         assert np.isfinite(const.KERNEL_CONSTANTK_a)
 
     @staticmethod
-    def liquid_liquid(const, v1, v2):  # pylint: disable=unused-argument
+    def requested_attributes(_):
+        return "", "", ""
+
+    # pylint: disable=unused-argument
+    @staticmethod
+    def liquid_liquid(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
         return const.KERNEL_CONSTANTK_a

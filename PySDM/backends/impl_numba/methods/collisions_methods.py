@@ -786,52 +786,93 @@ class CollisionsMethods(BackendMethods):
             unfrozen = self.formulae.trivia.unfrozen
 
             @numba.njit(**self.default_jit_flags)
-            def body(idx, volume, signed_water_mass, output, is_first_in_pair):
-                flag = len(volume)
+            def body(
+                idx, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+            ):
+                flag = len(signed_water_mass)
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(volume) - 1
+                    len(signed_water_mass) - 1
                 ):
                     if is_first_in_pair[i] and idx[i] != flag:
                         if unfrozen(signed_water_mass[idx[i]]):
                             if unfrozen(signed_water_mass[idx[i + 1]]):
                                 output[i // 2] = liquid_liquid(
-                                    volume[idx[i]], volume[idx[i + 1]]
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
                                 )
                             else:
                                 output[i // 2] = liquid_ice(
-                                    volume[idx[i]], volume[idx[i + 1]]
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
                                 )
                         else:
                             if unfrozen(signed_water_mass[idx[i + 1]]):
                                 output[i // 2] = liquid_ice(
-                                    volume[idx[i + 1]], volume[idx[i]]
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
                                 )
                             else:
                                 output[i // 2] = ice_ice(
-                                    volume[idx[i]], volume[idx[i + 1]]
+                                    attr0[idx[i]],
+                                    attr0[idx[i + 1]],
+                                    attr1[idx[i]],
+                                    attr1[idx[i + 1]],
+                                    attr2[idx[i]],
+                                    attr2[idx[i + 1]],
                                 )
 
         else:
 
             @numba.njit(**self.default_jit_flags)
-            # pylint: disable=unused-argument
-            def body(idx, volume, signed_water_mass, output, is_first_in_pair):
-                flag = len(volume)  # TODO: why is this not needed in other backends!
+            def body(
+                idx, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+            ):
+                flag = len(
+                    signed_water_mass
+                )  # TODO: why is this not needed in other backends!
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(volume) - 1
+                    len(signed_water_mass) - 1
                 ):
                     if is_first_in_pair[i] and idx[i] != flag:
                         output[i // 2] = liquid_liquid(
-                            volume[idx[i]], volume[idx[i + 1]]
+                            attr0[idx[i]],
+                            attr0[idx[i + 1]],
+                            attr1[idx[i]],
+                            attr1[idx[i + 1]],
+                            attr2[idx[i]],
+                            attr2[idx[i + 1]],
                         )
 
         return body
 
-    def collision_kernel(self, *, volume, signed_water_mass, output, is_first_in_pair):
+    def collision_kernel(
+        self,
+        *,
+        signed_water_mass,
+        output,
+        is_first_in_pair,
+        attr0,
+        attr1,
+        attr2,
+    ):
         output.fill(0)
         self._collision_kernel(
-            idx=volume.idx.data,
-            volume=volume.data,
+            idx=signed_water_mass.idx.data,
+            attr0=attr0.data,
+            attr1=attr1.data,
+            attr2=attr2.data,
             signed_water_mass=signed_water_mass.data,
             output=output.data,
             is_first_in_pair=is_first_in_pair.indicator.data,

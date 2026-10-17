@@ -14,3 +14,7 @@ kernel modelling influence of electric field of 3000V/cm
 class Electric:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass
+
+    @staticmethod
+    def requested_attributes(_):
+        return "", "", ""

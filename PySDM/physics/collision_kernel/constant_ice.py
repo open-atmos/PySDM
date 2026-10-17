@@ -11,9 +11,15 @@ class ConstantIce:
         assert np.isfinite(const.KERNEL_CONSTANT_ICE_b)
 
     @staticmethod
-    def liquid_ice(const, v1, v2):
+    def requested_attributes(_):
+        return "", "", ""
+
+    # pylint:disable=unused-argument
+    @staticmethod
+    def liquid_ice(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
         return const.KERNEL_CONSTANT_ICE_a
 
+    # pylint:disable=unused-argument
     @staticmethod
-    def ice_ice(const, v1, v2):
+    def ice_ice(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
         return const.KERNEL_CONSTANT_ICE_b

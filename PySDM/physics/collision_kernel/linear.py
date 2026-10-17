@@ -13,3 +13,7 @@ TODO #744
 class Linear:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass
+
+    @staticmethod
+    def requested_attributes(_):
+        return "", "", ""

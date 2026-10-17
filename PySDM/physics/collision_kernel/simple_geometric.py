@@ -25,3 +25,7 @@ import numpy as np
 class SimpleGeometric:  # pylint:disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.KERNEL_SIMPLE_GEOMETRIC_c)
+
+    @staticmethod
+    def requested_attributes(_):
+        return "radius", "area", ""
