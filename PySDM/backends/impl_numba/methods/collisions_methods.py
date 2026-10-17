@@ -828,6 +828,7 @@ class CollisionsMethods(BackendMethods):
         return body
 
     def collision_kernel(self, *, volume, signed_water_mass, output, is_first_in_pair):
+        output.fill(0)
         self._collision_kernel(
             idx=volume.idx.data,
             volume=volume.data,
