@@ -2,13 +2,6 @@
 TODO #744
 """
 
-# TODO
-# class Linear:
-#     def __call__(self, output, is_first_in_pair):
-#         output.sum_pair(self.particulator.attributes["volume"], is_first_in_pair)
-#         output *= self.particulator.formulae.constants.LINEAR_b
-#         output += self.particulator.formulae.constants.LINEAR_a
-
 
 class Linear:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
@@ -16,4 +9,8 @@ class Linear:  # pylint:disable=too-few-public-methods
 
     @staticmethod
     def requested_attributes(_):
-        return "", "", ""
+        return "volume", "", ""
+
+    @staticmethod
+    def liquid_liquid(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
+        return (attr0_a + attr0_b) * const.KERNEL_LINEAR_b + const.KERNEL_LINEAR_a

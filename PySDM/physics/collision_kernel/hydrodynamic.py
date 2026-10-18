@@ -17,4 +17,4 @@ class Hydrodynamic:  # pylint:disable=too-few-public-methods
 
     @staticmethod
     def requested_attributes(_):
-        return "", "", ""
+        return "radius", "relative fall velocity", ""

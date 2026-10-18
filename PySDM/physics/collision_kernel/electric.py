@@ -11,7 +11,6 @@ kernel modelling influence of electric field of 3000V/cm
 #         )
 
 #
-# def __call__(self, output, is_first_in_pair):
 #     self.particulator.backend.linear_collection_efficiency(
 #         params=self.params,
 #         output=output,
@@ -37,4 +36,4 @@ class Electric:  # pylint:disable=too-few-public-methods
 
     @staticmethod
     def requested_attributes(_):
-        return "", "", ""
+        return "radius", "relative fall velocity", ""
