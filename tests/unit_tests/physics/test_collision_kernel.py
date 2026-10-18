@@ -7,7 +7,6 @@ from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 from PySDM.physics.collision_kernel import golovin
-from PySDM.attributes.impl.dummy_attribute import DummyAttribute
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_common.index import make_Index
