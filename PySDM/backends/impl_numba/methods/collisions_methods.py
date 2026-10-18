@@ -736,47 +736,6 @@ class CollisionsMethods(BackendMethods):
         cell_start[:] = cell_end_thread[0, :]
 
     @cached_property
-    def _linear_collection_efficiency_body(self):
-        @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-locals
-        def body(params, output, radii, is_first_in_pair, idx, length, unit):
-            A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-            output[:] = 0
-            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-                if is_first_in_pair[i]:
-                    if radii[idx[i]] > radii[idx[i + 1]]:
-                        r = radii[idx[i]] / unit
-                        r_s = radii[idx[i + 1]] / unit
-                    else:
-                        r = radii[idx[i + 1]] / unit
-                        r_s = radii[idx[i]] / unit
-                    p = r_s / r
-                    if p not in (0, 1):
-                        G = (G1 / r) ** Mg + G2 + G3 * r
-                        Gp = (1 - p) ** G
-                        if Gp != 0:
-                            D = D1 / r**D2
-                            E = E1 / r**E2
-                            F = (F1 / r) ** Mf + F2
-                            output[i // 2] = A + B * p + D / p**F + E / Gp
-                            output[i // 2] = max(0, output[i // 2])
-
-        return body
-
-    def linear_collection_efficiency(
-        self, *, params, output, radii, is_first_in_pair, unit
-    ):
-        self._linear_collection_efficiency_body(
-            params,
-            output.data,
-            radii.data,
-            is_first_in_pair.indicator.data,
-            radii.idx.data,
-            len(is_first_in_pair),
-            unit,
-        )
-
-    @cached_property
     def _collision_kernel(self):
         liquid_liquid = self.formulae.collision_kernel.liquid_liquid
 
