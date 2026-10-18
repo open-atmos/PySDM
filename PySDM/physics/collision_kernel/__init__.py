@@ -2,7 +2,7 @@
 Collision kernels physics
 """
 
-from PySDM.impl.null_physics_class import Null
+from .null import Null
 from .constantK import ConstantK
 from .constant_ice import ConstantIce
 from .electric import Electric

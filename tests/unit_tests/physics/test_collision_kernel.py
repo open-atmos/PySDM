@@ -255,5 +255,7 @@ class TestKernels:
         with DimensionalAnalysis():
             si = constants_defaults.si  # pylint: disable=redefined-outer-name
             vol = 0 * si.m**3
-            prob = golovin.Golovin.liquid_liquid(constants_defaults, vol, vol)
+            prob = golovin.Golovin.liquid_liquid(
+                constants_defaults, vol, vol, np.nan, np.nan, np.nan, np.nan
+            )
         assert prob.check("[volume] / [time]")
