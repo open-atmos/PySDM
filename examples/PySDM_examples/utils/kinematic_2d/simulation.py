@@ -236,7 +236,7 @@ class Simulation:
                 if controller.panic:
                     break
 
-                self.particulator.run(step - self.particulator.n_steps)
+                self.particulator.advance(step - self.particulator.n_steps)
 
                 self.store(step)
 

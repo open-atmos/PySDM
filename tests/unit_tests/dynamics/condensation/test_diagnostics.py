@@ -106,14 +106,14 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             },
         )
 
-    def run(self, steps):
-        self.particulator.run(steps)
+    def advance(self, n_steps):
+        self.particulator.advance(n_steps)
 
 
 def _try(particulator, capsys):
     exception = None
     try:
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
     except Exception as e:  # pylint: disable=broad-except
         exception = e
     captured = capsys.readouterr()

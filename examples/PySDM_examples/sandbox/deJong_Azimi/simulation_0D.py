@@ -52,7 +52,7 @@ def run_box(settings, backend_class=CPU):
     y = np.ndarray((len(settings.steps), len(settings.radius_bins_edges) - 1))
     mom = np.ndarray((len(settings.steps), 3))
     for i, step in enumerate(settings.steps):
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         y[i] = particulator.products["dv/dlnr"].get()[0]
         (mom[i, 0],) = particulator.products["M0"].get()
         (mom[i, 1],) = particulator.products["M1"].get()

@@ -118,7 +118,6 @@ TEST_SUITES = {
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
-        "Rogers_1975",
         "Arabas_and_Pawlowska_2011",
         "condensation_adaptivity",
     ],
@@ -133,6 +132,7 @@ TEST_SUITES = {
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
         "Singer_Ward",
+        "Rogers_1975",
     ],
     "coagulation": [
         "Berry_1967",

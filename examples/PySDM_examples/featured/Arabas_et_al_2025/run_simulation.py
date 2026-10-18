@@ -18,7 +18,7 @@ def run_simulation(particulator, temperature_profile, n_steps):
                 particulator.environment,
                 T=temperature_profile((step - 0.5) * particulator.dt),
             )
-            particulator.run(step - particulator.n_steps)
+            particulator.advance(step - particulator.n_steps)
             update_thermo(
                 particulator.environment, T=temperature_profile(step * particulator.dt)
             )

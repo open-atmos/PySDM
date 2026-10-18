@@ -99,7 +99,7 @@ class TestFallVelocity:
 
         particulator.dynamics.pop("RelaxedVelocity")
 
-        particulator.run(2)
+        particulator.advance(2)
 
         total_initial_momentum = (
             default_attributes["relative fall momentum"]

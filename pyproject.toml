@@ -14,12 +14,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysdm"
-description = "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab"
+description = "Pythonic particle-based (super-droplet) cloud microphysics and aqueous chemistry package, with box, parcel, and 1D/2D prescribed-flow examples in Python, Julia, and MATLAB"
 readme = "README.md"
-keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
-    "atmospheric-modelling", "particle-system", "numba", "thrust",
-    "nvrtc", "pint", "atmospheric-physics",
+keywords = [
+    "physics-simulation",
+    "monte-carlo-simulation",
+    "gpu-computing",
+    "atmospheric-modelling",
+    "atmospheric-physics",
+    "cloud-microphysics",
+    "super-droplet-method",
+    "particle-system",
+    "condensation",
+    "coalescence",
+    "collisional-breakup",
+    "freezing",
+    "isotopic-fractionation",
+    "cloud-seeding",
+    "numba",
+    "thrust",
+    "nvrtc",
+    "pint",
 ]
+
 license = "GPL-3.0-only"
 classifiers = [
     "Development Status :: 4 - Beta",

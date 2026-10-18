@@ -92,7 +92,7 @@ class Simulation:
         }
         for step in range(self.n_steps + 1):
             if step != 0:
-                self.particulator.run(steps=1)
+                self.particulator.advance(n_steps=1)
             for key, attr in output["attributes"].items():
                 data = self.particulator.attributes[key].to_ndarray(raw=True)
                 data[data == 0] = np.nan

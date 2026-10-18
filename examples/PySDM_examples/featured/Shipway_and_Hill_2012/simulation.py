@@ -267,7 +267,7 @@ class Simulation:
                 self.particulator.dynamics["Displacement"].upload_courant_field(
                     (mpdata.advector / self.g_factor_vec,)
                 )
-            self.particulator.run(steps=1)
+            self.particulator.advance(n_steps=1)
             self.save(step + 1)
 
         Outputs = namedtuple("Outputs", "products attributes")

@@ -32,22 +32,33 @@ Currently, the development is focused on atmospheric cloud physics
   applications, in particular on modelling the dynamics of particles immersed in moist air 
   using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
+PySDM supports a range of cloud microphysical processes, including condensational growth,
+  collisional coalescence and breakup, and freezing.
+
 The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://doi.org/10.1002/qj.441)), hence the name. 
 
+
+
 PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
-There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
+There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) 
+  exemplifying how to perform 
   various types of calculations and simulations using PySDM.
 Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
 
-There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
-These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
-  concepts paired with widgets for running interactive simulations using PySDM.
-Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Among the examples, there is also a growing collection of 
+  [tutorials](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/tutorials),
+  also in the form of Jupyter notebooks.
+The collection includes practical howtos covering specific aspects of using PySDM
+  and its supporting tools, as well as teaching-oriented tutorials designed for use in classes.
+The howtos cover topics such as dimensional analysis and visualisation with PyVista,
+  while the teaching-oriented tutorials introduce cloud microphysical concepts through 
+  short explanations and interactive simulation widgets,
+  with questions that can be used as homework problems.
 Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
   easy way for students to get started.
 
@@ -83,21 +94,37 @@ beyond the latest release).
 
 Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
-For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
-Test-time dependencies can be installed with ``pip -e .[tests]``.
+For development purposes, we suggest cloning the repository and installing it in editable mode:
+```
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM
+```
+Development and test dependencies can be installed using the following optional dependency groups:
+```
+pip install -e PySDM[unit-tests]
+pip install -e PySDM[nonunit-tests]
+```
+The ``unit-tests`` group installs dependencies required to run the unit tests,
+while the ``nonunit-tests`` group installs dependencies required for the remaining tests.
+Both groups can be installed together if needed.
+
+To pin the base dependencies to the versions used by the GitHub Actions
+CI workflows, install the ``CI_version_pins`` group:
+```
+pip install -e PySDM[CI_version_pins]
+```
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
 ```
-git clone https://github.com/open-atmos/PySDM.git
-pip install -e PySDM
-pip install -e PySDM/examples
+git clone git@github.com:open-atmos/PySDM.git
+pip install -e PySDM -e PySDM/examples
 jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+using ``pip install PySDM-examples`` (note that the package does not include the Jupyter notebooks,
 only the supporting .py files).
 
 ## Contributing, reporting issues, seeking support 
@@ -142,8 +169,8 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
-Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
-  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOs).
+Further hints addressed at PySDM developers are maintained in the 
+  [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).
