@@ -56,18 +56,14 @@ def sampling_new(
         diameter=2 * freezing_inp_dry_radius
     )
     n_inp = int(n_sd * freezing_inp_frac)
-
-    if inp_surface_sigma == 1:
-        insoluble_surface_area = np.full(n_inp, surface_median)
-    else:
-        surface_spectrum = Lognormal(
-            norm_factor=1,
-            m_mode=surface_median,
-            s_geom=inp_surface_sigma,
-        )
-        insoluble_surface_area = surface_spectrum.percentiles(
-            rng.uniform(low=0, high=1, size=n_inp)
-        )
+    surface_spectrum = Lognormal(
+        norm_factor=1,
+        m_mode=surface_median,
+        s_geom=inp_surface_sigma,
+    )
+    insoluble_surface_area = surface_spectrum.percentiles(
+        rng.uniform(low=0, high=1, size=n_inp)
+    )
 
     attributes["freezing temperature" if singular else "immersed surface area"] = (
         rng.permutation(
