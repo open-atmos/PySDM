@@ -2,7 +2,6 @@ import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.initialisation.spectra import Gamma
-from PySDM import Formulae
 
 
 class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-methods,missing-class-docstring,too-many-positional-arguments
