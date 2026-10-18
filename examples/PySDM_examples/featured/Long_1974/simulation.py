@@ -31,7 +31,6 @@ class Simulation(BasicSimulation):
             environment=environment,
             dynamics=(
                 Coalescence(
-                    collision_kernel=settings.kernel,
                     coalescence_efficiency=settings.coal_eff,
                     adaptive=settings.adaptive,
                 ),

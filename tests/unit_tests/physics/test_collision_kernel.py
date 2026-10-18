@@ -7,7 +7,7 @@ from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 from PySDM.physics.collision_kernel import golovin
-
+from PySDM.attributes.impl.dummy_attribute import DummyAttribute
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_common.index import make_Index
@@ -122,38 +122,41 @@ class TestKernels:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "radius", (np.array([49e-6, 1e-6]), np.array([50e-6 + 1e-9, 1e-6]))
+        "radius",
+        (
+            (49e-6, 1e-6),
+            (50e-6 + 1e-9, 1e-6),
+        ),
     )
-    def test_long1974_regimes(radius, backend_class):
+    def test_long1974_regimes(radius):
         # arrange
-        volume = 4 / 3 * np.pi * radius**3
+        formulae = Formulae(collision_kernel="Long1974")
         particulator = Particulator(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
-            n_sd=radius.size,
+            attributes={
+                "volume": formulae.trivia.volume(radius=np.asarray(radius)),
+                "multiplicity": np.ones_like(radius),
+            },
+            n_sd=len(radius),
             environment=Box(
                 dv=None,
                 dt=np.nan,
-                backend=backend_class(
-                    Formulae(
-                        collision_kernel="Long1974",
-                    )
-                ),
+                backend=CPU(formulae),
             ),
         )
-        sut = particulator.dynamics["Collision"].collision_kernel
+        sut = particulator.collision_kernel
 
         _PairwiseStorage = particulator.PairwiseStorage
         _Indicator = particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.array([0.0]))
-        is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair = _Indicator(length=len(radius))
         is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
 
         # act
-        sut(output, is_first_in_pair=is_first_in_pair)
+        sut(output=output, is_first_in_pair=is_first_in_pair)
 
-        radius_lg = np.max(radius.data)
+        radius_lg = np.max(radius)
 
         # assert
         if radius_lg < 50e-6:
@@ -187,7 +190,7 @@ class TestKernels:
         n_pairs = n_sd // 2
 
         idx = make_Index(backend).identity_index(n_sd)
-        volume = make_IndexedStorage(backend).from_ndarray(
+        dummy = make_IndexedStorage(backend).from_ndarray(
             idx, np.asarray([np.nan] * n_sd)
         )
         output = make_PairwiseStorage(backend).from_ndarray(
@@ -203,7 +206,9 @@ class TestKernels:
 
         # act
         backend.collision_kernel(
-            volume=volume,
+            attr0=dummy,
+            attr1=dummy,
+            attr2=dummy,
             signed_water_mass=signed_water_mass,
             output=output,
             is_first_in_pair=is_first_in_pair,
@@ -227,6 +232,8 @@ class TestKernels:
                 "KERNEL_LINEAR_a": 1,
                 "KERNEL_LINEAR_b": 1,
                 "KERNEL_SIMPLE_GEOMETRIC_c": 1,
+                "KERNEL_CONSTANT_ICE_a": 2,
+                "KERNEL_CONSTANT_ICE_b": 3,
             },
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3, backend=backend_class(formulae=formulae))

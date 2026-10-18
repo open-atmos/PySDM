@@ -8,7 +8,7 @@ from PySDM import Formulae
 class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-methods,missing-class-docstring,too-many-positional-arguments
     def __init__(
         self,
-        formulae: Formulae,
+        formulae,
         output_interval: float,
         n_part: float,
         radius_bins_edges: np.ndarray,

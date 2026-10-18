@@ -11,6 +11,7 @@ class Geometric:  # pylint:disable=too-few-public-methods
     def requested_attributes(_):
         return "radius", "relative fall velocity", ""
 
+    # pylint:disable=unused-argument
     @staticmethod
     def liquid_liquid(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
         return (

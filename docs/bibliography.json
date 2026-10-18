@@ -1040,7 +1040,8 @@
     "usages": [
       "PySDM/physics/collision_kernel/long1974.py",
       "examples/PySDM_examples/featured/Long_1974/__init__.py",
-      "examples/PySDM_examples/featured/Long_1974/figs_10_11_13_14.ipynb"
+      "examples/PySDM_examples/featured/Long_1974/figs_10_11_13_14.ipynb",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
