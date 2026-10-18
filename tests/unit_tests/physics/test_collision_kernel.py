@@ -4,7 +4,6 @@ import pytest
 
 from PySDM import Particulator
 from PySDM.backends import CPU
-from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 from PySDM.physics.collision_kernel import golovin
@@ -43,8 +42,8 @@ class TestKernels:
         assert np.all(np.isfinite(value))
 
     @staticmethod
-    @pytest.mark.parametrize("C", (0.0, 1.0))
-    def test_simple_geometric(C):
+    @pytest.mark.parametrize("c", (0.0, 1.0))
+    def test_simple_geometric(c):
         # arrange
         volume = np.asarray([44.0, 666.0])
 
@@ -56,30 +55,31 @@ class TestKernels:
                 backend=CPU(
                     Formulae(
                         collision_kernel="SimpleGeometric",
-                        constants={"KERNEL_SIMPLE_GEOMETRIC_c": C},
+                        constants={"KERNEL_SIMPLE_GEOMETRIC_c": c},
                     )
                 ),
             ),
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
-            dynamics=(Coalescence(),),
         )
-        sut = particulator.dynamics["Collision"].collision_kernel
+        sut = particulator.collision_kernel
 
         _PairwiseStorage = particulator.PairwiseStorage
         _Indicator = particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
+        output = _PairwiseStorage.from_ndarray(
+            np.full(shape=volume.size // 2, fill_value=np.nan)
+        )
         is_first_in_pair = _Indicator(length=volume.size)
         is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
         # act
-        sut(output, is_first_in_pair=is_first_in_pair)
+        sut(output=output, is_first_in_pair=is_first_in_pair)
 
         # assert
-        if C > 0.0:
-            np.testing.assert_array_less([0.0, 0.0], output.to_ndarray())
+        if c > 0.0:
+            np.testing.assert_array_less([0.0], output.to_ndarray())
         else:
-            np.testing.assert_array_equal([0.0, 0.0], output.to_ndarray())
+            np.testing.assert_array_equal([0.0], output.to_ndarray())
 
     @staticmethod
     @pytest.mark.parametrize("volume", (np.array([1.0, 2.0]), np.array([1.0, 1.0])))
@@ -98,26 +98,27 @@ class TestKernels:
                 ),
             ),
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
-            dynamics=(Coalescence(),),
         )
-        sut = particulator.dynamics["Collision"].collision_kernel
+        sut = particulator.collision_kernel
 
         _PairwiseStorage = particulator.PairwiseStorage
         _Indicator = particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
+        output = _PairwiseStorage.from_ndarray(
+            np.full(shape=volume.size // 2, fill_value=np.nan)
+        )
         is_first_in_pair = _Indicator(length=volume.size)
         is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
 
         # act
-        sut(output, is_first_in_pair=is_first_in_pair)
+        sut(output=output, is_first_in_pair=is_first_in_pair)
 
         # assert
         if volume[0] == volume[1]:
-            np.testing.assert_array_equal([0.0, 0.0], output.to_ndarray())
+            np.testing.assert_array_equal([0.0], output.to_ndarray())
         else:
-            np.testing.assert_array_less([0.0, 0.0], output.to_ndarray())
+            np.testing.assert_array_less([0.0], output.to_ndarray())
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -138,7 +139,6 @@ class TestKernels:
                     )
                 ),
             ),
-            dynamics=(Coalescence(),),
         )
         sut = particulator.dynamics["Collision"].collision_kernel
 
@@ -233,7 +233,6 @@ class TestKernels:
         particulator = Particulator(
             n_sd=(n_sd := 2),
             environment=env,
-            dynamics=([Coalescence()]),
             products=(LiquidWaterContent(name="qc"), ParticleConcentration(name="nc")),
             attributes={
                 "multiplicity": np.ones(n_sd),
