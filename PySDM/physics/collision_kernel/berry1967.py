@@ -27,6 +27,7 @@ class Berry1967:  # pylint:disable=too-few-public-methods
     def requested_attributes(_):
         return "radius", "relative fall velocity", ""
 
+    # pylint:disable=unused-argument
     @staticmethod
     def liquid_liquid(const, attr0_a, attr0_b, attr1_a, attr1_b, attr2_a, attr2_b):
         output = 0
@@ -45,8 +46,6 @@ class Berry1967:  # pylint:disable=too-few-public-methods
             )
             Gp = (1 - p) ** G
             if Gp != 0:
-                D = const.KERNEL_BERRY_D1 / r**const.KERNEL_BERRY_D2
-                E = const.KERNEL_BERRY_E1 / r**const.KERNEL_BERRY_E2
                 F = (
                     const.KERNEL_BERRY_F1 / r
                 ) ** const.KERNEL_BERRY_Mf + const.KERNEL_BERRY_F2
@@ -56,8 +55,8 @@ class Berry1967:  # pylint:disable=too-few-public-methods
                         0,
                         const.KERNEL_BERRY_A
                         + const.KERNEL_BERRY_B * p
-                        + D / p**F
-                        + E / Gp,
+                        + const.KERNEL_BERRY_D1 / r**const.KERNEL_BERRY_D2 / p**F
+                        + const.KERNEL_BERRY_E1 / r**const.KERNEL_BERRY_E2 / Gp,
                     )
                     ** 2
                     * max(attr0_a, attr0_b) ** 2
