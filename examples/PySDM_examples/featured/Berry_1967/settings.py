@@ -17,7 +17,7 @@ class Settings:
         kernel: str = None,
         constants: dict = None,
     ):
-        steps = steps or [200 * i for i in range(10)]
+        self.steps = steps or [200 * i for i in range(10)]
 
         self.formulae = Formulae(
             terminal_velocity=terminal_velocity_variant,
@@ -38,7 +38,6 @@ class Settings:
         self.dt = 1 * si.seconds
         self.adaptive = False
         self.seed = 44
-        self._steps = steps
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
 
         # Note 220 instead of 200 for smoothing
@@ -48,4 +47,4 @@ class Settings:
 
     @property
     def output_steps(self):
-        return [int(step / self.dt) for step in self._steps]
+        return [int(step / self.dt) for step in self.steps]
