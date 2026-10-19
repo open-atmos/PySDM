@@ -527,7 +527,7 @@
     "usages": [
       "examples/PySDM_examples/featured/Berry_1967/figs_5_8_10.ipynb",
       "examples/PySDM_examples/featured/Berry_1967/__init__.py",
-      "PySDM/physics/collision_kernel/berry_1967.py",
+      "PySDM/physics/collision_kernel/berry1967.py",
       "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py",
       "PySDM/physics/constants_defaults.py"
     ],
