@@ -5,13 +5,21 @@ with the genuine Pint class used only within unit tests through the
 """
 
 from itertools import product
+from pint.errors import UndefinedUnitError, OffsetUnitCalculusError
 
 
 class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
     def __init__(self, si):
         self.dimensionless = 1.0
         for prefix, unit, suffix in product(
-            si._prefixes, si._units_casei, si._suffixes
+            si._prefixes,
+            tuple(v for vs in si._units_casei.values() for v in vs),
+            si._suffixes,
         ):
             name = prefix + unit + suffix
-            self.__setattr__(name, (1. * si.__getattr__(name))).to_base_units().magnitude
+            try:
+                self.__setattr__(
+                    name, (1.0 * si.__getattr__(name)).to_base_units().magnitude
+                )
+            except (UndefinedUnitError, OffsetUnitCalculusError):
+                pass
