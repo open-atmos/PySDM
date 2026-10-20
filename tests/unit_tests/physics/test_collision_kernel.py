@@ -216,6 +216,7 @@ class TestKernels:
         # assert
         assert (output.to_ndarray() == [1, 2, 3]).all()
 
+    # TODO why does it work for Thrust on all kernels?!
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(collision_kernel))
     def test_collision_kernel_call(backend_class, variant):
@@ -233,6 +234,20 @@ class TestKernels:
                 "KERNEL_SIMPLE_GEOMETRIC_c": 1,
                 "KERNEL_CONSTANT_ICE_a": 2,
                 "KERNEL_CONSTANT_ICE_b": 3,
+                "KERNEL_BERRY_A": 1,
+                "KERNEL_BERRY_B": 1,
+                "KERNEL_BERRY_D1": -7,
+                "KERNEL_BERRY_D2": 1.78,
+                "KERNEL_BERRY_E1": -20.5,
+                "KERNEL_BERRY_E2": 1.73,
+                "KERNEL_BERRY_F1": 0.26,
+                "KERNEL_BERRY_F2": 1.47,
+                "KERNEL_BERRY_G1": 1,
+                "KERNEL_BERRY_G2": 0.82,
+                "KERNEL_BERRY_G3": -0.003,
+                "KERNEL_BERRY_Mf": 4.4,
+                "KERNEL_BERRY_Mg": 8,
+                "KERNEL_BERRY_unit": si.um,
             },
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3, backend=backend_class(formulae=formulae))
