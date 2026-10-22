@@ -527,9 +527,9 @@
     "usages": [
       "examples/PySDM_examples/featured/Berry_1967/figs_5_8_10.ipynb",
       "examples/PySDM_examples/featured/Berry_1967/__init__.py",
-      "PySDM/dynamics/collisions/collision_kernels/electric.py",
-      "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py",
-      "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py"
+      "PySDM/physics/collision_kernel/berry1967.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Berry 1967 (J. Atmos. Sci. 24)",
     "title": "Cloud Droplet Growth by Collection"
@@ -698,7 +698,7 @@
   },
   "http://mi.mathnet.ru/dan27630": {
     "usages": [
-      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "PySDM/physics/collision_kernel/golovin.py",
       "examples/PySDM_examples/tutorials/README.md",
       "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
@@ -707,7 +707,7 @@
   },
   "http://mi.mathnet.ru/dan27172": {
     "usages": [
-      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "PySDM/physics/collision_kernel/golovin.py",
       "examples/PySDM_examples/tutorials/README.md",
       "examples/PySDM_examples/tutorials/wikipedia/sdm.ipynb"
     ],
@@ -1038,9 +1038,10 @@
   },
   "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
     "usages": [
-      "PySDM/dynamics/collisions/collision_kernels/long1974.py",
+      "PySDM/physics/collision_kernel/long1974.py",
       "examples/PySDM_examples/featured/Long_1974/__init__.py",
-      "examples/PySDM_examples/featured/Long_1974/figs_10_11_13_14.ipynb"
+      "examples/PySDM_examples/featured/Long_1974/figs_10_11_13_14.ipynb",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"

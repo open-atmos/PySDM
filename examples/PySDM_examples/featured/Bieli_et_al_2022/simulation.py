@@ -9,7 +9,6 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 def make_core(settings, coal_eff):
     backend = CPU
     collision = Collision(
-        collision_kernel=settings.kernel,
         coalescence_efficiency=coal_eff,
         breakup_efficiency=settings.break_eff,
         fragmentation_function=settings.fragmentation,

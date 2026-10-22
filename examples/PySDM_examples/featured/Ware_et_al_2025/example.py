@@ -14,9 +14,8 @@ from PySDM.products import (
     WallTime,
     CollisionRateDeficitPerGridbox,
 )
-
+from PySDM.physics.collision_kernel import golovin
 from PySDM import Formulae
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
@@ -37,7 +36,9 @@ def error_measure(y, y_true, x):
 class Settings:
     def __init__(self: int, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
-        self.formulae = Formulae()
+        self.formulae = Formulae(
+            collision_kernel="Golovin", constants={"KERNEL_GOLOVIN_b": 1.5e3 / si.s}
+        )
         self.n_sd = 2**13
         self.n_part = 2**23 / si.metre**3
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
@@ -47,7 +48,6 @@ class Settings:
         self.dt = 1 * si.seconds
         self.adaptive = False
         self.steps = steps
-        self.kernel = Golovin(b=1.5e3 / si.second)
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
         self.radius_bins_edges = np.logspace(
             np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True
@@ -142,8 +142,12 @@ class SpectrumPlotter:
         else:
 
             def analytic_solution(x):
-                return settings.norm_factor * settings.kernel.analytic_solution(
-                    x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+                return settings.norm_factor * golovin.analytic_solution(
+                    x=x,
+                    t=t,
+                    x_0=settings.X0,
+                    N_0=settings.n_part,
+                    b=settings.formulae.constants.KERNEL_GOLOVIN_b,
                 )
 
         volume_bins_edges = self.settings.formulae.trivia.volume(
@@ -231,9 +235,7 @@ def run(settings, backend, observers=(), sampling_method="deterministic"):
         products=products,
         n_sd=settings.n_sd,
         environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
+        dynamics=(Coalescence(adaptive=settings.adaptive),),
     )
 
     for observer in observers:
