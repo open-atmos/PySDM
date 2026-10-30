@@ -2,22 +2,11 @@
 import numpy as np
 import pytest
 
+from PySDM import Formulae
 from PySDM.dynamics.collisions.collision import DEFAULTS, Coalescence
 from PySDM.environments import Box
 
 from ....unit_tests.dummy_particulator import DummyParticulator
-
-
-class StubKernel:
-    def __init__(self, backend, returned_value=0):
-        self.returned_value = returned_value
-        self.backend = backend
-
-    def register(self, particles_builder):
-        pass
-
-    def __call__(self, output, is_first_in_pair):
-        backend_fill(output, self.returned_value)
 
 
 def backend_fill(array, value, odd_zeros=False):
@@ -51,7 +40,12 @@ def get_dummy_particulator_and_coalescence(
     attributes: dict | None = None,
     requested_attributes: tuple = (),
 ):
-    backend = backend(None, double_precision=True)
+    backend = backend(
+        double_precision=True,
+        formulae=Formulae(
+            collision_kernel="ConstantK", constants={"KERNEL_CONSTANTK_a": 0}
+        ),
+    )
     env = environment or Box(
         backend=backend,
         dv=1,
@@ -59,7 +53,6 @@ def get_dummy_particulator_and_coalescence(
     )
 
     coalescence = Coalescence(
-        collision_kernel=StubKernel(backend),
         optimized_random=optimized_random,
         substeps=substeps,
         adaptive=False,

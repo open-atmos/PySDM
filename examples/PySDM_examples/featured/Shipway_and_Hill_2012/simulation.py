@@ -199,12 +199,7 @@ class Simulation:
 
     @staticmethod
     def add_collision_dynamic(dynamics, settings, _):
-        dynamics.append(
-            Coalescence(
-                collision_kernel=settings.collision_kernel,
-                adaptive=settings.coalescence_adaptive,
-            )
-        )
+        dynamics.append(Coalescence(adaptive=settings.coalescence_adaptive))
 
     def save_scalar(self, step):
         for k, v in self.particulator.products.items():

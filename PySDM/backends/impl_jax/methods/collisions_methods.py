@@ -197,3 +197,42 @@ class CollisionsMethods(BackendMethods):
         # TODO #1913:  implement sorting
         cell_start = cell_start.at[0].set(0)
         return cell_start
+
+    @cached_property
+    def _collision_kernel(self):
+        if self.formulae.particle_shape_and_density.supports_mixed_phase():
+            raise NotImplementedError()
+
+        liquid_liquid = self.formulae.collision_kernel.liquid_liquid.jax
+
+        def body(idx, output, is_first_in_pair, attr0, attr1, attr2, i):
+            output.at[
+                i // 2
+            ].add(  # TODO: this might not be safe with parallel execution
+                is_first_in_pair[i]
+                * liquid_liquid(
+                    attr0[idx[i]],
+                    attr0[idx[i + 1]],
+                    attr1[idx[i]],
+                    attr1[idx[i + 1]],
+                    attr2[idx[i]],
+                    attr2[idx[i + 1]],
+                )
+            )
+            return output
+
+        return jax.jit(jax.vmap(body, in_axes=(None, None, None, None, None, None, 0)))
+
+    def collision_kernel(
+        self, *, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+    ):
+        output.fill(0)
+        self._collision_kernel(
+            attr0.idx.data,
+            output.data,
+            is_first_in_pair.indicator.data,
+            attr0.data,
+            attr1.data,
+            attr2.data,
+            jnp.arange(len(signed_water_mass)),
+        ).block_until_ready()

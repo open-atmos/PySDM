@@ -370,6 +370,49 @@ J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
 
+KERNEL_GOLOVIN_b = np.nan / si.s
+""" Golovin collision kernel constant """
+
+KERNEL_CONSTANTK_a = np.nan
+""" CONSTANTK collision kernel constant """
+
+KERNEL_CONSTANT_ICE_a = np.nan
+KERNEL_CONSTANT_ICE_b = np.nan
+""" CONSTANT_ICE collision kernel constants """
+
+KERNEL_LINEAR_a = np.nan
+KERNEL_LINEAR_b = np.nan
+""" LINEAR collision kernel constants """
+
+KERNEL_GEOMETRIC_collection_efficiency = 1
+""" GEOMETRIC collision kernel constants """
+
+KERNEL_SIMPLE_GEOMETRIC_c = 1
+""" SIMPLE_GEOMETRIC collision kernel constants """
+
+KERNEL_LONG_lin_coeff = 5.78e3 / si.s
+KERNEL_LONG_sq_coeff = 9.44e15 / si.m**3 / si.s
+KERNEL_LONG_r_thres = 5e-5 * si.m
+""" piecewise kernel from Eq (11) in
+[Long 1974](https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2)
+"""
+
+KERNEL_BERRY_A = np.nan
+KERNEL_BERRY_B = np.nan
+KERNEL_BERRY_D1 = np.nan
+KERNEL_BERRY_D2 = np.nan
+KERNEL_BERRY_E1 = np.nan
+KERNEL_BERRY_E2 = np.nan
+KERNEL_BERRY_F1 = np.nan
+KERNEL_BERRY_F2 = np.nan
+KERNEL_BERRY_G1 = np.nan
+KERNEL_BERRY_G2 = np.nan
+KERNEL_BERRY_G3 = np.nan
+KERNEL_BERRY_Mf = np.nan
+KERNEL_BERRY_Mg = np.nan
+KERNEL_BERRY_unit = np.nan
+""" as in [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2) """
+
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
 STRAUB_MU2 = 0.095 * si.cm

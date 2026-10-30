@@ -29,7 +29,9 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
             (True, 50 * si.s),
         ),
     )
-    def test_convergence_with_sd_count(dt, adaptive, plot=False):
+    def test_convergence_with_sd_count(
+        backend_class_with_jax, dt, adaptive, plot=False
+    ):
         """check if increasing the number of super particles indeed
         reduces the error of the simulation (vs. analytic solution)"""
         # arrange
@@ -42,7 +44,7 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
         for i, ln2_nsd in enumerate((11, 15, 19)):
             settings.dt = dt
             settings.n_sd = 2**ln2_nsd
-            values, _ = run(settings)
+            values, _ = run(settings, backend=backend_class_with_jax)
 
             title = (
                 ""

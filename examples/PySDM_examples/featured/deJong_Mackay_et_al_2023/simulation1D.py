@@ -5,7 +5,6 @@ from PySDM_examples.featured.Shipway_and_Hill_2012.simulation import (
 
 import PySDM.products as PySDM_products
 from PySDM.dynamics import Collision
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.physics import si
 
 
@@ -19,7 +18,6 @@ class Simulation1D(SimulationSH):
         if settings.breakup:
             dynamics.append(
                 Collision(
-                    collision_kernel=Geometric(collection_efficiency=1),
                     coalescence_efficiency=settings.coalescence_efficiency,
                     breakup_efficiency=settings.breakup_efficiency,
                     fragmentation_function=settings.fragmentation_function,
