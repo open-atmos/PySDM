@@ -78,7 +78,7 @@ By default, the `si` object contains bare multipliers corresponding to SI prefix
 For testing purposes, the [``DimensionalAnalysis``](https://open-atmos.github.io/PySDM/PySDM/physics/dimensional_analysis.html#DimensionalAnalysis)
 context manager can be used to inject an instance of [Pint](https://pint.readthedocs.io/)
 unit registry as `si`, thus enabling dimensional analysis of PySDM codebase.
-For an example, see the [dimensional analysis HOWTO](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/dimensional_analysis.ipynb).
+For an example, see the [dimensional analysis HOWTO](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/tutorials/dimensional_analysis.ipynb).
 
 # Tutorials
 
@@ -643,8 +643,8 @@ The resultant plot (generated with the Matlab code) looks as follows:
 
 ## Tutorials from Caltech course
 There are currently two tutorial notebooks from the Caltech course on Cloud Microphysics available:
-- [Part 1: Condensation](https://github.com/open-atmos/PySDM/blob/main/tutorials/condensation/condensation_playground.ipynb)
-- [Part 2: Collisions](https://github.com/open-atmos/PySDM/blob/main/tutorials/collisions/collisions_playground.ipynb)
+- [Part 1: Condensation](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/tutorials/condensation/condensation_playground.ipynb)
+- [Part 2: Collisions](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/tutorials/collisions/collisions_playground.ipynb)
 
 
 # Submodule structure
