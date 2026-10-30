@@ -5,8 +5,6 @@ defaults:
     shell: bash
 
 on:
-  push: # TODO remove before merge
-    branches: AgnieszkaZaba-patch-6 # TODO remove before merge
   schedule:
     - cron: '0 13 * * 4'
 
