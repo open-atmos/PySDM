@@ -52,7 +52,7 @@ CI_version_pins = [
     "pyrcel==2.0.0",
     "pyvinecopulib==1.0.0",
     "cmcrameri==1.10",
-    "cmap==0.7.2",
+    "cmap==0.8.0",
     "netCDF4==1.7.4",
 ]
 
