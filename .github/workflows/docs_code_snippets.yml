@@ -16,7 +16,7 @@ jobs:
   python:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-26, macos-26-intel, windows-latest]
+        platform: [ubuntu-latest, macos-15, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
