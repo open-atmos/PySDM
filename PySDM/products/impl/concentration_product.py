@@ -25,9 +25,9 @@ class ConcentrationProduct(MomentProduct):
         self.stp = stp
         self.rho_stp = None
 
-    def register(self, builder):
-        super().register(builder)
-        self.rho_stp = builder.formulae.constants.rho_STP
+    def register(self, particulator):
+        super().register(particulator)
+        self.rho_stp = particulator.formulae.constants.rho_STP
 
     def _impl(self, **kwargs):
         assert len(kwargs) == 0

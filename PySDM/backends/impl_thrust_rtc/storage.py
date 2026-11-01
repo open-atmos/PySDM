@@ -306,6 +306,47 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 n=(output.shape[0]), args=(Impl.thrust((output, divisor)))
             )
 
+        __where_body = trtc.For(
+            param_names=("output", "condition", "t_value", "f_value"),
+            name_iter="i",
+            body="""
+            if (condition[i]) {
+                output[i] = t_value[i]
+            }
+            else {
+                output[i] = f_value[i]
+            }
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def where(output, condition, t_value, f_value):
+            Impl.__where_body.launch_n(
+                n=(output.shape[0]),
+                args=(Impl.thrust((output, condition, t_value, f_value))),
+            )
+
+        __isless_body = trtc.For(
+            param_names=("output", "comparison", "value"),
+            name_iter="i",
+            body="""
+            if (comparison[i] < value) {
+                output[i] = true
+            }
+            else {
+                output[i] = false
+            }
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def isless(output, comparison, value):
+            Impl.__isless_body.launch_n(
+                n=(output.shape[0]), args=(Impl.thrust((output, comparison, value)))
+            )
+
         __exp_body = trtc.For(
             ("output",),
             "i",
@@ -332,7 +373,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(output):
             Impl.__abs_body.launch_n(output.shape[0], Impl.thrust((output,)))
 
-    class Storage(StorageBase):
+    class Storage(StorageBase):  # pylint: disable=too-many-public-methods
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
         BOOL = np.bool_
@@ -538,7 +579,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             return result
 
         def urand(self, generator):
-            generator(self)
+            generator.u01(self)
 
         def upload(self, data):
             trtc.Copy(
@@ -548,6 +589,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
 
         def divide_if_not_zero(self, divisor):
             Impl.divide_if_not_zero(self, divisor)
+            return self
+
+        def where(self, condition, t_value, f_value):
+            Impl.where(self, condition, t_value, f_value)
+            return self
+
+        def isless(self, comparison, value):
+            Impl.isless(self, comparison, value)
             return self
 
         def fill(self, other):
@@ -563,6 +612,15 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 trtc.Fill(self.data, dvalue)
             return self
 
+        def row_view(self, i):
+            return Storage(
+                StorageSignature(
+                    self.data.range(self.shape[1] * i, self.shape[1] * (i + 1)),
+                    (*self.shape[1:],),
+                    self.dtype,
+                )
+            )
+
         def exp(self):
             Impl.exp(self)
             return self
@@ -570,5 +628,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def abs(self):
             Impl.abs(self)
             return self
+
+        def at(self, index):
+            assert self.shape == (
+                1,
+            ), "Cannot call at() on Storage of shape other than (1,)"
+            return self.to_ndarray()[index]
 
     return Storage

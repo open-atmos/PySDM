@@ -12,3 +12,4 @@ from .golovin import Golovin
 from .hydrodynamic import Hydrodynamic
 from .linear import Linear
 from .simple_geometric import SimpleGeometric
+from .long1974 import Long1974

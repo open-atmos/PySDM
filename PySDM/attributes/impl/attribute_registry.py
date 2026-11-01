@@ -11,8 +11,8 @@ def _make_dummy_attribute_factory(name):
     # pylint: disable=import-outside-toplevel
     from PySDM.attributes.impl.dummy_attribute import DummyAttribute
 
-    def _factory(builder):
-        return DummyAttribute(builder, name=name)
+    def _factory(particulator):
+        return DummyAttribute(particulator, name=name)
 
     return _factory
 

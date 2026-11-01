@@ -6,7 +6,7 @@ import pytest
 import numpy as np
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import deJong_Azimi
+from PySDM_examples.sandbox import deJong_Azimi
 
 from PySDM.physics import si, in_unit
 

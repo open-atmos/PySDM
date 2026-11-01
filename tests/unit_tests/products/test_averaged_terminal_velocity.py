@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
@@ -20,11 +20,10 @@ u = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]
 class TestAveragedTerminalVelocity:
     @staticmethod
     def _make_particulator(attributes: dict, weighting="volume"):
-        env = Box(dt=dt, dv=np.nan)
-        builder = Builder(
-            n_sd=len(attributes["multiplicity"]), backend=CPU(), environment=env
-        )
-        particulator = builder.build(
+        env = Box(dt=dt, dv=np.nan, backend=CPU())
+        particulator = Particulator(
+            n_sd=len(attributes["multiplicity"]),
+            environment=env,
             attributes=attributes,
             products=(AveragedTerminalVelocity(weighting=weighting),),
         )

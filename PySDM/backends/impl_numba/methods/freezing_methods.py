@@ -299,3 +299,29 @@ class FreezingMethods(BackendMethods):
             temperature=temperature.data,
             signed_water_mass=signed_water_mass.data,
         )
+
+    @cached_property
+    def _record_freezing_supersaturations_body(self):
+        ff = self.formulae_flattened
+
+        @numba.njit(**{**self.default_jit_flags, "fastmath": False})
+        def body(data, cell_id, relative_humidity_ice, signed_water_mass):
+            for drop_id in numba.prange(len(data)):  # pylint: disable=not-an-iterable
+                if ff.trivia__unfrozen(signed_water_mass[drop_id]):
+                    if data[drop_id] > 0:
+                        data[drop_id] = np.nan
+                else:
+                    if np.isnan(data[drop_id]):
+                        data[drop_id] = relative_humidity_ice[cell_id[drop_id]]
+
+        return body
+
+    def record_freezing_supersaturations(
+        self, *, data, cell_id, relative_humidity_ice, signed_water_mass
+    ):
+        self._record_freezing_supersaturations_body(
+            data=data.data,
+            cell_id=cell_id.data,
+            relative_humidity_ice=relative_humidity_ice.data,
+            signed_water_mass=signed_water_mass.data,
+        )

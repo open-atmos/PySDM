@@ -21,54 +21,61 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self,
         *,
         dt,
+        backend,
         mass_of_dry_air: float,
         p0: float,
-        initial_water_vapour_mixing_ratio: float,
         T0: float,
         w: Union[float, callable],
         z0: float = 0,
         mixed_phase=False,
         variables: Optional[List[str]] = None,
+        initial_water_vapour_mixing_ratio: float = None,
+        initial_relative_humidity: float = None,
     ):
+        assert (initial_water_vapour_mixing_ratio is not None) ^ (
+            initial_relative_humidity is not None
+        )
         variables = (variables or []) + ["rhod", "z"]
-        super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
-
-        self.p0 = p0
-        self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
-        self.T0 = T0
-        self.z0 = z0
+        super().__init__(
+            dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase, backend=backend
+        )
+        assert backend.n_dims == self.mesh.n_dims
         self.mass_of_dry_air = mass_of_dry_air
         self.w = w if callable(w) else lambda _: w
         self.delta_liquid_water_mixing_ratio = np.nan
 
+        if initial_relative_humidity is not None:
+            initial_water_vapour_mixing_ratio = (
+                backend.formulae.trivia.water_vapour_mixing_ratio(
+                    p0,
+                    initial_relative_humidity,
+                    backend.formulae.saturation_vapour_pressure.pvs_water(T0),
+                )
+            )
+
+        pd0 = backend.formulae.trivia.p_d(p0, initial_water_vapour_mixing_ratio)
+        rhod0 = backend.formulae.state_variable_triplet.rhod_of_pd_T(pd0, T0)
+        self.mesh.dv = backend.formulae.trivia.volume_of_density_mass(
+            rhod0, mass_of_dry_air
+        )
+
+        self["water_vapour_mixing_ratio"][:] = initial_water_vapour_mixing_ratio
+        self["thd"][:] = backend.formulae.trivia.th_std(pd0, T0)
+        self["rhod"][:] = rhod0
+        self["z"][:] = z0
+
+        self._tmp["water_vapour_mixing_ratio"][:] = initial_water_vapour_mixing_ratio
+
+        self.sync_parcel_vars()
+        super().sync()
+        self.notify()
+
     @property
     def dv(self):
         rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
-        return self.particulator.formulae.trivia.volume_of_density_mass(
+        return self.backend.formulae.trivia.volume_of_density_mass(
             rhod_mean, self.mass_of_dry_air
         )
-
-    def register(self, builder):
-        formulae = builder.particulator.formulae
-        pd0 = formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
-        rhod0 = formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.mesh.dv = formulae.trivia.volume_of_density_mass(
-            rhod0, self.mass_of_dry_air
-        )
-
-        Moist.register(self, builder)
-
-        self["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
-        self["thd"][:] = formulae.trivia.th_std(pd0, self.T0)
-        self["rhod"][:] = rhod0
-        self["z"][:] = self.z0
-
-        self._tmp["water_vapour_mixing_ratio"][
-            :
-        ] = self.initial_water_vapour_mixing_ratio
-        self.sync_parcel_vars()
-        Moist.sync(self)
-        self.notify()
 
     def init_attributes(
         self,
@@ -84,7 +91,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        dry_volume = self.particulator.formulae.trivia.volume(radius=r_dry)
+        dry_volume = self.backend.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = dry_volume * kappa
         attributes["multiplicity"] = n_in_dv
         r_wet = equilibrate_wet_radii(
@@ -93,7 +100,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             kappa_times_dry_volume=attributes["kappa times dry volume"],
             rtol=rtol,
         )
-        attributes["volume"] = self.particulator.formulae.trivia.volume(radius=r_wet)
+        attributes["volume"] = self.backend.formulae.trivia.volume(radius=r_wet)
         if include_dry_volume_in_attribute:
             attributes["dry volume"] = dry_volume
         return attributes

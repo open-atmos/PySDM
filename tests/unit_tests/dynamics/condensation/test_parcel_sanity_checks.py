@@ -6,7 +6,7 @@ import pytest
 from matplotlib import pyplot
 from scipy import signal
 
-from PySDM import Builder, Formulae, products
+from PySDM import Formulae, Particulator, products
 from PySDM.backends import Numba, ThrustRTC
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -53,22 +53,25 @@ class TestParcelSanityChecks:
             initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
             T0=300 * si.K,
             w=2.5 * si.m / si.s,
+            backend=backend_class(FORMULAE),
         )
         output_interval = 2
         output_points = 20
 
-        builder = Builder(backend=backend_class(FORMULAE), n_sd=N_SD, environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-
         r_wet = equilibrate_wet_radii(
             r_dry=R_DRY,
-            environment=builder.particulator.environment,
+            environment=env,
             kappa_times_dry_volume=KAPPA * V_DRY,
             rtol=1e-3,
         )
 
-        particulator = builder.build(
+        particulator = Particulator(
+            n_sd=N_SD,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+            ),
             attributes={
                 "multiplicity": discretise_multiplicities(
                     specific_concentration * env.mass_of_dry_air
@@ -100,7 +103,7 @@ class TestParcelSanityChecks:
         }
 
         for _ in range(output_points):
-            particulator.run(steps=output_interval)
+            particulator.advance(n_steps=output_interval)
             for product in particulator.products.values():
                 output[product.name].append(product.get()[PARCEL_CELL])
 
@@ -137,21 +140,22 @@ class TestParcelSanityChecks:
             initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
             T0=300 * si.K,
             w=1 * si.m / si.s,
+            backend=backend_class(),
         )
-        builder = Builder(n_sd=10, backend=backend_class(), environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            Condensation(
-                update_thd=update_thd,
-                substeps=substeps,
-                adaptive=False,
-            )
-        )
-        particulator = builder.build(
-            products=(),
-            attributes=builder.particulator.environment.init_attributes(
-                kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
+
+        particulator = Particulator(
+            n_sd=10,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(
+                    update_thd=update_thd,
+                    substeps=substeps,
+                    adaptive=False,
+                ),
             ),
+            products=(),
+            attributes=env.init_attributes(kappa=1, r_dry=0.25 * si.um, n_in_dv=1000),
         )
 
         particulator.dynamics["AmbientThermodynamics"]()
@@ -197,17 +201,19 @@ class TestParcelSanityChecks:
             initial_water_vapour_mixing_ratio=44 * si.g / si.kg,
             T0=np.nan * si.K,
             w=np.nan * si.m / si.s,
+            backend=backend_class(),
         )
-        builder = Builder(n_sd=1, backend=backend_class(), environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
 
         # act
-        particulator = builder.build(
-            products=(),
-            attributes=builder.particulator.environment.init_attributes(
-                kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
+        particulator = Particulator(
+            n_sd=1,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
             ),
+            products=(),
+            attributes=env.init_attributes(kappa=1, r_dry=0.25 * si.um, n_in_dv=1000),
         )
 
         # assert

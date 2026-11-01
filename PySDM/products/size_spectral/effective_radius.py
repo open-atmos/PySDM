@@ -20,8 +20,8 @@ class EffectiveRadius(MomentProduct):
         self.volume_range = None
         self.radius_range = radius_range or (0, np.inf)
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.volume_range = self.formulae.trivia.volume(np.asarray(self.radius_range))
 
     @staticmethod

@@ -13,10 +13,10 @@ class MoistEnvironmentProduct(Product):
         self.source = None
         self.var = var or name
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.particulator.observers.append(self)
-        self.environment = builder.particulator.environment
+        self.environment = particulator.environment
         self.source = self.environment[self.var]
 
     def notify(self):

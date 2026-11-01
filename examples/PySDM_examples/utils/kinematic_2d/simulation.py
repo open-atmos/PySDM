@@ -1,12 +1,12 @@
 import numpy as np
+
 from PySDM_examples.utils.kinematic_2d.make_default_product_collection import (
     make_default_product_collection,
 )
 from PySDM_examples.utils.kinematic_2d.mpdata_2d import MPDATA_2D
 from PySDM_examples.utils import DummyController
-
+from PySDM import Particulator
 from PySDM.backends import CPU
-from PySDM.builder import Builder
 from PySDM.dynamics import (
     AmbientThermodynamics,
     Coalescence,
@@ -21,11 +21,11 @@ from PySDM.initialisation.sampling import spatial_sampling
 
 
 class Simulation:
-    def __init__(self, settings, storage, SpinUp, backend_class=CPU):
+    def __init__(self, settings, storage, SpinUp, backend=None):
         self.settings = settings
         self.storage = storage
         self.particulator = None
-        self.backend_class = backend_class
+        self.backend = backend or CPU(settings.formulae, n_dims=2)
         self.SpinUp = SpinUp
 
     @property
@@ -34,17 +34,45 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = self.backend_class(formulae=formulae)
+        backend = self.backend
+        initial_profiles = {
+            "th": self.settings.initial_dry_potential_temperature_profile,
+            "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
+        }
+        advectees = dict(
+            (
+                key,
+                np.repeat(
+                    profile.reshape(1, -1),
+                    self.settings.grid[0],
+                    axis=0,
+                ),
+            )
+            for key, profile in initial_profiles.items()
+        )
+        mpdata = MPDATA_2D(
+            advectees=advectees,
+            stream_function=self.settings.stream_function,
+            rhod_of_zZ=self.settings.rhod_of_zZ,
+            dt=self.settings.dt,
+            grid=self.settings.grid,
+            size=self.settings.size,
+            n_iters=self.settings.mpdata_iters,
+            infinite_gauge=self.settings.mpdata_iga,
+            nonoscillatory=self.settings.mpdata_fct,
+            third_order_terms=self.settings.mpdata_tot,
+        )
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
             size=self.settings.size,
             rhod_of=self.settings.rhod_of_zZ,
             mixed_phase=self.settings.processes["freezing"],
+            backend=backend,
+            solvers=mpdata,
         )
-        builder = Builder(
-            n_sd=self.settings.n_sd, backend=backend, environment=environment
-        )
+
+        dynamics = []
 
         if products is not None:
             products = list(products)
@@ -52,7 +80,7 @@ class Simulation:
             products = make_default_product_collection(self.settings)
 
         if self.settings.processes["fluid advection"]:
-            builder.add_dynamic(AmbientThermodynamics())
+            dynamics.append(AmbientThermodynamics())
         if self.settings.processes["condensation"]:
             kwargs = {}
             if not self.settings.condensation_adaptive:
@@ -65,38 +93,11 @@ class Simulation:
                 schedule=self.settings.condensation_schedule,
                 **kwargs,
             )
-            builder.add_dynamic(condensation)
+            dynamics.append(condensation)
         if self.settings.processes["fluid advection"]:
-            initial_profiles = {
-                "th": self.settings.initial_dry_potential_temperature_profile,
-                "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
-            }
-            advectees = dict(
-                (
-                    key,
-                    np.repeat(
-                        profile.reshape(1, -1),
-                        builder.particulator.environment.mesh.grid[0],
-                        axis=0,
-                    ),
-                )
-                for key, profile in initial_profiles.items()
-            )
-            solver = MPDATA_2D(
-                advectees=advectees,
-                stream_function=self.settings.stream_function,
-                rhod_of_zZ=self.settings.rhod_of_zZ,
-                dt=self.settings.dt,
-                grid=self.settings.grid,
-                size=self.settings.size,
-                n_iters=self.settings.mpdata_iters,
-                infinite_gauge=self.settings.mpdata_iga,
-                nonoscillatory=self.settings.mpdata_fct,
-                third_order_terms=self.settings.mpdata_tot,
-            )
-            builder.add_dynamic(EulerianAdvection(solver))
+            dynamics.append(EulerianAdvection())
         if self.settings.processes["particle advection"]:
-            builder.add_dynamic(
+            dynamics.append(
                 Displacement(
                     enable_sedimentation=self.settings.processes["sedimentation"],
                     adaptive=self.settings.displacement_adaptive,
@@ -107,7 +108,7 @@ class Simulation:
             self.settings.processes["coalescence"]
             and self.settings.processes["breakup"]
         ):
-            builder.add_dynamic(
+            dynamics.append(
                 Collision(
                     collision_kernel=self.settings.kernel,
                     enable_breakup=self.settings.processes["breakup"],
@@ -124,7 +125,7 @@ class Simulation:
             self.settings.processes["coalescence"]
             and not self.settings.processes["breakup"]
         ):
-            builder.add_dynamic(
+            dynamics.append(
                 Coalescence(
                     collision_kernel=self.settings.kernel,
                     adaptive=self.settings.coalescence_adaptive,
@@ -138,14 +139,14 @@ class Simulation:
             and not self.settings.processes["coalescence"]
         )
         if self.settings.processes["freezing"]:
-            builder.add_dynamic(
+            dynamics.append(
                 Freezing(
                     immersion_freezing=self.settings.freezing_immersion,
                     thaw=self.settings.freezing_thaw,
                 )
             )
 
-        attributes = builder.particulator.environment.init_attributes(
+        attributes = environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             dry_radius_spectrum=self.settings.spectrum_per_mass_of_dry_air,
             kappa=self.settings.kappa,
@@ -216,7 +217,13 @@ class Simulation:
                 ) / np.prod(self.settings.grid)
                 assert non_zero_per_gridbox == self.settings.n_sd_per_gridbox / 2
 
-        self.particulator = builder.build(attributes, tuple(products))
+        self.particulator = Particulator(
+            n_sd=self.settings.n_sd,
+            environment=environment,
+            dynamics=dynamics,
+            attributes=attributes,
+            products=products,
+        )
 
         if self.SpinUp is not None:
             self.SpinUp(self.particulator, self.settings.n_spin_up)
@@ -229,7 +236,7 @@ class Simulation:
                 if controller.panic:
                     break
 
-                self.particulator.run(step - self.particulator.n_steps)
+                self.particulator.advance(step - self.particulator.n_steps)
 
                 self.store(step)
 

@@ -273,7 +273,7 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "molar_mixing_ratio, density_dry_air, conc_vap_total",
+        "molality_in_dry_air, density_dry_air, conc_vap_total",
         [
             (0.01, 10.0, 5.0),
             (1e-6, 1.0, 1.0),
@@ -281,12 +281,12 @@ class TestTrivia:
         ],
     )
     def test_molality_and_isotopic_fraction_reversed(
-        molar_mixing_ratio,
+        molality_in_dry_air,
         density_dry_air,
         conc_vap_total,
     ):
         iso = Trivia.isotopic_fraction(
-            molality_in_dry_air=molar_mixing_ratio,
+            molality_in_dry_air=molality_in_dry_air,
             density_dry_air=density_dry_air,
             total_vap_concentration=conc_vap_total,
         )
@@ -295,7 +295,7 @@ class TestTrivia:
             density_dry_air=density_dry_air,
             total_vap_concentration=conc_vap_total,
         )
-        np.testing.assert_allclose(recovered, molar_mixing_ratio, rtol=1e-12)
+        np.testing.assert_allclose(recovered, molality_in_dry_air, rtol=1e-12)
 
     @staticmethod
     def test_molality_in_dry_air_unit():
@@ -307,3 +307,12 @@ class TestTrivia:
                 total_vap_concentration=1 * si.mole / si.m**3,
             )
             assert molality.check(si.mole / si.kg)
+
+    @staticmethod
+    def test_water_vapour_mixing_ratio_unit():
+        with DimensionalAnalysis():
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            r = Trivia.water_vapour_mixing_ratio(
+                const=CONST, p=1 * si.atm, RH=0.5, pvs=0.1 * si.atm
+            )
+            assert r.check(si.dimensionless)

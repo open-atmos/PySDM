@@ -13,13 +13,12 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
         super().__init__(name=name, unit=unit, attr_unit="K")
         self.attr_bins_edges = temperature_bins_edges
 
-    def register(self, builder):
-        builder.request_attribute("freezing temperature")
-        particulator = builder.particulator
+    def register(self, particulator):
+        particulator.request_attribute("freezing temperature")
         self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
             self.attr_bins_edges
         )
-        super().register(builder)
+        super().register(particulator)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):

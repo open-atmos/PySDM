@@ -6,7 +6,7 @@ import numpy as np
 
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.environments import Box, Kinematic1D
 from PySDM.physics import si
@@ -15,7 +15,6 @@ from PySDM.impl.mesh import Mesh
 from PySDM.dynamics import Displacement, AmbientThermodynamics
 
 T = 300 * si.K
-n_sd = 100
 dt = 44
 dT = -2
 
@@ -23,9 +22,11 @@ dT = -2
 class TestCoolingRate:
     @staticmethod
     def _make_particulator():
-        env = Box(dt=dt, dv=np.nan)
-        builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-        particulator = builder.build(
+        env = Box(dt=dt, dv=np.nan, backend=CPU())
+        n_sd = 100
+        particulator = Particulator(
+            n_sd=n_sd,
+            environment=env,
             attributes={
                 "multiplicity": np.ones(n_sd),
                 "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
@@ -50,7 +51,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
 
@@ -62,7 +63,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.environment["T"] += dT
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
@@ -91,50 +92,43 @@ class TestCoolingRate:
         n_steps=3,
     ):
         # arrange
-        builder = Builder(
-            environment=Kinematic1D(
-                dt=timestep,
-                mesh=Mesh(grid=(nz,), size=(z_max,)),
-                thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
-                rhod_of_z=lambda z: 0 * z + constant_rhod,
-            ),
-            n_sd=mean_n_sd_per_gridbox * nz,
-            backend=CPU(),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
 
         class EulerianAdvection:
-            solvers = namedtuple(typename="_", field_names=("advectee",))(
-                advectee=namedtuple(typename="__", field_names=("ravel", "shape"))(
-                    ravel=lambda: None, shape=(nz,)
-                )
-            )
-
-            def instantiate(self, *, builder):
-                assert builder
+            def instantiate(self, particulator):
+                assert particulator
                 return self
 
             def __call__(self):
                 pass
 
-        builder.add_dynamic(EulerianAdvection())
-        builder.add_dynamic(Displacement())
-
+        env = Kinematic1D(
+            dt=timestep,
+            mesh=Mesh(grid=(nz,), size=(z_max,)),
+            thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
+            rhod_of_z=lambda z: 0 * z + constant_rhod,
+            backend=CPU(n_dims=1),
+            solvers=namedtuple(typename="_", field_names=("advectee",))(
+                advectee=namedtuple(typename="__", field_names=("ravel", "shape"))(
+                    ravel=lambda: None, shape=(nz,)
+                )
+            ),
+        )
+        n_sd = mean_n_sd_per_gridbox * nz
         cellular_attributes = {}
         (
             cellular_attributes["cell id"],
             cellular_attributes["cell origin"],
             cellular_attributes["position in cell"],
-        ) = builder.particulator.environment.mesh.cellular_attributes(
-            positions=np.random.random_sample(size=builder.particulator.n_sd).reshape(
-                (1, -1)
-            )
-            * nz
+        ) = env.mesh.cellular_attributes(
+            positions=np.random.random_sample(size=n_sd).reshape((1, -1)) * nz
         )
-        particulator = builder.build(
+        particulator = Particulator(
+            environment=env,
+            n_sd=n_sd,
+            dynamics=(AmbientThermodynamics(), EulerianAdvection(), Displacement()),
             attributes={
-                "multiplicity": np.ones(builder.particulator.n_sd),
-                "water mass": np.ones(builder.particulator.n_sd) * 1 * si.ug,
+                "multiplicity": np.ones(n_sd),
+                "water mass": np.ones(n_sd) * 1 * si.ug,
                 **cellular_attributes,
             },
             products=(CoolingRate(),),
@@ -144,7 +138,7 @@ class TestCoolingRate:
         )
 
         # act
-        particulator.run(steps=n_steps)
+        particulator.advance(n_steps=n_steps)
 
         cooling_rates = particulator.products["cooling rate"].get()
 
