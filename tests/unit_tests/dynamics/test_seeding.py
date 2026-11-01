@@ -7,7 +7,7 @@ import pytest
 
 from matplotlib import pyplot
 
-from PySDM import Particulator
+from PySDM import Builder
 from PySDM.products import SuperDropletCountPerGridbox, Time
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.index import make_Index
@@ -33,10 +33,14 @@ class TestSeeding:
             timestep = 15 * si.s
             dv = 1 * si.cm**3
 
-            particulator = Particulator(
+            builder = Builder(
+                backend=backend_instance,
                 n_sd=n_sd_seeding + n_sd_initial,
-                environment=Box(dt=timestep, dv=dv, backend=backend_instance),
+                environment=Box(dt=timestep, dv=dv),
                 dynamics=dynamics,
+            )
+
+            particulator = builder.build(
                 attributes={
                     k: np.pad(
                         array=v,
@@ -57,7 +61,7 @@ class TestSeeding:
             products = {"sd_count": [], "time": []}
             for step in range(int(t_max // timestep) + 1):
                 if step != 0:
-                    particulator.advance(n_steps=1)
+                    particulator.run(steps=1)
                 for key, val in products.items():
                     value = particulator.products[key].get()
                     if not isinstance(value, float):
@@ -145,14 +149,16 @@ class TestSeeding:
         extensive_attributes = ["a", "b", "c"]
         seeding_attributes = ["d", "e", "f"]
 
-        particulator = namedtuple(
-            typename="MockParticulator", field_names=("n_steps", "attributes")
-        )(
-            n_steps=0,
-            attributes=namedtuple(
-                typename="MockAttributes",
-                field_names=("get_extensive_attribute_keys",),
-            )(get_extensive_attribute_keys=lambda: extensive_attributes),
+        builder = namedtuple(typename="MockBuilder", field_names=("particulator",))(
+            particulator=namedtuple(
+                typename="MockParticulator", field_names=("n_steps", "attributes")
+            )(
+                n_steps=0,
+                attributes=namedtuple(
+                    typename="MockAttributes",
+                    field_names=("get_extensive_attribute_keys",),
+                )(get_extensive_attribute_keys=lambda: extensive_attributes),
+            )
         )
 
         dynamic = Seeding(
@@ -162,7 +168,7 @@ class TestSeeding:
             },
             seeded_particle_multiplicity=[0],
         )
-        dynamic.register(particulator)
+        dynamic.register(builder)
 
         # act
         with pytest.raises(ValueError) as excinfo:
@@ -216,7 +222,9 @@ class TestSeeding:
                 field_names=("get_extensive_attribute_keys",),
             )(get_extensive_attribute_keys=lambda: extensive_attributes)
 
-        particulator = MockParticulator()
+        builder = namedtuple(typename="MockBuilder", field_names=("particulator",))(
+            particulator=MockParticulator()
+        )
 
         dynamic = Seeding(
             super_droplet_injection_rate=lambda t: super_droplet_injection_rate,
@@ -225,7 +233,7 @@ class TestSeeding:
             },
             seeded_particle_multiplicity=[1] * reservoir_length,
         )
-        dynamic.register(particulator)
+        dynamic.register(builder)
 
         # act
         dynamic()

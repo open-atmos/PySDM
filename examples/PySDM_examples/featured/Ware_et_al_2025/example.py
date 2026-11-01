@@ -6,7 +6,7 @@ import matplotlib
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 
-from PySDM import Particulator
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.products import (
@@ -212,8 +212,15 @@ class SpectrumPlotter:
 
 
 def run(settings, backend, observers=(), sampling_method="deterministic"):
-    env = Box(dv=settings.dv, dt=settings.dt, backend=backend)
-    env["rhod"] = 1.0
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend,
+        environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
+    )
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     sampling = settings.sampling
     attributes["volume"], attributes["multiplicity"] = getattr(
@@ -226,15 +233,7 @@ def run(settings, backend, observers=(), sampling_method="deterministic"):
         WallTime(),
         CollisionRateDeficitPerGridbox(name="deficit"),
     )
-    particulator = Particulator(
-        attributes=attributes,
-        products=products,
-        n_sd=settings.n_sd,
-        environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
-    )
+    particulator = builder.build(attributes, products)
 
     for observer in observers:
         particulator.observers.append(observer)
@@ -243,7 +242,7 @@ def run(settings, backend, observers=(), sampling_method="deterministic"):
     deficit = 0
     particulator.products["wall time"].reset()
     for step in settings.output_steps:
-        particulator.advance(step - particulator.n_steps)
+        particulator.run(step - particulator.n_steps)
         vals[step] = particulator.products["dv/dlnr"].get()[0]
         vals[step][:] *= settings.rho
         deficit += particulator.products["deficit"].get()

@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 import PySDM.physics.constants as const
-from PySDM import Formulae, Particulator
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
@@ -51,20 +51,20 @@ class TestSDMBreakup:
             adaptive=False,
             warn_overflows=False,
         )
+        nsteps = 10
 
-        particulator = Particulator(
-            n_sd=len(attributes["multiplicity"]),
-            environment=Box(
-                dv=1 * si.cm**3,
-                dt=dt,
-                backend=backend_class(Formulae(fragmentation_function="AlwaysN")),
-            ),
+        n_sd = len(attributes["multiplicity"])
+        env = Box(dv=1 * si.cm**3, dt=dt)
+        builder = Builder(
+            n_sd,
+            backend_class(Formulae(fragmentation_function="AlwaysN")),
+            environment=env,
             dynamics=(breakup,),
-            attributes=attributes,
         )
+        particulator = builder.build(attributes=attributes, products=())
 
         # Act
-        particulator.advance(n_steps=10)
+        particulator.run(nsteps)
 
         # Assert
         assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
@@ -98,14 +98,15 @@ class TestSDMBreakup:
         # Arrange
         backend = backend_instance
         n_sd = 2
-        n_init = (6, 6)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(dv=np.nan, dt=np.nan, backend=backend),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend, environment=env)
+        n_init = [6, 6]
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
             },
+            products=(),
         )
 
         pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0]))
@@ -177,13 +178,14 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=len(n_init),
-            environment=Box(dv=np.nan, dt=np.nan, backend=backend_instance),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend_instance, environment=env)
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2
@@ -345,15 +347,14 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(
-                dv=np.nan, dt=np.nan, backend=backend_class(double_precision=True)
-            ),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend_class(double_precision=True), environment=env)
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2
@@ -466,13 +467,14 @@ class TestSDMBreakup:
         def run_simulation(_n_times, _gamma):
             n_init = params["n_init"]
             n_sd = len(n_init)
-            particulator = Particulator(
-                n_sd=n_sd,
-                environment=Box(dv=np.nan, dt=np.nan, backend=backend_class()),
+            env = Box(dv=np.nan, dt=np.nan)
+            builder = Builder(n_sd, backend_class(), environment=env)
+            particulator = builder.build(
                 attributes={
                     "multiplicity": np.asarray(n_init),
                     "volume": np.asarray(params["v_init"]),
                 },
+                products=(),
             )
 
             n_pairs = n_sd // 2
@@ -544,13 +546,14 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(dv=np.nan, dt=np.nan, backend=backend),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend, environment=env)
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2
@@ -612,13 +615,14 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(dv=np.nan, dt=np.nan, backend=backend),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend, environment=env)
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2
@@ -709,13 +713,14 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(dv=np.nan, dt=np.nan, backend=backend_instance),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(n_sd, backend_instance, environment=env)
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2
@@ -787,7 +792,7 @@ class TestSDMBreakup:
 
         dv = 1 * si.m**3
         dt = 1 * si.s
-        env = Box(dv=dv, dt=dt, backend=backend)
+        env = Box(dv=dv, dt=dt)
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -809,25 +814,23 @@ class TestSDMBreakup:
             fragmentation_function=fragmentation,
             warn_overflows=False,
         )
+        builder = Builder(
+            n_sd=n_sd, backend=backend, environment=env, dynamics=(breakup,)
+        )
 
         radius_bins_edges = np.logspace(
             np.log10(0.01 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
         )
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=env,
-            dynamics=(breakup,),
-            attributes=attributes,
-            products=(
-                ParticleVolumeVersusRadiusLogarithmSpectrum(
-                    radius_bins_edges=radius_bins_edges, name="dv/dlnr"
-                ),
+        products = (
+            ParticleVolumeVersusRadiusLogarithmSpectrum(
+                radius_bins_edges=radius_bins_edges, name="dv/dlnr"
             ),
         )
+        particulator = builder.build(attributes, products)
         particulator.environment["rhod"] = 1.0
 
         t_end = 100
-        particulator.advance(t_end - particulator.n_steps)
+        particulator.run(t_end - particulator.n_steps)
 
         assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
 
@@ -864,17 +867,16 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=Box(
-                dv=np.nan,
-                dt=np.nan,
-                backend=backend_class(Formulae(handle_all_breakups=True)),
-            ),
+        env = Box(dv=np.nan, dt=np.nan)
+        builder = Builder(
+            n_sd, backend_class(Formulae(handle_all_breakups=True)), environment=env
+        )
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
+            products=(),
         )
 
         n_pairs = n_sd // 2

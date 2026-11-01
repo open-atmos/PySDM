@@ -3,7 +3,7 @@ from collections import namedtuple
 import numpy as np
 
 from PySDM.backends import CPU
-from PySDM.particulator import Particulator
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -16,13 +16,19 @@ from PySDM.products.size_spectral import (
 
 
 def run_box(settings, backend_class=CPU):
-    environment = Box(
-        dv=settings.dv,
-        dt=settings.dt,
+    builder = Builder(
+        n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=[
+            Coalescence(
+                collision_kernel=settings.kernel,
+                coalescence_efficiency=settings.coal_eff,
+                adaptive=settings.adaptive,
+            )
+        ],
     )
-
-    environment["rhod"] = settings.rhod
+    builder.particulator.environment["rhod"] = settings.rhod
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
@@ -35,24 +41,12 @@ def run_box(settings, backend_class=CPU):
         VolumeFirstMoment(name="M1"),
         VolumeSecondMoment(name="M2"),
     )
-    particulator = Particulator(
-        n_sd=settings.n_sd,
-        environment=environment,
-        dynamics=[
-            Coalescence(
-                collision_kernel=settings.kernel,
-                coalescence_efficiency=settings.coal_eff,
-                adaptive=settings.adaptive,
-            )
-        ],
-        attributes=attributes,
-        products=products,
-    )
+    particulator = builder.build(attributes, products)
 
     y = np.ndarray((len(settings.steps), len(settings.radius_bins_edges) - 1))
     mom = np.ndarray((len(settings.steps), 3))
     for i, step in enumerate(settings.steps):
-        particulator.advance(step - particulator.n_steps)
+        particulator.run(step - particulator.n_steps)
         y[i] = particulator.products["dv/dlnr"].get()[0]
         (mom[i, 0],) = particulator.products["M0"].get()
         (mom[i, 1],) = particulator.products["M1"].get()

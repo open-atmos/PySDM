@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from PySDM.attributes.physics import RelativeFallVelocity, TerminalVelocity
-from PySDM import Particulator
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence, RelaxedVelocity
 from PySDM.dynamics.collisions.collision_kernels.constantK import ConstantK
 from PySDM.environments.box import Box
@@ -59,18 +59,19 @@ class TestFallVelocity:
         """
         Test that fall velocity is the momentum divided by the mass.
         """
-        env = Box(dt=1, dv=1, backend=backend_instance)
-
-        particulator = Particulator(
-            attributes=default_attributes,
-            products=(),
+        env = Box(dt=1, dv=1)
+        builder = Builder(
             n_sd=len(default_attributes["multiplicity"]),
+            backend=backend_instance,
             environment=env,
             # needed to use relative fall velocity instead of terminal
             # velocity behind the scenes
             dynamics=(RelaxedVelocity(),),
-            requested_attributes=("relative fall velocity",),
         )
+
+        builder.request_attribute("relative fall velocity")
+
+        particulator = builder.build(attributes=default_attributes, products=())
 
         assert np.allclose(
             particulator.attributes["relative fall velocity"].to_ndarray(),
@@ -83,23 +84,26 @@ class TestFallVelocity:
         """
         Test that conservation of momentum holds when many super-droplets coalesce
         """
-        env = Box(dt=1, dv=1, backend=backend_instance)
-
-        particulator = Particulator(
+        env = Box(dt=1, dv=1)
+        builder = Builder(
             n_sd=len(default_attributes["multiplicity"]),
+            backend=backend_instance,
             environment=env,
-            attributes=default_attributes,
-            requested_attributes=("relative fall momentum",),
-            products=(),
             dynamics=(
                 RelaxedVelocity(),
                 Coalescence(collision_kernel=ConstantK(a=1), adaptive=False),
             ),
         )
 
+        # add and remove relaxed velocity to prevent warning
+
+        builder.request_attribute("relative fall momentum")
+
+        particulator = builder.build(attributes=default_attributes, products=())
+
         particulator.dynamics.pop("RelaxedVelocity")
 
-        particulator.advance(2)
+        particulator.run(2)
 
         total_initial_momentum = (
             default_attributes["relative fall momentum"]
@@ -126,26 +130,28 @@ class TestFallVelocity:
         `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
         should only be selected when `PySDM.dynamics.RelaxedVelocity` dynamic exists.
         """
-        env = Box(dt=1, dv=1, backend=backend_instance)
-        particulator_no_relax = Particulator(
-            requested_attributes=("relative fall velocity",),
-            n_sd=1,
-            environment=env,
+        env = Box(dt=1, dv=1)
+        builder_no_relax = Builder(n_sd=1, backend=backend_instance, environment=env)
+        builder_no_relax.request_attribute("relative fall velocity")
+        _ = builder_no_relax.build(
             attributes={"multiplicity": np.ones(1), "water mass": np.zeros(1)},
             products=(),
         )
 
         # with no RelaxedVelocity, the builder should use TerminalVelocity
         assert isinstance(
-            particulator_no_relax.req_attr["relative fall velocity"], TerminalVelocity
+            builder_no_relax.req_attr["relative fall velocity"], TerminalVelocity
         )
-        env = Box(dt=1, dv=1, backend=backend_instance)
-
-        particulator = Particulator(
-            requested_attributes=("relative fall velocity",),
+        env = Box(dt=1, dv=1)
+        builder = Builder(
             n_sd=1,
+            backend=backend_instance,
             environment=env,
             dynamics=(RelaxedVelocity(),),
+        )
+
+        builder.request_attribute("relative fall velocity")
+        _ = builder.build(
             attributes={
                 "multiplicity": np.ones(1),
                 "signed water mass": np.zeros(1),
@@ -156,16 +162,15 @@ class TestFallVelocity:
 
         # with RelaxedVelocity, the builder should use RelativeFallVelocity
         assert isinstance(
-            particulator.req_attr["relative fall velocity"], RelativeFallVelocity
+            builder.req_attr["relative fall velocity"], RelativeFallVelocity
         )
 
         # requesting momentum with no dynamic issues a warning
-        env = Box(dt=1, dv=1, backend=backend_instance)
+        env = Box(dt=1, dv=1)
+        builder = Builder(n_sd=1, backend=backend_instance, environment=env)
+        builder.request_attribute("relative fall momentum")
         with pytest.warns(UserWarning):
-            _ = Particulator(
-                n_sd=1,
-                environment=env,
-                requested_attributes=("relative fall momentum",),
+            _ = builder.build(
                 attributes={
                     "multiplicity": np.ones(1),
                     "signed water mass": np.zeros(1),

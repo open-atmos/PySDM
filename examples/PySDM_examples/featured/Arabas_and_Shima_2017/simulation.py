@@ -1,8 +1,8 @@
 import numpy as np
 
 import PySDM.products as PySDM_products
-from PySDM import Particulator
 from PySDM.backends import Numba
+from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
@@ -18,20 +18,40 @@ class Simulation:
         while dt_output / self.n_substeps >= settings.dt_max:  # TODO #334 dt_max
             self.n_substeps += 1
 
+        builder = Builder(
+            backend=backend(
+                formulae=settings.formulae,
+                **(
+                    {"override_jit_flags": {"parallel": False}}
+                    if backend is Numba
+                    else {}
+                ),
+            ),
+            n_sd=1,
+            environment=Parcel(
+                dt=dt_output / self.n_substeps,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.w,
+            ),
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(
+                    rtol_x=settings.rtol_x,
+                    rtol_thd=settings.rtol_thd,
+                    dt_cond_range=settings.dt_cond_range,
+                ),
+            ],
+        )
+
         attributes = {}
         r_dry = np.array([settings.r_dry])
         attributes["dry volume"] = settings.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = attributes["dry volume"] * settings.kappa
         attributes["multiplicity"] = np.array([settings.n_in_dv], dtype=np.int64)
-        environment = Parcel(
-            dt=dt_output / self.n_substeps,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.w,
-            backend=backend(formulae=settings.formulae),
-        )
+        environment = builder.particulator.environment
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
             environment=environment,
@@ -52,20 +72,7 @@ class Simulation:
             PySDM_products.RipeningRate(unit="s^-1 mg^-1", name="ripening_rate"),
         ]
 
-        self.particulator = Particulator(
-            n_sd=1,
-            dynamics=[
-                AmbientThermodynamics(),
-                Condensation(
-                    rtol_x=settings.rtol_x,
-                    rtol_thd=settings.rtol_thd,
-                    dt_cond_range=settings.dt_cond_range,
-                ),
-            ],
-            attributes=attributes,
-            products=products,
-            environment=environment,
-        )
+        self.particulator = builder.build(attributes, products)
 
         self.n_output = settings.n_output
 
@@ -100,7 +107,7 @@ class Simulation:
 
         self.save(output)
         for _ in range(self.n_output):
-            self.particulator.advance(self.n_substeps)
+            self.particulator.run(self.n_substeps)
             self.save(output)
 
         return output

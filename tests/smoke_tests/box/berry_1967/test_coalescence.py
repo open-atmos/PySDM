@@ -3,10 +3,10 @@ import struct
 
 import numpy as np
 import pytest
-from PySDM_examples.featured.Berry_1967.settings import Settings
+from PySDM_examples.Berry_1967.settings import Settings
 
 from PySDM.backends import ThrustRTC
-from PySDM import Particulator
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import (
     Electric,
@@ -31,25 +31,26 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
     s.formulae.seed = 0
     steps = [0, 800]
 
-    env = Box(dt=s.dt, dv=s.dv, backend=backend_class(formulae=s.formulae))
-    attributes = {}
-    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
-        s.spectrum
-    ).sample_deterministic(s.n_sd)
-    particulator = Particulator(
-        attributes=attributes,
+    env = Box(dt=s.dt, dv=s.dv)
+    builder = Builder(
         n_sd=s.n_sd,
+        backend=backend_class(formulae=s.formulae),
         environment=env,
         dynamics=(
             Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive),
         ),
     )
+    attributes = {}
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
+        s.spectrum
+    ).sample_deterministic(s.n_sd)
+    particulator = builder.build(attributes)
 
     volumes = {}
 
     # Act
     for step in steps:
-        particulator.advance(step - particulator.n_steps)
+        particulator.run(step - particulator.n_steps)
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert
@@ -68,23 +69,24 @@ def test_coalescence_2_sd(backend_class):
     steps = [0, 200]
     s.n_sd = 2
 
-    env = Box(dt=s.dt, dv=s.dv, backend=backend_class(formulae=s.formulae))
+    env = Box(dt=s.dt, dv=s.dv)
+    builder = Builder(
+        n_sd=s.n_sd,
+        backend=backend_class(formulae=s.formulae),
+        environment=env,
+        dynamics=(Coalescence(collision_kernel=s.kernel, adaptive=False),),
+    )
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         s.spectrum
     ).sample_deterministic(s.n_sd)
-    particulator = Particulator(
-        n_sd=s.n_sd,
-        environment=env,
-        dynamics=(Coalescence(collision_kernel=s.kernel, adaptive=False),),
-        attributes=attributes,
-    )
+    particulator = builder.build(attributes)
 
     volumes = {}
 
     # Act
     for step in steps:
-        particulator.advance(step - particulator.n_steps)
+        particulator.run(step - particulator.n_steps)
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert

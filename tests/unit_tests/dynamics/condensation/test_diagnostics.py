@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 
-from PySDM import Particulator
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
@@ -15,19 +15,7 @@ from PySDM.environments.impl import register_environment
 @register_environment()
 class _TestEnv:
     def __init__(
-        self,
-        *,
-        dt,
-        dv,
-        rhod,
-        thd,
-        water_vapour_mixing_ratio,
-        T,
-        p,
-        RH,
-        rho,
-        eta,
-        backend,
+        self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH, rho, eta
     ):
         self.mesh = Mesh.mesh_0d()
         self.full = None
@@ -44,12 +32,11 @@ class _TestEnv:
             "air density": rho,
             "air dynamic viscosity": eta,
         }
-        self.backend = backend
 
-    def register(self, particulator):
-        self.particulator = particulator
-        self.full = lambda item: particulator.backend.Storage.from_ndarray(
-            np.full(particulator.n_sd, self.env[item])
+    def register(self, builder):
+        self.particulator = builder.particulator
+        self.full = lambda item: self.particulator.backend.Storage.from_ndarray(
+            np.full(self.particulator.n_sd, self.env[item])
         )
 
     def get_predicted(self, item):
@@ -91,29 +78,31 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             RH=RH,
             rho=rho,
             eta=eta,
-            backend=backend(),
         )
-
-        self.particulator = Particulator(
+        builder = Builder(
             n_sd=n_sd,
+            backend=backend(),
             environment=env,
             dynamics=(Condensation(max_iters=max_iters),),
+        )
+
+        self.particulator = builder.build(
             attributes={
                 "multiplicity": np.full(n_sd, multiplicity),
                 "volume": np.full(n_sd, wet_radius),
                 "dry volume": np.full(n_sd, dry_volume),
                 "kappa times dry volume": np.ones(n_sd),
-            },
+            }
         )
 
-    def advance(self, n_steps):
-        self.particulator.advance(n_steps)
+    def run(self, steps):
+        self.particulator.run(steps)
 
 
 def _try(particulator, capsys):
     exception = None
     try:
-        particulator.advance(n_steps=1)
+        particulator.run(steps=1)
     except Exception as e:  # pylint: disable=broad-except
         exception = e
     captured = capsys.readouterr()

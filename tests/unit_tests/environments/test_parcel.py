@@ -4,10 +4,10 @@ import pytest
 import numpy as np
 from PySDM.environments import Parcel
 from PySDM.physics import si
-from PySDM import Particulator
+from PySDM.builder import Builder
 
 
-def test_exclussive_for_rh0_and_r0(backend_instance):
+def test_exclussive_for_rh0_and_r0():
     # arrange
     args = {
         "dt": 0.25 * si.s,
@@ -20,10 +20,7 @@ def test_exclussive_for_rh0_and_r0(backend_instance):
     # act
     with pytest.raises(AssertionError):
         Parcel(
-            initial_water_vapour_mixing_ratio=10,
-            initial_relative_humidity=20,
-            **args,
-            backend=backend_instance,
+            initial_water_vapour_mixing_ratio=10, initial_relative_humidity=20, **args
         )
 
 
@@ -38,13 +35,15 @@ def test_rh_to_mixing_ratio_conversion(backend_instance):
     }
     rh = 0.5
 
-    particulator = Particulator(
+    builder = Builder(
         n_sd=1,
-        environment=Parcel(
-            initial_relative_humidity=rh, **args, backend=backend_instance
-        ),
-        attributes={"multiplicity": np.ones(1), "signed water mass": np.ones(1)},
+        backend=backend_instance,
+        environment=Parcel(initial_relative_humidity=rh, **args),
+    )
+
+    particulator = builder.build(
+        {"multiplicity": np.ones(1), "signed water mass": np.ones(1)}
     )
 
     # assert
-    assert particulator.environment["water_vapour_mixing_ratio"].to_ndarray()[0] > 0
+    assert particulator.environment.initial_water_vapour_mixing_ratio > 0

@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from PySDM import Particulator
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.dynamics.impl import register_dynamic
@@ -15,22 +15,30 @@ def test_impl_register_dynamic():
         def __init__(self):
             self.particulator = None
 
-        def register(self, *, particulator: Particulator):
-            self.particulator = particulator
+        def register(self, *, builder: Builder):
+            self.particulator = builder.particulator
 
     dynamic = Dynamic()
     n_sd = 1
     kwargs = {
         "n_sd": n_sd,
-        "environment": Box(dt=0, dv=0, backend=CPU()),
+        "backend": CPU(),
+        "environment": Box(dt=0, dv=0),
         "dynamics": (dynamic,),
-        "attributes": {"multiplicity": np.ones(n_sd), "water mass": np.zeros(n_sd)},
     }
+    builders = [Builder(**kwargs), Builder(**kwargs)]
 
     # act
-    particulators = (Particulator(**kwargs), Particulator(**kwargs))
+    for builder in builders:
+        builder.build(
+            attributes={"multiplicity": np.ones(n_sd), "water mass": np.zeros(n_sd)}
+        )
 
     # assert
     assert dynamic.particulator is None
-    for particulator in particulators:
-        assert particulator.dynamics["Dynamic"].particulator is particulator
+    assert builders[0].particulator is not builders[1].particulator
+    for builder in builders:
+        assert (
+            builder.particulator.dynamics["Dynamic"].particulator
+            is builder.particulator
+        )

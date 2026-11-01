@@ -8,7 +8,7 @@ from contextlib import nullcontext
 import numpy as np
 import pytest
 
-from PySDM import Formulae, Particulator
+from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
 from PySDM.environments import Box
@@ -31,27 +31,25 @@ def make_particulator(
     t=np.nan,
 ):
     """return basic particulator needed for testing"""
-    env = Box(dv=np.nan, dt=1 * si.s, backend=backend_instance)
-    requested_attributes = []
-    for iso in isotopes_considered:
-        if not attributes.get(f"moles_{iso}"):
-            attributes[f"moles_{iso}"] = np.array(0)
-        env[f"molality {iso} in dry air"] = np.array(0.1)
-        requested_attributes.append(f"delta_{iso}")
-    env["RH"] = np.array(rh)
-    env["T"] = np.array(t)
-    env["rhod"] = np.array(1)
-
-    return Particulator(
-        attributes=attributes,
-        requested_attributes=requested_attributes,
+    builder = Builder(
         n_sd=1,
-        environment=env,
+        backend=backend_instance,
+        environment=Box(dv=np.nan, dt=1 * si.s),
         dynamics=(
             Condensation(),
             IsotopicFractionation(isotopes=isotopes_considered),
         ),
     )
+    for iso in isotopes_considered:
+        if not attributes.get(f"moles_{iso}"):
+            attributes[f"moles_{iso}"] = np.array(0)
+        builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
+        builder.request_attribute(f"delta_{iso}")
+    builder.particulator.environment["RH"] = np.array(rh)
+    builder.particulator.environment["T"] = np.array(t)
+    builder.particulator.environment["rhod"] = np.array(1)
+
+    return builder.build(attributes)
 
 
 @pytest.fixture(scope="session")
@@ -92,17 +90,17 @@ class TestIsotopicFractionation:
         is executed before or without condensation"""
 
         # arrange
-        env = Box(dv=np.nan, dt=1 * si.s, backend=backend_instance)
-        env["molality 2H in dry air"] = np.nan
+        builder = Builder(
+            n_sd=1,
+            backend=backend_instance,
+            environment=Box(dv=np.nan, dt=1 * si.s),
+            dynamics=dynamics,
+        )
+        builder.particulator.environment["molality 2H in dry air"] = np.nan
 
         # act
         with context:
-            Particulator(
-                attributes=BASE_INITIAL_ATTRIBUTES.copy(),
-                n_sd=1,
-                dynamics=dynamics,
-                environment=env,
-            )
+            builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -122,17 +120,17 @@ class TestIsotopicFractionation:
         for heavy water isotopes and raising error for light ones"""
 
         # arrange
-        env = Box(dv=np.nan, dt=-1 * si.s, backend=backend_class())
-        env[f"molality {isotope} in dry air"] = np.nan
-        Particulator(
-            attributes=BASE_INITIAL_ATTRIBUTES.copy(),
+        builder = Builder(
             n_sd=1,
+            backend=backend_class(),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
             dynamics=(
                 Condensation(),
                 IsotopicFractionation(isotopes=(isotope,)),
             ),
-            environment=env,
         )
+        builder.particulator.environment[f"molality {isotope} in dry air"] = np.nan
+        builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod
     @pytest.mark.parametrize("considered_isotopes", (HEAVY_ISOTOPES, ("2H",)))

@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Particulator, Formulae
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Breakup, Coalescence, Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
@@ -80,14 +80,12 @@ class TestCollisionProducts:
         n_init = [5, 2]
         n_sd = len(n_init)
 
-        env = Box(**ENV_ARGS, backend=backend_instance)
+        env = Box(**ENV_ARGS)
 
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
+        builder = Builder(n_sd, backend_instance, environment=env, dynamics=(dynamic,))
 
-        particulator = Particulator(
-            n_sd,
-            environment=env,
-            dynamics=(dynamic,),
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
@@ -97,7 +95,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.advance(1)
+        particulator.run(1)
 
         # Assert
         assert particulator.products["cr"].get()[0] == params["cr"]
@@ -138,16 +136,15 @@ class TestCollisionProducts:
     def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
         # Arrange
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
+        env = Box(**ENV_ARGS)
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
         )
 
-        particulator = Particulator(
-            n_sd,
-            environment=env,
-            dynamics=(dynamic,),
+        builder = Builder(n_sd, backend_class(), environment=env, dynamics=(dynamic,))
+
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
@@ -157,7 +154,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.advance(1)
+        particulator.run(1)
 
         # Assert
         np.testing.assert_equal(
@@ -186,14 +183,12 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
+        env = Box(**ENV_ARGS)
 
         dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
+        builder = Builder(n_sd, backend_class(), environment=env, dynamics=(dynamic,))
 
-        particulator = Particulator(
-            n_sd,
-            environment=env,
-            dynamics=(dynamic,),
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
@@ -206,7 +201,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.advance(1)
+        particulator.run(1)
 
         # Assert
         assert (
@@ -235,16 +230,20 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class(Formulae(handle_all_breakups=True)))
+        env = Box(**ENV_ARGS)
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
         )
 
-        particulator = Particulator(
+        builder = Builder(
             n_sd,
+            backend_class(Formulae(handle_all_breakups=True)),
             environment=env,
             dynamics=(dynamic,),
+        )
+
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
@@ -257,7 +256,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.advance(1)
+        particulator.run(1)
 
         # Assert
         assert (
@@ -292,14 +291,12 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        env = Box(**ENV_ARGS, backend=backend_class())
+        env = Box(**ENV_ARGS)
 
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
+        builder = Builder(n_sd, backend_class(), environment=env, dynamics=(dynamic,))
 
-        particulator = Particulator(
-            n_sd=n_sd,
-            environment=env,
-            dynamics=(dynamic,),
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
@@ -309,7 +306,7 @@ class TestCollisionProducts:
         particulator.environment["rhod"] = RHO_DRY
 
         # Act
-        particulator.advance(1)
+        particulator.run(1)
         rhs_sum = _get_product_component_sums(params, particulator.products)
 
         # Assert

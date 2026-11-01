@@ -1,6 +1,6 @@
 import numpy as np
 
-from PySDM import Particulator, Formulae
+from PySDM import Builder, Formulae
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.dynamics import Freezing
@@ -35,7 +35,7 @@ def make_particulator(
         "particle_shape_and_density": "MixedPhaseSpheres",
     }
     formulae = Formulae(**formulae_ctor_args)
-    backend = CPU(formulae)
+    backend = CPU(formulae, override_jit_flags={"parallel": False})
 
     attributes = {
         "signed water mass": np.ones(n_sd) * droplet_volume * formulae.constants.rho_w
@@ -65,17 +65,22 @@ def make_particulator(
         thaw_flag = None
     attributes["multiplicity"] *= total_particle_number
 
-    env = Box(dt, volume, backend=backend)
+    builder = Builder(
+        n_sd=n_sd,
+        backend=backend,
+        environment=Box(dt, volume),
+        dynamics=[Freezing(immersion_freezing=immersion_freezing_flag, thaw=thaw_flag)],
+    )
+
+    env = builder.particulator.environment
     env["T"] = initial_temperature
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0
 
-    return Particulator(
-        n_sd=n_sd,
-        environment=env,
-        dynamics=[Freezing(immersion_freezing=immersion_freezing_flag, thaw=thaw_flag)],
+    builder.request_attribute("volume")
+
+    return builder.build(
         attributes=attributes,
-        requested_attributes=("volume",),
         products=(
             PySDM_products.Time(name="t"),
             PySDM_products.AmbientTemperature(name="T"),

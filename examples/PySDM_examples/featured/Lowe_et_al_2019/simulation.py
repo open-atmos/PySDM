@@ -2,7 +2,7 @@ import numpy as np
 from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
-from PySDM import Particulator
+from PySDM import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
@@ -13,14 +13,18 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
         n_sd = settings.n_sd_per_mode * len(settings.aerosol.modes)
-        environment = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.w,
+        builder = Builder(
+            n_sd=n_sd,
             backend=settings.backend,
+            environment=Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.w,
+            ),
+            dynamics=(AmbientThermodynamics(), Condensation()),
         )
 
         attributes = {
@@ -61,7 +65,7 @@ class Simulation(BasicSimulation):
         )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-            environment=environment,
+            environment=builder.particulator.environment,
             kappa_times_dry_volume=attributes["kappa times dry volume"],
             f_org=attributes["dry volume organic"] / attributes["dry volume"],
         )
@@ -97,13 +101,7 @@ class Simulation(BasicSimulation):
             PySDM_products.CloudAlbedo(name="albedo"),
         )
 
-        particulator = Particulator(
-            n_sd=n_sd,
-            dynamics=(AmbientThermodynamics(), Condensation()),
-            environment=environment,
-            attributes=attributes,
-            products=products,
-        )
+        particulator = builder.build(attributes=attributes, products=products)
         self.settings = settings
         super().__init__(particulator=particulator)
 
@@ -135,7 +133,7 @@ class Simulation(BasicSimulation):
     def run(self):
         output = {k: [] for k in self.particulator.products}
         for step in self.settings.output_steps:
-            self.particulator.advance(step - self.particulator.n_steps)
+            self.particulator.run(step - self.particulator.n_steps)
             self._save_scalars(output)
         self._save_final_timestep_products(output)
         return output

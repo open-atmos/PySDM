@@ -5,7 +5,7 @@ import numpy as np
 from PySDM.dynamics import SedimentationRemoval0D
 from PySDM.physics import si
 from PySDM.environments import Box
-from PySDM import Particulator
+from PySDM import Builder
 from PySDM.backends import ThrustRTC
 from PySDM.products import ParticleConcentration, SuperDropletCountPerGridbox, Time
 
@@ -28,7 +28,17 @@ class TestSedimentationRemoval0D:  # pylint: disable=too-few-public-methods,too-
         output = {}
         for dt in dts:
             for dv in dvs:
-                particulator = Particulator(
+                builder = Builder(
+                    n_sd=len(multiplicities),
+                    environment=Box(dv=dv, dt=dt),
+                    backend=backend_class(),
+                    dynamics=(
+                        SedimentationRemoval0D(
+                            stochastic_sedimentation_removal=stochastic
+                        ),
+                    ),
+                )
+                particulator = builder.build(
                     attributes={
                         "multiplicity": np.asarray(multiplicities),
                         "signed water mass": np.asarray(water_masses),
@@ -38,19 +48,12 @@ class TestSedimentationRemoval0D:  # pylint: disable=too-few-public-methods,too-
                         SuperDropletCountPerGridbox(),
                         Time(),
                     ),
-                    n_sd=len(multiplicities),
-                    environment=Box(dv=dv, dt=dt, backend=backend_class()),
-                    dynamics=(
-                        SedimentationRemoval0D(
-                            stochastic_sedimentation_removal=stochastic
-                        ),
-                    ),
                 )
                 key = f"{dt=} {dv=}"
                 output[key] = {name: [] for name in particulator.products}
                 while particulator.n_steps * dt <= t_max:
                     if len(output[key]["time"]) != 0:
-                        particulator.advance(n_steps=1)
+                        particulator.run(steps=1)
                     for name, product in particulator.products.items():
                         output[key][name].append(product.get() + 0)
 
