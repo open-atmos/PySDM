@@ -4,7 +4,7 @@ from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
 from PySDM.backends import Numba
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import (
     AmbientThermodynamics,
     Condensation,
@@ -31,27 +31,7 @@ class Simulation(BasicSimulation):
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.w_updraft,
-        )
-
-        builder = Builder(
-            backend=backend(
-                formulae=settings.formulae,
-                **(
-                    {"override_jit_flags": {"parallel": False}}
-                    if backend is Numba
-                    else {}
-                ),
-            ),
-            n_sd=settings.n_sd,
-            environment=env,
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(),
-                VapourDepositionOnIce(),
-                Freezing(
-                    homogeneous_freezing="time-dependent", immersion_freezing=None
-                ),
-            ),
+            backend=backend(formulae=settings.formulae),
         )
 
         self.n_sd = settings.n_sd
@@ -64,7 +44,7 @@ class Simulation(BasicSimulation):
 
         self.r_wet = equilibrate_wet_radii(
             r_dry=self.r_dry,
-            environment=builder.particulator.environment,
+            environment=env,
             kappa_times_dry_volume=kappa * v_dry,
         )
 
@@ -87,7 +67,22 @@ class Simulation(BasicSimulation):
 
         self.n_output = settings.n_output
         self.n_substeps = int(settings.t_duration / dt / self.n_output)
-        super().__init__(builder.build(attributes, products))
+        super().__init__(
+            Particulator(
+                attributes=attributes,
+                products=products,
+                n_sd=settings.n_sd,
+                environment=env,
+                dynamics=(
+                    AmbientThermodynamics(),
+                    Condensation(),
+                    VapourDepositionOnIce(),
+                    Freezing(
+                        homogeneous_freezing="time-dependent", immersion_freezing=None
+                    ),
+                ),
+            )
+        )
 
     def save(self, output):
         cell_id = 0
@@ -107,7 +102,7 @@ class Simulation(BasicSimulation):
         RHi_old = self.particulator.products["RH_ice"].get()[0].copy()
         for _ in range(self.n_output):
 
-            self.particulator.run(self.n_substeps)
+            self.particulator.advance(self.n_substeps)
 
             self.save(output)
 

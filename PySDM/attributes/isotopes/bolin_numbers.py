@@ -15,24 +15,24 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 class BolinNumberImpl(DerivedAttribute):
     """Backend-evaluated Bolin number for a selected heavy isotopologue."""
 
-    def __init__(self, builder, *, heavy_isotope: str):
+    def __init__(self, particulator, *, heavy_isotope: str):
         """
         Parameters
         ----------
-        builder
-            Attribute builder instance.
+        particulator
+            Particulator instance.
         heavy_isotope : str
             Heavy isotopologue identifier (entry of ``HEAVY_ISOTOPES``).
         """
         self.isotope = heavy_isotope
-        self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
-        self.moles_light = builder.get_attribute("moles light water")  # TODO #1787
-        self.cell_id = builder.get_attribute("cell id")
-        self.molality_in_dry_air = builder.particulator.environment[
+        self.moles_heavy = particulator.get_attribute(f"moles_{heavy_isotope}")
+        self.moles_light = particulator.get_attribute("moles light water")  # TODO #1787
+        self.cell_id = particulator.get_attribute("cell id")
+        self.molality_in_dry_air = particulator.environment[
             f"molality {heavy_isotope} in dry air"
         ]
         super().__init__(
-            builder,
+            particulator,
             name="Bolin number for " + heavy_isotope,
             dependencies=(self.moles_heavy, self.moles_light, self.cell_id),
         )
@@ -55,9 +55,9 @@ class BolinNumberImpl(DerivedAttribute):
 def make_bolin_number_factory(heavy_isotope: str):
     """Returns an attribute factory for the given heavy isotopologue."""
 
-    def _factory(builder):
-        """Instantiates ``BolinNumberImpl`` for the provided builder."""
-        return BolinNumberImpl(builder, heavy_isotope=heavy_isotope)
+    def _factory(particulator):
+        """Instantiates ``BolinNumberImpl`` for the provided particulator."""
+        return BolinNumberImpl(particulator, heavy_isotope=heavy_isotope)
 
     return _factory
 

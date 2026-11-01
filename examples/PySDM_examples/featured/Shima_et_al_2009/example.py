@@ -2,11 +2,11 @@ import os
 from typing import Optional
 
 import numpy as np
-from PySDM_examples.Shima_et_al_2009.settings import Settings
-from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
+from PySDM_examples.featured.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 
 from PySDM.backends import CPU
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -14,14 +14,10 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
 
 def run(settings, backend=CPU, observers=()):
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder = Builder(
-        n_sd=settings.n_sd,
+    env = Box(
+        dv=settings.dv,
+        dt=settings.dt,
         backend=backend(formulae=settings.formulae),
-        environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
@@ -34,7 +30,15 @@ def run(settings, backend=CPU, observers=()):
         ),
         WallTime(),
     )
-    particulator = builder.build(attributes, products)
+    particulator = Particulator(
+        n_sd=settings.n_sd,
+        environment=env,
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
+        attributes=attributes,
+        products=products,
+    )
 
     for observer in observers:
         particulator.observers.append(observer)
@@ -42,7 +46,7 @@ def run(settings, backend=CPU, observers=()):
     vals = {}
     particulator.products["wall time"].reset()
     for step in settings.output_steps:
-        particulator.run(step - particulator.n_steps)
+        particulator.advance(step - particulator.n_steps)
         vals[step] = particulator.products["dv/dlnr"].get()[0]
         vals[step][:] *= settings.rho
 

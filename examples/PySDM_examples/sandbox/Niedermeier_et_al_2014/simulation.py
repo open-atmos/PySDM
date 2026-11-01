@@ -1,11 +1,11 @@
 import numpy as np
-from PySDM_examples.Ervens_and_Feingold_2012.settings import (
+from PySDM_examples.sandbox.Ervens_and_Feingold_2012.settings import (
     sampled_ccn_diameter_number_concentration_spectrum,
 )
-from PySDM_examples.Niedermeier_et_al_2014.settings import Settings
+from PySDM_examples.sandbox.Niedermeier_et_al_2014.settings import Settings
 from PySDM_examples.utils import BasicSimulation
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation, Freezing
 from PySDM.environments import Parcel
@@ -24,19 +24,7 @@ class Simulation(BasicSimulation):
             mass_of_dry_air=settings.mass_of_dry_air,
             w=settings.vertical_velocity,
             mixed_phase=True,
-        )
-        builder = Builder(
-            n_sd=n_particles,
-            backend=CPU(
-                settings.formulae,
-                override_jit_flags={"parallel": False},
-            ),
-            environment=env,
-            dynamics=(
-                AmbientThermodynamics(),
-                Condensation(),
-                Freezing(immersion_freezing="time-dependent"),
-            ),
+            backend=CPU(settings.formulae),
         )
 
         air_volume = settings.mass_of_dry_air / settings.rhod0
@@ -62,7 +50,7 @@ class Simulation(BasicSimulation):
         attributes["signed water mass"] = settings.formulae.trivia.volume(
             radius=equilibrate_wet_radii(
                 r_dry=ccn_diameter / 2,
-                environment=builder.particulator.environment,
+                environment=env,
                 kappa_times_dry_volume=attributes["kappa times dry volume"],
             )
             * settings.formulae.constants.rho_w
@@ -88,7 +76,19 @@ class Simulation(BasicSimulation):
             ParcelDisplacement(name="z"),
             AmbientTemperature(name="T"),
         )
-        super().__init__(builder.build(attributes=attributes, products=products))
+        super().__init__(
+            Particulator(
+                n_sd=n_particles,
+                environment=env,
+                dynamics=(
+                    AmbientThermodynamics(),
+                    Condensation(),
+                    Freezing(immersion_freezing="time-dependent"),
+                ),
+                attributes=attributes,
+                products=products,
+            )
+        )
         self.steps = int(
             settings.displacement / settings.vertical_velocity / settings.timestep
         )

@@ -1,10 +1,10 @@
 import os
 
 from matplotlib import pyplot as plt
-from PySDM_examples.Shima_et_al_2009.settings import Settings
+from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
 
 from PySDM.backends import Numba, ThrustRTC
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -12,25 +12,25 @@ from PySDM.products import WallTime
 
 
 def run(settings, backend):
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder = Builder(
-        n_sd=settings.n_sd,
-        backend=backend,
-        environment=env,
-        dynamics=(Coalescence(collision_kernel=settings.kernel),),
-    )
+    env = Box(dv=settings.dv, dt=settings.dt, backend=backend)
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
         settings.n_sd
     )
-    particles = builder.build(attributes, products=(WallTime(),))
+    particulator = Particulator(
+        n_sd=settings.n_sd,
+        environment=env,
+        dynamics=(Coalescence(collision_kernel=settings.kernel),),
+        attributes=attributes,
+        products=(WallTime(),),
+    )
 
     states = {}
     last_wall_time = None
     for step in settings.output_steps:
-        particles.run(step - particles.n_steps)
-        last_wall_time = particles.products["wall time"].get()
+        particulator.advance(step - particulator.n_steps)
+        last_wall_time = particulator.products["wall time"].get()
 
     return states, last_wall_time
 
