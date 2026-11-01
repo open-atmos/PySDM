@@ -25,7 +25,7 @@ jobs:
   env-unit-tests-setup:
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-26, windows-latest ]
+        platform: [ ubuntu-24.04, macos-26, macos-26-intel, windows-latest ]
         python-version: [ "3.11", "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -41,7 +41,7 @@ jobs:
   env-nonunit-tests-setup:
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-26, windows-latest]
+        platform: [ubuntu-24.04, macos-26, macos-26-intel, windows-latest]
         python-version: ["3.12"]
         include: # for pylint
           - platform: ubuntu-24.04
@@ -88,7 +88,7 @@ jobs:
     needs: env-unit-tests-setup
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-26, windows-latest ]
+        platform: [ ubuntu-24.04, macos-26, macos-26-intel, windows-latest ]
         python-version: [ "3.11", "3.12" ]
     runs-on: ${{ matrix.platform }}
     env:
@@ -118,11 +118,11 @@ jobs:
     needs: [ pylint, unit-tests-without-jit-plus-codecov ]
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-26, windows-latest ]
+        platform: [ ubuntu-24.04, macos-26, macos-26-intel, windows-latest ]
         python-version: [ "3.12" ]
         test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions" ]
         exclude:
-          - platform: "macos-26"
+          - platform: ["macos-26", "macos-26-intel"]
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
@@ -149,7 +149,7 @@ jobs:
     needs: [ pylint, env-nonunit-tests-setup ]
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-26, windows-latest ]
+        platform: [ ubuntu-24.04, macos-26, macos-26-intel, windows-latest ]
         python-version: [ "3.12" ]
         test-suite:
           - "tests/smoke_tests/no_env tests/smoke_tests/box tests/tutorials_tests"
@@ -167,12 +167,12 @@ jobs:
               - "tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
         exclude:
           # TODO #1406
-          - platform: "macos-26"
+          - platform: ["macos-26", "macos-26-intel"]
             test-suite:
               - "tests/smoke_tests/no_env tests/smoke_tests/box tests/tutorials_tests"
               - "tests/smoke_tests/parcel_a"
           # test-suites already included in combined run
-          - platform: "macos-26"
+          - platform: ["macos-26", "macos-26-intel"]
             test-suite:
               - "tests/smoke_tests/kinematic_1d"
               - "tests/smoke_tests/kinematic_2d"
@@ -204,7 +204,7 @@ jobs:
     needs: [pylint, env-nonunit-tests-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-26, windows-latest]
+        platform: [ubuntu-24.04, macos-26, macos-26-intel, windows-latest]
         python-version: ["3.12"]
         test-suite:
           - "isotopes_chemistry_extraterrestrial"
@@ -220,13 +220,13 @@ jobs:
           - "multi-process_d"
           - "multi-process_e"
         include:
-          - platform: "macos-26"
+          - platform: ["macos-26", "macos-26-intel"]
             python-version: "3.12"
             test-suite:
               - "multi-process_a,multi-process_b"
               - "multi-process_d,multi-process_e"
         exclude:
-          - platform: "macos-26"
+          - platform: ["macos-26", "macos-26-intel"]
             test-suite:
               - "multi-process_a"
               - "multi-process_b"
