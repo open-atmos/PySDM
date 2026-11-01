@@ -1,0 +1,55 @@
+name: "Check user permissions"
+description: "Check whether a user has an allowed repository role"
+
+inputs:
+  user:
+    description: "GitHub user whose repository permission should be checked"
+    required: true
+  allowed-roles:
+    description: "JSON array of allowed repository role names"
+    required: true
+
+outputs:
+  allowed:
+    description: "Returns 'true' if the user has an allowed role, 'false' otherwise"
+    value: ${{ steps.permission-check.outputs.allowed }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check repository permission
+      id: permission-check
+      uses: actions/github-script@v8
+      env:
+        USER_TO_CHECK: ${{ inputs.user }}
+        ALLOWED_ROLES: ${{ inputs.allowed-roles }}
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          const user = process.env.USER_TO_CHECK.trim();
+          if (!user) {
+            throw new Error("The 'user' input must not be empty");
+          }
+
+          const rolesInput = JSON.parse(process.env.ALLOWED_ROLES);
+          const allowedRoles = rolesInput.map((role) =>
+            role.trim().toLowerCase()
+          );
+
+          let role = null;
+          try {
+            const response =
+              await github.rest.repos.getCollaboratorPermissionLevel({
+                ...context.repo,
+                username: user,
+              });
+            role = response.data.role_name.toLowerCase();
+          } catch (error) {
+            if (error.status !== 404) {
+              throw error;
+            }
+          }
+
+          const allowed = role !== null && allowedRoles.includes(role);
+          core.info(`${user}: role=${role ?? "none"}, allowed=${allowed}`);
+          core.setOutput("allowed", String(allowed));
