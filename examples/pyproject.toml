@@ -53,7 +53,7 @@ CI_version_pins = [
     "pyvinecopulib==1.0.0",
     "cmcrameri==1.10",
     "cmap==0.7.2",
-    "netCDF4!=1.7.5",
+    "netCDF4==1.7.4",
 ]
 
 [project.urls]
