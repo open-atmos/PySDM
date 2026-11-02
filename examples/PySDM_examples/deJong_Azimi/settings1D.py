@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from PySDM_examples.Shipway_and_Hill_2012 import Settings as SettingsSH
+from PySDM_examples.featured.Shipway_and_Hill_2012 import Settings as SettingsSH
 
 from PySDM import Formulae
 from PySDM.initialisation import spectra

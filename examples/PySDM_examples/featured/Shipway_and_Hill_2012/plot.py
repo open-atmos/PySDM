@@ -6,10 +6,20 @@ from PySDM.physics import convert_to, si
 
 
 def plot(
-    var, qlabel, fname, output, *, vmin=None, vmax=None, cmin=None, cmax=None, line=None, colors=None,
+    var,
+    qlabel,
+    fname,
+    output,
+    *,
+    vmin=None,
+    vmax=None,
+    cmin=None,
+    cmax=None,
+    line=None,
+    colors=None,
 ):
     line = line or {15: ":", 20: "--", 25: "-", 30: "-."}
-    colors = colors or {15: 'k', 20: 'tab:blue', 25: 'tab:orange', 30: 'tab:green'}
+    colors = colors or {15: "k", 20: "tab:blue", 25: "tab:orange", 30: "tab:green"}
     dt = output["t"][1] - output["t"][0]
     dz = output["z"][1] - output["z"][0]
     tgrid = np.concatenate(((output["t"][0] - dt / 2,), output["t"] + dt / 2))
