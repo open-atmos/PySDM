@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder, products
+from PySDM import Particulator, products
 from PySDM.backends import CPU, GPU
 from PySDM.environments import Parcel
 from PySDM.physics import si
@@ -23,11 +23,12 @@ def test_ambient_relative_humidity(backend_class):
         initial_water_vapour_mixing_ratio=1 * si.g / si.kg,
         T0=260 * si.K,
         w=np.nan,
+        backend=backend_class(),
     )
-    builder = Builder(n_sd, backend=backend_class(), environment=env)
-    attributes = {"multiplicity": np.ones(n_sd), "volume": np.ones(n_sd)}
-    particulator = builder.build(
-        attributes=attributes,
+    particulator = Particulator(
+        n_sd,
+        environment=env,
+        attributes={"multiplicity": np.ones(n_sd), "volume": np.ones(n_sd)},
         products=(
             products.AmbientRelativeHumidity(name="RHw", var="RH"),
             products.AmbientRelativeHumidity(name="RHi", var="RH", ice=True),

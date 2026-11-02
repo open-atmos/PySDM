@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Alpert_and_Knopf_2016 import Table1, simulation
+from PySDM_examples.featured.Alpert_and_Knopf_2016 import Table1, simulation
 
 from PySDM.physics import si
 

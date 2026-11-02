@@ -1,8 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.utils.kinematic_2d import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
 from PySDM.physics.constants import si
 
@@ -14,7 +13,9 @@ def test_initialisation(backend_class, plot=False):
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None, SpinUp=SpinUp, backend_class=backend_class)
+    simulation = Simulation(
+        settings, None, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+    )
 
     n_levels = settings.grid[1]
     n_cell = int(np.prod(np.array(settings.grid)))

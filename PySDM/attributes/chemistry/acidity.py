@@ -9,14 +9,14 @@ from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 @register_attribute(name="pH")
 class Acidity(DerivedAttribute):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         self.conc = {}
         for key, val in AQUEOUS_COMPOUNDS.items():
             if len(val) > 1:
-                self.conc[key] = builder.get_attribute("conc_" + key)
-        super().__init__(builder, name="pH", dependencies=self.conc.values())
-        self.environment = builder.particulator.environment
-        self.cell_id = builder.get_attribute("cell id")
+                self.conc[key] = particulator.get_attribute("conc_" + key)
+        super().__init__(particulator, name="pH", dependencies=self.conc.values())
+        self.environment = particulator.environment
+        self.cell_id = particulator.get_attribute("cell id")
 
     def allocate(self, idx):
         super().allocate(idx)

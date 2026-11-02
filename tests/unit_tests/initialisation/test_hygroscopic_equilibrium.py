@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 
-from PySDM import Formulae, Builder
+from PySDM import Formulae
 from PySDM.backends import Numba
 from PySDM.initialisation.hygroscopic_equilibrium import (
     equilibrate_wet_radii,
@@ -28,8 +28,8 @@ class TestHygroscopicEquilibrium:
         f_org = 0.607
         kappa = 0.356
 
-        class Particulator:  # pylint: disable=too-few-public-methods
-            formulae = Formulae(
+        _backend = Numba(
+            formulae=Formulae(
                 surface_tension=surface_tension,
                 constants={
                     "sgm_org": 40 * si.mN / si.m,
@@ -40,9 +40,14 @@ class TestHygroscopicEquilibrium:
                     "RUEHL_sgm_min": 40 * si.mN / si.m,
                 },
             )
+        )
+
+        class Particulator:  # pylint: disable=too-few-public-methods
+            formulae = _backend.formulae
 
         class Env:  # pylint: disable=too-few-public-methods
             particulator = Particulator()
+            backend = _backend
             thermo = {
                 "T": Numba.Storage.from_ndarray(np.full(1, T)),
                 "RH": Numba.Storage.from_ndarray(np.full(1, RH)),
@@ -114,20 +119,16 @@ class TestHygroscopicEquilibrium:
     ):
         # arrange
         r_wet = np.logspace(-8, -3, num=10)
-        builder = Builder(
-            environment=Box(dv=np.nan, dt=np.nan),
-            backend=backend_instance,
-            n_sd=len(r_wet),
-        )
-        builder.particulator.environment["T"] = temperature
-        builder.particulator.environment["RH"] = relative_humidity
+        environment = Box(dv=np.nan, dt=np.nan, backend=backend_instance)
+        environment["T"] = temperature
+        environment["RH"] = relative_humidity
 
         # act
         r_dry = {}
         for kappa in kappas:
             r_dry[kappa] = equilibrate_dry_radii(
                 r_wet=r_wet,
-                environment=builder.particulator.environment,
+                environment=environment,
                 kappa=kappa if kappa is np.ndarray else np.full_like(r_wet, kappa),
             )
 
@@ -163,7 +164,7 @@ class TestHygroscopicEquilibrium:
                 actual=equilibrate_wet_radii(
                     r_dry=r_dry[kappa],
                     kappa_times_dry_volume=kappa
-                    * builder.particulator.formulae.trivia.volume(r_dry[kappa]),
-                    environment=builder.particulator.environment,
+                    * environment.backend.formulae.trivia.volume(r_dry[kappa]),
+                    environment=environment,
                 ),
             )

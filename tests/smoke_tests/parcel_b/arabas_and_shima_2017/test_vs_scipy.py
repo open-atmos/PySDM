@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Arabas_and_Shima_2017.settings import setups
-from PySDM_examples.Bartman_2020_MasterThesis.fig_5_SCIPY_VS_ADAPTIVE import (
+from PySDM_examples.featured.Arabas_and_Shima_2017.settings import setups
+from PySDM_examples.sandbox.condensation_adaptivity.fig_5_SCIPY_VS_ADAPTIVE import (
     data as data_method,
 )
 

@@ -9,10 +9,10 @@ class SimpleGeometric:
         self.pair_tmp = None
         self.C = C
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute("radius")
-        builder.request_attribute("area")
+    def register(self, particulator):
+        self.particulator = particulator
+        particulator.request_attribute("radius")
+        particulator.request_attribute("area")
         self.pair_tmp = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )

@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
-from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM_examples.featured.Arabas_and_Shima_2017.settings import Settings, w_avgs
+from PySDM_examples.featured.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM.physics import si
 
 

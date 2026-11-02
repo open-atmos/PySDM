@@ -10,19 +10,17 @@ from ..impl import DerivedAttribute
 class SupersaturationOfLastFreezing(DerivedAttribute):
     """time-dependent variant: assigned upon freezing"""
 
-    def __init__(self, builder):
-        assert "Freezing" in builder.particulator.dynamics
-        assert (
-            builder.particulator.dynamics["Freezing"].immersion_freezing != "singular"
-        )
-        self.signed_water_mass = builder.get_attribute("signed water mass")
-        self.cell_id = builder.get_attribute("cell id")
+    def __init__(self, particulator):
+        assert "Freezing" in particulator.dynamics
+        assert particulator.dynamics["Freezing"].immersion_freezing != "singular"
+        self.signed_water_mass = particulator.get_attribute("signed water mass")
+        self.cell_id = particulator.get_attribute("cell id")
         super().__init__(
-            builder,
+            particulator,
             name="supersaturation of last freezing",
             dependencies=(self.signed_water_mass, self.cell_id),
         )
-        builder.particulator.observers.append(self)
+        particulator.observers.append(self)
 
     def notify(self):
         self.update()

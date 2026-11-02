@@ -3,8 +3,8 @@ import os
 
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Bieli_et_al_2022.settings import Settings
-from PySDM_examples.Bieli_et_al_2022.simulation import make_core
+from PySDM_examples.featured.Bieli_et_al_2022.settings import Settings
+from PySDM_examples.featured.Bieli_et_al_2022.simulation import make_core
 
 from PySDM import Formulae
 from PySDM.physics import si
@@ -29,7 +29,7 @@ def test_moments(plot=False):
 
         j = 0
         for step in settings.output_steps:
-            particulator.run(step - particulator.n_steps)
+            particulator.advance(step - particulator.n_steps)
             moments[i][:, j] = [
                 particulator.products["M0"].get()[0],
                 particulator.products["M1"].get()[0],

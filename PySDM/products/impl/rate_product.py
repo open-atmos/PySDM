@@ -12,8 +12,8 @@ class RateProduct(Product):
         self.counter = counter
         self.dynamic = dynamic
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.counter = getattr(self.particulator.dynamics[self.dynamic], self.counter)
         self.dynamic = None
         self.particulator.observers.append(self)
@@ -31,5 +31,5 @@ class RateProduct(Product):
             self.timestep_count = 0
             self._download_to_buffer(self.particulator.environment["rhod"])
             result[:] /= self.buffer
-        self.counter[:] = 0
+        self.counter.fill(0)
         return result
