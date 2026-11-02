@@ -218,6 +218,7 @@ jobs:
           - "condensation_a"
           - "condensation_b"
           - "condensation_c"
+          - "condensation_d"
           - "multi-process_a"
           - "multi-process_b"
           - "multi-process_c_breakup"
