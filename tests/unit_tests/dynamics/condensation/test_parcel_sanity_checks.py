@@ -103,7 +103,7 @@ class TestParcelSanityChecks:
         }
 
         for _ in range(output_points):
-            particulator.run(steps=output_interval)
+            particulator.advance(n_steps=output_interval)
             for product in particulator.products.values():
                 output[product.name].append(product.get()[PARCEL_CELL])
 

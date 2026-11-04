@@ -50,7 +50,7 @@ class TestSedimentationRemoval0D:  # pylint: disable=too-few-public-methods,too-
                 output[key] = {name: [] for name in particulator.products}
                 while particulator.n_steps * dt <= t_max:
                     if len(output[key]["time"]) != 0:
-                        particulator.run(steps=1)
+                        particulator.advance(n_steps=1)
                     for name, product in particulator.products.items():
                         output[key][name].append(product.get() + 0)
 

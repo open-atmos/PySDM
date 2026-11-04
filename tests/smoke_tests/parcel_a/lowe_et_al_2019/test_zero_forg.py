@@ -1,9 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
-from PySDM_examples.Lowe_et_al_2019.aerosol import AerosolBoreal, AerosolMarine
-from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
+from PySDM_examples.featured.Lowe_et_al_2019 import Settings, Simulation
+from PySDM_examples.featured.Lowe_et_al_2019.aerosol import AerosolBoreal, AerosolMarine
+from PySDM_examples.featured.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
 from PySDM.physics import si

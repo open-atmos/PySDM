@@ -70,10 +70,10 @@ class TestDiffusionalGrowthMassChange:
         )
 
         # act
-        particulator.run(steps=0)
+        particulator.advance(n_steps=0)
         for _ in range(steps):
             particulator.attributes["signed water mass"].data[:] += mass_delta
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
 
         # assert
         np.testing.assert_allclose(

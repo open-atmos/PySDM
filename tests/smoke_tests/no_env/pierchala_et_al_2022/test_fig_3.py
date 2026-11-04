@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Pierchala_et_al_2022
+from PySDM_examples.featured import Pierchala_et_al_2022
 
 from PySDM.physics.constants import PER_MEG, PER_MILLE
 

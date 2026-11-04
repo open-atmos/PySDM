@@ -25,7 +25,7 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-a
 
     def get_displacement(self, backend, scheme, adaptive=True):
         formulae = Formulae(particle_advection=scheme)
-        backend = backend(formulae, double_precision=True)
+        backend = backend(formulae, n_dims=len(self.grid), double_precision=True)
         environment = DummyEnvironment(
             timestep=self.dt,
             grid=self.grid,

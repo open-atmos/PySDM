@@ -51,7 +51,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
 
@@ -63,7 +63,7 @@ class TestCoolingRate:
         particulator = self._make_particulator()
 
         # act
-        particulator.run(1)
+        particulator.advance(1)
         particulator.environment["T"] += dT
         particulator.attributes.mark_updated("cell id")
         cr = particulator.products["cooling rate"].get()
@@ -106,7 +106,7 @@ class TestCoolingRate:
             mesh=Mesh(grid=(nz,), size=(z_max,)),
             thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
             rhod_of_z=lambda z: 0 * z + constant_rhod,
-            backend=CPU(),
+            backend=CPU(n_dims=1),
             solvers=namedtuple(typename="_", field_names=("advectee",))(
                 advectee=namedtuple(typename="__", field_names=("ravel", "shape"))(
                     ravel=lambda: None, shape=(nz,)
@@ -138,7 +138,7 @@ class TestCoolingRate:
         )
 
         # act
-        particulator.run(steps=n_steps)
+        particulator.advance(n_steps=n_steps)
 
         cooling_rates = particulator.products["cooling rate"].get()
 

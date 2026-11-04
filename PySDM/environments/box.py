@@ -16,6 +16,8 @@ class Box:
         self.particulator = None
         self._ambient_air = {}
         self.backend = backend
+        if backend is not None:
+            assert backend.n_dims == self.mesh.n_dims
 
     def __getitem__(self, item):
         return self._ambient_air[item]
@@ -30,13 +32,3 @@ class Box:
 
     def register(self, particulator):
         self.particulator = particulator
-
-    def init_attributes(self, *, spectral_discretisation):
-        attributes = {}
-        (
-            attributes["volume"],
-            attributes["multiplicity"],
-        ) = spectral_discretisation.sample(
-            backend=self.backend, n_sd=self.particulator.n_sd
-        )
-        return attributes

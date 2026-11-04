@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
+from PySDM_examples.featured.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
 from scipy import signal
 
 from PySDM import Formulae, Particulator
@@ -92,7 +92,7 @@ def test_single_saturation_peak(
 
     # act
     for _ in range(n_steps):
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
         for product in particulator.products.values():
             value = product.get()
             output[product.name].append(value[0])

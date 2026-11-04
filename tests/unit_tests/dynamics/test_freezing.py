@@ -95,7 +95,7 @@ class TestDropletFreezing:
             # still not frozen since RH not greater than 100%
             particulator.environment["RH"] = rh_list[1]
             particulator.environment["RH_ice"] = rh_list[1]
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
             for attr_name in attr_names:
                 np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
             assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
@@ -104,7 +104,7 @@ class TestDropletFreezing:
             particulator.environment["RH"] = rh_list[2]
             particulator.environment["RH_ice"] = rh_list[2]
             particulator.environment["T"] = temp_list[0]
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
             assert all(
                 particulator.attributes[attr_names[0]].to_ndarray() == temp_list[0]
@@ -115,14 +115,14 @@ class TestDropletFreezing:
 
             # should thaw
             particulator.environment["T"] = temp_list[1]
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
             for attr_name in attr_names:
                 np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # should re-freeze and record T2
             particulator.environment["T"] = temp_list[2]
-            particulator.run(steps=1)
+            particulator.advance(n_steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
             assert all(
                 particulator.attributes[attr_names[0]].to_ndarray() == temp_list[2]
@@ -163,7 +163,7 @@ class TestDropletFreezing:
         assert particulator.products["ice water content"].get() > 0
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         if epsilon > 0:
@@ -200,7 +200,7 @@ class TestDropletFreezing:
         particulator.environment["RH"] = 1.000001
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         (qi,) = particulator.products["qi"].get()
@@ -243,7 +243,7 @@ class TestDropletFreezing:
         T_hom = formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         (qc,) = particulator.products["qc"].get()
@@ -363,7 +363,7 @@ class TestDropletFreezing:
 
             cell_id = 0
             for i in range(int(total_time / case["dt"]) + 1):
-                particulator.run(0 if i == 0 else 1)
+                particulator.advance(0 if i == 0 else 1)
 
                 ice_mass_per_volume = particulator.products["qi"].get()[cell_id]
                 ice_mass = ice_mass_per_volume * d_v

@@ -23,6 +23,6 @@ class BasicSimulation:
         output |= {k: [] for k in self.output_attributes or []}
         self._save(output)
         for _ in range(0, nt + 1, steps_per_output_interval):
-            self.particulator.run(steps=steps_per_output_interval)
+            self.particulator.advance(n_steps=steps_per_output_interval)
             self._save(output)
         return {k: np.asarray(v) for k, v in output.items()}

@@ -5,8 +5,8 @@ from copy import deepcopy
 
 
 def _instantiate(self, particulator):
-    """Creating a copy without backend as a workaround
-    for long execution times: see PR #1885"""  # to be addressed in TODO #1179
+    """Creating a deep copy to facilitate environment reuse in user code,
+    but exluding backend (and the formulae within) to avoid re-JIT-compilations"""
     backend = self.backend
     self.backend = None
     copy = deepcopy(self)
