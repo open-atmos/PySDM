@@ -25,8 +25,6 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 from PySDM.physics import si
 from PySDM.dynamics.impl import register_dynamic
 
-# pylint: disable=too-many-lines
-
 DEFAULTS = namedtuple(
     "_", ("dt_coal_range", "adaptive", "substeps", "max_multiplicity")
 )(
@@ -42,7 +40,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
-        collision_kernel,
         coalescence_efficiency,
         breakup_efficiency,
         fragmentation_function,
@@ -63,7 +60,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.warn_overflows = warn_overflows
         self.max_multiplicity = DEFAULTS.max_multiplicity
 
-        self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
@@ -99,6 +95,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.breakup_rate_deficit = None
 
     def register(self, particulator):
+        assert particulator.backend.formulae.collision_kernel.__name__ != "Null"
         self.particulator = particulator
         rnd_args = {
             "optimized_random": self.optimized_random,
@@ -136,7 +133,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_dt_min.fill(np.nan)
 
         self.rnd_opt_coll.register(particulator)
-        self.collision_kernel.register(particulator)
 
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
@@ -248,7 +244,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
-        self.collision_kernel(self.kernel_temp, is_first_in_pair)
+        self.particulator.collision_kernel(
+            output=self.kernel_temp, is_first_in_pair=is_first_in_pair
+        )
         out.max(self.particulator.attributes["multiplicity"], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)
@@ -295,7 +293,6 @@ class Coalescence(Collision):
     def __init__(
         self,
         *,
-        collision_kernel,
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
         optimized_random=False,
@@ -306,7 +303,6 @@ class Coalescence(Collision):
         breakup_efficiency = ConstEb(Eb=0)
         fragmentation_function = AlwaysN(n=1)
         super().__init__(
-            collision_kernel=collision_kernel,
             coalescence_efficiency=coalescence_efficiency,
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
@@ -324,7 +320,6 @@ class Breakup(Collision):
     def __init__(
         self,
         *,
-        collision_kernel,
         fragmentation_function,
         croupier=None,
         optimized_random=False,
@@ -336,7 +331,6 @@ class Breakup(Collision):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
         super().__init__(
-            collision_kernel=collision_kernel,
             coalescence_efficiency=coalescence_efficiency,
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,

@@ -14,7 +14,6 @@ from PySDM.products import (
 )
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
 # note: 100 in caption of Table 1
@@ -79,11 +78,7 @@ class Simulation(BasicSimulation):
                     AmbientThermodynamics(),
                     Condensation(),
                 ]
-                + (
-                    []
-                    if not gravitational_coalsecence
-                    else [Coalescence(collision_kernel=Geometric())]
-                ),
+                + ([] if not gravitational_coalsecence else [Coalescence()]),
                 attributes=attributes,
                 products=(
                     PeakSaturation(name="S_max"),

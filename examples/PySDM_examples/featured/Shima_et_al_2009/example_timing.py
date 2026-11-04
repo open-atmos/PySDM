@@ -21,7 +21,7 @@ def run(settings, backend):
     particulator = Particulator(
         n_sd=settings.n_sd,
         environment=env,
-        dynamics=(Coalescence(collision_kernel=settings.kernel),),
+        dynamics=(Coalescence(),),
         attributes=attributes,
         products=(WallTime(),),
     )

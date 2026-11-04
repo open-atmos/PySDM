@@ -9,7 +9,6 @@ from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.physics import si
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:
@@ -51,7 +50,7 @@ class Settings:
         collision_kernel=None,
         old_buggy_density_formula=False,
     ):
-        self.formulae = formulae or Formulae()
+        self.formulae = formulae or Formulae(collision_kernel="Geometric")
         self.n_sd_per_gridbox = n_sd_per_gridbox
         self.p0 = p0
         self.kappa = kappa
@@ -64,7 +63,7 @@ class Settings:
         self.z_part = z_part
         self.z_max = z_max
         self.t_max = t_max
-        self.collision_kernel = collision_kernel or Geometric(collection_efficiency=1)
+        self.collision_kernel = collision_kernel
 
         t_1 = 600 * si.s
         self.rho_times_w = lambda t: (
