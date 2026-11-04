@@ -13,8 +13,8 @@ class GaseousMoleFraction(Product):
         self.aqueous_chemistry = None
         self.compound = GASEOUS_COMPOUNDS[key]
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.aqueous_chemistry = self.particulator.dynamics["AqueousChemistry"]
 
     def _impl(self, **kwargs):

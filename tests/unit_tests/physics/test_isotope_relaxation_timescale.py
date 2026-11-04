@@ -85,15 +85,13 @@ class TestBoZabaEtAl:  # pylint: disable=too-few-public-methods
 
             # act
             value = sut(
-                const=Formulae().constants,
                 D_ratio_heavy_to_light=any_number_except_one * si.dimensionless,
-                D_light=any_number_except_one * si.m**2 / si.s,
                 alpha=any_number_except_one * si.dimensionless,
                 R_vap=any_number_except_one * si.dimensionless,
                 R_liq=any_number_except_one * si.dimensionless,
                 relative_humidity=any_number_except_one * si.dimensionless,
                 Fk=any_number_except_one * si.s / si.m**2,
-                rho_v=1 * si.g / si.m**3,
+                Fd=any_number_except_one * si.s / si.m**2,
             )
 
             # assert

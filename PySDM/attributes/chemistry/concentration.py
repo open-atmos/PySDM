@@ -8,13 +8,13 @@ from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
 class ConcentrationImpl(IntensiveAttribute):
-    def __init__(self, builder, *, what):
-        super().__init__(builder, name="conc_" + what, base="moles_" + what)
+    def __init__(self, particulator, *, what):
+        super().__init__(particulator, name="conc_" + what, base="moles_" + what)
 
 
 def make_concentration_factory(what):
-    def _factory(builder):
-        return ConcentrationImpl(builder, what=what)
+    def _factory(particualtor):
+        return ConcentrationImpl(particualtor, what=what)
 
     return _factory
 

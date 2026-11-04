@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
+from PySDM_examples.featured.Kreidenweis_et_al_2003 import Settings, Simulation
 from scipy.signal import find_peaks
 
 from PySDM.initialisation.sampling.spectral_sampling import (

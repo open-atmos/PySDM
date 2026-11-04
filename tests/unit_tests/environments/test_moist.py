@@ -1,17 +1,19 @@
 """check for ice-phase-related commons in environment codes"""
 
+from collections import namedtuple
+
 import pytest
 import numpy as np
 from PySDM.environments import Parcel
 from PySDM.physics import si, constants_defaults
-from PySDM import Builder
-from PySDM.backends import ThrustRTC
+from PySDM.backends import CPU
 
 COMMON_PARCEL_CTOR_ARGS = {
     "mixed_phase": True,
     "dt": np.nan,
     "mass_of_dry_air": np.nan,
     "w": np.nan,
+    "backend": CPU(),  # TODO #1495
 }
 T0 = constants_defaults.T0
 
@@ -57,20 +59,16 @@ T0 = constants_defaults.T0
         ),
     ),
 )
-def test_ice_properties(backend_instance, env, check):
+def test_ice_properties(env, check):
     """checks ice-related values in recalculated thermodynamic state make sense"""
-    if isinstance(backend_instance, ThrustRTC):
-        pytest.skip("TODO #1495")
-
     # arrange
-    builder = Builder(n_sd=0, backend=backend_instance, environment=env)
-    const = builder.particulator.formulae.constants
+    const = env.backend.formulae.constants
+    particulator = namedtuple("MockParticulator", ("observers",))(observers=[])
 
     # act
-    thermo = {
-        key: builder.particulator.environment[key].to_ndarray()[0]
-        for key in ("RH", "RH_ice", "a_w_ice", "T")
-    }
+    env.register(particulator=particulator)
+    thermo = {key: env[key].to_ndarray()[0] for key in ("RH", "RH_ice", "a_w_ice", "T")}
+    print(thermo)
 
     # assert
     exec(f"assert {check}", {"_": thermo})  # pylint: disable=exec-used

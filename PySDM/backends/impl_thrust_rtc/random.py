@@ -36,6 +36,6 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         Random.__urand_init_rng_state_body.launch_n(size, [rng, self.generator, dseed])
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def __call__(self, storage):
+    def u01(self, storage):
         assert len(storage) <= self.size
         Random.__urand_body.launch_n(len(storage), [self.generator, storage.data])

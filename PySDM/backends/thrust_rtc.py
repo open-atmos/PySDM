@@ -47,10 +47,16 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     default_croupier = "global"
 
     def __init__(
-        self, formulae=None, *, double_precision=False, debug=False, verbose=False
+        self,
+        formulae=None,
+        *,
+        n_dims=0,
+        double_precision=False,
+        debug=False,
+        verbose=False,
     ):
         self.formulae = formulae or Formulae()
-
+        self.n_dims = n_dims
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
         self._real_type = "double" if double_precision else "float"
         self._np_dtype = np.float64 if double_precision else np.float32

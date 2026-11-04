@@ -12,9 +12,9 @@ class DynamicWallTime(Product):
         self.value = 0
         self.dynamic = dynamic
 
-    def register(self, builder):
-        super().register(builder)
-        self.particulator.observers.append(self)
+    def register(self, particulator):
+        super().register(particulator)
+        particulator.observers.append(self)
         self.shape = ()
 
     def _impl(self, **kwargs):

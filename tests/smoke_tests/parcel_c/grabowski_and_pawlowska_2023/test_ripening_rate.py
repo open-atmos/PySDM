@@ -4,7 +4,7 @@ test for values of the ripening rate
 
 import numpy as np
 import pytest
-from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
+from PySDM_examples.featured.Grabowski_and_Pawlowska_2023 import Settings, Simulation
 
 from PySDM.physics import si
 from PySDM.products import RipeningRate

@@ -17,8 +17,8 @@ class PeakSaturation(Product):
         self.condensation = None
         self.RH_max = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.particulator.observers.append(self)
 
         assert (

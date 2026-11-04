@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Miyake_et_al_1968
+from PySDM_examples.misc import Miyake_et_al_1968
 
 PLOT = False
 
