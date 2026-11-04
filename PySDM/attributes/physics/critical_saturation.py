@@ -12,7 +12,7 @@ from PySDM.attributes.impl import (
 @register_attribute()
 class CriticalSaturation(DerivedAttribute, TemperatureVariationOptionAttribute):
     def __init__(self, particulator, neglect_temperature_variations=False):
-        assert particulator.mesh.dimension == 0
+        assert particulator.mesh.n_dims == 0
 
         self.v_crit = particulator.get_attribute("critical volume")
         self.v_dry = particulator.get_attribute("dry volume")

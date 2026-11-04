@@ -84,10 +84,18 @@ else:
 _BACKEND_CACHE = {}
 
 
-def _cached_backend(formulae=None, backend_class=None, **kwargs):
-    key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
+def _cached_backend(formulae=None, n_dims=0, backend_class=None, **kwargs):
+    key = (
+        backend_class.__name__
+        + ":"
+        + str(n_dims)
+        + ":"
+        + str(formulae)
+        + ":"
+        + str(kwargs)
+    )
     if key not in _BACKEND_CACHE:
-        _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
+        _BACKEND_CACHE[key] = backend_class(formulae=formulae, n_dims=n_dims, **kwargs)
     return _BACKEND_CACHE[key]
 
 

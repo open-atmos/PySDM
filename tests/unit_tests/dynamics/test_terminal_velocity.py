@@ -34,10 +34,10 @@ def test_approximation(backend_class, plot=False):
         / 100
     )
     u_term_ry = particulator.backend.Storage.empty((len(u),), float)
-    RogersYau(particulator=particulator)(u_term_ry, r)
+    RogersYau(backend=particulator.backend)(u_term_ry, r)
 
     u_term_inter = particulator.backend.Storage.from_ndarray(u_term_ry.to_ndarray())
-    GunnKinzer1949(particulator)(u_term_inter, r)
+    GunnKinzer1949(backend=particulator.backend)(u_term_inter, r)
 
     assert np.mean((u - u_term_ry) ** 2) < 2e-2
     assert np.mean((u - u_term_inter) ** 2) < 1e-6
@@ -107,7 +107,7 @@ def test_power_series(backend_class, prefactors, powers):
     r = particulator.backend.Storage.from_ndarray(r)
 
     u_term_ps = particulator.backend.Storage.empty((len(u),), float)
-    PowerSeries(particulator=particulator, prefactors=prefactors, powers=powers)(
+    PowerSeries(backend=particulator.backend, prefactors=prefactors, powers=powers)(
         u_term_ps, r
     )
 
@@ -154,7 +154,7 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
         particulator.attributes.mark_updated("signed water mass")
 
         # act
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
 
         # assert
         if terminal_velocity is not None:

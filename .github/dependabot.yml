@@ -4,10 +4,21 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  ignore:
+  - dependency-name: "setuptools-scm"
+    update-types:
+      - "version-update:semver-patch" 
+  - dependency-name: "setuptools"
+    update-types:
+      - "version-update:semver-patch" 
 - package-ecosystem: pip
   directory: "/examples"
   schedule:
     interval: daily
+  ignore:
+  - dependency-name: "*"
+    update-types:
+      - "version-update:semver-patch" 
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:

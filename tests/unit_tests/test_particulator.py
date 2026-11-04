@@ -29,7 +29,7 @@ class TestParticulator:
         steps = 33
         particulator = DummyParticulator(backend_class, 44)
         observer = Observer(particulator)
-        particulator.run(steps)
+        particulator.advance(steps)
 
         assert observer.steps == steps
 
@@ -48,7 +48,7 @@ class TestParticulator:
 
         particulator = DummyParticulator(backend_class, 44)
         initialiser = Initialiser(particulator)
-        particulator.run(steps)
+        particulator.advance(steps)
 
         assert initialiser.if_setup
 

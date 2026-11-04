@@ -12,5 +12,5 @@ class CellOrigin(CellAttribute):
             particulator,
             name="cell origin",
             dtype=int,
-            n_vector_components=particulator.mesh.dim,
+            n_vector_components=particulator.mesh.n_dims,
         )

@@ -9,9 +9,9 @@ from itertools import islice
 
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Shima_et_al_2009.example import run
-from PySDM_examples.Shima_et_al_2009.settings import Settings
-from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.featured.Shima_et_al_2009.example import run
+from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
+from PySDM_examples.featured.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 
 from PySDM.physics import si
 

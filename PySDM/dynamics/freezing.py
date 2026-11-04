@@ -4,7 +4,7 @@ time-dependent formulation for immersion freezing
 and homogeneous freezing and thaw
 """
 
-from typing import Optional
+from typing import Literal, Optional
 from PySDM.dynamics.impl import register_dynamic
 
 
@@ -13,9 +13,9 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
-        homogeneous_freezing: Optional[str] = None,
-        immersion_freezing: Optional[str] = None,
-        thaw: Optional[str] = None,
+        homogeneous_freezing: Optional[Literal["threshold", "time-dependent"]] = None,
+        immersion_freezing: Optional[Literal["singular", "time-dependent"]] = None,
+        thaw: Optional[Literal["instantaneous"]] = None,
     ):
         assert (
             homogeneous_freezing or immersion_freezing or thaw

@@ -64,7 +64,7 @@ class TestSDMBreakup:
         )
 
         # Act
-        particulator.run(steps=10)
+        particulator.advance(n_steps=10)
 
         # Assert
         assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
@@ -827,7 +827,7 @@ class TestSDMBreakup:
         particulator.environment["rhod"] = 1.0
 
         t_end = 100
-        particulator.run(t_end - particulator.n_steps)
+        particulator.advance(t_end - particulator.n_steps)
 
         assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
 

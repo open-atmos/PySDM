@@ -60,7 +60,7 @@ def test_small_timescale(default_attributes, constant_timescale, backend_instanc
         n_sd=len(default_attributes["multiplicity"]),
     )
 
-    particulator.run(1)
+    particulator.advance(1)
 
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
@@ -86,7 +86,7 @@ def test_large_timescale(default_attributes, constant_timescale, backend_instanc
         requested_attributes=("relative fall velocity", "terminal velocity"),
     )
 
-    particulator.run(100)
+    particulator.advance(100)
 
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
@@ -111,19 +111,19 @@ def test_behavior(default_attributes, constant_timescale, backend_instance):
         requested_attributes=("relative fall velocity", "terminal velocity"),
     )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v1 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v2 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v3 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()

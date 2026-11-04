@@ -7,7 +7,7 @@ class TemperatureVariationOptionAttribute:  # pylint: disable=too-few-public-met
 
     def __init__(self, particulator, neglect_temperature_variations: bool):
         if neglect_temperature_variations:
-            assert particulator.environment.mesh.dimension == 0
+            assert particulator.environment.mesh.n_dims == 0
         self.neglect_temperature_variations = neglect_temperature_variations
         self.initial_temperature = (
             particulator.Storage.from_ndarray(

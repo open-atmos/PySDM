@@ -56,7 +56,7 @@ def test_parcel_liquid_water_path(
     # act
     data = {product: [] for product in particulator.products}
     for _ in range(n_steps):
-        particulator.run(steps=1)
+        particulator.advance(n_steps=1)
         for key, product in particulator.products.items():
             value = product.get()
             if isinstance(value, np.ndarray):
