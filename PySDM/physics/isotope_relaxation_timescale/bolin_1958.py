@@ -11,4 +11,4 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def bolin_number(const):
-        return const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
+        return 1 / const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
