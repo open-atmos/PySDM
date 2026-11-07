@@ -35,13 +35,3 @@ class Box:
 
     def get_predicted(self, item):
         return self._ambient_air[item]
-
-    def init_attributes(self, *, spectral_discretisation):
-        attributes = {}
-        (
-            attributes["volume"],
-            attributes["multiplicity"],
-        ) = spectral_discretisation.sample(
-            backend=self.backend, n_sd=self.particulator.n_sd
-        )
-        return attributes

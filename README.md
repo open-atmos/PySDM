@@ -101,8 +101,8 @@ pip install -e PySDM
 ```
 Development and test dependencies can be installed using the following optional dependency groups:
 ```
-pip install -e PySDM[unit-tests]
-pip install -e PySDM[nonunit-tests]
+pip install -e "PySDM[unit-tests]"
+pip install -e "PySDM[nonunit-tests]"
 ```
 The ``unit-tests`` group installs dependencies required to run the unit tests,
 while the ``nonunit-tests`` group installs dependencies required for the remaining tests.
@@ -111,7 +111,7 @@ Both groups can be installed together if needed.
 To pin the base dependencies to the versions used by the GitHub Actions
 CI workflows, install the ``CI_version_pins`` group:
 ```
-pip install -e PySDM[CI_version_pins]
+pip install -e "PySDM[CI_version_pins]"
 ```
 
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
