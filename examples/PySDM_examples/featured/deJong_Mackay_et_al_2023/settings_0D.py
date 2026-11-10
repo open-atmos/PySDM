@@ -5,7 +5,6 @@ from pystrict import strict
 
 from PySDM.dynamics.collisions import breakup_fragmentations
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
 from PySDM.formulae import Formulae
 from PySDM.initialisation import spectra
 from PySDM.physics import si
@@ -34,7 +33,7 @@ class Settings0D:
         self.warn_overflows = warn_overflows
         self.seed = 44
         self._steps = [0]
-        self.coal_eff = Berry1967()
+        self.coal_eff = None
         self.fragmentation = fragmentation or breakup_fragmentations.Exponential(
             scale=self.frag_scale
         )
