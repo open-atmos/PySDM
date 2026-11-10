@@ -10,7 +10,6 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import (
     Berry1967,
     ConstEc,
     LowList1982Ec,
-    SpecifiedEff,
     Straub2010Ec,
 )
 from PySDM.dynamics import Coalescence
@@ -25,7 +24,6 @@ class TestEfficiencies:
         [
             Berry1967(),
             ConstEc(Ec=0.5),
-            SpecifiedEff(A=0.8, B=0.6),
             Straub2010Ec(),
             LowList1982Ec(),
             ConstEb(Eb=0.3),
