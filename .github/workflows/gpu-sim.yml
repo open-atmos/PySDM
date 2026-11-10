@@ -1,0 +1,120 @@
+name: GPU backend tests (simulated A100)
+
+# Optional, non-required check. The hosted runners have no GPU, and the
+# existing workflows set CI, which makes PySDM.backends replace ThrustRTC with
+# its pure-Python fake (FakeThrustRTC), so no CI job runs a real ThrustRTC
+# kernel. This job runs a subset of tests/unit_tests with the real ThrustRTC
+# backend (NVRTC at run time, driver API launches) on a simulated NVIDIA GPU
+# (https://github.com/pantheongpu/pantheonsim). A simulator cannot reproduce
+# hardware-specific behaviour or timing, so it complements real-GPU testing
+# and does not replace it.
+#
+# The simulated device is an A100 (sm_80), not an H100: ThrustRTC 0.3.20
+# bundles an old cuda_occupancy.h that does not know compute capability 9,
+# so any ThrustRTC "for"-style call (Fill, Transform, Sort, ...) fails on
+# an sm_90 device, real or simulated.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "PySDM/backends/**"
+      - "tests/unit_tests/backends/**"
+      - ".github/workflows/gpu-sim.yml"
+
+concurrency:
+  group: gpu-sim-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gpu-sim:
+    name: ThrustRTC backend on a simulated A100
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up the simulated GPU and CUDA toolkit
+        uses: pantheongpu/setup-pantheonsim@ca87fe3143b29166822b923d6050945c5179408c # v0.1.5
+        with:
+          gpu: nvidia/a100
+          cuda-toolkit: "13.0"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PySDM
+        run: |
+          python -m pip install -e ".[unit-tests]"
+
+      # ThrustRTC dlopens /usr/local/cuda/lib64/libnvrtc.so, and NVRTC then
+      # needs libnvrtc-builtins on the library path.
+      - name: Point ThrustRTC at the toolkit's NVRTC
+        run: |
+          ls -d /usr/local/cuda* || true
+          lib=$(find /usr/local/cuda-13.0 -name 'libnvrtc.so.13*' | sort | head -1)
+          echo "NVRTC found at: $lib"
+          test -n "$lib"
+          sudo mkdir -p /usr/local/cuda/lib64
+          if [ ! -e /usr/local/cuda/lib64/libnvrtc.so ]; then
+            sudo ln -sf "$lib" /usr/local/cuda/lib64/libnvrtc.so
+          fi
+          echo "LD_LIBRARY_PATH=$(dirname "$lib"):${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      # CI is unset for this step because PySDM.backends uses FakeThrustRTC
+      # whenever the variable exists. Only test files whose GPU-parametrised
+      # tests pass on a real GPU (a GeForce RTX 3060 here) and on the
+      # simulator are listed; see the pull request for what is left out.
+      - name: Run the GPU-parametrised tests on the simulated GPU
+        run: |
+          unset CI
+          vgpu run --gpu nvidia/a100 python - <<'PY'
+          import PySDM.backends as b
+          assert b.ThrustRTC.ENABLE, "real ThrustRTC backend not active"
+          PY
+          vgpu run --gpu nvidia/a100 python -m pytest -ra --durations=10 \
+            -p no:unraisableexception --timeout=900 --timeout_method=thread \
+            -k "GPU or ThrustRTC" \
+            tests/unit_tests/attributes/test_fall_velocity.py \
+            tests/unit_tests/attributes/test_multiplicities.py \
+            tests/unit_tests/attributes/test_reynolds_number.py \
+            tests/unit_tests/attributes/test_water_mass.py \
+            tests/unit_tests/backends/storage/test_basic_ops.py \
+            tests/unit_tests/backends/storage/test_index.py \
+            tests/unit_tests/backends/storage/test_row_view.py \
+            tests/unit_tests/backends/test_collisions_methods.py \
+            tests/unit_tests/backends/test_ctor_defaults_and_warnings.py \
+            tests/unit_tests/backends/test_instance_cache.py \
+            tests/unit_tests/backends/test_isotope_methods.py \
+            tests/unit_tests/backends/test_moments_methods.py \
+            tests/unit_tests/backends/test_pair_methods.py \
+            tests/unit_tests/backends/test_physics_methods.py \
+            tests/unit_tests/dynamics/displacement/test_advection.py \
+            tests/unit_tests/dynamics/displacement/test_sedimentation.py \
+            tests/unit_tests/dynamics/test_eulerian_advection.py \
+            tests/unit_tests/dynamics/test_relaxed_velocity.py \
+            tests/unit_tests/impl/test_moments.py \
+            tests/unit_tests/impl/test_particle_attributes.py \
+            tests/unit_tests/initialisation/test_alpha_sampling.py \
+            tests/unit_tests/initialisation/test_hygroscopic_equilibrium.py \
+            tests/unit_tests/initialisation/test_init_fall_momenta.py \
+            tests/unit_tests/initialisation/test_spatial_discretisation.py \
+            tests/unit_tests/initialisation/test_spectral_discretisation.py \
+            tests/unit_tests/initialisation/test_spectro_glacial_discretisation.py \
+            tests/unit_tests/products/test_collision_rates.py \
+            tests/unit_tests/products/test_concentration_product.py \
+            tests/unit_tests/products/test_effective_radii.py \
+            tests/unit_tests/products/test_impl.py \
+            tests/unit_tests/products/test_mixed_phase_moments.py \
+            tests/unit_tests/products/test_particle_size_product.py \
+            tests/unit_tests/products/test_particle_size_spectrum.py \
+            tests/unit_tests/products/test_surface_precipitation.py \
+            tests/unit_tests/test_imports.py \
+            tests/unit_tests/test_particulator.py
