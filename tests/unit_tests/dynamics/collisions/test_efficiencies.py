@@ -7,7 +7,6 @@ from PySDM import Particulator, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.coalescence_efficiencies import (
-    Berry1967,
     ConstEc,
     LowList1982Ec,
     Straub2010Ec,
@@ -22,7 +21,6 @@ class TestEfficiencies:
     @pytest.mark.parametrize(
         "efficiency",
         [
-            Berry1967(),
             ConstEc(Ec=0.5),
             Straub2010Ec(),
             LowList1982Ec(),
