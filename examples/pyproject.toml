@@ -4,7 +4,7 @@ local_scheme = "no-local-version"
 version_scheme = "post-release"
 
 [build-system]
-requires = ['setuptools==84.0.0', 'setuptools-scm==10.3']
+requires = ['setuptools==84.2.1', 'setuptools-scm==10.3']
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -52,8 +52,8 @@ CI_version_pins = [
     "pyrcel==2.0.0",
     "pyvinecopulib==1.0.0",
     "cmcrameri==1.10",
-    "cmap==0.7.2",
-    "netCDF4!=1.7.5",
+    "cmap==0.8.0",
+    "netCDF4==1.7.4",
 ]
 
 [project.urls]
