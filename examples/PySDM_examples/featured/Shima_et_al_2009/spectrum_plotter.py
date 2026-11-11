@@ -66,10 +66,10 @@ class SpectrumPlotter:
         if self.legend:
             self.ax.legend()
 
-    def show(self):
+    def show(self, file=None):
         self.finish()
         pyplot.tight_layout()
-        show_plot()
+        show_plot(file)
 
     def save(self, file):
         self.finish()
