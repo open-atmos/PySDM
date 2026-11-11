@@ -184,6 +184,8 @@ class TestKernels:
             1,
             -1,
             -1,
+            1,
+            -1,
         )
         n_sd = len(signed_masses)
         n_pairs = n_sd // 2
@@ -214,7 +216,7 @@ class TestKernels:
         )
 
         # assert
-        assert (output.to_ndarray() == [1, 2, 3]).all()
+        assert (output.to_ndarray() == [1, 2, 3, 2]).all()
 
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(collision_kernel))
