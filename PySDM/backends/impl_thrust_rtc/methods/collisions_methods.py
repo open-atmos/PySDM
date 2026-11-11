@@ -745,6 +745,7 @@ class CollisionsMethods(
         self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
             n=len(dt_left), args=(dt_todo, dt_left.data, d_dt_max)
         )
+        print(f"{len(multiplicity)//2=}")
         self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
             n=len(multiplicity) // 2,
             args=(
@@ -1141,11 +1142,12 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body=f"""
-                if is_first_in_pair[i]:
+                if (is_first_in_pair[i]) {{
                     output[(int64_t)(i / 2)] = {liquid_liquid.c_inline(
                         attr0_a="attr0[idx[i]]", attr0_b="attr0[idx[i + 1]]",
                         attr1_a="attr1[idx[i]]", attr1_b="attr0[idx[i + 1]]",
                         attr2_a="attr2[idx[i]]", attr2_b="attr0[idx[i + 1]]")};
+                }}
             """.replace("real_type", self._get_c_type()),
         )
 

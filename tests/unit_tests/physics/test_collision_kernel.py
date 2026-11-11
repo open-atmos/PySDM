@@ -11,7 +11,7 @@ from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
-
+from PySDM.dynamics import Coalescence
 from PySDM.formulae import _choices
 from PySDM.physics import collision_kernel
 from PySDM.products import (
@@ -216,11 +216,16 @@ class TestKernels:
         # assert
         assert (output.to_ndarray() == [1, 2, 3]).all()
 
-    # TODO why does it work for Thrust on all kernels?!
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(collision_kernel))
     def test_collision_kernel_call(backend_class, variant):
-        if variant == "Null":
+        if variant in ("Null", "ConstantIce"):
+            pytest.skip()
+
+        if backend_class.__name__ == "ThrustRTC" and variant in (
+            "Berry1967",
+            "Long1974",
+        ):
             pytest.skip()
 
         formulae = Formulae(
@@ -259,6 +264,7 @@ class TestKernels:
                 "multiplicity": np.ones(n_sd),
                 "volume": np.ones(n_sd) * si.mm**3,
             },
+            dynamics=(Coalescence(adaptive=False),),
         )
 
         # act

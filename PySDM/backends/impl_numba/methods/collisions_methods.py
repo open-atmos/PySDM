@@ -800,7 +800,7 @@ class CollisionsMethods(BackendMethods):
             ):
                 flag = len(
                     signed_water_mass
-                )  # TODO: why is this not needed in other backends!
+                )  # TODO #1913: why is this not needed in other backends! (JAX?)
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(signed_water_mass) - 1
                 ):

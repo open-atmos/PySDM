@@ -11,8 +11,10 @@ class Long1974:  # pylint:disable=too-few-public-methods
     def requested_attributes(_):
         return "volume", "radius", ""
 
-    def __init__(self, _):
-        pass
+    def __init__(self, const):
+        assert np.isfinite(const.KERNEL_LONG_lin_coeff)
+        assert np.isfinite(const.KERNEL_LONG_r_thres)
+        assert np.isfinite(const.KERNEL_LONG_sq_coeff)
 
     # pylint:disable=unused-argument
     @staticmethod

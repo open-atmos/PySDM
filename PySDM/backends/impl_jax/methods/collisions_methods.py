@@ -208,7 +208,7 @@ class CollisionsMethods(BackendMethods):
         def body(idx, output, is_first_in_pair, attr0, attr1, attr2, i):
             output.at[
                 i // 2
-            ].add(  # TODO: this might not be safe with parallel execution
+            ].add(  # TODO #1913: should be doable without multiplying by zero and adding...
                 is_first_in_pair[i]
                 * liquid_liquid(
                     attr0[idx[i]],
