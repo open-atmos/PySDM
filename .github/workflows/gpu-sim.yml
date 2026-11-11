@@ -1,4 +1,4 @@
-name: GPU backend tests (simulated A100)
+name: GPU backend tests (simulated GPU)
 
 # Optional, non-required check. The hosted runners have no GPU, and the
 # existing workflows set CI, which makes PySDM.backends replace ThrustRTC with
@@ -13,6 +13,17 @@ name: GPU backend tests (simulated A100)
 # bundles an old cuda_occupancy.h that does not know compute capability 9,
 # so any ThrustRTC "for"-style call (Fill, Transform, Sort, ...) fails on
 # an sm_90 device, real or simulated.
+#
+# The second job runs the JAX backend tests on a simulated H100 with jaxlib's
+# CUDA plugin (jax[cuda13]). Notes on how it differs from the first job:
+# - jax is pinned to 0.8.0 (the version in CI_version_pins): jax 0.12 emits the
+#   PTX form "ld.param::entry", which the simulator does not parse yet.
+# - jax only tries the CUDA plugin if a /dev/nvidia* node exists, and there is
+#   none on a hosted runner, so an empty /dev/nvidiactl is created.
+# - "vgpu run --preload" is needed so that jaxlib finds the simulated CUDA
+#   libraries and not the wheels' own.
+# - JAX_PLATFORMS=cuda makes jax fail instead of silently falling back to CPU.
+# - CI stays set, so ThrustRTC is replaced by its fake; JAX does not use it.
 
 on:
   workflow_dispatch:
@@ -118,3 +129,54 @@ jobs:
             tests/unit_tests/products/test_surface_precipitation.py \
             tests/unit_tests/test_imports.py \
             tests/unit_tests/test_particulator.py
+
+  gpu-sim-jax:
+    name: JAX backend on a simulated H100
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up the simulated GPU and CUDA toolkit
+        uses: pantheongpu/setup-pantheonsim@ca87fe3143b29166822b923d6050945c5179408c # v0.1.5
+        with:
+          gpu: nvidia/h100
+          cuda-toolkit: "13.0"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PySDM and the JAX CUDA plugin
+        run: |
+          python -m pip install -e ".[unit-tests]"
+          python -m pip install "jax[cuda13]==0.8.0"
+
+      # jax checks for a /dev/nvidia* node before it tries the CUDA plugin.
+      - name: Make jax try the CUDA plugin
+        run: sudo touch /dev/nvidiactl
+
+      - name: Check that jax uses the simulated GPU
+        env:
+          JAX_PLATFORMS: cuda
+        run: |
+          vgpu run --preload --gpu nvidia/h100 python - <<'PY'
+          import jax, jax.numpy as jnp
+          dev = jax.devices()
+          print(dev)
+          assert dev[0].platform == "gpu", dev
+          assert float(jnp.arange(10.0).sum()) == 45.0
+          PY
+
+      # The tests selected by -k are the ones parametrised with the JAX
+      # backend (ids "JAX" and "Jax"), plus two that mention jax in the name.
+      - name: Run the JAX backend tests on the simulated GPU
+        env:
+          JAX_PLATFORMS: cuda
+        run: |
+          vgpu run --preload --gpu nvidia/h100 python -m pytest -ra --durations=10 \
+            -p no:unraisableexception --timeout=900 --timeout_method=thread \
+            -k "JAX or Jax" tests/unit_tests
