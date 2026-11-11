@@ -46,7 +46,7 @@ def main(plot: bool):
         times[key] = []
         for sd in nsds:
             settings.n_sd = sd
-            _, wall_time = run(settings, backend())
+            _, wall_time = run(settings, backend(settings.formulae))
             times[key].append(wall_time)
 
     for backend, t in times.items():

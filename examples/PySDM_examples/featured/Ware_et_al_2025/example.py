@@ -30,7 +30,7 @@ def error_measure(y, y_true, x):
     F = np.cumsum(y * dlnr)
     CDF_Golovin = np.cumsum(y_true * dlnr)
 
-    return np.trapz(np.abs(CDF_Golovin - F), np.log(x))
+    return np.trapezoid(np.abs(CDF_Golovin - F), np.log(x))
 
 
 class Settings:
