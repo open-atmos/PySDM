@@ -526,6 +526,7 @@
   "https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2": {
     "usages": [
       "examples/PySDM_examples/featured/Berry_1967/figs_5_8_10.ipynb",
+      "examples/PySDM_examples/featured/Berry_1967/fig_6.ipynb",
       "examples/PySDM_examples/featured/Berry_1967/__init__.py",
       "PySDM/physics/collision_kernel/berry1967.py",
       "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py",
