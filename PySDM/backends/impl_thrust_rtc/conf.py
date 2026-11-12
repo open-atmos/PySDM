@@ -1,38 +1,44 @@
 """
-ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;
-default nice_thrust flags
+ThrustRTC import logic (the backend is disabled if ThrustRTC cannot be imported, e.g., if no
+CUDA driver is present); default nice_thrust flags
 """
 
 import os
 from warnings import warn
 
-from PySDM.backends.impl_thrust_rtc.test_helpers.flag import fakeThrustRTC
-
-if not fakeThrustRTC:
-    try:
-        # noinspection PyUnresolvedReferences
-        import ThrustRTC as trtc  # pylint: disable=unused-import
-
-        if "NVRTC_PATH" in os.environ:
-            trtc.set_libnvrtc_path(os.environ["NVRTC_PATH"])
-    except OSError as error:
-        warn(f"importing ThrustRTC failed with {error}")
-    try:
-        # noinspection PyUnresolvedReferences
-        import CURandRTC as rndrtc  # pylint: disable=unused-import
-    except OSError as error:
-        warn(f"importing CURandRTC failed with {error}")
-else:
+ENABLE = True
+try:
     # noinspection PyUnresolvedReferences
-    # fmt: off
-    # isort: off
-    from .test_helpers.fake_thrust_rtc import (  # pylint: disable=unused-import
-        FakeThrustRTC as trtc,
-    )
-    # isort: on
-    # fmt: on
+    import ThrustRTC as trtc  # pylint: disable=unused-import
+
+    if "NVRTC_PATH" in os.environ:
+        trtc.set_libnvrtc_path(os.environ["NVRTC_PATH"])
+except OSError as error:
+    warn(f"importing ThrustRTC failed with {error}")
+except ImportError:  # raised by ThrustRTC if CUDA initialisation fails
+    ENABLE = False
+try:
     # noinspection PyUnresolvedReferences
-    rndrtc = None
+    import CURandRTC as rndrtc  # pylint: disable=unused-import
+except OSError as error:
+    warn(f"importing CURandRTC failed with {error}")
+except ImportError:
+    ENABLE = False
+
+
+class _Unavailable:
+    """placeholder for the ThrustRTC and CURandRTC modules, which allows
+    the backend modules to be imported (e.g., by pdoc) without CUDA"""
+
+    def __getattr__(self, _):
+        return self
+
+    def __call__(self, *_, **__):
+        return self
+
+
+if not ENABLE:
+    trtc = rndrtc = _Unavailable()
 
 NICE_THRUST_FLAGS = {
     "wait": False,

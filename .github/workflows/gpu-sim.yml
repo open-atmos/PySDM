@@ -1,13 +1,11 @@
 name: GPU backend tests (simulated GPU)
 
-# Non-required check. The hosted runners have no GPU, and the
-# existing workflows set CI, which makes PySDM.backends replace ThrustRTC with
-# its pure-Python fake (FakeThrustRTC), so no CI job runs a real ThrustRTC
-# kernel. This job runs a subset of tests/unit_tests with the real ThrustRTC
-# backend (NVRTC at run time, driver API launches) on a simulated NVIDIA GPU
-# (https://github.com/pantheongpu/pantheonsim). A simulator cannot reproduce
-# hardware-specific behaviour or timing, so it complements real-GPU testing
-# and does not replace it.
+# The hosted runners have no GPU. This workflow runs a subset of tests/unit_tests
+# with the real ThrustRTC backend (NVRTC at run time, driver API launches) on a
+# simulated NVIDIA GPU (https://github.com/pantheongpu/pantheonsim). On a
+# machine without a GPU the tests parametrised with the GPU backend are skipped.
+# A simulator cannot reproduce hardware-specific behaviour or timing, so it
+# complements real-GPU testing and does not replace it.
 #
 # The simulated device is an A100 (sm_80), not an H100: ThrustRTC 0.3.20
 # bundles an old cuda_occupancy.h that does not know compute capability 9,
@@ -23,7 +21,9 @@ name: GPU backend tests (simulated GPU)
 # - "vgpu run --preload" is needed so that jaxlib finds the simulated CUDA
 #   libraries and not the wheels' own.
 # - JAX_PLATFORMS=cuda makes jax fail instead of silently falling back to CPU.
-# - CI stays set, so ThrustRTC is replaced by its fake; JAX does not use it.
+# - ThrustRTC is uninstalled: importing it crashes (segmentation fault) under
+#   "vgpu run --preload", and the JAX tests do not use it. Without it,
+#   PySDM.backends.ThrustRTC.ENABLE is False.
 
 on:
   workflow_dispatch:
@@ -62,9 +62,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      # The pinned versions are used, as in the other workflows: pytest runs with
+      # -We, and e.g. NumPy 2.5 emits a DeprecationWarning in PySDM code.
       - name: Install PySDM
         run: |
-          python -m pip install -e ".[unit-tests]"
+          python -m pip install -e ".[unit-tests,CI_version_pins]"
 
       # ThrustRTC dlopens /usr/local/cuda/lib64/libnvrtc.so, and NVRTC then
       # needs libnvrtc-builtins on the library path.
@@ -80,18 +82,16 @@ jobs:
           fi
           echo "LD_LIBRARY_PATH=$(dirname "$lib"):${LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
-      # CI is unset for this step because PySDM.backends uses FakeThrustRTC
-      # whenever the variable exists. Only test files whose GPU-parametrised
-      # tests pass on a real GPU (a GeForce RTX 3060 here) and on the
-      # simulator are listed; see the pull request for what is left out.
+      # Only test files whose GPU-parametrised tests pass on a real GPU (a
+      # GeForce RTX 3060 here) and on the simulator are listed; see the pull
+      # request for what is left out.
       - name: Run the GPU-parametrised tests on the simulated GPU
         run: |
-          unset CI
           vgpu run --gpu nvidia/a100 python - <<'PY'
           import PySDM.backends as b
           assert b.ThrustRTC.ENABLE, "real ThrustRTC backend not active"
           PY
-          vgpu run --gpu nvidia/a100 python -m pytest -ra --durations=10 \
+          vgpu run --gpu nvidia/a100 python -m pytest -We -ra --durations=10 \
             -p no:unraisableexception --timeout=900 --timeout_method=thread \
             -k "GPU or ThrustRTC" \
             tests/unit_tests/attributes/test_fall_velocity.py \
@@ -153,8 +153,9 @@ jobs:
 
       - name: Install PySDM and the JAX CUDA plugin
         run: |
-          python -m pip install -e ".[unit-tests]"
+          python -m pip install -e ".[unit-tests,CI_version_pins]"
           python -m pip install "jax[cuda13]==0.8.0"
+          python -m pip uninstall -y ThrustRTC CURandRTC
 
       # jax checks for a /dev/nvidia* node before it tries the CUDA plugin.
       - name: Make jax try the CUDA plugin
@@ -178,6 +179,6 @@ jobs:
         env:
           JAX_PLATFORMS: cuda
         run: |
-          vgpu run --preload --gpu nvidia/h100 python -m pytest -ra --durations=10 \
+          vgpu run --preload --gpu nvidia/h100 python -m pytest -We -ra --durations=10 \
             -p no:unraisableexception --timeout=900 --timeout_method=thread \
             -k "JAX or Jax" tests/unit_tests
