@@ -36,6 +36,18 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                     prefix + unit + "s", _fake(si.__getattr__(prefix + unit + "s"))
                 )
 
+        for unit in (
+            "atm",
+            "mmHg",
+            "psi",
+            "inHg",
+            "inch",
+            "cc",
+            "permille",
+            "percent",
+        ):
+            self.__setattr__(unit, _fake(si.__getattr__(unit)))
+
         for prefix in ("n", "u", "m", "c", "d", "", "h", "k"):
             for unit in (
                 "b",
