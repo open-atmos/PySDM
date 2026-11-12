@@ -1,6 +1,6 @@
 name: GPU backend tests (simulated GPU)
 
-# Optional, non-required check. The hosted runners have no GPU, and the
+# Non-required check. The hosted runners have no GPU, and the
 # existing workflows set CI, which makes PySDM.backends replace ThrustRTC with
 # its pure-Python fake (FakeThrustRTC), so no CI job runs a real ThrustRTC
 # kernel. This job runs a subset of tests/unit_tests with the real ThrustRTC
@@ -29,8 +29,9 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "PySDM/backends/**"
-      - "tests/unit_tests/backends/**"
+      - "PySDM/**"
+      - "tests/**"
+      - "pyproject.toml"
       - ".github/workflows/gpu-sim.yml"
 
 concurrency:
