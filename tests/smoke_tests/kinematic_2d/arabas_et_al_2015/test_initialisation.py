@@ -14,7 +14,10 @@ def test_initialisation(backend_class, plot=False):
     settings.n_sd_per_gridbox = 5000
 
     simulation = Simulation(
-        settings, None, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+        settings,
+        None,
+        SpinUp=SpinUp,
+        backend=backend_class(n_dims=2, formulae=settings.formulae),
     )
 
     n_levels = settings.grid[1]
