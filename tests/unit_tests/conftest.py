@@ -15,20 +15,20 @@ def backend_class_with_jax(request):
 
 
 @pytest.fixture(
-    params=(pytest.param(CPU(), id="CPU"), pytest.param(GPU(), id="GPU")),
+    params=(pytest.param(CPU, id="CPU"), pytest.param(GPU, id="GPU")),
     scope="session",
 )
 def backend_instance(request):
-    return request.param
+    return request.param()
 
 
 @pytest.fixture(
     params=(
-        pytest.param(CPU(), id="CPU"),
-        pytest.param(GPU(), id="GPU"),
-        pytest.param(JAX(), id="JAX"),
+        pytest.param(CPU, id="CPU"),
+        pytest.param(GPU, id="GPU"),
+        pytest.param(JAX, id="JAX"),
     ),
     scope="session",
 )
 def backend_instance_with_jax(request):
-    return request.param
+    return request.param()

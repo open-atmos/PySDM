@@ -40,7 +40,7 @@ def main(plot: bool):
     settings.steps = [100, 3600] if "CI" not in os.environ else [1, 2]
 
     times = {}
-    for backend in (ThrustRTC, Numba):
+    for backend in (ThrustRTC, Numba) if ThrustRTC.ENABLE else (Numba,):
         nsds = [2**n for n in range(12, 19, 3)]
         key = backend.__name__
         times[key] = []
