@@ -4,7 +4,6 @@ CUDA driver is present); default nice_thrust flags
 """
 
 import os
-from warnings import warn
 
 ENABLE = True
 try:
@@ -13,16 +12,12 @@ try:
 
     if "NVRTC_PATH" in os.environ:
         trtc.set_libnvrtc_path(os.environ["NVRTC_PATH"])
-except OSError as error:
-    warn(f"importing ThrustRTC failed with {error}")
-except ImportError:  # raised by ThrustRTC if CUDA initialisation fails
-    ENABLE = False
-try:
+
     # noinspection PyUnresolvedReferences
     import CURandRTC as rndrtc  # pylint: disable=unused-import
-except OSError as error:
-    warn(f"importing CURandRTC failed with {error}")
-except ImportError:
+except (ImportError, OSError):
+    # ImportError: raised by ThrustRTC if CUDA initialisation fails
+    # OSError: raised if the ThrustRTC or CURandRTC library cannot be loaded (e.g., on macOS)
     ENABLE = False
 
 
