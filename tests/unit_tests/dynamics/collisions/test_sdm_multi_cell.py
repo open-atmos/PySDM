@@ -2,6 +2,7 @@
 import numpy as np
 import pytest
 
+from PySDM import Formulae
 from PySDM.backends import ThrustRTC
 from PySDM.dynamics.collisions.collision import DEFAULTS
 from PySDM.environments import Box
@@ -22,7 +23,15 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         # Arrange
         n = np.ones(n_sd)
         v = np.ones_like(n)
-        env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1], backend=backend_class())
+        env = Box(
+            dv=1,
+            dt=DEFAULTS.dt_coal_range[1],
+            backend=backend_class(
+                Formulae(
+                    collision_kernel="ConstantK", constants={"KERNEL_CONSTANTK_a": 0}
+                )
+            ),
+        )
         grid = (25, 25)
         env.mesh = Mesh(grid=grid, size=grid)
         cell_id, _, _ = env.mesh.cellular_attributes(

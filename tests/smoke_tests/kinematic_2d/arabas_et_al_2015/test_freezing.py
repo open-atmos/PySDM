@@ -2,7 +2,6 @@
 import pytest
 from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
-from PySDM import Formulae
 from PySDM.physics import si
 
 from .dummy_storage import DummyStorage
@@ -12,20 +11,20 @@ from .dummy_storage import DummyStorage
 def test_freezing(freezing_immersion):
     # Arrange
     settings = Settings(
-        Formulae(
-            particle_shape_and_density="MixedPhaseSpheres",
-            seed=44,
-            diffusion_coordinate="WaterMassLogarithm",
-            fastmath=True,
-            freezing_temperature_spectrum="Niemand_et_al_2012",
-            heterogeneous_ice_nucleation_rate="ABIFM",
-            constants={
+        seed=44,
+        fastmath=True,
+        formulae_ctor_args={
+            "particle_shape_and_density": "MixedPhaseSpheres",
+            "diffusion_coordinate": "WaterMassLogarithm",
+            "freezing_temperature_spectrum": "Niemand_et_al_2012",
+            "heterogeneous_ice_nucleation_rate": "ABIFM",
+            "constants": {
                 "NIEMAND_A": -0.517,
                 "NIEMAND_B": 8.934,
                 "ABIFM_M": 28.13797,
                 "ABIFM_C": -2.92414,
             },
-        )
+        },
     )
     settings.dt = 0.5 * si.second
     settings.grid = (5, 15)

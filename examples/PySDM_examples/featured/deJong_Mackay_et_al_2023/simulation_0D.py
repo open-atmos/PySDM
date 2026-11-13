@@ -57,7 +57,6 @@ def run_box_breakup(
         environment=environment,
         dynamics=(
             Collision(
-                collision_kernel=settings.kernel,
                 coalescence_efficiency=settings.coal_eff,
                 breakup_efficiency=settings.break_eff,
                 fragmentation_function=settings.fragmentation,
@@ -116,7 +115,6 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         environment=environment,
         dynamics=(
             Coalescence(
-                collision_kernel=settings.kernel,
                 coalescence_efficiency=settings.coal_eff,
                 adaptive=settings.adaptive,
             ),

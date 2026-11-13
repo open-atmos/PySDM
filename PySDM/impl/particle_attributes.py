@@ -7,7 +7,7 @@ from typing import Dict
 
 import numpy as np
 
-from PySDM.attributes.impl.attribute import Attribute
+from PySDM.attributes.impl import Attribute, DummyAttribute
 
 
 class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
@@ -39,6 +39,10 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         )
         self.__sorted = False
         self.__attributes = attributes
+
+        dummy = DummyAttribute(particulator, "NaN")
+        dummy.allocate(idx)
+        self.__attributes[""] = dummy
 
     @property
     def healthy(self) -> bool:

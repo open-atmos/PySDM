@@ -28,6 +28,7 @@ class Settings:
             saturation_vapour_pressure="FlatauWalkoCotton",  # TODO #1266: Bolton
             diffusion_kinetics="GrabowskiEtAl2011",
             diffusion_thermics="GrabowskiEtAl2011",
+            collision_kernel="Geometric",
             constants={
                 # values from appendix B
                 "MAC": 0.036,

@@ -17,7 +17,10 @@ def test_export(backend_class, tmp_path):
 
     storage = Storage()
     simulator = Simulation(
-        settings, storage, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+        settings,
+        storage,
+        SpinUp=SpinUp,
+        backend=backend_class(n_dims=2, formulae=settings.formulae),
     )
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix=".nc")
     sut = NetCDFExporter(storage, settings, simulator, temp_file)

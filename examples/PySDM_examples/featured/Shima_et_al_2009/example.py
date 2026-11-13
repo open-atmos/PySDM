@@ -33,9 +33,7 @@ def run(settings, backend=CPU, observers=()):
     particulator = Particulator(
         n_sd=settings.n_sd,
         environment=env,
-        dynamics=(
-            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
-        ),
+        dynamics=(Coalescence(adaptive=settings.adaptive),),
         attributes=attributes,
         products=products,
     )
