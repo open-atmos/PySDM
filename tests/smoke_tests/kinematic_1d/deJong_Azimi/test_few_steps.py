@@ -19,12 +19,12 @@ from PySDM.physics import si
 def test_few_steps(z_part, plot=False):
     # Arrange
     n_sd_per_gridbox = 128
-    dt = 30 * si.s
+    dt = 5 * si.s
     smooth_window = 5
     settings = Settings1D(
         n_sd_per_gridbox=n_sd_per_gridbox,
         dt=dt,
-        dz=60 * si.m,
+        dz=50 * si.m,
         rho_times_w_1=0 * si.m / si.s * si.kg / si.m**3,
         z_part=z_part,
         t_max=50 * dt,
