@@ -13,6 +13,7 @@ from types import SimpleNamespace
 from typing import Optional
 
 import numba
+
 import jax
 import numpy as np
 import pint
@@ -35,8 +36,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self,
         *,
         constants: Optional[dict] = None,
-        seed: int = None,
-        fastmath: bool = True,
+        seed: Optional[int] = None,
+        fastmath: Optional[bool] = None,
         diffusion_coordinate: str = "WaterMassLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat_vapourisation: str = "Kirchhoff",
@@ -148,12 +149,12 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
         self.constants = constants
         self.seed = seed if seed is not None else physics.constants.default_random_seed
-        self.fastmath = fastmath
+        self.fastmath = fastmath or True
         self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
         self.trivia = _magick(
-            "Trivia", physics.trivia, fastmath, constants, dimensional_analysis
+            "Trivia", physics.trivia, self.fastmath, constants, dimensional_analysis
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
@@ -164,7 +165,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                 _magick(
                     value=getattr(self, component),
                     module=getattr(physics, component),
-                    fastmath=fastmath,
+                    fastmath=self.fastmath,
                     constants=constants,
                     dimensional_analysis=dimensional_analysis,
                 ),
