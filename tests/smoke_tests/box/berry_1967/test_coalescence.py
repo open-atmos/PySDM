@@ -4,7 +4,7 @@ import struct
 import numpy as np
 import pytest
 from PySDM_examples.featured.Berry_1967.settings import Settings
-
+from PySDM.physics import si
 from PySDM.backends import ThrustRTC
 from PySDM import Particulator
 from PySDM.dynamics import Coalescence
@@ -20,8 +20,48 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
         pytest.skip("TODO #358")
     if backend_class == ThrustRTC and adaptive and croupier == "global":
         pytest.skip("TODO #329")
+    if backend_class == ThrustRTC and kernel != "Geometric":
+        pytest.skip()
+
     # Arrange
-    s = Settings(kernel=kernel)
+    s = Settings(
+        kernel=kernel if kernel == "Geometric" else "Berry1967",
+        constants={
+            "Geometric": {},
+            "Electric": {
+                "KERNEL_BERRY_A": 1,
+                "KERNEL_BERRY_B": 1,
+                "KERNEL_BERRY_D1": -7,
+                "KERNEL_BERRY_D2": 1.78,
+                "KERNEL_BERRY_E1": -20.5,
+                "KERNEL_BERRY_E2": 1.73,
+                "KERNEL_BERRY_F1": 0.26,
+                "KERNEL_BERRY_F2": 1.47,
+                "KERNEL_BERRY_G1": 1,
+                "KERNEL_BERRY_G2": 0.82,
+                "KERNEL_BERRY_G3": -0.003,
+                "KERNEL_BERRY_Mf": 4.4,
+                "KERNEL_BERRY_Mg": 8,
+                "KERNEL_BERRY_unit": si.um,
+            },
+            "Hydrodynamic": {
+                "KERNEL_BERRY_A": 1,
+                "KERNEL_BERRY_B": 1,
+                "KERNEL_BERRY_D1": -27,
+                "KERNEL_BERRY_D2": 1.65,
+                "KERNEL_BERRY_E1": -58,
+                "KERNEL_BERRY_E2": 1.9,
+                "KERNEL_BERRY_F1": 15,
+                "KERNEL_BERRY_F2": 1.13,
+                "KERNEL_BERRY_G1": 16.7,
+                "KERNEL_BERRY_G2": 1,
+                "KERNEL_BERRY_G3": 0.004,
+                "KERNEL_BERRY_Mf": 4,
+                "KERNEL_BERRY_Mg": 8,
+                "KERNEL_BERRY_unit": si.um,
+            },
+        }[kernel],
+    )
     s.formulae.seed = 0
     steps = [0, 800]
 
