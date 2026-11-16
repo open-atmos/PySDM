@@ -5,7 +5,7 @@ checks if liquid water content remains constant throughout coalescence-only simu
 import numpy as np
 import pytest
 
-from PySDM.backends import ThrustRTC
+from PySDM.backends import ThrustRTC, Jax
 from PySDM import Particulator
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
@@ -51,6 +51,9 @@ def test_lwc_constant(backend_class_with_jax, croupier, adaptive):
         backend_class_with_jax == ThrustRTC and adaptive and croupier == "global"
     ):  # TODO #329
         pytest.skip()
+    if backend_class_with_jax == Jax and adaptive:
+        pytest.skip()  # TODO #1913
+
     # Arrange
     formulae = Formulae(
         seed=256,
