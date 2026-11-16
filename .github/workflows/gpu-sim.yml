@@ -58,7 +58,7 @@ jobs:
           gpu: nvidia/a100
           cuda-toolkit: "13.0"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -147,7 +147,7 @@ jobs:
           gpu: nvidia/h100
           cuda-toolkit: "13.0"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
