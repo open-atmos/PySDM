@@ -4,7 +4,6 @@ import pytest
 from matplotlib import pyplot
 from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
-from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.products import SuperDropletCountPerGridbox
 
@@ -22,7 +21,7 @@ from .dummy_storage import DummyStorage
 )
 def test_adaptive_displacement(rtol, plot=False):
     # Arrange
-    settings = Settings(formulae=Formulae(seed=666))
+    settings = Settings(seed=666)
     settings.dt = 5 * si.s
     settings.grid = (10, 10)
     settings.n_sd_per_gridbox = 10

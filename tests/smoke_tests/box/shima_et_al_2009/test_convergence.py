@@ -9,6 +9,7 @@ from itertools import islice
 
 import pytest
 from matplotlib import pyplot
+from PySDM.backends import Jax
 from PySDM_examples.featured.Shima_et_al_2009.example import run
 from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
 from PySDM_examples.featured.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
@@ -29,9 +30,14 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
             (True, 50 * si.s),
         ),
     )
-    def test_convergence_with_sd_count(dt, adaptive, plot=False):
+    def test_convergence_with_sd_count(
+        backend_class_with_jax, dt, adaptive, plot=False
+    ):
         """check if increasing the number of super particles indeed
         reduces the error of the simulation (vs. analytic solution)"""
+        if backend_class_with_jax == Jax and adaptive:
+            pytest.skip()  # TODO #1913
+
         # arrange
         settings = Settings(steps=[3600])
         settings.adaptive = adaptive
@@ -42,7 +48,7 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
         for i, ln2_nsd in enumerate((11, 15, 19)):
             settings.dt = dt
             settings.n_sd = 2**ln2_nsd
-            values, _ = run(settings)
+            values, _ = run(settings, backend=backend_class_with_jax)
 
             title = (
                 ""

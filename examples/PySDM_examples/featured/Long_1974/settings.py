@@ -7,7 +7,7 @@ from PySDM.initialisation.spectra import Gamma
 class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-methods,missing-class-docstring,too-many-positional-arguments
     def __init__(
         self,
-        kernel: object,
+        formulae,
         output_interval: float,
         n_part: float,
         radius_bins_edges: np.ndarray,
@@ -16,7 +16,7 @@ class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-m
         dt=1 * si.s,
         L=1e-6 * si.cm**3 / si.cm**3,  # total volumetric liquid water content
     ):
-        self.kernel = kernel
+        self.formulae = formulae
         self.n_sd = n_sd
         self.n_part = n_part
         self.dv = 1 * si.m**3

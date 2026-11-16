@@ -49,7 +49,13 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             "water mass",
             "cell id",
             *requested_attributes,
+            *(
+                attr
+                for attr in self.formulae.collision_kernel.requested_attributes()
+                if attr != ""
+            ),
         ]
+
         self.req_attr = None
         self.attributes: (ParticleAttributes, None) = None
         self.dynamics = {}
@@ -758,3 +764,16 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 length_scale=length_scale,
                 timestep=self.dt,
             )
+
+    def collision_kernel(self, *, output, is_first_in_pair):
+        self.backend.collision_kernel(
+            **{
+                f"attr{i}": self.attributes[attr]
+                for i, attr in enumerate(
+                    self.formulae.collision_kernel.requested_attributes()
+                )
+            },
+            signed_water_mass=self.attributes["signed water mass"],
+            output=output,
+            is_first_in_pair=is_first_in_pair,
+        )

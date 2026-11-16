@@ -12,7 +12,14 @@ from PySDM.physics import si
 
 def test_moments(plot=False):
     # arrange
-    settings = Settings(Formulae(fragmentation_function="Feingold1988"))
+    rho_w = 1 * si.kg / si.m**3
+    settings = Settings(
+        Formulae(
+            fragmentation_function="Feingold1988",
+            collision_kernel="Golovin",
+            constants={"KERNEL_GOLOVIN_b": 2000 * si.cm**3 / si.g / si.s * rho_w},
+        )
+    )
     if "CI" in os.environ:
         settings.n_sd = 10
     else:

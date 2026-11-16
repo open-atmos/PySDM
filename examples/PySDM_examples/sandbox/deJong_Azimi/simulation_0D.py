@@ -40,7 +40,6 @@ def run_box(settings, backend_class=CPU):
         environment=environment,
         dynamics=[
             Coalescence(
-                collision_kernel=settings.kernel,
                 coalescence_efficiency=settings.coal_eff,
                 adaptive=settings.adaptive,
             )

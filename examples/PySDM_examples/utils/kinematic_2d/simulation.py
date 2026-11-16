@@ -110,7 +110,6 @@ class Simulation:
         ):
             dynamics.append(
                 Collision(
-                    collision_kernel=self.settings.kernel,
                     enable_breakup=self.settings.processes["breakup"],
                     coalescence_efficiency=self.settings.coalescence_efficiency,
                     breakup_efficiency=self.settings.breakup_efficiency,
@@ -127,7 +126,6 @@ class Simulation:
         ):
             dynamics.append(
                 Coalescence(
-                    collision_kernel=self.settings.kernel,
                     adaptive=self.settings.coalescence_adaptive,
                     dt_coal_range=self.settings.coalescence_dt_coal_range,
                     substeps=self.settings.coalescence_substeps,
