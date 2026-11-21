@@ -114,6 +114,39 @@ CI workflows, install the ``CI_version_pins`` group:
 pip install -e "PySDM[CI_version_pins]"
 ```
 
+#### Testing the GPU backends without a GPU
+
+The tests parametrised with the ``GPU`` (ThrustRTC) backend are skipped on machines
+without a CUDA GPU. The [PantheonSim](https://github.com/pantheongpu/pantheonsim) GPU simulator
+runs CUDA code on a CPU (Linux or WSL; it checks results, not performance), and the
+``.github/workflows/gpu-sim.yml`` workflow uses it. The same can be done on a local machine.
+Build the simulator following its README (needs CMake and a C++20 compiler; ``make doctor`` lists what is missing)
+and put the ``vgpu`` command on the ``PATH``:
+```
+git clone https://github.com/pantheongpu/pantheonsim.git
+make -C pantheonsim build
+export PATH=$PWD/pantheonsim/build/bin:$PATH
+```
+ThrustRTC compiles its kernels with NVRTC, which has to come from a CUDA toolkit
+installed on the machine (ThrustRTC looks for it in ``/usr/local/cuda/lib64``;
+set the ``NVRTC_PATH`` environment variable to the ``libnvrtc.so`` path otherwise).
+With PySDM installed (``pip install -e "PySDM[unit-tests]"``), run the tests through ``vgpu run``.
+ThrustRTC 0.3.20 does not know compute capability 9, hence the A100 profile:
+```
+vgpu run --gpu nvidia/a100 python -m pytest -k "GPU or ThrustRTC" tests/unit_tests/backends/storage/test_basic_ops.py
+```
+Not every test selected this way passes, even on a real GPU (``gpu-sim.yml`` lists the test files that do).
+The JAX backend can be tested on a simulated H100 with jax installed as pinned in ``CI_version_pins``
+(``pip install "jax[cuda13]==0.8.0"``; newer jax versions do not work with the simulator yet).
+JAX tries the CUDA plugin only if a ``/dev/nvidia*`` device node exists, so create one,
+and ``--preload`` makes jax use the simulated CUDA libraries.
+Importing ThrustRTC crashes under ``--preload``, so use an environment without it
+(``pip uninstall ThrustRTC CURandRTC``; the GPU backend is then disabled and its tests are skipped):
+```
+sudo touch /dev/nvidiactl
+JAX_PLATFORMS=cuda vgpu run --preload --gpu nvidia/h100 python -m pytest -k "JAX or Jax" tests/unit_tests
+```
+
 PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``pyproject.toml``](https://github.com/open-atmos/PySDM/blob/main/examples/pyproject.toml) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
