@@ -9,11 +9,10 @@ from itertools import islice
 
 import pytest
 from matplotlib import pyplot
-from PySDM.backends import Jax
 from PySDM_examples.featured.Shima_et_al_2009.example import run
 from PySDM_examples.featured.Shima_et_al_2009.settings import Settings
 from PySDM_examples.featured.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
-
+from PySDM.backends import Jax
 from PySDM.physics import si
 
 COLORS = ("red", "green", "blue")
