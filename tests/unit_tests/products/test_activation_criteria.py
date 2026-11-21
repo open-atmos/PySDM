@@ -22,12 +22,13 @@ from PySDM.initialisation.sampling import spectral_sampling
 @pytest.mark.parametrize(
     "backend",
     (
-        pytest.param(GPU(), marks=pytest.mark.xfail(strict=True)),
-        CPU(),
+        pytest.param(GPU, marks=pytest.mark.xfail(strict=True)),
+        CPU,
     ),
 )
 def test_activation_criteria(backend, plot=False):
     # arrange
+    backend = backend()
     environment = Parcel(
         backend=backend,
         dt=2 * si.s,
