@@ -69,7 +69,16 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
+                    <a class="variable" href="#ENABLE">ENABLE</a>
+            </li>
+            <li>
                     <a class="variable" href="#NICE_THRUST_FLAGS">NICE_THRUST_FLAGS</a>
+            </li>
+            <li>
+                    <a class="variable" href="#trtc">trtc</a>
+            </li>
+            <li>
+                    <a class="variable" href="#rndrtc">rndrtc</a>
             </li>
     </ul>
 
@@ -87,8 +96,8 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../backends.html">backends</a><wbr>.<a href="./../impl_thrust_rtc.html">impl_thrust_rtc</a><wbr>.conf    </h1>
 
-                        <div class="docstring"><p>ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;
-default nice_thrust flags</p>
+                        <div class="docstring"><p>ThrustRTC import logic (the backend is disabled if ThrustRTC cannot be imported, e.g., if no
+CUDA driver is present); default nice_thrust flags</p>
 </div>
 
                         <input id="mod-conf-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -96,49 +105,62 @@ default nice_thrust flags</p>
                         <label class="view-source-button" for="mod-conf-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">default nice_thrust flags</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">ThrustRTC import logic (the backend is disabled if ThrustRTC cannot be imported, e.g., if no</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">CUDA driver is present); default nice_thrust flags</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">"""</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_thrust_rtc.test_helpers.flag</span><span class="w"> </span><span class="kn">import</span> <span class="n">fakeThrustRTC</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">if</span> <span class="ow">not</span> <span class="n">fakeThrustRTC</span><span class="p">:</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="c1"># noinspection PyUnresolvedReferences</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">ThrustRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">trtc</span>  <span class="c1"># pylint: disable=unused-import</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="n">ENABLE</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="c1"># noinspection PyUnresolvedReferences</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">ThrustRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">trtc</span>  <span class="c1"># pylint: disable=unused-import</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">if</span> <span class="s2">"NVRTC_PATH"</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="n">trtc</span><span class="o">.</span><span class="n">set_libnvrtc_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"NVRTC_PATH"</span><span class="p">])</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="s2">"NVRTC_PATH"</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">trtc</span><span class="o">.</span><span class="n">set_libnvrtc_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"NVRTC_PATH"</span><span class="p">])</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"importing ThrustRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="c1"># noinspection PyUnresolvedReferences</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">CURandRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rndrtc</span>  <span class="c1"># pylint: disable=unused-import</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"importing CURandRTC failed with </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="k">else</span><span class="p">:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="c1"># noinspection PyUnresolvedReferences</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="c1"># fmt: off</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="c1"># isort: off</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.test_helpers.fake_thrust_rtc</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=unused-import</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="n">FakeThrustRTC</span> <span class="k">as</span> <span class="n">trtc</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="p">)</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="c1"># isort: on</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="c1"># fmt: on</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="c1"># noinspection PyUnresolvedReferences</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">rndrtc</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="n">NICE_THRUST_FLAGS</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s2">"wait"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s2">"debug_print"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="p">}</span>  <span class="c1"># TODO #1120: move to GPU backend ctor</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="c1"># noinspection PyUnresolvedReferences</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">CURandRTC</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rndrtc</span>  <span class="c1"># pylint: disable=unused-import</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="c1"># ImportError: raised by ThrustRTC if CUDA initialisation fails</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="c1"># OSError: raised if the ThrustRTC or CURandRTC library cannot be loaded (e.g., on macOS)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">ENABLE</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="k">class</span><span class="w"> </span><span class="nc">_Unavailable</span><span class="p">:</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">"""placeholder for the ThrustRTC and CURandRTC modules, which allows</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">    the backend modules to be imported (e.g., by pdoc) without CUDA"""</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="o">**</span><span class="n">__</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="k">if</span> <span class="ow">not</span> <span class="n">ENABLE</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">trtc</span> <span class="o">=</span> <span class="n">rndrtc</span> <span class="o">=</span> <span class="n">_Unavailable</span><span class="p">()</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="n">NICE_THRUST_FLAGS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s2">"wait"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="s2">"debug_print"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="p">}</span>  <span class="c1"># TODO #1120: move to GPU backend ctor</span>
 </span></pre></div>
 
 
             </section>
+                <section id="ENABLE">
+                    <div class="attr variable">
+            <span class="name">ENABLE</span>        =
+<span class="default_value">False</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ENABLE"></a>
+    
+    
+
+                </section>
                 <section id="NICE_THRUST_FLAGS">
                     <div class="attr variable">
             <span class="name">NICE_THRUST_FLAGS</span>        =
@@ -147,6 +169,30 @@ default nice_thrust flags</p>
         
     </div>
     <a class="headerlink" href="#NICE_THRUST_FLAGS"></a>
+    
+    
+
+                </section>
+                <section id="trtc">
+                    <div class="attr variable">
+            <span class="name">trtc</span>        =
+<span class="default_value">&lt;PySDM.backends.impl_thrust_rtc.conf._Unavailable object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#trtc"></a>
+    
+    
+
+                </section>
+                <section id="rndrtc">
+                    <div class="attr variable">
+            <span class="name">rndrtc</span>        =
+<span class="default_value">&lt;PySDM.backends.impl_thrust_rtc.conf._Unavailable object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#rndrtc"></a>
     
     
 
