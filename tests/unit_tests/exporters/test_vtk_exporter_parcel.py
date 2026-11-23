@@ -8,8 +8,8 @@ from PySDM.exporters import VTKExporterParcel
 
 class TestParcelVTKExporter:
 
-    @staticmethod
     @pytest.fixture
+    @staticmethod
     def mock_simulation():
         """Mock simulation object with necessary attributes."""
         simulation = Mock()
@@ -21,8 +21,8 @@ class TestParcelVTKExporter:
 
         return simulation
 
-    @staticmethod
     @pytest.fixture
+    @staticmethod
     def mock_output():
         """Mock output data structure."""
         n_levels = 5

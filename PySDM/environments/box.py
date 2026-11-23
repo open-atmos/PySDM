@@ -32,13 +32,3 @@ class Box:
 
     def register(self, particulator):
         self.particulator = particulator
-
-    def init_attributes(self, *, spectral_discretisation):
-        attributes = {}
-        (
-            attributes["volume"],
-            attributes["multiplicity"],
-        ) = spectral_discretisation.sample(
-            backend=self.backend, n_sd=self.particulator.n_sd
-        )
-        return attributes
