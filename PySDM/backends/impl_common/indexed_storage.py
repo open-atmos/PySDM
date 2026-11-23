@@ -49,6 +49,7 @@ def make_IndexedStorage(backend):
             return IndexedStorage.indexed(self.idx, super().row_view(i))
 
         def to_ndarray(self, *, raw=False):
+            """`raw` flag enables fetching unpermuted data"""
             result = backend.Storage.to_ndarray(self)
             dim = len(self.shape)
             if raw:

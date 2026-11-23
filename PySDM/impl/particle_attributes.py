@@ -18,6 +18,8 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         idx,
         extensive_attribute_storage,
         extensive_keys: dict,
+        maximum_attribute_storage,
+        maximum_keys: dict,
         cell_start,
         attributes: Dict[str, Attribute],
     ):
@@ -26,8 +28,9 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         self.__idx = idx
 
         self.__extensive_attribute_storage = extensive_attribute_storage
-
+        self.__maximum_attribute_storage = maximum_attribute_storage
         self.__extensive_keys = extensive_keys
+        self.__maximum_keys = maximum_keys
 
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = particulator.Storage.from_ndarray(cell_start)
@@ -116,6 +119,12 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
 
     def get_extensive_attribute_keys(self):
         return self.__extensive_keys.keys()
+
+    def get_maximum_attribute_storage(self):
+        return self.__maximum_attribute_storage
+
+    def get_maximum_attribute_keys(self):
+        return self.__maximum_keys.keys()
 
     def has_attribute(self, attr):
         return attr in self.__attributes

@@ -43,20 +43,39 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def coalesce(
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
+    i,
+    j,
+    k,
+    cid,
+    multiplicity,
+    gamma,
+    attributes_extensive,
+    attributes_maximum,
+    coalescence_rate,
 ):  # pylint: disable=too-many-positional-arguments
     atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
         multiplicity[j] = new_n
-        for a in range(len(attributes)):
-            attributes[a, k] += gamma[i] * attributes[a, j]
+        for a in range(len(attributes_extensive)):
+            attributes_extensive[a, k] += gamma[i] * attributes_extensive[a, j]
+        for a in range(len(attributes_maximum)):
+            attributes_maximum[a, k] = max(
+                attributes_maximum[a, k], attributes_maximum[a, j]
+            )
     else:  # new_n == 0
         multiplicity[j] = multiplicity[k] // 2
         multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(len(attributes)):
-            attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-            attributes[a, k] = attributes[a, j]
+        for a in range(len(attributes_extensive)):
+            attributes_extensive[a, j] = (
+                gamma[i] * attributes_extensive[a, j] + attributes_extensive[a, k]
+            )
+            attributes_extensive[a, k] = attributes_extensive[a, j]
+        for a in range(len(attributes_maximum)):
+            attributes_maximum[a, j] = max(
+                attributes_maximum[a, j], attributes_maximum[a, k]
+            )
+            attributes_maximum[a, k] = attributes_maximum[a, j]
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -422,7 +441,8 @@ class CollisionsMethods(BackendMethods):
             multiplicity,
             idx,
             length,
-            attributes,
+            attributes_extensive,
+            attributes_maximum,
             gamma,
             healthy,
             cell_id,
@@ -444,7 +464,8 @@ class CollisionsMethods(BackendMethods):
                     cell_id[j],
                     multiplicity,
                     gamma,
-                    attributes,
+                    attributes_extensive,
+                    attributes_maximum,
                     coalescence_rate,
                 )
                 flag_zero_multiplicity(j, k, multiplicity, healthy)
@@ -456,7 +477,8 @@ class CollisionsMethods(BackendMethods):
         *,
         multiplicity,
         idx,
-        attributes,
+        attributes_extensive,
+        attributes_maximum,
         gamma,
         healthy,
         cell_id,
@@ -467,7 +489,8 @@ class CollisionsMethods(BackendMethods):
             multiplicity=multiplicity.data,
             idx=idx.data,
             length=len(idx),
-            attributes=attributes.data,
+            attributes_extensive=attributes_extensive.data,
+            attributes_maximum=attributes_maximum.data,
             gamma=gamma.data,
             healthy=healthy.data,
             cell_id=cell_id.data,
