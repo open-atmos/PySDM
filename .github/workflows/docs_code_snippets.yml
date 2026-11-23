@@ -16,11 +16,11 @@ jobs:
   python:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-14, windows-latest]
+        platform: [ubuntu-latest, macos-15, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - run: python -m pip install $PIP_INSTALL_ARGS -e .[CI_version_pins]
@@ -31,10 +31,18 @@ jobs:
       - name: run-on-cpu-backend
         run: |
           python -We docs_code.py
-      - name: run-on-gpu-backend
+      - id: thrustrtc
         run: |
-          sed -i -e 's/CPU/GPU/g' docs_code.py
-          python -We docs_code.py
+          if python -c "import sys; from PySDM.backends import ThrustRTC; sys.exit(not ThrustRTC.ENABLE)"; then
+            echo "enable=true" >> $GITHUB_OUTPUT
+          else
+            echo "enable=false" >> $GITHUB_OUTPUT
+          fi
+      - name: run-on-gpu-backend
+        if: steps.thrustrtc.outputs.enable == 'true'
+        run: |
+          sed -e 's/CPU/GPU/g' docs_code.py > docs_code_gpu.py
+          python -We docs_code_gpu.py
       
       - name: artefacts
         if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
@@ -45,7 +53,7 @@ jobs:
             readme.png
       - name: run-with-jax-backend
         run: |
-          sed -i -e 's/GPU/JAX/g' docs_code.py
+          sed -i -e 's/CPU/JAX/g' docs_code.py
           sed -i -e 's/Coalescence(/Coalescence(adaptive=False,/g' docs_code.py
           awk "{print}; /readme.png/ {exit}" docs_code.py > docs_code_jax.py
           python -We docs_code_jax.py
@@ -60,7 +68,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4.1.6
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - run: pip install -e .[CI_version_pins]
@@ -70,14 +78,23 @@ jobs:
       - run: cat -n docs_code.jl
       - run: echo PYTHON=`which python` >> $GITHUB_ENV
       - run: julia docs_code.jl
-      - run: sed -i -e 's/CPU/GPU/g' docs_code.jl
-      - run: julia docs_code.jl
+      - id: thrustrtc
+        run: |
+          if python -c "import sys; from PySDM.backends import ThrustRTC; sys.exit(not ThrustRTC.ENABLE)"; then
+            echo "enable=true" >> $GITHUB_OUTPUT
+          else
+            echo "enable=false" >> $GITHUB_OUTPUT
+          fi
+      - if: steps.thrustrtc.outputs.enable == 'true'
+        run: sed -i -e 's/CPU/GPU/g' docs_code.jl
+      - if: steps.thrustrtc.outputs.enable == 'true'
+        run: julia docs_code.jl
 
   matlab:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.6
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -94,8 +111,17 @@ jobs:
       - uses: matlab-actions/run-command@v3.3
         with:
           command: docs_code
-      - run: sed -i -e 's/CPU/GPU/g' docs_code.m
-      - uses: matlab-actions/run-command@v3.3
+      - id: thrustrtc
+        run: |
+          if python -c "import sys; from PySDM.backends import ThrustRTC; sys.exit(not ThrustRTC.ENABLE)"; then
+            echo "enable=true" >> $GITHUB_OUTPUT
+          else
+            echo "enable=false" >> $GITHUB_OUTPUT
+          fi
+      - if: steps.thrustrtc.outputs.enable == 'true'
+        run: sed -i -e 's/CPU/GPU/g' docs_code.m
+      - if: steps.thrustrtc.outputs.enable == 'true'
+        uses: matlab-actions/run-command@v3.3
         with:
           command: docs_code
 

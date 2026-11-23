@@ -1,0 +1,62 @@
+name: GPU Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      tests_to_run:
+        description: 'Location of tests to run (e.g., tests/unit_tests)'
+        required: false
+        type: string
+        default: 'tests/unit_tests'
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - "PySDM/**"
+      - "tests/**"
+
+concurrency:
+  group: gpu-tests-on-bowie
+
+permissions:
+  contents: read
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request == null ||
+      contains(github.event.pull_request.labels.*.name, 'GPU')
+    outputs:
+      allowed: ${{ steps.authorization.outputs.allowed }}
+    steps:
+      - name: Checkout trusted workflow code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Authorize user
+        id: authorization
+        uses: ./.github/actions/authorize
+        with:
+          user: ${{ github.event.pull_request.user.login || github.triggering_actor }}
+          allowed-roles: '["triage", "write", "maintain", "admin"]'
+
+  gpu-tests:
+    needs: authorize
+    if: needs.authorize.outputs.allowed == 'true'
+    runs-on: bowie-arm64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          allow-unsafe-pr-checkout: true
+          persist-credentials: false
+
+      - name: Run GPU Tests
+        uses: ./.github/actions/run-slurm-job
+        with:
+          # DO NOT CHANGE. This is the only Python version available on the Bowie Cluster.
+          python-version: 3.13.13
+          command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -p no:unraisableexception --timeout=900 --timeout_method=thread ${{ inputs.tests_to_run || 'tests/unit_tests' }} -k 'GPU or ThrustRTC'"
