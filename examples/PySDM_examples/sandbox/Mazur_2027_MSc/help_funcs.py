@@ -172,26 +172,38 @@ def make_freezing_frame(
     cooling_rate,
     singular,
 ):
+    T_homogeneous = 235 * si.K
     dt = particulator.dt
-    event_temperatures = np.full(particulator.n_sd, np.nan)
 
     signed_mass = particulator.attributes["signed water mass"].to_ndarray()
+
+    event_temperatures = np.full_like(
+        signed_mass,
+        np.nan,
+        dtype=float,
+    )
+
     frozen_before = signed_mass < 0
     current_step = 0
     T_now = T0
 
     A_sd = particulator.attributes["immersed surface area"].to_ndarray()
 
-    valid = A_sd > 0
-    frozen = (signed_mass < 0) & valid
-    unfrozen = valid & ~frozen
-
     T_freeze_sd = None
+
     if singular:
         T_freeze_sd = particulator.attributes["freezing temperature"].to_ndarray()
 
+        valid = (A_sd > 0) & (T_freeze_sd > T_homogeneous)
+
+    else:
+        valid = A_sd > 0
+
+    frozen = (signed_mass < 0) & valid
+    unfrozen = valid & ~frozen
+
     def plot_func(i, ax=None):
-        nonlocal current_step, T_now
+        nonlocal current_step, T_now, T_homogeneous
         nonlocal signed_mass, A_sd, valid, frozen, unfrozen, T_freeze_sd
         while current_step < i:
 
@@ -207,7 +219,10 @@ def make_freezing_frame(
                     "freezing temperature"
                 ].to_ndarray()
 
-            valid = A_sd > 0
+                valid = (A_sd > 0) & (T_freeze_sd > T_homogeneous)
+
+            else:
+                valid = A_sd > 0
             frozen = (signed_mass < 0) & valid
             unfrozen = valid & ~frozen
             if not singular:
