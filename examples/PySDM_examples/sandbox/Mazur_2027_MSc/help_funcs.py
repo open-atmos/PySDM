@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from PySDM import products, Particulator, Formulae
-from PySDM_examples.featured import Arabas_et_al_2025
 from PySDM_examples.featured.Arabas_et_al_2025.run_simulation import update_thermo
 from PySDM.backends import Numba
 from PySDM_examples.sandbox.Abade_and_Albuquerque_2024.sampling import sampling_new
