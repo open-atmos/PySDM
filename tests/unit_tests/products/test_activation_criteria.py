@@ -40,7 +40,7 @@ def test_activation_criteria(backend, plot=False):
     )
 
     r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
-        Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+        Lognormal(norm_factor=1e4 / si.mg, median=50 * si.nm, s_geom=1.5)
     ).sample_deterministic(1000)
 
     particulator = Particulator(
