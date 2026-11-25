@@ -60,6 +60,14 @@ class TestSpectraLognormal:
         assert spectrum.mode == 44
 
     @staticmethod
+    def test_geometric_mean():
+        # arrange
+        spectrum = Lognormal(median=44, s_geom=1.2, norm_factor=666)
+
+        # assert
+        assert spectrum.geometric_mean == 44
+
+    @staticmethod
     def test_instantiation_passing_mode():
         # arrange & act
         spectrum = Lognormal(mode=1, s_geom=1, norm_factor=1)
