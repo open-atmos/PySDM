@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
 
-from PySDM_examples import Bolin_1958
+from PySDM_examples.misc import Bolin_1958
 
 
 @pytest.fixture(scope="session", name="notebook_variables")

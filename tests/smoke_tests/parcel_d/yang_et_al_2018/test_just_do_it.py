@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Yang_et_al_2018 import Settings, Simulation
+from PySDM_examples.featured.Yang_et_al_2018 import Settings, Simulation
 
 from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver

@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.utils.kinematic_2d import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
 from PySDM.physics.constants import si
 

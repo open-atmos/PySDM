@@ -9,7 +9,6 @@ import pytest
 from matplotlib import pyplot
 import PyPartMC
 
-from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
@@ -23,13 +22,13 @@ y_unit = 1 / si.cm**3
 
 def pysdm(dry_diam, temp, rel_humid, kpa):
     r_dry = dry_diam / 2
-    builder = Builder(n_sd=0, backend=CPU(), environment=Box(dt=np.nan, dv=np.nan))
-    builder.particulator.environment["T"] = temp
-    builder.particulator.environment["RH"] = rel_humid
+    env = Box(dt=np.nan, dv=np.nan, backend=CPU())
+    env["T"] = temp
+    env["RH"] = rel_humid
     kappa_times_dry_volume = kpa * (np.pi / 6) * dry_diam**3
     return 2 * equilibrate_wet_radii(
         r_dry=r_dry,
-        environment=builder.particulator.environment,
+        environment=env,
         kappa_times_dry_volume=kappa_times_dry_volume,
     )
 

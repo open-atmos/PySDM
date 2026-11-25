@@ -7,7 +7,7 @@ import pytest
 from scipy import signal
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Jensen_and_Nugent_2017
+from PySDM_examples.featured import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
 
 from PySDM.physics import si

@@ -16,8 +16,8 @@ class SpectrumMomentProduct(ABC, Product):
         self.moment_0 = None
         self.moments = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.moment_0 = self.particulator.Storage.empty(
             (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float
         )
@@ -48,6 +48,6 @@ class SpectrumMomentProduct(ABC, Product):
 
     def _download_spectrum_moment_to_buffer(self, rank, bin_number):
         if rank == 0:  # TODO #217
-            self._download_to_buffer(self.moment_0[bin_number, :])
+            self._download_to_buffer(self.moment_0.row_view(bin_number))
         else:
-            self._download_to_buffer(self.moments[bin_number, :])
+            self._download_to_buffer(self.moments.row_view(bin_number))

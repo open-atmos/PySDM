@@ -13,8 +13,8 @@ class MomentProduct(Product, ABC):
         self.moment_0 = None
         self.moments = None
 
-    def register(self, builder):
-        super().register(builder)
+    def register(self, particulator):
+        super().register(particulator)
         self.moment_0 = self.particulator.Storage.empty(
             self.particulator.mesh.n_cell, dtype=float
         )

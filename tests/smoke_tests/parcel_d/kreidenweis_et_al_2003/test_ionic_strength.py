@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from chempy.electrolytes import ionic_strength
-from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
+from PySDM_examples.featured.Kreidenweis_et_al_2003 import Settings, Simulation
 
 from PySDM import Formulae
 from PySDM.backends.impl_numba.methods.chemistry_methods import (

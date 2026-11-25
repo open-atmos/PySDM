@@ -2,12 +2,9 @@
 GPU-resident backend using NVRTC runtime compilation library for CUDA
 """
 
-import os
-import warnings
-
 import numpy as np
 
-from PySDM.backends.impl_thrust_rtc.conf import trtc
+from PySDM.backends.impl_thrust_rtc.conf import ENABLE as _ENABLE, trtc
 from PySDM.backends.impl_thrust_rtc.methods.collisions_methods import CollisionsMethods
 from PySDM.backends.impl_thrust_rtc.methods.condensation_methods import (
     CondensationMethods,
@@ -41,16 +38,26 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     FreezingMethods,
     IsotopeMethods,
 ):
-    ENABLE = True
+    ENABLE = _ENABLE
     Random = ImportedRandom
 
     default_croupier = "global"
 
     def __init__(
-        self, formulae=None, *, double_precision=False, debug=False, verbose=False
+        self,
+        formulae=None,
+        *,
+        n_dims=0,
+        double_precision=False,
+        debug=False,
+        verbose=False,
     ):
+        if not ThrustRTC.ENABLE:
+            raise RuntimeError(
+                "ThrustRTC backend requires CUDA, which is not available"
+            )
         self.formulae = formulae or Formulae()
-
+        self.n_dims = n_dims
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
         self._real_type = "double" if double_precision else "float"
         self._np_dtype = np.float64 if double_precision else np.float32
@@ -69,6 +76,3 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
         trtc.Set_Kernel_Debug(debug)
         trtc.Set_Verbose(verbose)
-
-        if not ThrustRTC.ENABLE and "CI" not in os.environ:
-            warnings.warn("CUDA is not available, using FakeThrustRTC!")

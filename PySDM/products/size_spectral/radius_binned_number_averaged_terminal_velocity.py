@@ -16,19 +16,17 @@ class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
         super().__init__(name=name, unit=unit, attr_unit="m")
         self.radius_bin_edges = radius_bin_edges
 
-    def register(self, builder):
-        builder.request_attribute(ATTR)
+    def register(self, particulator):
+        particulator.request_attribute(ATTR)
 
-        volume_bin_edges = builder.particulator.formulae.trivia.volume(
-            self.radius_bin_edges
-        )
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+        volume_bin_edges = particulator.formulae.trivia.volume(self.radius_bin_edges)
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
             volume_bin_edges
         )
 
-        super().register(builder)
+        super().register(particulator)
 
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])

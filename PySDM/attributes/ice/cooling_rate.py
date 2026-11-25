@@ -10,15 +10,15 @@ from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 @register_attribute()
 class CoolingRate(DerivedAttribute):
-    def __init__(self, builder):
-        self.cell_id = builder.get_attribute("cell id")
+    def __init__(self, particulator):
+        self.cell_id = particulator.get_attribute("cell id")
         super().__init__(
-            builder=builder, name="cooling rate", dependencies=(self.cell_id,)
+            particulator=particulator, name="cooling rate", dependencies=(self.cell_id,)
         )
-        self.prev_T = builder.particulator.backend.Storage.from_ndarray(
-            np.full(builder.particulator.n_sd, np.nan)
+        self.prev_T = particulator.backend.Storage.from_ndarray(
+            np.full(particulator.n_sd, np.nan)
         )
-        builder.particulator.observers.append(self)
+        particulator.observers.append(self)
 
     def notify(self):
         """triggers update to ensure recalculation is done before

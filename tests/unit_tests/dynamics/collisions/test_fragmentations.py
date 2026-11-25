@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-from PySDM import Builder, Formulae
+from PySDM import Formulae, Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
@@ -14,14 +14,16 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     Gaussian,
     Straub2010Nf,
 )
+from PySDM.dynamics.collisions.collision_kernels import Geometric
+from PySDM.dynamics import Breakup
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults, si
 
 ARBITRARY_VALUE_BETWEEN_0_AND_1 = 0.5
 
 
-def dummy_u01(builder, size):
-    return builder.particulator.PairwiseStorage.from_ndarray(
+def dummy_u01(particulator, size):
+    return particulator.PairwiseStorage.from_ndarray(
         np.full(size, ARBITRARY_VALUE_BETWEEN_0_AND_1)
     )
 
@@ -46,30 +48,36 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        env = Box(dv=None, dt=None)
-        builder = Builder(
-            volume.size,
-            backend_class(
+        env = Box(
+            dv=None,
+            dt=np.nan,
+            backend=backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
             ),
+        )
+        particulator = Particulator(
+            n_sd=volume.size,
             environment=env,
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
-        sut = fragmentation_fn
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
         sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
-        )
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_mass = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = dummy_u01(builder, fragments.size)
+        u01 = dummy_u01(particulator, fragments.size)
 
         # act
         sut(nf, frag_mass, u01, is_first_in_pair)
@@ -108,30 +116,37 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        env = Box(dv=None, dt=None)
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__),
-                double_precision=True,
+        particulator = Particulator(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            n_sd=volume.size,
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(
+                        fragmentation_function=fragmentation_fn.__class__.__name__
+                    ),
+                    double_precision=True,
+                ),
             ),
-            environment=env,
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
-        sut = fragmentation_fn
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
-        )
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_mass = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = dummy_u01(builder, fragments.size)
+        u01 = dummy_u01(particulator, fragments.size)
 
         # act
         sut(nf, frag_mass, u01, is_first_in_pair)
@@ -162,31 +177,35 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-
-        env = Box(dv=None, dt=None)
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+        particulator = Particulator(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            n_sd=volume.size,
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                ),
             ),
-            environment=env,
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
-        sut = fragmentation_fn
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
         sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
-        )
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_mass = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = dummy_u01(builder, fragments.size)
+        u01 = dummy_u01(particulator, fragments.size)
 
         # act
         sut(nf, frag_mass, u01, is_first_in_pair)
@@ -223,30 +242,35 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
 
-        env = Box(dv=None, dt=None)
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+        particulator = Particulator(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            n_sd=volume.size,
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                ),
             ),
-            environment=env,
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
-        sut = fragmentation_fn
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
         sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
-        )
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_mass = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = dummy_u01(builder, fragments.size)
+        u01 = dummy_u01(particulator, fragments.size)
 
         # act
         sut(nf, frag_mass, u01, is_first_in_pair)
@@ -299,19 +323,24 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ]
         )
         fragments = np.asarray([-1.0])
-        env = Box(dv=None, dt=None)
-        builder = Builder(volume.size, backend, environment=env)
-        sut = fragmentation_fn
-        sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        _ = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        particulator = Particulator(
+            n_sd=volume.size,
+            environment=Box(dv=None, dt=np.nan, backend=backend),
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
+        sut.vmin = 1 * si.um**3
 
         rns = np.linspace(1e-6, 1 - 1e-6, n)
         for i, rn in enumerate(rns):
-            _PairwiseStorage = builder.particulator.PairwiseStorage
-            _Indicator = builder.particulator.PairIndicator
+            _PairwiseStorage = particulator.PairwiseStorage
+            _Indicator = particulator.PairIndicator
             nf = _PairwiseStorage.from_ndarray(
                 np.zeros_like(fragments, dtype=np.double)
             )
@@ -319,7 +348,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 np.zeros_like(fragments, dtype=np.double)
             )
             is_first_in_pair = _Indicator(length=volume.size)
-            is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            is_first_in_pair.indicator = particulator.Storage.from_ndarray(
                 np.asarray([True, False])
             )
             u01 = _PairwiseStorage.from_ndarray(np.asarray([rn]))
@@ -378,33 +407,36 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     ):
         # arrange
         expected_frag_mass = np.sum(water_mass) / expected_nf
-
         fragments = np.asarray([-1.0])
-
-        env = Box(dv=None, dt=None)
-        builder = Builder(
-            water_mass.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+        particulator = Particulator(
+            n_sd=water_mass.size,
+            environment=Box(
+                dv=None,
+                dt=np.nan,
+                backend=backend_class(
+                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                ),
             ),
-            environment=env,
-        )
-        sut = fragmentation_fn
-        sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        _ = builder.build(
             attributes={
                 "water mass": water_mass,
                 "multiplicity": np.ones_like(water_mass),
-            }
+            },
+            dynamics=(
+                Breakup(
+                    fragmentation_function=fragmentation_fn,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
+        sut = particulator.dynamics["Collision"].compute_number_of_fragments
+        sut.vmin = 1 * si.um**3
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
+        _PairwiseStorage = particulator.PairwiseStorage
+        _Indicator = particulator.PairIndicator
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_mass = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=water_mass.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+        is_first_in_pair.indicator = particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))

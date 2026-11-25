@@ -5,7 +5,7 @@ Test `PySDM.dynamics.RelaxedVelocity` dynamic
 import numpy as np
 import pytest
 
-from PySDM.builder import Builder
+from PySDM import Particulator
 from PySDM.dynamics import RelaxedVelocity
 from PySDM.environments.box import Box
 from PySDM.physics import si
@@ -47,26 +47,20 @@ def test_small_timescale(default_attributes, constant_timescale, backend_instanc
     When the fall velocity is initialized to 0 and relaxation is very quick,
     the velocity should quickly approach the terminal velocity
     """
-
-    env = Box(dt=1, dv=1)
-    builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_instance,
-        environment=env,
-    )
-
-    builder.add_dynamic(RelaxedVelocity(c=1e-12, constant=constant_timescale))
-
-    builder.request_attribute("relative fall velocity")
-    builder.request_attribute("terminal velocity")
-
     default_attributes["relative fall momentum"] = np.zeros_like(
         default_attributes["multiplicity"]
     )
 
-    particulator = builder.build(attributes=default_attributes, products=())
+    particulator = Particulator(
+        requested_attributes=("relative fall velocity", "terminal velocity"),
+        environment=Box(dt=1, dv=1, backend=backend_instance),
+        attributes=default_attributes,
+        products=(),
+        dynamics=(RelaxedVelocity(c=1e-12, constant=constant_timescale),),
+        n_sd=len(default_attributes["multiplicity"]),
+    )
 
-    particulator.run(1)
+    particulator.advance(1)
 
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
@@ -79,26 +73,20 @@ def test_large_timescale(default_attributes, constant_timescale, backend_instanc
     When the fall velocity is initialized to 0 and relaxation is very slow,
     the velocity should remain 0
     """
-
-    env = Box(dt=1, dv=1)
-    builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_instance,
-        environment=env,
-    )
-
-    builder.add_dynamic(RelaxedVelocity(c=1e15, constant=constant_timescale))
-
-    builder.request_attribute("relative fall velocity")
-    builder.request_attribute("terminal velocity")
-
     default_attributes["relative fall momentum"] = np.zeros_like(
         default_attributes["multiplicity"]
     )
 
-    particulator = builder.build(attributes=default_attributes, products=())
+    particulator = Particulator(
+        attributes=default_attributes,
+        products=(),
+        n_sd=len(default_attributes["multiplicity"]),
+        environment=Box(dt=1, dv=1, backend=backend_instance),
+        dynamics=(RelaxedVelocity(c=1e15, constant=constant_timescale),),
+        requested_attributes=("relative fall velocity", "terminal velocity"),
+    )
 
-    particulator.run(100)
+    particulator.advance(100)
 
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
@@ -110,39 +98,32 @@ def test_behavior(default_attributes, constant_timescale, backend_instance):
     """
     The fall velocity should approach the terminal velocity exponentially
     """
-
-    env = Box(dt=1, dv=1)
-    builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_instance,
-        environment=env,
-    )
-
-    # relaxation happens too quickly unless c is high enough
-    builder.add_dynamic(RelaxedVelocity(c=100, constant=constant_timescale))
-
-    builder.request_attribute("relative fall velocity")
-    builder.request_attribute("terminal velocity")
-
     default_attributes["relative fall momentum"] = np.zeros_like(
         default_attributes["multiplicity"]
     )
 
-    particulator = builder.build(attributes=default_attributes, products=())
+    particulator = Particulator(
+        attributes=default_attributes,
+        products=(),
+        n_sd=len(default_attributes["multiplicity"]),
+        environment=Box(dt=1, dv=1, backend=backend_instance),
+        dynamics=(RelaxedVelocity(c=100, constant=constant_timescale),),
+        requested_attributes=("relative fall velocity", "terminal velocity"),
+    )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v1 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v2 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
-    particulator.run(1)
+    particulator.advance(1)
     delta_v3 = (
         particulator.attributes["terminal velocity"].to_ndarray()
         - particulator.attributes["relative fall velocity"].to_ndarray()
@@ -160,22 +141,20 @@ def test_timescale(default_attributes, c, constant_timescale, backend_instance):
 
     The constant timescale should be constant.
     """
-    env = Box(dt=1, dv=1)
-    builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_instance,
-        environment=env,
-    )
-
     dyn = RelaxedVelocity(c=c, constant=constant_timescale)
-    builder.add_dynamic(dyn)
 
     default_attributes["relative fall momentum"] = np.zeros_like(
         default_attributes["multiplicity"]
     )
 
-    particulator = builder.build(attributes=default_attributes, products=())
-    sqrt_radius_attr = builder.get_attribute("square root of radius")
+    particulator = Particulator(
+        attributes=default_attributes,
+        products=(),
+        n_sd=len(default_attributes["multiplicity"]),
+        environment=Box(dt=1, dv=1, backend=backend_instance),
+        dynamics=(dyn,),
+    )
+    sqrt_radius_attr = particulator.get_attribute("square root of radius")
 
     tau_storage = particulator.Storage.empty(
         default_attributes["multiplicity"].shape, dtype=float

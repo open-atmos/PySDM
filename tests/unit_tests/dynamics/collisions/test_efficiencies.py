@@ -3,7 +3,7 @@ from matplotlib import pyplot
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.coalescence_efficiencies import (
@@ -13,6 +13,8 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import (
     SpecifiedEff,
     Straub2010Ec,
 )
+from PySDM.dynamics.collisions.collision_kernels import Geometric
+from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.physics import si
 
@@ -33,14 +35,18 @@ class TestEfficiencies:
     def test_efficiency_fn_call(efficiency, backend_class=CPU):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        builder = Builder(
-            volume.size, backend_class(), environment=Box(dv=None, dt=None)
+        particulator = Particulator(
+            n_sd=volume.size,
+            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)},
+            dynamics=(
+                Coalescence(
+                    coalescence_efficiency=efficiency,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
-        sut = efficiency
-        sut.register(builder)
-        particulator = builder.build(
-            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
-        )
+        sut = particulator.dynamics["Collision"].compute_coalescence_efficiency
 
         eff = particulator.PairwiseStorage.from_ndarray(np.asarray([-1.0]))
         is_first_in_pair = particulator.PairIndicator(length=volume.size)
@@ -58,12 +64,10 @@ class TestEfficiencies:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "sut",
-        [
-            Straub2010Ec(),
-        ],
+        "efficiency",
+        (Straub2010Ec(),),
     )
-    def test_efficiency_dist(sut, backend_class=CPU, plot=False):
+    def test_efficiency_dist(efficiency, backend_class=CPU, plot=False):
         # arrange
         n_per = 20
         n_sd = 2
@@ -71,14 +75,21 @@ class TestEfficiencies:
         drop_size_L_diam = np.linspace(0.01, 0.5, n_per) * si.cm
         drop_size_S_diam = np.linspace(0.01, 0.2, n_per) * si.cm
 
-        builder = Builder(n_sd, backend_class(), environment=Box(dv=None, dt=None))
-        sut.register(builder)
-        particulator = builder.build(
+        particulator = Particulator(
+            n_sd=n_sd,
+            environment=Box(dv=None, dt=np.nan, backend=backend_class()),
             attributes={
                 "volume": np.full(shape=n_sd, fill_value=np.nan),
                 "multiplicity": np.ones(n_sd),
-            }
+            },
+            dynamics=(
+                Coalescence(
+                    coalescence_efficiency=efficiency,
+                    collision_kernel=Geometric(),
+                ),
+            ),
         )
+        sut = particulator.dynamics["Collision"].compute_coalescence_efficiency
 
         eff = particulator.PairwiseStorage.from_ndarray(np.asarray([-1.0]))
         is_first_in_pair = particulator.PairIndicator(length=n_sd)

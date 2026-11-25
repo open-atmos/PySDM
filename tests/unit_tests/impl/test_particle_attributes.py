@@ -6,8 +6,8 @@ from PySDM.backends import Numba, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
-
 from ..dummy_environment import DummyEnvironment
+
 from ..dummy_particulator import DummyParticulator
 
 
@@ -33,9 +33,11 @@ class TestParticleAttributes:
     )
     def test_housekeeping(backend_class, water_mass, multiplicity):
         # Arrange
-        particulator = DummyParticulator(backend_class, n_sd=len(multiplicity))
-        attributes = {"multiplicity": multiplicity, "water mass": water_mass}
-        particulator.build(attributes, int_caster=np.int64)
+        particulator = DummyParticulator(
+            backend_class,
+            n_sd=len(multiplicity),
+            attributes={"multiplicity": multiplicity, "water mass": water_mass},
+        )
         sut = particulator.attributes
         sut.healthy = False
 
@@ -65,8 +67,8 @@ class TestParticleAttributes:
             (
                 [1, 2, 3, 4, 5, 6, 0],
                 [2, 2, 2, 2, 1, 1, 1],
-                [0, 1, 2, 3, 4, 5, 6],
-                [4, 5, 0, 1, 2, 3],
+                [1, 0, 2, 3, 4, 5, 6],
+                [4, 5, 1, 0, 2, 3],
                 [0, 0, 2, 6],
             ),
         ],
@@ -80,18 +82,18 @@ class TestParticleAttributes:
     ):
         # Arrange
         n_sd = len(multiplicity)
-        particulator = DummyParticulator(backend_cls, n_sd=n_sd)
         n_cell = max(cells) + 1
-        particulator.environment.mesh.n_cell = n_cell
-        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
+        particulator = DummyParticulator(
+            backend_cls,
+            n_sd=n_sd,
+            attributes={
+                "multiplicity": np.asarray(multiplicity),
+                "cell id": np.asarray(cells),
+            },
+            grid=(n_cell,),
+        )
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
-        sut._ParticleAttributes__attributes["multiplicity"].data = make_indexed_storage(
-            particulator.backend, multiplicity, sut._ParticleAttributes__idx
-        )
-        sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
-            particulator.backend, cells, sut._ParticleAttributes__idx
-        )
         sut._ParticleAttributes__cell_start = make_indexed_storage(
             particulator.backend, [0] * (n_cell + 1)
         )
@@ -111,11 +113,12 @@ class TestParticleAttributes:
 
         # Assert
         np.testing.assert_array_equal(
-            np.array(new_idx),
-            sut._ParticleAttributes__idx.to_ndarray()[: sut.super_droplet_count],
+            desired=np.array(new_idx),
+            actual=sut._ParticleAttributes__idx.to_ndarray()[: sut.super_droplet_count],
         )
         np.testing.assert_array_equal(
-            np.array(cell_start), sut._ParticleAttributes__cell_start.to_ndarray()
+            desired=np.array(cell_start),
+            actual=sut._ParticleAttributes__cell_start.to_ndarray(),
         )
 
     @staticmethod
@@ -124,22 +127,35 @@ class TestParticleAttributes:
         multiplicity = np.ones(1, dtype=np.int64)
         droplet_id = 0
         initial_position = np.array([[0], [0]])
-        grid = (1, 1)
-        particulator = DummyParticulator(backend_class, n_sd=1)
-        particulator.environment = DummyEnvironment(grid=grid)
-        cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(
+        backend = backend_class(None, double_precision=True)
+
+        backend = backend_class(None, double_precision=True)
+
+        environment = DummyEnvironment(
+            backend=backend,
+            grid=(10, 10),
+        )
+
+        cell_id, cell_origin, position_in_cell = environment.mesh.cellular_attributes(
             initial_position
         )
+
         cell_origin[0, droplet_id] = 0.1
         cell_origin[1, droplet_id] = 0.2
         cell_id[droplet_id] = -1
-        attribute = {
+
+        attributes = {
             "multiplicity": multiplicity,
             "cell id": cell_id,
             "cell origin": cell_origin,
             "position in cell": position_in_cell,
         }
-        particulator.build(attribute)
+
+        particulator = DummyParticulator(
+            n_sd=1,
+            environment=environment,
+            attributes=attributes,
+        )
 
         # Act
         particulator.recalculate_cell_id()
@@ -236,27 +252,31 @@ class TestParticleAttributes:
     def test_permutation_local_repeatable(backend_class):
         if backend_class is ThrustRTC:
             pytest.skip("TODO #358")
+
+        # Arrange
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)
         cell_start = [0, 0, 20, 250, 700, n_sd]
-
-        # Arrange
-        particulator = DummyParticulator(backend_class, n_sd=n_sd)
+        n_cell = len(cell_start) - 1
         cell_id = []
-        particulator.environment.mesh.n_cell = len(cell_start) - 1
-        for i in range(particulator.environment.mesh.n_cell):
+        environment = DummyEnvironment(
+            grid=(n_cell,), backend=backend_class(None, double_precision=True)
+        )
+        for i in range(environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
+        particulator = DummyParticulator(
+            backend_class,
+            n_sd=n_sd,
+            attributes={"multiplicity": np.ones(n_sd), "cell id": np.asarray(cell_id)},
+            environment=environment,
+        )
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
             particulator.backend, [0] * idx_length
-        )
-        sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
-            particulator.backend, cell_id
         )
         sut._ParticleAttributes__cell_start = make_indexed_storage(
             particulator.backend, cell_start

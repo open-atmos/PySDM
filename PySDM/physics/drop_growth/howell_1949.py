@@ -4,7 +4,7 @@ as proposed in [Howell 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0134:T
 same as in [Mason 1951](https://doi.org/10.1088/0370-1301/64/9/307)
 
 The notation for terms associated with heat conduction and diffusion are from eq. 7.17
- in [Rogers & Yau 1971](https://archive.org/details/shortcourseinclo0000roge_m3k2).
+ in [Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
 """
 
 from .fick import Fick

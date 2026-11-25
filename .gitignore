@@ -146,3 +146,12 @@ dmypy.json
 
 #Jetbrains
 .idea/
+
+#JAX work
+tmp/
+__ptx_cache__.db
+.venv-ubuntu/
+prof/
+jax_test.ipynb
+jax_test.py
+readme.png

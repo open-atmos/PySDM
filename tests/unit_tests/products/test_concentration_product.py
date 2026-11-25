@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.products import ParticleConcentration, TotalParticleConcentration
@@ -12,7 +12,6 @@ DV = 22 * si.m**3
 MULTIPLICITY = 33
 DROP_VOLUME = 44 * si.um**3
 RHOD = 1.55 * si.kg / si.m**3
-ENV = Box(dt=0, dv=DV)
 ATTRIBUTES = {
     "multiplicity": np.asarray([MULTIPLICITY] * N_SD),
     "volume": np.asarray([DROP_VOLUME] * N_SD),
@@ -25,9 +24,11 @@ class TestParticleConcentration:
     @pytest.mark.parametrize("stp", (True, False))
     def test_stp(backend_instance, stp):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_instance, environment=ENV)
-        particulator = builder.build(
-            attributes=ATTRIBUTES, products=(TotalParticleConcentration(stp=stp),)
+        particulator = Particulator(
+            attributes=ATTRIBUTES,
+            products=(TotalParticleConcentration(stp=stp),),
+            environment=Box(dt=0, dv=DV, backend=backend_instance),
+            n_sd=N_SD,
         )
         if stp:
             particulator.environment["rhod"] = RHOD
@@ -48,9 +49,11 @@ class TestParticleConcentration:
     @pytest.mark.parametrize("specific", (True, False))
     def test_specific(backend_instance, specific):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_instance, environment=ENV)
-        particulator = builder.build(
-            attributes=ATTRIBUTES, products=(ParticleConcentration(specific=specific),)
+        particulator = Particulator(
+            attributes=ATTRIBUTES,
+            products=(ParticleConcentration(specific=specific),),
+            n_sd=N_SD,
+            environment=Box(dt=0, dv=DV, backend=backend_instance),
         )
         if specific:
             particulator.environment["rhod"] = RHOD

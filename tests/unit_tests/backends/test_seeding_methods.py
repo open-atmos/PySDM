@@ -5,7 +5,7 @@ from contextlib import nullcontext
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Particulator
 from PySDM.environments import Box
 from PySDM.backends import CPU
 from PySDM.physics import si
@@ -46,8 +46,9 @@ class TestSeeding:
         dv=1,
     ):
         # arrange
-        builder = Builder(n_sd, CPU(), Box(dt, dv))
-        particulator = builder.build(
+        particulator = Particulator(
+            n_sd=n_sd,
+            environment=Box(dt, dv, backend=CPU()),
             attributes={
                 "multiplicity": np.full(n_sd, np.nan),
                 "water mass": np.zeros(n_sd),
@@ -109,8 +110,9 @@ class TestSeeding:
         number_of_super_particles_to_inject=3,
     ):
         # arrange
-        builder = Builder(n_sd, CPU(), Box(dt=np.nan, dv=np.nan))
-        particulator = builder.build(
+        particulator = Particulator(
+            environment=Box(dt=np.nan, dv=np.nan, backend=CPU()),
+            n_sd=n_sd,
             attributes={
                 "multiplicity": np.full(n_sd, np.nan),
                 "water mass": np.zeros(n_sd),

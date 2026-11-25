@@ -11,12 +11,12 @@ from ..impl import DerivedAttribute, register_attribute
     dummy_default=True,
 )
 class ReynoldsNumber(DerivedAttribute):
-    def __init__(self, builder):
-        self.radius = builder.get_attribute("radius")
-        self.velocity_wrt_air = builder.get_attribute("relative fall velocity")
-        self.cell_id = builder.get_attribute("cell id")
+    def __init__(self, particulator):
+        self.radius = particulator.get_attribute("radius")
+        self.velocity_wrt_air = particulator.get_attribute("relative fall velocity")
+        self.cell_id = particulator.get_attribute("cell id")
         super().__init__(
-            builder,
+            particulator,
             name="Reynolds number",
             dependencies=(self.radius, self.velocity_wrt_air, self.cell_id),
         )

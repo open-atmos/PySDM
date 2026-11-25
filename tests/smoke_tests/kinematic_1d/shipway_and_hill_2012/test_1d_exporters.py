@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import TemporaryFile
-from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
+from PySDM_examples.featured.Shipway_and_Hill_2012 import Settings, Simulation
 from PySDM_examples.utils import readVTK_1d
 
 from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d

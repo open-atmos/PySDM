@@ -18,7 +18,7 @@ class VTKExporter:
     exporter = VTKExporter()
 
     for step in range(settings.n_steps):
-        simulation.particulator.run(1)
+        simulation.particulator.advance(1)
 
         exporter.export_attributes(simulation.particulator)
         exporter.export_products(simulation.particulator)
@@ -89,7 +89,7 @@ class VTKExporter:
             }
         )
 
-        if particulator.mesh.dimension == 2:
+        if particulator.mesh.n_dims == 2:
             y = (
                 particulator.mesh.size[0]
                 / particulator.mesh.grid[0]
@@ -122,7 +122,7 @@ class VTKExporter:
                 print("Exporting Products to vtk, path: " + path)
             payload = {}
 
-            if particulator.mesh.dimension != 2:
+            if particulator.mesh.n_dims != 2:
                 raise NotImplementedError(
                     "Only 2 dimensions data is supported at the moment."
                 )

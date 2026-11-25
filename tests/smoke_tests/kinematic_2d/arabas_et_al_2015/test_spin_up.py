@@ -2,8 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.utils.kinematic_2d import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
 from PySDM.formulae import Formulae
 from PySDM.physics import si
@@ -28,7 +27,7 @@ def test_spin_up(backend_class, fastmath, plot=False):
 
     storage = DummyStorage()
     simulation = Simulation(
-        settings, storage, SpinUp=SpinUp, backend_class=backend_class
+        settings, storage, SpinUp=SpinUp, backend=backend_class(n_dims=2)
     )
     simulation.reinit()
 

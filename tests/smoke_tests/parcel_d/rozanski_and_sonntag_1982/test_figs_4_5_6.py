@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Rozanski_and_Sonntag_1982
+from PySDM_examples.sandbox import Rozanski_and_Sonntag_1982
 from PySDM.physics import in_unit
 
 PLOT = False

@@ -17,11 +17,11 @@ class FlowVelocityComponent(Product):
         self.grid_step = np.nan
         self.time_step = np.nan
 
-    def register(self, builder):
-        super().register(builder)
-        self.displacement = self.particulator.dynamics["Displacement"]
-        self.time_step = self.particulator.dt
-        mesh = self.particulator.mesh
+    def register(self, particulator):
+        super().register(particulator)
+        self.displacement = particulator.dynamics["Displacement"]
+        self.time_step = particulator.dt
+        mesh = particulator.mesh
         self.grid_step = mesh.size[self.component] / mesh.grid[self.component]
 
     def _impl(self, **kwargs):

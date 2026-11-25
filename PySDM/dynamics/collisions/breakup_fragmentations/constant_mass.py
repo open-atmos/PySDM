@@ -13,5 +13,5 @@ class ConstantMass:  # pylint: disable=too-many-instance-attributes
         nf.sum(self.particulator.attributes["water mass"], is_first_in_pair)
         nf /= self.C
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator

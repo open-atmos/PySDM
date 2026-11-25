@@ -4,7 +4,7 @@ time-dependent formulation for immersion freezing
 and homogeneous freezing and thaw
 """
 
-from typing import Optional
+from typing import Literal, Optional
 from PySDM.dynamics.impl import register_dynamic
 
 
@@ -13,9 +13,9 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
-        homogeneous_freezing: Optional[str] = None,
-        immersion_freezing: Optional[str] = None,
-        thaw: Optional[str] = None,
+        homogeneous_freezing: Optional[Literal["threshold", "time-dependent"]] = None,
+        immersion_freezing: Optional[Literal["singular", "time-dependent"]] = None,
+        thaw: Optional[Literal["instantaneous"]] = None,
     ):
         assert (
             homogeneous_freezing or immersion_freezing or thaw
@@ -38,30 +38,30 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         self.rng = None
         self.particulator = None
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
         assert (
             self.particulator.formulae.particle_shape_and_density.supports_mixed_phase()
         )
 
-        builder.request_attribute("signed water mass")
+        particulator.request_attribute("signed water mass")
         if self.immersion_freezing == "singular":
-            builder.request_attribute("freezing temperature")
+            particulator.request_attribute("freezing temperature")
 
         if self.immersion_freezing == "time-dependent":
             assert (
                 self.particulator.formulae.heterogeneous_ice_nucleation_rate.__name__
                 != "Null"
             )
-            builder.request_attribute("immersed surface area")
+            particulator.request_attribute("immersed surface area")
 
         if self.homogeneous_freezing == "time-dependent":
             assert (
                 self.particulator.formulae.homogeneous_ice_nucleation_rate.__name__
                 != "Null"
             )
-            builder.request_attribute("volume")
+            particulator.request_attribute("volume")
 
         if (
             self.homogeneous_freezing == "time-dependent"

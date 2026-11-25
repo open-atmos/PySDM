@@ -11,21 +11,21 @@ from PySDM.attributes.impl import (
 
 @register_attribute()
 class CriticalVolume(DerivedAttribute, TemperatureVariationOptionAttribute):
-    def __init__(self, builder, neglect_temperature_variations=False):
-        self.cell_id = builder.get_attribute("cell id")
-        self.v_dry = builder.get_attribute("dry volume")
-        self.v_wet = builder.get_attribute("volume")
-        self.kappa = builder.get_attribute("kappa")
-        self.f_org = builder.get_attribute("dry volume organic fraction")
-        self.environment = builder.particulator.environment
-        self.particles = builder.particulator
+    def __init__(self, particulator, neglect_temperature_variations=False):
+        self.cell_id = particulator.get_attribute("cell id")
+        self.v_dry = particulator.get_attribute("dry volume")
+        self.v_wet = particulator.get_attribute("volume")
+        self.kappa = particulator.get_attribute("kappa")
+        self.f_org = particulator.get_attribute("dry volume organic fraction")
+        self.environment = particulator.environment
+        self.particles = particulator
 
         dependencies = [self.v_dry, self.v_wet, self.cell_id]
         TemperatureVariationOptionAttribute.__init__(
-            self, builder, neglect_temperature_variations
+            self, particulator, neglect_temperature_variations
         )
         DerivedAttribute.__init__(
-            self, builder, name="critical volume", dependencies=dependencies
+            self, particulator, name="critical volume", dependencies=dependencies
         )
 
     def recalculate(self):
@@ -47,19 +47,19 @@ class CriticalVolume(DerivedAttribute, TemperatureVariationOptionAttribute):
 
 @register_attribute()
 class CriticalVolumeNeglectingTemperatureVariations(CriticalVolume):
-    def __init__(self, builder):
-        super().__init__(builder, neglect_temperature_variations=True)
+    def __init__(self, particulator):
+        super().__init__(particulator, neglect_temperature_variations=True)
 
 
 @register_attribute()
 class WetToCriticalVolumeRatio(DerivedAttribute):
     def __init__(
         self,
-        builder,
+        particulator,
         neglect_temperature_variations=False,
         name="wet to critical volume ratio",
     ):
-        self.critical_volume = builder.get_attribute(
+        self.critical_volume = particulator.get_attribute(
             "critical volume"
             + (
                 " neglecting temperature variations"
@@ -67,9 +67,9 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
                 else ""
             )
         )
-        self.volume = builder.get_attribute("volume")
+        self.volume = particulator.get_attribute("volume")
         super().__init__(
-            builder,
+            particulator,
             name=name,
             dependencies=(self.critical_volume, self.volume),
         )
@@ -80,9 +80,9 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
 
 @register_attribute()
 class WetToCriticalVolumeRatioNeglectingTemperatureVariations(WetToCriticalVolumeRatio):
-    def __init__(self, builder):
+    def __init__(self, particulator):
         super().__init__(
-            builder,
+            particulator,
             neglect_temperature_variations=True,
             name="wet to critical volume ratio neglecting temperature variations",
         )

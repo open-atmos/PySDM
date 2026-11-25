@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM_examples.Srivastava_1982.equations import Equations
+from PySDM_examples.featured.Srivastava_1982.equations import Equations
 
 from PySDM.physics import constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis

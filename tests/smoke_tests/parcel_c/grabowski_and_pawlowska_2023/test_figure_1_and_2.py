@@ -5,7 +5,7 @@ test against values read from plots in
 
 import numpy as np
 import pytest
-from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
+from PySDM_examples.featured.Grabowski_and_Pawlowska_2023 import Settings, Simulation
 
 from PySDM import Formulae
 from PySDM.physics import si

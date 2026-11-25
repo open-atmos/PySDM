@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Abade_and_Albuquerque_2024
+from PySDM_examples.sandbox import Abade_and_Albuquerque_2024
 
 from PySDM.physics import si
 

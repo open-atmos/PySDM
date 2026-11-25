@@ -29,7 +29,7 @@ class Lognormal(Spectrum):
 
     @property
     def geometric_mean(self):
-        return self.s_geom
+        return self.m_mode
 
     def __str__(self):
         return (

@@ -18,9 +18,9 @@ class MeanRadius(MomentProduct):
         self.radius_range = radius_range
         super().__init__(name=name, unit=unit)
 
-    def register(self, builder):
-        builder.request_attribute("volume")
-        super().register(builder)
+    def register(self, particulator):
+        particulator.request_attribute("volume")
+        super().register(particulator)
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(

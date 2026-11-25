@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.Niedermeier_et_al_2014 import Settings, Simulation
+from PySDM_examples.sandbox.Niedermeier_et_al_2014 import Settings, Simulation
 
 from PySDM import Formulae
 from PySDM.physics import si

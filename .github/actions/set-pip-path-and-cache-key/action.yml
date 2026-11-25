@@ -6,7 +6,6 @@ runs:
         echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
         hash_input_files="
           pyproject.toml
-          setup.py
           examples/pyproject.toml
           examples/setup.py
           tests/devops_tests/requirements.txt

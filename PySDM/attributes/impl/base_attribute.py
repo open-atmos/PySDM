@@ -7,9 +7,12 @@ from .attribute import Attribute
 
 
 class BaseAttribute(Attribute):
-    def __init__(self, builder, name, dtype=float, n_vector_components=0):
+    def __init__(self, particulator, name, dtype=float, n_vector_components=0):
         super().__init__(
-            builder, name=name, dtype=dtype, n_vector_components=n_vector_components
+            particulator,
+            name=name,
+            dtype=dtype,
+            n_vector_components=n_vector_components,
         )
 
     def init(self, data):
