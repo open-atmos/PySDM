@@ -116,7 +116,7 @@ class TestIsotopes:
         ),
     )
     @pytest.mark.parametrize("variant", ("ZabaEtAl",))
-    def test_bolin_number_attribute(
+    def test_bolin_number_attribute(  # TODO #2017
         backend_class,
         heavy_isotope: str,
         moles_heavy: float,
@@ -133,6 +133,7 @@ class TestIsotopes:
             isotope_relaxation_timescale=variant,
             isotope_diffusivity_ratios="HellmannAndHarvey2020+GrahamsLaw",
             isotope_equilibrium_fractionation_factors="VanHook1968",
+            saturation_vapour_pressure="FlatauWalkoCotton",
         )
         n_sd = 1
         attribute_name = f"Bolin number for {heavy_isotope}"
