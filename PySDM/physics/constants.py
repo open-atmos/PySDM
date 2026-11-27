@@ -50,7 +50,9 @@ NaN = np.nan
 
 default_random_seed = (
     44
-    if "CI" in os.environ  # https://en.wikipedia.org/wiki/44_(number)
+    if "CI" in os.environ
+    and os.getenv("GITHUB_EVENT_NAME")
+    != "schedule"  # https://en.wikipedia.org/wiki/44_(number)
     else time.time_ns()
 )
 
