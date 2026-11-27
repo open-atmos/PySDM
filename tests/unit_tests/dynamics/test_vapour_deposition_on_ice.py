@@ -80,6 +80,7 @@ def make_particulator(
                     particle_shape_and_density="MixedPhaseSpheres",
                     diffusion_coordinate=diffusion_coordinate,
                     diffusion_ice_capacity=diffusion_ice_capacity,
+                    saturation_vapour_pressure="MurphyKoop2005",
                 ),
             ),
         ),
