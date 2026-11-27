@@ -100,7 +100,7 @@
         <pre><code>pip install PySDM</code></pre>
         <p>Note: the way above <b>will not</b> install test-time dependencies, to install them and run the tests, likely the most convenient way is:</p>
         <pre><code>git clone https://github.com/open-atmos/PySDM.git
-pip install -e PySDM[tests] -e PySDM/examples[tests]
+pip install -e &quot;PySDM[nonunit-tests,unit-tests,CI_version_pins]&quot; -e &quot;PySDM/examples[CI_version_pins]&quot;
 pytest PySDM</code></pre>
         <p>(the above should be a viable way to set up development environment for PySDM, see also our <a href="https://github.com/open-atmos/python-dev-hints/wiki">Python dev hints Wiki</a> 
           and <a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/tutorials">PySDM tutorials</a> for further information)</p>
