@@ -4,7 +4,6 @@ import pytest
 from matplotlib import pyplot
 from PySDM_examples.utils.kinematic_2d import Simulation, Settings, SpinUp
 
-from PySDM.formulae import Formulae
 from PySDM.physics import si
 
 from .dummy_storage import DummyStorage
@@ -19,7 +18,7 @@ from .dummy_storage import DummyStorage
 )
 def test_spin_up(backend_class, fastmath, plot=False):
     # Arrange
-    settings = Settings(Formulae(fastmath=fastmath))
+    settings = Settings(fastmath=fastmath)
     settings.dt = 0.5 * si.second
     settings.grid = (3, 25)
     settings.simulation_time = 20 * settings.dt
@@ -27,7 +26,10 @@ def test_spin_up(backend_class, fastmath, plot=False):
 
     storage = DummyStorage()
     simulation = Simulation(
-        settings, storage, SpinUp=SpinUp, backend=backend_class(n_dims=2)
+        settings,
+        storage,
+        SpinUp=SpinUp,
+        backend=backend_class(n_dims=2, formulae=settings.formulae),
     )
     simulation.reinit()
 

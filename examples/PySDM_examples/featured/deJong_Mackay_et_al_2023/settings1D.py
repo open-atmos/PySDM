@@ -78,7 +78,8 @@ class Settings1D(SettingsSH):
             t_max=t_max,
             precip=precip,
             formulae=Formulae(
-                fragmentation_function=self.fragmentation_function.__class__.__name__
+                fragmentation_function=self.fragmentation_function.__class__.__name__,
+                collision_kernel="Geometric",
             ),
             save_spec_and_attr_times=save_spec_at,
             old_buggy_density_formula=old_buggy_density_formula,

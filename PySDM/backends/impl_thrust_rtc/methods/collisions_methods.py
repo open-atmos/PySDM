@@ -745,6 +745,7 @@ class CollisionsMethods(
         self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
             n=len(dt_left), args=(dt_todo, dt_left.data, d_dt_max)
         )
+        print(f"{len(multiplicity)//2=}")
         self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
             n=len(multiplicity) // 2,
             args=(
@@ -1121,5 +1122,48 @@ class CollisionsMethods(
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
+            ),
+        )
+
+    @cached_property
+    def _collision_kernel(self):
+        if self.formulae.particle_shape_and_density.supports_mixed_phase():
+            raise NotImplementedError()
+        liquid_liquid = self.formulae.collision_kernel.liquid_liquid
+        return trtc.For(
+            param_names=(
+                "idx",
+                "attr0",
+                "attr1",
+                "attr2",
+                "singed_water_mass",
+                "output",
+                "is_first_in_pair",
+            ),
+            name_iter="i",
+            body=f"""
+                if (is_first_in_pair[i]) {{
+                    output[(int64_t)(i / 2)] = {liquid_liquid.c_inline(
+                        attr0_a="attr0[idx[i]]", attr0_b="attr0[idx[i + 1]]",
+                        attr1_a="attr1[idx[i]]", attr1_b="attr0[idx[i + 1]]",
+                        attr2_a="attr2[idx[i]]", attr2_b="attr0[idx[i + 1]]")};
+                }}
+            """.replace("real_type", self._get_c_type()),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def collision_kernel(
+        self, *, signed_water_mass, output, is_first_in_pair, attr0, attr1, attr2
+    ):
+        self._collision_kernel.launch_n(
+            n=len(signed_water_mass),
+            args=(
+                signed_water_mass.idx.data,
+                attr0.data,
+                attr1.data,
+                attr2.data,
+                signed_water_mass.data,
+                output.data,
+                is_first_in_pair.indicator.data,
             ),
         )

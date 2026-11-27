@@ -5,7 +5,6 @@ from PySDM_examples.featured.Shipway_and_Hill_2012 import Settings as SettingsSH
 from PySDM import Formulae
 from PySDM.initialisation import spectra
 from PySDM.physics import si
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 
 
 class Settings1D(SettingsSH):
@@ -55,10 +54,9 @@ class Settings1D(SettingsSH):
             z_max=z_max,
             t_max=t_max,
             precip=precip,
-            formulae=formulae or Formulae(terminal_velocity="PowerSeries"),
+            formulae=formulae,
             save_spec_and_attr_times=save_spec_and_attr_times,
             enable_condensation=False,
-            collision_kernel=Golovin(b=5e3),
         )
         self.z_part = z_part
         z_frac = z_part[1] - z_part[0]

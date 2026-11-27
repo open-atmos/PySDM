@@ -14,7 +14,6 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     Gaussian,
     Straub2010Nf,
 )
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.dynamics import Breakup
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults, si
@@ -52,7 +51,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dv=None,
             dt=np.nan,
             backend=backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                Formulae(
+                    fragmentation_function=fragmentation_fn.__class__.__name__,
+                    collision_kernel="Geometric",
+                )
             ),
         )
         particulator = Particulator(
@@ -62,7 +64,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -124,7 +125,8 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 dt=np.nan,
                 backend=backend_class(
                     Formulae(
-                        fragmentation_function=fragmentation_fn.__class__.__name__
+                        fragmentation_function=fragmentation_fn.__class__.__name__,
+                        collision_kernel="Geometric",
                     ),
                     double_precision=True,
                 ),
@@ -132,7 +134,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -184,13 +185,15 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 dv=None,
                 dt=np.nan,
                 backend=backend_class(
-                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                    Formulae(
+                        fragmentation_function=fragmentation_fn.__class__.__name__,
+                        collision_kernel="Geometric",
+                    )
                 ),
             ),
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -249,13 +252,15 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 dv=None,
                 dt=np.nan,
                 backend=backend_class(
-                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                    Formulae(
+                        fragmentation_function=fragmentation_fn.__class__.__name__,
+                        collision_kernel="Geometric",
+                    )
                 ),
             ),
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -314,7 +319,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         res = np.empty((n, 2), dtype=np.double)
 
         backend = CPU(
-            Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+            Formulae(
+                fragmentation_function=fragmentation_fn.__class__.__name__,
+                collision_kernel="Geometric",
+            )
         )
         volume = np.asarray(
             [
@@ -330,7 +338,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
@@ -414,7 +421,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 dv=None,
                 dt=np.nan,
                 backend=backend_class(
-                    Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+                    Formulae(
+                        fragmentation_function=fragmentation_fn.__class__.__name__,
+                        collision_kernel="Geometric",
+                    )
                 ),
             ),
             attributes={
@@ -424,7 +434,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             dynamics=(
                 Breakup(
                     fragmentation_function=fragmentation_fn,
-                    collision_kernel=Geometric(),
                 ),
             ),
         )
