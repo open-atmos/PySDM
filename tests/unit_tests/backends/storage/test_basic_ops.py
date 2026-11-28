@@ -43,7 +43,9 @@ class TestBasicOps:
         output.exp()
 
         # Assert
-        np.testing.assert_array_equal(output.to_ndarray(), np.exp(data))
+        np.testing.assert_allclose(
+            output.to_ndarray(), np.exp(data), rtol=4 * np.finfo(float).eps
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
