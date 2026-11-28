@@ -18,6 +18,7 @@ from PySDM.products import (
     SpecificIceWaterContent,
 )
 from PySDM.environments import Parcel
+from PySDM_examples.sandbox.Abade_and_Albuquerque_2024.sampling import sampling
 
 
 class Simulation(BasicSimulation):
@@ -66,33 +67,17 @@ class Simulation(BasicSimulation):
         del attributes["volume"]
 
         if settings.enable_immersion_freezing:
-            trivia = settings.backend.formulae.trivia
-            n_inp = int(settings.n_sd * settings.freezing_inp_frac)
 
             rng = np.random.default_rng(seed=settings.backend.formulae.seed)
-            insoluble_surface_area = trivia.sphere_surface(
-                diameter=2 * settings.freezing_inp_dry_radius
-            )
-            attributes[
-                "freezing temperature" if settings.singular else "immersed surface area"
-            ] = rng.permutation(
-                np.pad(
-                    (
-                        settings.backend.formulae.freezing_temperature_spectrum.invcdf(
-                            cdf=rng.uniform(low=0, high=1, size=n_inp),
-                            A_insol=insoluble_surface_area,
-                        )
-                        if settings.singular
-                        else np.full(n_inp, insoluble_surface_area)
-                    ),
-                    (0, settings.n_sd - n_inp),
-                    mode="constant",
-                    constant_values=(
-                        settings.backend.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
-                        if settings.singular
-                        else 0
-                    ),
-                )
+
+            sampling(
+                n_sd=settings.n_sd,
+                freezing_inp_frac=settings.freezing_inp_frac,
+                rng=rng,
+                singular=settings.singular,
+                freezing_inp_dry_radius=settings.freezing_inp_dry_radius,
+                attributes=attributes,
+                formulae=settings.backend.formulae,
             )
 
         self.products = (
