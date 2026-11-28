@@ -42,7 +42,7 @@ class ParticleAttributesFactory:
         extensive_attribute_storage = particulator.IndexedStorage.empty(
             idx, (len(extensive_attr), particulator.n_sd), float
         )
-        maximum_attributes = particulator.IndexedStorage.empty(
+        maximum_attributes_storage = particulator.IndexedStorage.empty(
             idx, (len(maximum_attr), particulator.n_sd), float
         )
 
@@ -78,7 +78,9 @@ class ParticleAttributesFactory:
             extensive_keys,
         )
 
-        helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
+        helper(
+            req_attr, attributes, maximum_attr, maximum_attributes_storage, maximum_keys
+        )
 
         n = req_attr["multiplicity"]
         n.allocate(idx)
@@ -116,7 +118,8 @@ class ParticleAttributesFactory:
             idx=idx,
             extensive_attribute_storage=extensive_attribute_storage,
             extensive_keys=extensive_keys,
-            # maximum_attributes, maximum_keys, # TODO #594
+            maximum_attribute_storage=maximum_attributes_storage,
+            maximum_keys=maximum_keys,
             cell_start=cell_start,
             attributes=req_attr,
         )

@@ -40,6 +40,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         int_caster=discretise_multiplicities,
     ):
         assert isinstance(environment.backend, BackendMethods)
+        assert isinstance(dynamics, (list, tuple))
         self.__n_sd = n_sd
 
         self.backend = environment.backend
@@ -222,12 +223,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes["cell id"]
         multiplicity = self.attributes["multiplicity"]
-        attributes = self.attributes.get_extensive_attribute_storage()
+        attributes_ext = self.attributes.get_extensive_attribute_storage()
+        attributes_max = self.attributes.get_maximum_attribute_storage()
         if enable_breakup:
+            assert len(attributes_max) == 0
             self.backend.collision_coalescence_breakup(
                 multiplicity=multiplicity,
                 idx=idx,
-                attributes=attributes,
+                attributes=attributes_ext,
                 gamma=gamma,
                 rand=rand,
                 Ec=Ec,
@@ -247,7 +250,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.backend.collision_coalescence(
                 multiplicity=multiplicity,
                 idx=idx,
-                attributes=attributes,
+                attributes_extensive=attributes_ext,
+                attributes_maximum=attributes_max,
                 gamma=gamma,
                 healthy=healthy,
                 cell_id=cell_id,
