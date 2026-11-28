@@ -32,3 +32,6 @@ class Box:
 
     def register(self, particulator):
         self.particulator = particulator
+
+    def get_predicted(self, item):
+        return self._ambient_air[item]
